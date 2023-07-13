@@ -498,5 +498,3 @@ private:
              TObjectOrder newObjectBegin, TObjectOrder newObjectEnd, THistogramLimit newDelta = -1.0 );
 
 };
-
-void progressFunctionHistogram( ProgressController *progress, void *callerWindow );

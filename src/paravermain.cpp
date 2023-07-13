@@ -893,7 +893,6 @@ bool paraverMain::DoLoadTrace( const string &path )
     traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ] = 0;
 
   ProgressController *progress = ProgressController::create( localKernel );
-  progress->setHandler( progressFunction, this );
 
   try
   {
@@ -905,6 +904,9 @@ bool paraverMain::DoLoadTrace( const string &path )
                                                           wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                           wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                           wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+
+    progress->setHandler( paraverMain::dialogProgress, progressFunction );
+
     string reducePath;
 
     if( tmpPath.length() > 40 && tmpPath.find_last_of( PATH_SEP ) != string::npos )
@@ -2704,8 +2706,10 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
 }
 
 
-void progressFunction( ProgressController *progress, void *callerWindow )
+void progressFunction( void *whichProgressDialog, ProgressController *progress )
 {
+  wxProgressDialog *tmpProgressDialog = static_cast<wxProgressDialog *>( whichProgressDialog );
+
   int p;
   if ( progress->getCurrentProgress() > progress->getEndLimit() )
     p = MAX_PROGRESS_BAR_VALUE;
@@ -2719,13 +2723,13 @@ void progressFunction( ProgressController *progress, void *callerWindow )
     progress->clearMessageChanged();
   }
 
-  if( !paraverMain::dialogProgress->IsShown() && progress->getCurrentProgress() < progress->getEndLimit() )
-    paraverMain::dialogProgress->Show( true );
+  if( !tmpProgressDialog->IsShown() && progress->getCurrentProgress() < progress->getEndLimit() )
+    tmpProgressDialog->Show( true );
 
   if ( progress->getCurrentProgress() == 0.0 ||
        ( progress->getCurrentProgress() - progress->getLastUpdate() ) / progress->getEndLimit() >= 0.01 )
   {
-    if( !paraverMain::dialogProgress->Update( p, newMessage ) )
+    if( tmpProgressDialog != nullptr && !tmpProgressDialog->Update( p, newMessage ) )
       progress->setStop( true );
 
     progress->setLastUpdate( progress->getCurrentProgress() );
@@ -4490,7 +4494,6 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   vector< string > tmpFiles;
 
   ProgressController *progress = ProgressController::create( localKernel );
-  progress->setHandler( progressFunction, this );
 
   if( paraverMain::dialogProgress == nullptr )
     paraverMain::dialogProgress = new wxProgressDialog( wxT("Processing trace..."),
@@ -4501,6 +4504,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
                                                         wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                         wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
+  progress->setHandler( paraverMain::dialogProgress, progressFunction );
 
   tmpNameOut = traceSrcFileName;
 

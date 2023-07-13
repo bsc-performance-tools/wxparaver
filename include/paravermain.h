@@ -768,7 +768,7 @@ private:
 
 };
 
-void progressFunction( ProgressController *progress, void *callerWindow );
+void progressFunction( void *whichProgressDialog, ProgressController *progress );
   
 
 

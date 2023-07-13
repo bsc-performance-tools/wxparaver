@@ -646,7 +646,6 @@ void gTimeline::redraw()
   if ( myWindow->getShowProgressBar() )
   {
     progress = ProgressController::create( myWindow->getKernel() );
-    progress->setHandler( progressFunctionTimeline, this );
 
   // Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
   // Waiting for wxwidgets 3 code adaptation to prove that its solved.
@@ -661,6 +660,9 @@ void gTimeline::redraw()
                                                         wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                         wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     }
+
+    progress->setHandler( gTimeline::dialogProgress, progressFunction );
+
     ++gTimeline::numberOfProgressDialogUsers;
 
     // Disabled because some window managers can't show the progress dialog later
@@ -4966,16 +4968,17 @@ void gTimeline::saveText()
   {
     // Set up progress controller
     ProgressController *progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
-    progress->setHandler( progressFunction, this );
 
-    if( paraverMain::dialogProgress == nullptr )
-      paraverMain::dialogProgress = new wxProgressDialog( wxT("Save Timeline Text"),
-                                                          wxT(""),
-                                                          MAX_PROGRESS_BAR_VALUE,
-                                                          this,
-                                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
-                                                          wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
-                                                          wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+    if( gTimeline::dialogProgress == nullptr )
+      gTimeline::dialogProgress = new wxProgressDialog( wxT("Save Timeline Text"),
+                                                        wxT(""),
+                                                        MAX_PROGRESS_BAR_VALUE,
+                                                        this,
+                                                        wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
+                                                        wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
+                                                        wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+
+    progress->setHandler( gTimeline::dialogProgress, progressFunction );
 
     string fileName = string( saveDialog.GetPath().mb_str() );
     string reducePath;
@@ -4999,9 +5002,9 @@ void gTimeline::saveText()
       reducePath = fileName;
     reducePath += "\t";
     
-    paraverMain::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
-    paraverMain::dialogProgress->Fit();
-    paraverMain::dialogProgress->Show();
+    gTimeline::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
+    gTimeline::dialogProgress->Fit();
+    gTimeline::dialogProgress->Show();
   
     // Save timeline text
     Output *output = Output::createOutput( (TOutput)saveDialog.GetFilterIndex() );
@@ -5016,9 +5019,9 @@ void gTimeline::saveText()
     delete output;
     
     // Delete progress controller
-    paraverMain::dialogProgress->Show( false );
-    delete paraverMain::dialogProgress;
-    paraverMain::dialogProgress = nullptr;
+    gTimeline::dialogProgress->Show( false );
+    delete gTimeline::dialogProgress;
+    gTimeline::dialogProgress = nullptr;
     delete progress;
   }
 
@@ -5982,45 +5985,6 @@ void gTimeline::OnFindDialog()
     bool allObjects = false;
     drawTimeMarks( tmpTimes, selectedObjects, drawXCross, allObjects, objectSelection );
   }
-}
-
-
-void progressFunctionTimeline( ProgressController *progress, void *callerWindow )
-{
-  if( gTimeline::dialogProgress != nullptr )
-  {
-    gTimeline::dialogProgress->Refresh();
-    gTimeline::dialogProgress->Update();
-  }
-
-  int p;
-  if ( progress->getCurrentProgress() > progress->getEndLimit() )
-    p = MAX_PROGRESS_BAR_VALUE;
-  else 
-    p = (int)floor( ( progress->getCurrentProgress() * MAX_PROGRESS_BAR_VALUE ) / progress->getEndLimit() );
-
-  wxString newMessage;
-  if( progress->getMessageChanged() )
-  {
-    newMessage = wxString::FromUTF8( progress->getMessage().c_str() );
-    progress->clearMessageChanged();
-  }
-
-// Disabled because some window managers can't show the dialog later
-/*  if( ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
-  {
-    if( gTimeline::dialogProgress != nullptr && !gTimeline::dialogProgress->IsShown() )
-    {
-      gTimeline::dialogProgress->Show();
-      gTimeline::dialogProgress->Raise();
-    }
-
-    ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Pause();
-  }
-*/
-  
-  if( gTimeline::dialogProgress != nullptr && !gTimeline::dialogProgress->Update( p, newMessage ) )
-    progress->setStop( true );
 }
 
 

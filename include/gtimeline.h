@@ -1003,7 +1003,3 @@ private:
       void drawLabel( wxString semanticValueLabel, bool drawIt = true, TAlign align = LEFT );
   };
 };
-
-void progressFunctionTimeline( ProgressController *progress, void *callerWindow );
-
-

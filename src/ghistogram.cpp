@@ -435,7 +435,6 @@ void gHistogram::execute()
     // Disabled because some window managers can't show the dialog later
     //redrawStopWatch->Start();
     progress = ProgressController::create( myHistogram->getControlWindow()->getKernel() );
-    progress->setHandler( progressFunctionHistogram, this );
 
 #ifndef _WIN32
     if( gHistogram::dialogProgress == nullptr )
@@ -448,6 +447,9 @@ void gHistogram::execute()
                                                          wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                          wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     }
+
+    progress->setHandler( gHistogram::dialogProgress, progressFunction );
+
     ++gHistogram::numberOfProgressDialogUsers;
 
   // Disabled because some window managers can't show the dialog later
@@ -3044,16 +3046,17 @@ void gHistogram::saveText( bool onlySelectedPlane )
     
     // Set up progress controller
     ProgressController *progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
-    progress->setHandler( progressFunction, this );
 
-    if( paraverMain::dialogProgress == nullptr )
-      paraverMain::dialogProgress = new wxProgressDialog( wxT("Save Histogram Text"),
-                                                          wxT(""),
-                                                          MAX_PROGRESS_BAR_VALUE,
-                                                          this,
-                                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
-                                                          wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
-                                                          wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+    if( gHistogram::dialogProgress == nullptr )
+      gHistogram::dialogProgress = new wxProgressDialog( wxT("Save Histogram Text"),
+                                                         wxT(""),
+                                                         MAX_PROGRESS_BAR_VALUE,
+                                                         this,
+                                                         wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
+                                                         wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
+                                                         wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+
+    progress->setHandler( gHistogram::dialogProgress, progressFunction );
 
     string fileName = string( saveDialog.GetPath().mb_str() );
     string reducePath;
@@ -3077,11 +3080,11 @@ void gHistogram::saveText( bool onlySelectedPlane )
       reducePath = fileName;
     reducePath += "\t";
 
-    if( paraverMain::dialogProgress != nullptr )
+    if( gHistogram::dialogProgress != nullptr )
     {
-      paraverMain::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
-      paraverMain::dialogProgress->Fit();
-      paraverMain::dialogProgress->Show();
+      gHistogram::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
+      gHistogram::dialogProgress->Fit();
+      gHistogram::dialogProgress->Show();
     }
 
     output->dumpHistogram( myHistogram, fileName, onlySelectedPlane, myHistogram->getHideColumns(),
@@ -3090,11 +3093,11 @@ void gHistogram::saveText( bool onlySelectedPlane )
     delete output;
 
     // Delete progress controller
-    if( paraverMain::dialogProgress != nullptr )
+    if( gHistogram::dialogProgress != nullptr )
     {
-      paraverMain::dialogProgress->Show( false );
-      delete paraverMain::dialogProgress;
-      paraverMain::dialogProgress = nullptr;
+      gHistogram::dialogProgress->Show( false );
+      delete gHistogram::dialogProgress;
+      gHistogram::dialogProgress = nullptr;
       delete progress;
     }
   }
@@ -3486,44 +3489,6 @@ void gHistogram::OnToolInclusiveUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( myHistogram->getInclusiveEnabled() );
   event.Check( myHistogram->getInclusive() );
-}
-
-
-void progressFunctionHistogram( ProgressController *progress, void *callerWindow )
-{
-  if( gHistogram::dialogProgress != nullptr )
-  {
-    gHistogram::dialogProgress->Refresh();
-    gHistogram::dialogProgress->Update();
-  }
-
-  int p;
-  if ( progress->getCurrentProgress() > progress->getEndLimit() )
-    p = MAX_PROGRESS_BAR_VALUE;
-  else 
-    p = (int)floor( ( progress->getCurrentProgress() * MAX_PROGRESS_BAR_VALUE ) / progress->getEndLimit() );
-
-  wxString newMessage;
-  if( progress->getMessageChanged() )
-  {
-    newMessage = wxString::FromUTF8( progress->getMessage().c_str() );
-    progress->clearMessageChanged();
-  }
-
-// Disabled because some window managers can't show the dialog later
-/*  if( ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
-  {
-    if( gHistogram::dialogProgress != nullptr && !gHistogram::dialogProgress->IsShown() )
-    {
-      gHistogram::dialogProgress->Show();
-      gHistogram::dialogProgress->Raise();
-    }
-    
-    ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Pause();
-  }
-  */
-  if( gHistogram::dialogProgress != nullptr && !gHistogram::dialogProgress->Update( p, newMessage ) )
-    progress->setStop( true );
 }
 
 
