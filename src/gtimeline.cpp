@@ -5011,7 +5011,6 @@ void gTimeline::saveText()
     output->setMultipleFiles( false );
     
     // Clustering default options
-    output->setObjectHierarchy( true );
     output->setWindowTimeUnits( false );
     
     

@@ -370,7 +370,6 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
   mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
   
   TextOutput output;
-  output.setObjectHierarchy( true );
   output.setWindowTimeUnits( false );
   CSVOutputState *tmpOutputState = new CSVOutputState( mySequence );
   tmpOutputState->setData( output );
@@ -499,7 +498,6 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
   mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
   
   TextOutput output;
-  output.setObjectHierarchy( true );
   output.setWindowTimeUnits( false );
   output.setTextualSemantic( true );
   CSVOutputState *tmpOutputState = new CSVOutputState( mySequence );
@@ -568,7 +566,6 @@ void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
   
   // CSV state
   TextOutput output;
-  output.setObjectHierarchy( true );
   output.setWindowTimeUnits( false );
   output.setTextualSemantic( true );
   CSVOutputState *tmpOutputState = new CSVOutputState( mySequence );
