@@ -41,6 +41,7 @@
 #include "cfg.h"
 #include "wxparaverapp.h"
 #include "window.h"
+#include "histogram.h"
 
 using namespace std;
 
