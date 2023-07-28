@@ -442,19 +442,19 @@ AgAAAIdTmgU=
 					<count>4</count>
 					<item_version>0</item_version>
 					<item>
-						<first>/home/gllort/Apps/Paraver/more_cfgs/profet_stress_score.cfg</first>
+						<first>PROFET/profet_stress_score.cfg</first>
 						<second>Stress score</second>
 					</item>
 					<item>
-						<first>/home/gllort/Apps/Paraver/more_cfgs/profet_stress_histogram.cfg</first>
+						<first>PROFET/profet_stress_histogram.cfg</first>
 						<second>Histogram of memory stress</second>
 					</item>
 					<item>
-						<first>/home/gllort/Apps/Paraver/more_cfgs/profet_bandwidth.cfg</first>
+						<first>PROFET/profet_bandwidth.cfg</first>
 						<second>Bandwidth</second>
 					</item>
 					<item>
-						<first>/home/gllort/Apps/Paraver/more_cfgs/profet_latency.cfg</first>
+						<first>PROFET/profet_latency.cfg</first>
 						<second>Latency</second>
 					</item>
 				</hintCFGs>
