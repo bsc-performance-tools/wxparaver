@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <!DOCTYPE boost_serialization>
-<boost_serialization signature="serialization::archive" version="18">
+<boost_serialization signature="serialization::archive" version="17">
 <workspace_manager class_id="0" tracking_level="0" version="0">
 	<workspaces class_id="1" tracking_level="0" version="0">
 		<count>15</count>
@@ -439,11 +439,23 @@ AgAAAIdTmgU=
 					</item>
 				</autoTypes>
 				<hintCFGs>
-					<count>1</count>
+					<count>4</count>
 					<item_version>0</item_version>
 					<item>
-						<first>PROFET/all_profet_metrics.cfg</first>
-						<second>Profet Metrics</second>
+						<first>/home/gllort/Apps/Paraver/more_cfgs/profet_stress_score.cfg</first>
+						<second>Stress score</second>
+					</item>
+					<item>
+						<first>/home/gllort/Apps/Paraver/more_cfgs/profet_stress_histogram.cfg</first>
+						<second>Histogram of memory stress</second>
+					</item>
+					<item>
+						<first>/home/gllort/Apps/Paraver/more_cfgs/profet_bandwidth.cfg</first>
+						<second>Bandwidth</second>
+					</item>
+					<item>
+						<first>/home/gllort/Apps/Paraver/more_cfgs/profet_latency.cfg</first>
+						<second>Latency</second>
 					</item>
 				</hintCFGs>
 			</second>
