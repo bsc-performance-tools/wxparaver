@@ -224,6 +224,8 @@ wxSize paraverMain::defaultTitleBarSize = wxSize(0,0);
 
 Timeline *paraverMain::beginDragWindow = nullptr;
 Timeline *paraverMain::endDragWindow = nullptr;
+Histogram *paraverMain::beginDragHistogram = nullptr;
+Histogram *paraverMain::endDragHistogram = nullptr;
 
 bool paraverMain::disableUserMessages = false;
 bool paraverMain::validSessions = true;
@@ -2196,11 +2198,13 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   endDragWindow = nullptr;
   if( gHistogram *histo = itemData->getHistogram() ) // Is a histogram?
   {
-    currentHisto = histo->GetHistogram();
-    currentWindow = (wxWindow *)histo;
-
     currentTimeline = nullptr;
     beginDragWindow = nullptr;
+    
+    currentHisto = histo->GetHistogram();
+    beginDragHistogram = histo->GetHistogram();
+
+    currentWindow = (wxWindow *)histo;
 
     if( histo->IsShown() )
       histo->Raise();
@@ -2209,9 +2213,11 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   {
     currentTimeline = timeline->GetMyWindow();
     beginDragWindow = timeline->GetMyWindow();
-    currentWindow = (wxWindow *)timeline;
 
     currentHisto = nullptr;
+    beginDragHistogram = nullptr;
+
+    currentWindow = (wxWindow *)timeline;
 
     if( timeline->IsShown() )
       timeline->Raise();
@@ -2247,11 +2253,13 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
   endDragWindow = nullptr;
+  endDragHistogram = nullptr;
   if( gHistogram *histo = itemData->getHistogram() )
   {
     Histogram *tmpHisto = histo->GetHistogram();
 
     beginDragWindow = nullptr;
+    beginDragHistogram = histo->GetHistogram();
 
     tmpHisto->setShowWindow( !tmpHisto->getShowWindow() );
     if( tmpHisto->getShowWindow() )
@@ -2262,6 +2270,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
     Timeline *tmpWin = timeline->GetMyWindow();
 
     beginDragWindow = timeline->GetMyWindow();
+    beginDragHistogram = nullptr;
 
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
     if( tmpWin->getShowWindow() )
@@ -2284,15 +2293,18 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
 
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
   endDragWindow = nullptr;
+  endDragHistogram = nullptr;
 
   if( gHistogram *histo = itemData->getHistogram() )
   {
     beginDragWindow = nullptr;
+    beginDragHistogram = histo->GetHistogram();
     histo->rightDownManager();
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
     beginDragWindow = timeline->GetMyWindow();
+    beginDragHistogram = nullptr;
     timeline->rightDownManager();
   }
 }
@@ -2931,6 +2943,7 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
     {
       currentWindow = item->getHistogram();
       currentHisto = item->getHistogram()->GetHistogram();
+      beginDragHistogram = currentHisto;
       currentTimeline = nullptr;
     }
   }
@@ -3460,10 +3473,16 @@ void paraverMain::OnTreeBeginDrag( wxTreeEvent& event )
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
   beginDragWindow = nullptr;
+  beginDragHistogram = nullptr;
 
   if( gTimeline *timeline = itemData->getTimeline() )
   {
     beginDragWindow = timeline->GetMyWindow();
+    event.Allow();
+  }
+  else if ( gHistogram *histogram = itemData->getHistogram() )
+  {
+    beginDragHistogram = histogram->GetHistogram();
     event.Allow();
   }
 }
@@ -3505,17 +3524,30 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
     TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
     endDragWindow = nullptr;
+    endDragHistogram = nullptr;
 
-    if ( gTimeline *timeline = itemData->getTimeline())
+    if ( gTimeline *timeline = itemData->getTimeline() )
     {
-      endDragWindow = timeline->GetMyWindow();
-      if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace(), endDragWindow->isLevelProcessModel() ) &&
-          Timeline::compatibleLevels( beginDragWindow, endDragWindow ) )
+      if ( beginDragWindow != nullptr )
       {
-        ShowDerivedDialog();
+        endDragWindow = timeline->GetMyWindow();
+        if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace(), endDragWindow->isLevelProcessModel() ) &&
+            Timeline::compatibleLevels( beginDragWindow, endDragWindow ) )
+        {
+          ShowDerivedDialog();
+        }
+        else
+          wxMessageBox( wxT( "Incompatible windows used to derive." ), wxT( "Warning" ), wxOK|wxICON_EXCLAMATION, this );
       }
-      else
-        wxMessageBox( wxT( "Incompatible windows used to derive." ), wxT( "Warning" ), wxOK|wxICON_EXCLAMATION, this );
+    }
+    else if ( gHistogram *histogram = itemData->getHistogram() )
+    {
+      if ( beginDragHistogram != nullptr )
+      {
+        endDragHistogram = histogram->GetHistogram();
+        // TODO: if compatible?
+        wxMessageBox( wxT( "2 histograms to derive." ), wxT( "Warning" ), wxOK|wxICON_EXCLAMATION, this );
+      }
     }
   }
 }

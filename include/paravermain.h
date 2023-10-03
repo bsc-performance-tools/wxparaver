@@ -635,6 +635,8 @@ public:
   static int initialPosY;
   static Timeline *beginDragWindow;
   static Timeline *endDragWindow;
+  static Histogram *beginDragHistogram;
+  static Histogram *endDragHistogram;
   static bool disableUserMessages;
   static bool stopOnIdle;
 
