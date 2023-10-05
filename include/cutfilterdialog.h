@@ -23,14 +23,12 @@
 
 #pragma once
 
-
-
 /*!
  * Includes
  */
 
 ////@begin includes
-#include "include/filebrowserbutton.h"
+#include "filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/statline.h"
 #include "wx/spinctrl.h"
@@ -111,11 +109,9 @@ class wxSpinCtrl;
 #define ID_RADIOBUTTON_SC_ON_STATES 10132
 #define ID_TEXTCTRL_SC_SAMPLING_INTERVAL 10133
 #define ID_TEXTCTRL_SC_MINIMUM_BURST_TIME 10134
-#define ID_CHECKLISTBOX_SC_SELECTED_EVENTS 10148
+#define ID_CHECKLISTBOX_SC_ACCUM_EVENTS 10148
 #define ID_BUTTON_SC_SELECTED_EVENTS_ADD 10149
 #define ID_BUTTON_SC_SELECTED_EVENTS_DELETE 10150
-#define ID_RADIOBUTTON_SC_COUNT_EVENTS 10135
-#define ID_RADIOBUTTON8 10136
 #define ID_CHECKBOX_SC_REMOVE_STATES 10137
 #define ID_CHECKBOX_SC_SUMMARIZE_USEFUL 10138
 #define ID_CHECKBOX_SC_GLOBAL_COUNTERS 10139
@@ -257,10 +253,10 @@ public:
   void OnPanelSoftwareCountersUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_ADD
-  void OnButtonScSelectedEventsAddClick( wxCommandEvent& event );
+  void OnButtonScAccumEventsAddClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_DELETE
-  void OnButtonScSelectedEventsDeleteClick( wxCommandEvent& event );
+  void OnButtonScAccumEventsDeleteClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_KEEP_EVENTS_ADD
   void OnButtonScKeepEventsAddClick( wxCommandEvent& event );
@@ -434,11 +430,9 @@ public:
   wxTextCtrl* textSCSamplingInterval;
   wxStaticText* staticTextSCMinimumBurstTime;
   wxTextCtrl* textSCMinimumBurstTime;
-  wxListBox* listSCSelectedEvents;
-  wxButton* buttonSCSelectedEventsAdd;
-  wxButton* buttonSCSelectedEventsDelete;
-  wxRadioButton* radioSCCountEvents;
-  wxRadioButton* radioSCAccumulateValues;
+  wxListBox* listSCAccumEvents;
+  wxButton* buttonSCAccumEventsAdd;
+  wxButton* buttonSCAccumEventsDelete;
   wxCheckBox* checkSCRemoveStates;
   wxCheckBox* checkSCSummarizeUseful;
   wxCheckBox* checkSCGlobalCounters;
