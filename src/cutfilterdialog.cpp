@@ -109,6 +109,8 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_UPDATE_UI( ID_PANEL_SOFTWARE_COUNTERS, CutFilterDialog::OnPanelSoftwareCountersUpdate )
   EVT_BUTTON( ID_BUTTON_SC_SELECTED_EVENTS_ADD, CutFilterDialog::OnButtonScAccumEventsAddClick )
   EVT_BUTTON( ID_BUTTON_SC_SELECTED_EVENTS_DELETE, CutFilterDialog::OnButtonScAccumEventsDeleteClick )
+  EVT_BUTTON( ID_BUTTON_SC_COUNT_EVENTS_ADD, CutFilterDialog::OnButtonScCountEventsAddClick )
+  EVT_BUTTON( ID_BUTTON_SC_COUNT_EVENTS_DELETE, CutFilterDialog::OnButtonScCountEventsDeleteClick )
   EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_ADD, CutFilterDialog::OnButtonScKeepEventsAddClick )
   EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_DELETE, CutFilterDialog::OnButtonScKeepEventsDeleteClick )
   EVT_BUTTON( wxID_APPLY, CutFilterDialog::OnApplyClick )
@@ -246,6 +248,9 @@ void CutFilterDialog::Init()
   listSCAccumEvents = NULL;
   buttonSCAccumEventsAdd = NULL;
   buttonSCAccumEventsDelete = NULL;
+  listSCCountEvents = NULL;
+  buttonSCCountEventsAdd = NULL;
+  buttonSCCountEventsDelete = NULL;
   checkSCRemoveStates = NULL;
   checkSCSummarizeUseful = NULL;
   checkSCGlobalCounters = NULL;
@@ -736,15 +741,34 @@ void CutFilterDialog::CreateControls()
   listSCAccumEvents = new wxListBox( itemScrolledWindow97, ID_CHECKLISTBOX_SC_ACCUM_EVENTS, wxDefaultPosition, wxDefaultSize, listSCAccumEventsStrings, wxLB_SINGLE );
   if (CutFilterDialog::ShowToolTips())
     listSCAccumEvents->SetToolTip(_("The counters will express the sum of calls for every type-value specified in this list."));
-  itemBoxSizer112->Add(listSCAccumEvents, 3, wxGROW|wxALL, 2);
+  itemBoxSizer112->Add(listSCAccumEvents, 2, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer114 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer112->Add(itemBoxSizer114, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer112->Add(itemBoxSizer114, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
   buttonSCAccumEventsAdd = new wxButton( itemScrolledWindow97, ID_BUTTON_SC_SELECTED_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer114->Add(buttonSCAccumEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonSCAccumEventsDelete = new wxButton( itemScrolledWindow97, ID_BUTTON_SC_SELECTED_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer114->Add(buttonSCAccumEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(itemScrolledWindow97, wxID_STATIC, _("Count events "));
+  wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxHORIZONTAL);
+  itemBoxSizer98->Add(itemStaticBoxSizer1, 1, wxGROW|wxALL, 3);
+  wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer1->Add(itemBoxSizer3, 1, wxGROW|wxALL, 0);
+  wxArrayString listSCCountEventsStrings;
+  listSCCountEvents = new wxListBox( itemScrolledWindow97, ID_CHECKLISTBOX_SC_COUNT_EVENTS, wxDefaultPosition, wxDefaultSize, listSCCountEventsStrings, wxLB_SINGLE );
+  if (CutFilterDialog::ShowToolTips())
+    listSCCountEvents->SetToolTip(_("The counters will express the counting of calls for every type-value specified in this list."));
+  itemBoxSizer3->Add(listSCCountEvents, 2, wxGROW|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer3->Add(itemBoxSizer6, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  buttonSCCountEventsAdd = new wxButton( itemScrolledWindow97, ID_BUTTON_SC_COUNT_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer6->Add(buttonSCCountEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  buttonSCCountEventsDelete = new wxButton( itemScrolledWindow97, ID_BUTTON_SC_COUNT_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer6->Add(buttonSCCountEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxStaticBox* itemStaticBoxSizer117Static = new wxStaticBox(itemScrolledWindow97, wxID_STATIC, _(" Options "));
   wxStaticBoxSizer* itemStaticBoxSizer117 = new wxStaticBoxSizer(itemStaticBoxSizer117Static, wxHORIZONTAL);
@@ -1909,7 +1933,7 @@ void CutFilterDialog::OnPanelSoftwareCountersUpdate( wxUpdateUIEvent& event )
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_ADD
  */
 
-void CutFilterDialog::OnButtonScAccumEventsAddClick( wxCommandEvent& event )
+void CutFilterDialog::OnButtonScCountEventsAddClick( wxCommandEvent& event )
 {
   wxTextEntryDialog textEntry( this, 
                                wxString() << _("Allowed formats:\n")
@@ -1930,7 +1954,7 @@ void CutFilterDialog::OnButtonScAccumEventsAddClick( wxCommandEvent& event )
       else
       {
         currentEntry.Replace( _(" "), _("") );
-        listSCAccumEvents->Append( currentEntry );
+        listSCCountEvents->Append( currentEntry );
       }
     }
   }
@@ -1941,14 +1965,14 @@ void CutFilterDialog::OnButtonScAccumEventsAddClick( wxCommandEvent& event )
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_DELETE
  */
 
-void CutFilterDialog::OnButtonScAccumEventsDeleteClick( wxCommandEvent& event )
+void CutFilterDialog::OnButtonScCountEventsDeleteClick( wxCommandEvent& event )
 {
   wxArrayInt selec;
   
-  if( listSCAccumEvents->GetSelections( selec ) == 0 )
+  if( listSCCountEvents->GetSelections( selec ) == 0 )
     return;
     
-  listSCAccumEvents->Delete( selec[ 0 ] );
+  listSCCountEvents->Delete( selec[ 0 ] );
 }
 
 
@@ -2085,9 +2109,9 @@ void CutFilterDialog::CheckSoftwareCountersOptions( bool &previousWarning )
     previousWarning = true;
   }
   // Empty list of events?
-  if ( !previousWarning && listSCAccumEvents->GetCount() == 0 )
+  if ( !previousWarning && listSCAccumEvents->IsEmpty() && listSCCountEvents->IsEmpty() )
   {
-    wxMessageDialog message( this, _("Software Counters:\nThe list of event types is empty.\n\nPlease add at least one event type."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Software Counters:\nThe lists of event types are empty.\n\nPlease add at least one event type."), _("Warning"), wxOK );
     message.ShowModal();
     buttonSCAccumEventsAdd->SetFocus();
     previousWarning = true;
@@ -2111,6 +2135,7 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
 
     // Selected events
     traceOptions->set_sc_accum_types( GetSoftwareCountersEventsListToString( listSCAccumEvents ) );
+    traceOptions->set_sc_count_types( GetSoftwareCountersEventsListToString( listSCCountEvents ) );
 
     // Options
     traceOptions->set_sc_remove_states( checkSCRemoveStates->IsChecked() );
@@ -2148,6 +2173,7 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
   // Selected events
   bool done = SetSoftwareCountersEventsListToString( string( traceOptions->get_sc_accum_types() ),
                                                      listSCAccumEvents );
+  done = SetSoftwareCountersEventsListToString( string( traceOptions->get_sc_count_types() ), listSCCountEvents );
 
   // Options
   checkSCRemoveStates->SetValue( traceOptions->get_sc_remove_states() );
@@ -3081,5 +3107,52 @@ void CutFilterDialog::OnKeyDown( wxKeyEvent& event )
 void CutFilterDialog::OnCheckboxCutterKeepEventsUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( checkCutterDontBreakStates->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_ADD
+ */
+
+void CutFilterDialog::OnButtonScAccumEventsAddClick( wxCommandEvent& event )
+{
+  wxTextEntryDialog textEntry( this, 
+                               wxString() << _("Allowed formats:\n")
+                                          << _(" Single event type: \'Type\'\n")
+                                          << _(" Values for a single type: \'Type:Value 1,...,Value n\'"),
+                               _("Add events") );
+                               
+  if( textEntry.ShowModal() == wxID_OK )
+  {
+    wxString currentEntry( textEntry.GetValue() );
+    if( !currentEntry.IsEmpty() )
+    {
+      wxString allowedFormatsRE = reSingleType + wxString( wxT( "|" ) ) + reValuesSepByCommaForType;
+      if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
+      {
+        wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
+      }
+      else
+      {
+        currentEntry.Replace( _(" "), _("") );
+        listSCAccumEvents->Append( currentEntry );
+      }
+    }
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_DELETE
+ */
+
+void CutFilterDialog::OnButtonScAccumEventsDeleteClick( wxCommandEvent& event )
+{
+  wxArrayInt selec;
+  
+  if( listSCAccumEvents->GetSelections( selec ) == 0 )
+    return;
+    
+  listSCAccumEvents->Delete( selec[ 0 ] );
 }
 
