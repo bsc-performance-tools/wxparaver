@@ -62,6 +62,7 @@
 #include "windows_tree.h"
 #include "gtimeline.h"
 
+#include "utils/traceparser/pcffileparser.h"
 
 using namespace std;
 
@@ -178,8 +179,7 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
-  EVT_RADIOBUTTON( ID_RADIOBUTTON_PROFET_BY_SOCKET, RunScript::OnRadiobuttonProfetBySocketSelected )
-  EVT_RADIOBUTTON( ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, RunScript::OnRadiobuttonProfetByMemoryControllerSelected )
+  EVT_UPDATE_UI( ID_PROFET_ADDITIONAL_PLOTS, RunScript::OnProfetAdditionalPlotsUpdate )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
@@ -236,6 +236,10 @@ bool RunScript::Create( wxWindow* parent, wxWindowID id, const wxString& caption
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
+  if (GetSizer())
+  {
+    GetSizer()->SetSizeHints(this);
+  }
   Centre();
 ////@end RunScript creation
 
@@ -338,8 +342,7 @@ void RunScript::Init()
   textCtrlProfetOutputTrace = NULL;
   textCtrlProfetCFG = NULL;
   fileBrowserButtonProfetCFG = NULL;
-  radioButtonProfetBySocket = NULL;
-  radioButtonProfetByMemoryController = NULL;
+  checkProfetAdditionalPlots = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
@@ -979,19 +982,14 @@ void RunScript::CreateControls()
   fileBrowserButtonProfetCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_PROFET_CONFIG_FILE, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer9->Add(fileBrowserButtonProfetCFG, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Memory metrics aggregated by: "));
-  wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxHORIZONTAL);
-  profetSection->Add(itemStaticBoxSizer1, 0, wxGROW|wxALL, 2);
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+  profetSection->Add(itemBoxSizer6, 0, wxGROW|wxALL, 2);
 
-  itemStaticBoxSizer1->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer6->Add(5, 5, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  radioButtonProfetBySocket = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_BY_SOCKET, _("Socket"), wxDefaultPosition, wxDefaultSize, 0 );
-  radioButtonProfetBySocket->SetValue(true);
-  itemStaticBoxSizer1->Add(radioButtonProfetBySocket, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  radioButtonProfetByMemoryController = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, _("Memory controller"), wxDefaultPosition, wxDefaultSize, 0 );
-  radioButtonProfetByMemoryController->SetValue(false);
-  itemStaticBoxSizer1->Add(radioButtonProfetByMemoryController, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  checkProfetAdditionalPlots = new wxCheckBox( itemDialog1, ID_PROFET_ADDITIONAL_PLOTS, _("Generate additional plots per socket (estimation: 0 plots)"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkProfetAdditionalPlots->SetValue(false);
+  itemBoxSizer6->Add(checkProfetAdditionalPlots, 12, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
@@ -1468,9 +1466,9 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       // -I/--plot-interactive: visualize interactive plot
       parameters = wxString( wxT( " -w --plot-interactive " ) );
 
-      if ( radioButtonProfetByMemoryController->GetValue() ) 
+      if ( checkProfetAdditionalPlots ->GetValue() ) 
       {
-        parameters += wxString( wxT( " --memory-channel " ) );
+        parameters += wxString( wxT( " -e " ) );
       }
 
       // Source Trace
@@ -1940,12 +1938,7 @@ void RunScript::adaptWindowToApplicationSelection()
       if ( textCtrlProfetOutputTrace->IsEmpty() && !textCtrlTrace->IsEmpty() )
       {
         wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
-        wxString tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
-        wxString tmpNameWOExtension = tmpFilename.GetName();
-        if ( radioButtonProfetByMemoryController->GetValue() )
-          textCtrlProfetOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".profet.mc.prv" )));
-        else
-          textCtrlProfetOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".profet.skt.prv" )));
+        textCtrlProfetOutputTrace->SetValue( tmpFilename.GetName() + wxString( wxT( ".profet.prv" )));
       }
       break;
 
@@ -2792,12 +2785,8 @@ void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
   }
   else if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::PROFET ) )
   {
-    std::string tmpInfix = radioButtonProfetByMemoryController->GetValue()?
-                             std::string("profet.mc"):
-                             std::string("profet.skt");
-
     textCtrlProfetOutputTrace->SetValue(
-            wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), tmpInfix ) +
+            wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), "profet" ) +
                         PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
   }
 }
@@ -2923,31 +2912,44 @@ void RunScript::OnCloseWindow( wxCloseEvent& event )
 
 
 /*!
- * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER
+ * wxEVT_UPDATE_UI event handler for ID_PROFET_ADDITIONAL_PLOTS
  */
 
-void RunScript::OnRadiobuttonProfetByMemoryControllerSelected( wxCommandEvent& event )
+void RunScript::OnProfetAdditionalPlotsUpdate( wxUpdateUIEvent& event )
 {
-  if ( !textCtrlProfetOutputTrace->IsEmpty() )
+  if( textCtrlTrace->GetValue() != lastProcessedTrace )
   {
-    wxString tmpOutputTrace = textCtrlProfetOutputTrace->GetValue();
-    tmpOutputTrace.Replace( ".profet.skt.prv", ".profet.mc.prv" );
-    textCtrlProfetOutputTrace->SetValue( tmpOutputTrace );
-  }
-}
+    lastProcessedTrace = textCtrlTrace->GetValue();
+    wxFileName filename( lastProcessedTrace );
+    filename.SetExt( "pcf" );
+    std::cout<<filename.GetFullPath()<<std::endl;
+    PCFFileParser<> pcfFile( std::string( filename.GetFullPath().c_str() ) );
+    std::set< std::string > cpuLabels;
 
+    std::vector< TEventType > events;
+    pcfFile.getEventTypes( events );
+    for( auto currentEvent : events )
+    {
+      if( pcfFile.getEventValues( currentEvent ).empty() )
+      {
+        std::string eventLabel = pcfFile.getEventLabel( currentEvent );
+        size_t startPos = eventLabel.find( ":cpu=" );
+        if( startPos == eventLabel.npos )
+          continue;
 
-/*!
- * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_SOCKET
- */
+        std::string cpuLabel = eventLabel.substr( startPos, eventLabel.find( " ", startPos ) - startPos );
+        cpuLabels.insert( cpuLabel );
+      }
+    }
 
-void RunScript::OnRadiobuttonProfetBySocketSelected( wxCommandEvent& event )
-{
-  if ( !textCtrlProfetOutputTrace->IsEmpty() )
-  {
-    wxString tmpOutputTrace = textCtrlProfetOutputTrace->GetValue();
-    tmpOutputTrace.Replace( ".profet.mc.prv", ".profet.skt.prv" );
-    textCtrlProfetOutputTrace->SetValue( tmpOutputTrace );
+    wxString newCheckText;
+    newCheckText << "Generate additional plots per socket (estimation: " << cpuLabels.size();
+    if( cpuLabels.size() == 1 ) 
+      newCheckText << " plot)";
+    else
+      newCheckText << " plots)";
+
+    event.SetText( newCheckText );
   }
 }
 
