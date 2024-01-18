@@ -3545,8 +3545,22 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
       if ( beginDragHistogram != nullptr )
       {
         endDragHistogram = histogram->GetHistogram();
+
         // TODO: if compatible?
-        wxMessageBox( wxT( "2 histograms to derive." ), wxT( "Warning" ), wxOK|wxICON_EXCLAMATION, this );
+        // test creation
+        Histogram *tmpDerivedHistogram = Histogram::create( localKernel, beginDragHistogram, endDragHistogram );
+        //tmpDerivedHistogram->setControlWindow( beginDragHistogram->getControlWindow() ); // para GetTrace ??
+        tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
+        string composedName = beginDragHistogram->getName() + " X " + endDragHistogram->getName();
+        tmpDerivedHistogram->setName( composedName );
+
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
+        tmpHisto->SetHistogram( tmpDerivedHistogram );
+
+        appendHistogram2Tree( tmpHisto );
+        LoadedWindows::getInstance()->add( tmpDerivedHistogram );
+        
+        //tmpHisto->saveText(true);
       }
     }
   }
