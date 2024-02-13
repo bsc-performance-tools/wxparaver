@@ -1812,6 +1812,16 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     whichTimeline->getFilter()->setPhysical( property->GetValue().GetBool() );
     whichTimeline->setRedraw( true );
   }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMINTRA, DERIVED_NULL, HISTOGRAM_NULL ) )
+  {
+    whichTimeline->getFilter()->setIntraCommsFilter( property->GetValue().GetBool() );
+    whichTimeline->setRedraw( true );
+  }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMINTER, DERIVED_NULL, HISTOGRAM_NULL ) )
+  {
+    whichTimeline->getFilter()->setInterCommsFilter( property->GetValue().GetBool() );
+    whichTimeline->setRedraw( true );
+  }
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setCommFromFunction( std::string( property->GetDisplayedString().mb_str() ) );

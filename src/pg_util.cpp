@@ -969,6 +969,12 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,commFilterCat,
                          wxT("Physical"), SINGLE_COMMPHYSICAL, CFG4DPropertyCustomOptions(), filter->getPhysical() );
 
+    AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, commFilterCat,
+                         wxT("Intra node comms"), SINGLE_COMMINTRA, CFG4DPropertyCustomOptions(), filter->getIntraCommsFilter() );
+
+    AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,commFilterCat,
+                         wxT("Inter node comms"), SINGLE_COMMINTER, CFG4DPropertyCustomOptions(), filter->getInterCommsFilter() );
+
     // Comm From
     wxPGId commFilterFrom = ( wxPGId )nullptr;
     if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
