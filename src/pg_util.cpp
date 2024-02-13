@@ -969,11 +969,17 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,commFilterCat,
                          wxT("Physical"), SINGLE_COMMPHYSICAL, CFG4DPropertyCustomOptions(), filter->getPhysical() );
 
-    AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, commFilterCat,
-                         wxT("Intra node comms"), SINGLE_COMMINTRA, CFG4DPropertyCustomOptions(), filter->getIntraCommsFilter() );
+    wxPGId tmpIntraCommId = AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, commFilterCat,
+                                                 wxT("Intra node comms"), SINGLE_COMMINTRA, CFG4DPropertyCustomOptions(), filter->getIntraCommsFilter() );
 
-    AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,commFilterCat,
-                         wxT("Inter node comms"), SINGLE_COMMINTER, CFG4DPropertyCustomOptions(), filter->getInterCommsFilter() );
+    wxPGId tmpInterCommId = AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,commFilterCat,
+                                                 wxT("Inter node comms"), SINGLE_COMMINTER, CFG4DPropertyCustomOptions(), filter->getInterCommsFilter() );
+
+    if( !whichWindow->getTrace()->existResourceInfo() )
+    {
+      tmpIntraCommId->Enable( false );
+      tmpInterCommId->Enable( false );
+    }
 
     // Comm From
     wxPGId commFilterFrom = ( wxPGId )nullptr;
