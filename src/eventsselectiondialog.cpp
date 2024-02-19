@@ -586,7 +586,6 @@ bool EventsSelectionDialog::HasChanged( wxChoice *choice, int selectedFunction )
 
 unsigned int EventsSelectionDialog::GetSelections( wxCheckListBox *checkList, wxArrayInt &index ) const
 {
-//  unsigned int numSelections = checkList->GetSelections( tmpIndex );  // DOESNT WORK!
   unsigned int numSelections = 0;
   for( unsigned int i = 0; i < checkList->GetCount(); ++i )
   {
@@ -626,7 +625,7 @@ bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayInt &i
 }
 
 
-bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, EventTypesInfoManager *manager ) const
+bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, EventInfoManager *manager ) const
 {
   bool changed = false;
 
@@ -636,7 +635,7 @@ bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, EventTypesInf
   wxArrayInt tmpGUISelected;
   int dummyFirstPosSelectedVisible;
 
-  typesHandler->getSelectedFromVisible( dummyVisible, dummyPosVisible, dummyGlobalSelected, tmpGUISelected, dummyFirstPosSelectedVisible );
+  manager->getSelectedFromVisible( dummyVisible, dummyPosVisible, dummyGlobalSelected, tmpGUISelected, dummyFirstPosSelectedVisible );
 
   wxArrayInt tmpIndex;
   unsigned int numSelections = GetSelections( checkList, tmpIndex ); 
@@ -646,108 +645,6 @@ bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, EventTypesInf
     for( unsigned int i = 0; i < numSelections; ++i )
     {
       if ( tmpIndex[ i ] != tmpGUISelected[ i ] )
-      {
-        changed = true;
-        break;
-      }
-    }
-  }
-  else
-    changed = true;
-
-  return changed;
-}
-
-
-bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, EventValuesInfoManager *manager ) const
-{
-  bool changed = false;
-
-  wxArrayString dummyVisible;
-  wxArrayInt dummyPosVisible;
-  wxArrayInt dummyGlobalSelected;
-  wxArrayInt tmpGUISelected;
-  int dummyFirstPosSelectedVisible;
-
-  valuesHandler->getSelectedFromVisible( dummyVisible, dummyPosVisible, dummyGlobalSelected, tmpGUISelected, dummyFirstPosSelectedVisible );
-
-  wxArrayInt tmpIndex;
-  unsigned int numSelections = GetSelections( checkList, tmpIndex ); 
-
-  if ( tmpGUISelected.Count() == numSelections )
-  {
-    for( unsigned int i = 0; i < numSelections; ++i )
-    {
-      if ( tmpIndex[ i ] != tmpGUISelected[ i ] )
-      {
-        changed = true;
-        break;
-      }
-    }
-  }
-  else
-    changed = true;
-
-  return changed;
-}
-
-
-bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayDouble &index ) const
-{
-  bool changed = false;
-  
-  wxArrayInt tmpIndex;
-  unsigned int numSelections = GetSelections( checkList, tmpIndex ); 
-
-  if ( index.Count() == numSelections )
-  {
-    for( unsigned int i = 0; i < numSelections; ++i )
-    {
-      if ( tmpIndex[ i ] != index[ i ] )
-      {
-        changed = true;
-        break;
-      }
-    }
-  }
-  else
-    changed = true;
-
-  return changed;
-}
-
-
-bool EventsSelectionDialog::HasChanged( wxArrayInt &arr1, wxArrayInt &arr2 ) const
-{
-  bool changed = false;
-
-  if ( arr1.Count() == arr2.Count() )
-  {
-    for( unsigned int i = 0; i < arr1.Count(); ++i )
-    {
-      if ( arr2.Index( arr1[ i ] ) == wxNOT_FOUND )
-      {
-        changed = true;
-        break;
-      }
-    }
-  }
-  else
-    changed = true;
-
-  return changed;
-}
-
-
-bool EventsSelectionDialog::HasChanged( wxArrayDouble &arr1, wxArrayDouble &arr2 ) const
-{
-  bool changed = false;
-
-  if ( arr1.Count() == arr2.Count() )
-  {
-    for( unsigned int i = 0; i < arr1.Count(); ++i )
-    {
-      if ( arr2.Index( arr1[ i ] ) == wxNOT_FOUND )
       {
         changed = true;
         break;
@@ -812,7 +709,6 @@ void EventsSelectionDialog::OnChecklistboxTypesToggled( wxCommandEvent& event )
 {
   int pos = event.GetInt();
 
-  //changedEventTypesSelection = HasChanged( checkListSelectTypes, typesHandler );
   typesHandler->setSelected( pos, checkListSelectTypes->IsChecked( pos ) );
   TEventType tmpNewCurrentType = typesHandler->getVisible( pos );
   if ( currentType != tmpNewCurrentType )
@@ -840,7 +736,6 @@ void EventsSelectionDialog::OnChecklistboxValuesToggled( wxCommandEvent& event )
 void EventsSelectionDialog::OnChoiceOperatorFunctionTypesSelected( wxCommandEvent& event )
 {
   changedEventTypesFunction = HasChanged( choiceOperatorFunctionTypes, previousEventTypesFunction );
-  //changedEventTypesFunction = CopyChanges( choiceOperatorFunctionTypes, previousEventTypesFunction );
 }
 
 
@@ -850,7 +745,6 @@ void EventsSelectionDialog::OnChoiceOperatorFunctionTypesSelected( wxCommandEven
 void EventsSelectionDialog::OnChoiceOperatorFunctionValuesSelected( wxCommandEvent& event )
 {
   changedEventValuesFunction = HasChanged( choiceOperatorFunctionValues, previousEventValuesFunction );
-  //changedEventValuesFunction = CopyChanges( choiceOperatorFunctionValues, previousEventValuesFunction );
 }
 
 
@@ -860,7 +754,6 @@ void EventsSelectionDialog::OnChoiceOperatorFunctionValuesSelected( wxCommandEve
 void EventsSelectionDialog::OnChoiceOperatorTypeValueSelected( wxCommandEvent& event )
 {
   changedOperatorTypeValue = HasChanged( choiceOperatorTypeValue, previousOperatorTypeValue );
-  //changedOperatorTypeValue = CopyChanges( choiceOperatorTypeValue, previousOperatorTypeValue );
 }
 
 
@@ -978,81 +871,6 @@ void EventsSelectionDialog::OnChecklistboxTypesSelected( wxCommandEvent& event )
       typesHandler->setSelected( currentType, checkListSelectTypes->IsChecked( pos ) );
       UpdateChecklistboxValues( currentType );
     }
-  }
-}
-
-
-void EventsSelectionDialog::GetEventValueLabels( wxArrayString & whichEventValues )
-{
-  PRV_UINT32 precision = 0;
-  SemanticInfoType lastType = currentWindow->getSemanticInfoType();
-  TSemanticValue lastMin = currentWindow->getMinimumY();
-  TSemanticValue lastMax = currentWindow->getMaximumY();
-  
-  if( currentWindow->isCodeColorSet() )
-  {
-    int endLimit = ceil( lastMax );
-
-    if( lastType != EVENTTYPE_TYPE )
-    {
-      if( lastType == APPL_TYPE )
-        endLimit = currentWindow->getTrace()->totalApplications() - 1;
-      else if( lastType == TASK_TYPE )
-        endLimit = currentWindow->getTrace()->totalTasks() - 1;
-      else if( lastType == THREAD_TYPE )
-        endLimit = currentWindow->getTrace()->totalThreads() - 1;
-      else if( lastType == NODE_TYPE )
-        endLimit = currentWindow->getTrace()->totalNodes() - 1;
-      else if( lastType == CPU_TYPE )
-        endLimit = currentWindow->getTrace()->totalCPUs() - 1;
-      else if( lastMax - lastMin > 200 )
-        endLimit = 200 + floor( lastMin );
-    }
-    int typeEndLimit = 0;
-    
-    for( int i = floor( lastMin ); i <= endLimit; ++i )
-    {
-      if( lastType == EVENTTYPE_TYPE && !currentWindow->getTrace()->eventLoaded( i ) )
-        continue;
-        
-      string tmpstr;
-      if( lastType == STATE_TYPE &&
-          !currentWindow->getTrace()->getStateLabels().getStateLabel( i, tmpstr ) )
-        continue;
-      if( lastType == EVENTVALUE_TYPE &&
-          !currentWindow->getTrace()->getEventLabels().getEventValueLabel( i, tmpstr ) )
-        continue;
-        
-      if( ( lastType == EVENTTYPE_TYPE ||
-            lastType == EVENTVALUE_TYPE ||
-            lastType == STATE_TYPE )
-            && typeEndLimit > 200 )
-        break;
-      else
-        ++typeEndLimit;
-
-      wxString tmpStr = wxString::FromUTF8( LabelConstructor::semanticLabel( currentWindow, i, true, precision, false ).c_str() );
-
-      whichEventValues.Add( tmpStr );
-    }
-  }
-  else
-  {
-    wxString tmpStr;
-    tmpStr << wxT("< ") << wxString::FromUTF8( LabelConstructor::semanticLabel( currentWindow, lastMin, false, precision, false ).c_str() );
-    whichEventValues.Add( tmpStr );
-
-    TSemanticValue step = ( lastMax - lastMin ) / 20.0;
-    for( int i = 0; i <= 20; ++i )
-    {
-      tmpStr.Clear();
-      tmpStr << wxString::FromUTF8( LabelConstructor::semanticLabel( currentWindow, ( i * step ) + lastMin, false, precision, false ).c_str() );
-      whichEventValues.Add( tmpStr );
-    }
-
-    tmpStr.Clear();
-    tmpStr << wxT("> ") << wxString::FromUTF8( LabelConstructor::semanticLabel( currentWindow, lastMax, false, precision, false ).c_str() );
-    whichEventValues.Add( tmpStr );
   }
 }
 
@@ -1362,56 +1180,9 @@ void EventTypesInfoManager::init()
     currentType = firstPosSelectedVisible;
   }
 
-  //setChangedSelection();
   changedSelection = false;
 }
 
-/*
-void EventTypesInfoManager::transferFrom( wxCheckListBox *whichList )
-{
-  for( unsigned int i = 0; i < fullList.size(); ++i )
-  {
-    if ( whichList->IsChecked( i ) )
-    {
-      if( selected.Index( fullList[i] ) == wxNOT_FOUND )
-      {
-        selected.Add( i );
-      }
-    }
-    else
-    {
-      int pos = selected.Index( fullList[ i ] );
-      if( pos != wxNOT_FOUND )
-      {
-        selected.RemoveAt( pos );
-      }
-    }
-  }
-
-  selected.Sort( compare_int );
-
-  setChangedSelection();
-}
-*/
-
-/*
-wxArrayString EventTypesInfoManager::getVisible()
-{
-  wxArrayString tmpVisible;
-
-  for ( unsigned int i = 0; i < visible.GetCount(); ++i )
-  {
-    string tmpLabel( labels[ visible[ i ] ].mb_str() );
-    stringstream tmpValue;
-    tmpValue << fullList[ visible[ i ] ];
-
-    if ( matchesAllRegex( tmpLabel, tmpValue.str() ) )
-    {
-      tmpVisible.Add( labels[ visible[ i ] ] );
-    }
-  }
-}
-*/
 
 wxArrayInt EventTypesInfoManager::getSelected()
 {
@@ -1421,8 +1192,6 @@ wxArrayInt EventTypesInfoManager::getSelected()
   {
     tmpTypesSelected.Add( fullList[ selected[ i ]] );
   }
-
-  //tmpTypesSelected.Sort( compare_int ); // Shouldn't need now
 
   return tmpTypesSelected;
 }

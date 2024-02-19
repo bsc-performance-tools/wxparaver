@@ -21,10 +21,7 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-
 #pragma once
-
-
 
 /*!
  * Includes
@@ -41,7 +38,6 @@
 
 #include <wx/regex.h>
 #include <wx/checkbox.h>
-#include <wx/valtext.h> // DELETE ME?
 #include <wx/stattext.h>
 
 
@@ -104,7 +100,6 @@ class EventInfoManager
                                          int &whichFirstPosSelectedVisible,
                                          bool updateFirstPosSelectedVisible = true ) = 0;
 
-//    bool changedVisible();
     bool getChangedSelected() { return changedSelection ; };
 
     // regex
@@ -122,7 +117,6 @@ class EventInfoManager
 
     virtual void setChangedSelection() = 0;
     bool matchesAllRegex( std::string whichName, std::string whichValue );
-    //bool matchesAllRegex( string whichName );
 };
 
 
@@ -143,7 +137,6 @@ class EventTypesInfoManager : public EventInfoManager
     virtual void setAllVisible();
     void setVisible( wxArrayInt whichVisible ) { visible = whichVisible ; }
 
-    //wxArrayString getVisible();
     TEventType getVisible( int pos ) { return fullList[ visible[ pos ] ] ; }
     unsigned int countVisible() { return visible.GetCount() ; }
     TEventType getFirstTypeVisible() { return fullList[ visible[ 0 ] ] ; }
@@ -166,10 +159,10 @@ class EventTypesInfoManager : public EventInfoManager
     virtual void setChangedSelection();
 
   private:
-    std::vector< TEventType > fullList; // eventTypes;         // FULL LIST of event types
-    wxArrayString             labels;   // labeledEventTypes;  // Labeled names of eventTypes
-    wxArrayInt                selected; // selectedEventTypes; // INDEX to eventTypes (Selected/checked events)
-    wxArrayInt                visible;  // visibleEventTypes;  // INDEX to all visible event types (matching reg. exps)
+    std::vector< TEventType > fullList; // FULL LIST of event types
+    wxArrayString             labels;   // Labeled names of eventTypes
+    wxArrayInt                selected; // INDEX to eventTypes (Selected/checked events)
+    wxArrayInt                visible;  // INDEX to all visible event types (matching reg. exps)
     
     TEventType currentType;
     wxArrayInt initialSelected;
@@ -210,10 +203,10 @@ class EventValuesInfoManager : public EventInfoManager
   private:
     TEventType currentType;
 
-    wxArrayDouble fullList;    // eventValues // related to the current selected value
-    wxArrayString labels; // labeledEventValues;          // Labeled names of event values
-    wxArrayDouble selected; //selectedEventValues;         // FULL LIST of selected event value
-    wxArrayDouble visible; //visibleEventValues;          // FULL LIST to visible event values (matching reg. exps)
+    wxArrayDouble fullList; // related to the current selected value
+    wxArrayString labels; // Labeled names of event values
+    wxArrayDouble selected; // FULL LIST of selected event value
+    wxArrayDouble visible; // FULL LIST to visible event values (matching reg. exps)
 
     wxArrayDouble addedFullList;
     wxArrayDouble initialSelected;
@@ -235,8 +228,6 @@ public:
 
   EventsSelectionDialog( wxWindow* parent,
                          Timeline *whichWindow,
-//                         wxArrayString &whichSelectedEventTypes,
-//                         wxArrayString &whichSelectedEventValues,
                          bool hideOperatorsList = false,
                          const wxString& caption = SYMBOL_EVENTSSELECTIONDIALOG_TITLE,
                          wxWindowID id = SYMBOL_EVENTSSELECTIONDIALOG_IDNAME,
@@ -256,10 +247,6 @@ public:
   EventsSelectionDialog( wxWindow* parent,
                          wxArrayString &whichTypes,
                          wxArrayInt &whichSelectedEventTypes,
-                         //bool whichSelectedOpTypeValue,
-                         //int &whichSelectedFunctionValue,
-                         //vector<TEventValue> &whichValues,
-                         //vector<TEventValue> &whichSelectedValues,
                          bool whichHideOperatorsList,
                          const wxString& caption,
                          wxWindowID id,
@@ -423,19 +410,12 @@ public:
   void UpdateWidgetChecklistboxTypes();
 
   void checkAll( wxCheckListBox *boxlist, bool value );
-  void GetEventValueLabels( wxArrayString & whichEventValues );
   void UpdateWidgetChecklistboxValues();
   void UpdateChecklistboxValues( TEventType type, bool keepSelected = true );
 
   bool HasChanged( wxChoice *choice, int selectedFunction ) const;
   bool HasChanged( wxCheckListBox *checkList, wxArrayInt &index ) const;
-
-  bool HasChanged( wxCheckListBox *checkList, EventTypesInfoManager *manager ) const;
-  bool HasChanged( wxCheckListBox *checkList, EventValuesInfoManager *manager ) const;
-
-  bool HasChanged( wxCheckListBox *checkList, wxArrayDouble &index ) const;
-  bool HasChanged( wxArrayInt &arr1, wxArrayInt &arr2 ) const;
-  bool HasChanged( wxArrayDouble &arr1, wxArrayDouble &arr2 ) const;
+  bool HasChanged( wxCheckListBox *checkList, EventInfoManager *manager ) const;
 
   bool CopyChanges( wxChoice *choice, int &selectedFunction );
   bool CopyChanges( wxCheckListBox *checkList,
