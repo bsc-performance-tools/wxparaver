@@ -70,8 +70,6 @@ BEGIN_EVENT_TABLE( EventsSelectionDialog, wxDialog )
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_TYPES, EventsSelectionDialog::OnChecklistboxTypesDoubleClicked )
   EVT_LISTBOX( ID_CHECKLISTBOX_TYPES, EventsSelectionDialog::OnChecklistboxTypesSelected )
   EVT_CHECKLISTBOX( ID_CHECKLISTBOX_TYPES, EventsSelectionDialog::OnChecklistboxTypesToggled )
-  EVT_BUTTON( ID_BUTTON_SET_ALL_TYPES, EventsSelectionDialog::OnButtonSetAllTypesClick )
-  EVT_BUTTON( ID_BUTTON_UNSET_ALL_TYPES, EventsSelectionDialog::OnButtonUnsetAllTypesClick )
   EVT_CHOICE( ID_CHOICE_OPERATOR_TYPE_VALUE, EventsSelectionDialog::OnChoiceOperatorTypeValueSelected )
   EVT_CHOICE( ID_CHOICE_OPERATOR_FUNCTION_VALUES, EventsSelectionDialog::OnChoiceOperatorFunctionValuesSelected )
   EVT_CHECKBOX( ID_CHECKBOX_SET_ALL_VALUES, EventsSelectionDialog::OnCheckboxSetAllValuesClick )
@@ -80,9 +78,6 @@ BEGIN_EVENT_TABLE( EventsSelectionDialog, wxDialog )
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_VALUES, EventsSelectionDialog::OnChecklistboxValuesDoubleClicked )
   EVT_CHECKLISTBOX( ID_CHECKLISTBOX_VALUES, EventsSelectionDialog::OnChecklistboxValuesToggled )
   EVT_BUTTON( ID_BUTTON_ADD_VALUES, EventsSelectionDialog::OnButtonAddValuesClick )
-  EVT_TOGGLEBUTTON( ID_TOGGLEBUTTON_SHORT_LABELS, EventsSelectionDialog::OnTogglebuttonShortLabelsClick )
-  EVT_BUTTON( ID_BUTTON_SET_ALL_VALUES, EventsSelectionDialog::OnButtonSetAllValuesClick )
-  EVT_BUTTON( ID_BUTTON_UNSET_ALL_VALUES, EventsSelectionDialog::OnButtonUnsetAllValuesClick )
   EVT_BUTTON( wxID_APPLY, EventsSelectionDialog::OnApplyClick )
   EVT_UPDATE_UI( wxID_APPLY, EventsSelectionDialog::OnApplyUpdate )
 ////@end EventsSelectionDialog event table entries
@@ -127,27 +122,22 @@ EventsSelectionDialog::EventsSelectionDialog()
 void EventsSelectionDialog::Init()
 {
 ////@begin EventsSelectionDialog member initialisation
-  boxSizerFunctionTypes = nullptr;
-  staticTextFunctionTypes = nullptr;
-  choiceOperatorFunctionTypes = nullptr;
-  checkboxSetAllTypes = nullptr;
-  typesRegexSearch = nullptr;
-  checkListSelectTypes = nullptr;
-  buttonSetAllTypes = nullptr;
-  buttonUnsetAllTypes = nullptr;
-  choiceOperatorTypeValue = nullptr;
-  boxSizerFunctionValues = nullptr;
-  staticTextFunctionValues = nullptr;
-  choiceOperatorFunctionValues = nullptr;
-  checkboxSetAllValues = nullptr;
-  valuesRegexSearch = nullptr;
-  checkListSelectValues = nullptr;
-  textCtrlAddValues = nullptr;
-  buttonAddValues = nullptr;
-  buttonShortLabels = nullptr;
-  buttonSetAllValues = nullptr;
-  buttonUnsetAllValues = nullptr;
-  applyButton = nullptr;
+  boxSizerFunctionTypes = NULL;
+  staticTextFunctionTypes = NULL;
+  choiceOperatorFunctionTypes = NULL;
+  checkboxSetAllTypes = NULL;
+  typesRegexSearch = NULL;
+  checkListSelectTypes = NULL;
+  choiceOperatorTypeValue = NULL;
+  boxSizerFunctionValues = NULL;
+  staticTextFunctionValues = NULL;
+  choiceOperatorFunctionValues = NULL;
+  checkboxSetAllValues = NULL;
+  valuesRegexSearch = NULL;
+  checkListSelectValues = NULL;
+  textCtrlAddValues = NULL;
+  buttonAddValues = NULL;
+  applyButton = NULL;
 ////@end EventsSelectionDialog member initialisation
 
   hideOperatorsList = false;
@@ -359,17 +349,6 @@ void EventsSelectionDialog::CreateControls()
   checkListSelectTypes = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_TYPES, wxDefaultPosition, wxSize(500, -1), checkListSelectTypesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
   itemStaticBoxSizer5->Add(checkListSelectTypes, 1, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer5->Add(itemBoxSizer10, 0, wxALIGN_RIGHT|wxLEFT, 5);
-
-  buttonSetAllTypes = new wxButton( itemDialog1, ID_BUTTON_SET_ALL_TYPES, _("Set all"), wxDefaultPosition, wxDefaultSize, 0 );
-  buttonSetAllTypes->Show(false);
-  itemBoxSizer10->Add(buttonSetAllTypes, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-
-  buttonUnsetAllTypes = new wxButton( itemDialog1, ID_BUTTON_UNSET_ALL_TYPES, _("Unset all"), wxDefaultPosition, wxDefaultSize, 0 );
-  buttonUnsetAllTypes->Show(false);
-  itemBoxSizer10->Add(buttonUnsetAllTypes, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-
   wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer4->Add(itemBoxSizer13, 0, wxGROW|wxTOP, 5);
 
@@ -434,26 +413,6 @@ void EventsSelectionDialog::CreateControls()
   buttonAddValues = new wxButton( itemDialog1, ID_BUTTON_ADD_VALUES, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer23->Add(buttonAddValues, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer18->Add(itemBoxSizer26, 0, wxGROW|wxRIGHT, 5);
-
-  buttonShortLabels = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON_SHORT_LABELS, _("Short Labels"), wxDefaultPosition, wxDefaultSize, 0 );
-  buttonShortLabels->SetValue(true);
-  buttonShortLabels->SetHelpText(_("Show short labels instead of complete"));
-  if (EventsSelectionDialog::ShowToolTips())
-    buttonShortLabels->SetToolTip(_("Show short labels instead of complete"));
-  itemBoxSizer26->Add(buttonShortLabels, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  itemBoxSizer26->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  buttonSetAllValues = new wxButton( itemDialog1, ID_BUTTON_SET_ALL_VALUES, _("Set all"), wxDefaultPosition, wxDefaultSize, 0 );
-  buttonSetAllValues->Show(false);
-  itemBoxSizer26->Add(buttonSetAllValues, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  buttonUnsetAllValues = new wxButton( itemDialog1, ID_BUTTON_UNSET_ALL_VALUES, _("Unset all"), wxDefaultPosition, wxDefaultSize, 0 );
-  buttonUnsetAllValues->Show(false);
-  itemBoxSizer26->Add(buttonUnsetAllValues, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
-
   wxStaticLine* itemStaticLine31 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine31, 0, wxGROW|wxALL, 5);
 
@@ -469,7 +428,7 @@ void EventsSelectionDialog::CreateControls()
   itemStdDialogButtonSizer32->Realize();
 
   // Connect events and objects
-  textCtrlAddValues->Connect(ID_TEXTCTRL_ADD_VALUES, wxEVT_KEY_DOWN, wxKeyEventHandler(EventsSelectionDialog::OnTextCtrlKeyDown), nullptr, this);
+  textCtrlAddValues->Connect(ID_TEXTCTRL_ADD_VALUES, wxEVT_KEY_DOWN, wxKeyEventHandler(EventsSelectionDialog::OnTextCtrlKeyDown), NULL, this);
 ////@end EventsSelectionDialog content construction
 
   textCtrlAddValues->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
@@ -596,10 +555,6 @@ bool EventsSelectionDialog::ChangedEventValuesSelection() const
  */
 void EventsSelectionDialog::OnIdle( wxIdleEvent& event )
 {
-  buttonSetAllTypes->Enable( true );
-  buttonUnsetAllTypes->Enable( checkListSelectTypes->GetCount() > 0 );
-  buttonSetAllValues->Enable( true );
-  buttonUnsetAllValues->Enable( checkListSelectValues->GetCount() > 0 );
   buttonAddValues->Enable( !textCtrlAddValues->IsEmpty() );
 }
 
@@ -610,50 +565,6 @@ void EventsSelectionDialog::checkAll( wxCheckListBox *boxlist, bool value )
   {
     boxlist->Check( i, value );
   }
-}
-
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_TYPES
- */
-void EventsSelectionDialog::OnButtonSetAllTypesClick( wxCommandEvent& event )
-{
-  checkAll( checkListSelectTypes, true );
-  //changedEventTypesSelection = HasChanged( checkListSelectTypes, typesHandler );
-  typesHandler->setAllSelected();
-}
-
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_TYPES
- */
-void EventsSelectionDialog::OnButtonUnsetAllTypesClick( wxCommandEvent& event )
-{
-  checkAll( checkListSelectTypes, false );
-  //changedEventTypesSelection = HasChanged( checkListSelectTypes, typesHandler );
-  typesHandler->setAllUnselected();
-}
-
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_VALUES
- */
-void EventsSelectionDialog::OnButtonSetAllValuesClick( wxCommandEvent& event )
-{
-  checkAll( checkListSelectValues, true );
-  changedEventValues = HasChanged( checkListSelectValues, valuesHandler );
-  valuesHandler->setAllSelected();
-}
-
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_VALUES
- */
-void EventsSelectionDialog::OnButtonUnsetAllValuesClick( wxCommandEvent& event )
-{
-  checkAll( checkListSelectValues, false );
-  changedEventValues = HasChanged( checkListSelectValues, valuesHandler );
-  valuesHandler->setAllUnselected();
 }
 
 
@@ -1045,7 +956,7 @@ void EventsSelectionDialog::UpdateWidgetChecklistboxTypes()
 //          - checklist widget
 void EventsSelectionDialog::UpdateChecklistboxValues( TEventType whichType, bool keepSelected )
 {
-  valuesHandler->init( whichType, buttonShortLabels->GetValue(), keepSelected );
+  valuesHandler->init( whichType, keepSelected );
   UpdateWidgetChecklistboxValues();
 }
 
@@ -1238,15 +1149,6 @@ void EventsSelectionDialog::EnableApplyButton()
 void EventsSelectionDialog::OnApplyUpdate( wxUpdateUIEvent& event )
 {
   EnableApplyButton();
-}
-
-
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_TOGGLEBUTTON_SHORT_LABELS
- */
-void EventsSelectionDialog::OnTogglebuttonShortLabelsClick( wxCommandEvent& event )
-{
-  UpdateChecklistboxValues( currentType );
 }
 
 
@@ -1640,7 +1542,7 @@ void EventValuesInfoManager::setAllVisible()
 }
 
 
-void EventValuesInfoManager::init( TEventType whichType, bool shortVersion, bool keepSelected )
+void EventValuesInfoManager::init( TEventType whichType, bool keepSelected )
 {
   fullList.Clear();
   labels.Clear();
@@ -1698,11 +1600,6 @@ void EventValuesInfoManager::init( TEventType whichType, bool shortVersion, bool
     if ( tmpLabel == "" )
     {
       tmpLabel = tmpValue.str();
-    }
-    else
-    {
-      if( shortVersion )
-        LabelConstructor::transformToShort( tmpLabel );
     }
 
     tmpEventValues.Add( wxString::FromUTF8( tmpLabel.c_str() ) );

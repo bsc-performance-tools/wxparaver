@@ -37,7 +37,6 @@
 
 ////@begin includes
 #include "wx/statline.h"
-#include "wx/tglbtn.h"
 ////@end includes
 
 #include <wx/regex.h>
@@ -52,7 +51,6 @@
 
 ////@begin forward declarations
 class wxBoxSizer;
-class wxToggleButton;
 ////@end forward declarations
 
 class gTimeline;
@@ -69,8 +67,6 @@ class Filter;
 #define ID_CHECKBOX_SET_ALL_TYPES 10007
 #define ID_TEXTCTRL_TYPES_REGEX_SEARCH 10006
 #define ID_CHECKLISTBOX_TYPES 10161
-#define ID_BUTTON_SET_ALL_TYPES 10163
-#define ID_BUTTON_UNSET_ALL_TYPES 10164
 #define ID_CHOICE_OPERATOR_TYPE_VALUE 10055
 #define ID_CHOICE_OPERATOR_FUNCTION_VALUES 10056
 #define ID_CHECKBOX_SET_ALL_VALUES 10008
@@ -78,9 +74,6 @@ class Filter;
 #define ID_CHECKLISTBOX_VALUES 10162
 #define ID_TEXTCTRL_ADD_VALUES 10168
 #define ID_BUTTON_ADD_VALUES 10169
-#define ID_TOGGLEBUTTON_SHORT_LABELS 10000
-#define ID_BUTTON_SET_ALL_VALUES 10165
-#define ID_BUTTON_UNSET_ALL_VALUES 10166
 #define SYMBOL_EVENTSSELECTIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_EVENTSSELECTIONDIALOG_TITLE _("Events Selection")
 #define SYMBOL_EVENTSSELECTIONDIALOG_IDNAME ID_EVENTSSELECTIONDIALOG
@@ -189,7 +182,7 @@ class EventValuesInfoManager : public EventInfoManager
     EventValuesInfoManager( Timeline *whichWindow, Filter *whichFilter, TEventType whichType );
     virtual ~EventValuesInfoManager() {};
     
-    void init( TEventType whichType, bool shortVersion, bool keepSelected = false );
+    void init( TEventType whichType, bool keepSelected = false );
     virtual void transferFrom( wxCheckListBox *whichList );
     bool isEmpty() const { return fullList.IsEmpty(); }
     bool insert( double whichValue, wxString whichLabel ); // Only values can be added
@@ -312,12 +305,6 @@ public:
   /// wxEVT_COMMAND_CHECKLISTBOX_TOGGLED event handler for ID_CHECKLISTBOX_TYPES
   void OnChecklistboxTypesToggled( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_TYPES
-  void OnButtonSetAllTypesClick( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_TYPES
-  void OnButtonUnsetAllTypesClick( wxCommandEvent& event );
-
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_OPERATOR_TYPE_VALUE
   void OnChoiceOperatorTypeValueSelected( wxCommandEvent& event );
 
@@ -344,15 +331,6 @@ public:
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ADD_VALUES
   void OnButtonAddValuesClick( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_TOGGLEBUTTON_SHORT_LABELS
-  void OnTogglebuttonShortLabelsClick( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_VALUES
-  void OnButtonSetAllValuesClick( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_VALUES
-  void OnButtonUnsetAllValuesClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_APPLY
   void OnApplyClick( wxCommandEvent& event );
@@ -400,8 +378,6 @@ public:
   wxCheckBox* checkboxSetAllTypes;
   wxTextCtrl* typesRegexSearch;
   wxCheckListBox* checkListSelectTypes;
-  wxButton* buttonSetAllTypes;
-  wxButton* buttonUnsetAllTypes;
   wxChoice* choiceOperatorTypeValue;
   wxBoxSizer* boxSizerFunctionValues;
   wxStaticText* staticTextFunctionValues;
@@ -411,9 +387,6 @@ public:
   wxCheckListBox* checkListSelectValues;
   wxTextCtrl* textCtrlAddValues;
   wxButton* buttonAddValues;
-  wxToggleButton* buttonShortLabels;
-  wxButton* buttonSetAllValues;
-  wxButton* buttonUnsetAllValues;
   wxButton* applyButton;
 ////@end EventsSelectionDialog member variables
 
