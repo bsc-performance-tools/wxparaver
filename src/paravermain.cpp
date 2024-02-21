@@ -870,7 +870,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     {
       case wxID_YES:
         //tmpResult = ShowCutTraceWindow( tmpPath, true );
-        ShowCutTraceWindow( tmpPath, true );
+        ShowCutTraceWindow( tmpPath, true, "", true );
 
 
         // canServeSignal = true;
@@ -4669,7 +4669,8 @@ void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog )
 
 void paraverMain::ShowCutTraceWindow( const string& filename,
                                       bool loadTrace,
-                                      const string& xmlFile )
+                                      const string& xmlFile,
+                                      bool modalDialog )
 {
   cutFilterFinished = false;
 
@@ -4682,7 +4683,10 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
   vector< string > filterToolOrder;
   OptionsSettingCutFilterDialog( cutFilterDialog, traceOptions, xmlFile, filterToolOrder );
 
-  cutFilterDialog->Show();
+  if( modalDialog )
+    cutFilterDialog->ShowModal();
+  else
+    cutFilterDialog->Show();
 }
 
 

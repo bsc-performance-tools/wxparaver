@@ -603,7 +603,8 @@ public:
   void OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog );
   void ShowCutTraceWindow( const std::string& filename = "",
                            bool loadTrace = true,
-                           const std::string& xmlFile = "" );
+                           const std::string& xmlFile = "",
+                           bool modalDialog = false );
   
   bool getAutoRedraw() const;
   bool isCFG4DModeDisabled() const;
