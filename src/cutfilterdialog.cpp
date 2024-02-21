@@ -547,7 +547,7 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer67->Add(checkCutterKeepEvents, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
   checkCutterKeepEventsWithoutStates = new wxCheckBox( itemScrolledWindow38, ID_CHECKBOX_CUTTER_KEEP_EVENTS_WITHOUT_STATES, _("Keep events for threads without states"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkCutterKeepEventsWithoutStates->SetValue(false);
+  checkCutterKeepEventsWithoutStates->SetValue(true);
   itemBoxSizer67->Add(checkCutterKeepEventsWithoutStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
   wxStaticBox* itemStaticBoxSizer69Static = new wxStaticBox(itemScrolledWindow38, wxID_STATIC, _(" Output Trace "));
