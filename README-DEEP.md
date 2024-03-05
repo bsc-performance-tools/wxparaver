@@ -62,7 +62,7 @@ Tables are presented in the form of profiles and histograms, depending on whethe
 ### Running PROFET analysis 
 
 A working installation of PROFET is required to run this analysis, and ensure that the executable ```profet``` is in the environment variable ```PATH```.
-With a trace already loaded containing uncore memory counters data ([see Extrae's guide](https://github.com/bsc-performance-tools/extrae/tree/devel/README-DEEP.md#Obtaining-traces-with-optional-data-for-PROFET)), and a timeline view optionally zoomed on any particular interval of interest, the user needs to:
+With a trace already loaded containing uncore memory counters data ([see Extrae's guide](https://github.com/bsc-performance-tools/extrae/blob/master/README-DEEP.md#Obtaining-traces-with-optional-data-for-PROFET)), and a timeline view optionally zoomed on any particular interval of interest, the user needs to:
 
 1. Right click on the timeline to open the context menu, select ```Run ⟶ PROFET```: 
 
