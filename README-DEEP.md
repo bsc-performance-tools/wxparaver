@@ -115,3 +115,6 @@ That can be correlated with the application's activity (e.g., Hints âŸ¶ Useful â
 | -------- | 
 | ![MPI calls](images/timeline_mpi_calls_zoom.png) |
 | |
+
+> MPI calls
+![MPI calls](images/timeline_mpi_calls_zoom.png)
