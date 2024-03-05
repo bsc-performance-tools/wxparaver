@@ -8,7 +8,7 @@
 * *Output:* Timeline, profile and histogram views that can be configured to display any metric available in the trace 
 
 ### 2. Run external tools to analyze selected intervals of the trace
-* *Input*: Same as [case 1](#1-Browse-performance-data-in-Paraver-traces)
+* *Input*: Same as [1. Browse performance data in Paraver traces](#1-Browse-performance-data-in-Paraver-traces)
 * *Output*: Tool's reports that may include a new Paraver trace with enriched information (e.g. including new memory metrics from PROFET analysis) 
 * *Limits*: 
     * A working installation of the external tool needs to be accessible in PATH.
@@ -32,14 +32,14 @@ In all cases, run ```wxparaver``` located under ```<paraver_root_dir>/bin``` to 
 ### Tutorials
 Online tutorials are included in Paraver showing the basic navigation controls and interface buttons, and providing an interactive guide of analysis of real applications. To access the tutorials, go to the tool's menu "Help ⟶ Tutorials", and they can be automatically installed by clicking on the "Download and install tutorials" button:
 
-| ![Help menu](images/menubar_help.png) | ![Tutorials dialog](images/tutorials_dialog.png) |
+| ![Help menu](images/menubar_help.png "Help menu") | ![Tutorials dialog](images/tutorials_dialog.png "Tutorials dialog") |
 | -------- | -------- | 
 
 ### Loading traces and views 
 
 To load an applications's tracefile, go to "File ⟶ Load trace...", and browse to the location with the file with *prv* extension. Paraver automatically suggests interesting views through the Hints menu depending on the contents of the tracefile. Use this Hints for a quick view of the application’s performance. Further views are available under the "File ⟶ Load configuration...! menu.
 
-| ![Paraver's File Menu](images/menubar_file.png) | ![Paraver's Hints Menu](images/menubar_hints.png)
+| ![Paraver's File Menu](images/menubar_file.png "Paraver's File Menu") | ![Paraver's Hints Menu](images/menubar_hints.png "Paraver's Hints Menu")
 | -------- | -------- | 
 | Paraver's File Menu | Paraver's Hints Menu |
 
@@ -48,14 +48,14 @@ Paraver shows the performance information using timelines and tables, where the 
 
 | Paraver timeline views  |
 | - |
-| ![MPI calls](images/timeline_mpi_calls.png) |
+| ![MPI calls](images/timeline_mpi_calls.png "MPI calls") |
 | MPI calls | 
-| ![Duration of computing bursts](images/timeline_useful_duration.png) |
+| ![Duration of computing bursts](images/timeline_useful_duration.png "Duration of computing bursts") |
 | Duration of computing bursts | 
 
 Tables are presented in the form of profiles and histograms, depending on whether the metric is discrete, e.g., MPI calls, or continuous, e.g., duration of computing bursts, and their x-axes represent a value, or a range of values for the given metric, respectively.
 
-| ![Profile of MPI calls](images/profile_mpi_calls.png) | ![Histogram computing bursts' duration](images/histogram_useful_duration.png) |
+| ![Profile of MPI calls](images/profile_mpi_calls.png "Profile of MPI calls") | ![Histogram computing bursts' duration](images/histogram_useful_duration.png "Histogram computing bursts' duration") |
 | - | - |
 | Profile of MPI calls  | Histogram computing bursts' duration |
 
@@ -92,29 +92,22 @@ These configurations open timeline views showing Bandwitdh, Latency and Read/Wri
 | Bandwidth per MCU |
 | -------- | 
 | ![Bandwidth per MCU](images/timeline_bandwidth.png "Bandwidth per MCU") |
-| | 
 
 | Latency per MCU |
 | -------- | 
-| ![Latency per MCU](images/timeline_latency.png) |
-| |
+| ![Latency per MCU](images/timeline_latency.png "Latency per MCU") |
 
 | Read/Write ratio per MCU |
 | -------- | 
-| ![Read/Write ratio per MCU](images/timeline_write_ratio.png) |
-| |
+| ![Read/Write ratio per MCU](images/timeline_write_ratio.png "Read/Write ratio per MCU") |
 
 That can be correlated with the application's activity (e.g., Hints ⟶ Useful ⟶ Useful duration, Hints ⟶ MPI ⟶ MPI calls):
 
 | Computation duration |
 | -------- | 
-| ![Computation duration](images/timeline_useful_duration_zoom.png) |
-| |
+| ![Computation duration](images/timeline_useful_duration_zoom.png "Computation duration") |
 
 | MPI calls |
 | -------- | 
-| ![MPI calls](images/timeline_mpi_calls_zoom.png) |
-| |
+| ![MPI calls](images/timeline_mpi_calls_zoom.png "MPI calls") |
 
-> MPI calls
-![MPI calls](images/timeline_mpi_calls_zoom.png)
