@@ -1746,6 +1746,31 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
 
     whichHistogram->setRedraw( true );
   }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_DERIVED_OP ) )
+  {
+    bool getOriginalList = ( !whichHistogram->getCFG4DEnabled() || !whichHistogram->getCFG4DMode() );
+    if ( getOriginalList )
+    {
+      whichHistogram->setDerivedOperation( std::string( property->GetDisplayedString().mb_str() ) );
+    }
+    // TODO: cfg4d pending
+    // else
+    // {
+    //   map< string, string > statList( whichHistogram->getCFG4DStatisticsAliasList() );
+    //   string selected( std::string( property->GetDisplayedString().mb_str() ) );
+    //   for ( map< string, string >::iterator it = statList.begin(); it != statList.end(); ++it )
+    //   {
+    //     if ( it->second == selected )
+    //     {
+    //       selected = it->first;
+    //     }
+    //   }
+    //   whichHistogram->setCurrentStat( selected );
+    //   whichHistogram->setDerivedOperation( selected );
+    // }
+    
+    whichHistogram->setRecalc( true );
+  }
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3D3RDWINDOW ) )
   {
     if( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() == nullptr )
@@ -3547,12 +3572,13 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
         endDragHistogram = histogram->GetHistogram();
 
         // TODO: if compatible?
-        // test creation
+        // Maybe a new ghistogram constructor should be responsible for the creation
         Histogram *tmpDerivedHistogram = Histogram::create( localKernel, beginDragHistogram, endDragHistogram );
         //tmpDerivedHistogram->setControlWindow( beginDragHistogram->getControlWindow() ); // para GetTrace ??
-        tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
         string composedName = beginDragHistogram->getName() + " X " + endDragHistogram->getName();
         tmpDerivedHistogram->setName( composedName );
+        tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
+        tmpDerivedHistogram->setDerivedOperation( "add" );
 
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
         tmpHisto->SetHistogram( tmpDerivedHistogram );

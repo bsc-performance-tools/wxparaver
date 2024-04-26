@@ -435,6 +435,8 @@ public:
   void EnableCustomSortOption();
   void DisableCustomSortOption();
 
+  void setDerivedOperation( const std::string& whichOperation );
+
 ////@begin gHistogram member variables
   wxPanel* panelToolbar;
   wxToolBar* tbarHisto;

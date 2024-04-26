@@ -58,23 +58,24 @@ using namespace std;
 
 typedef  wxPGProperty* wxPGId;
 
-static bool filterCatCollapsed        = true;
-static bool commFilterCatCollapsed    = true;
-static bool commFilterFromCollapsed   = true;
-static bool commFilterToCollapsed     = true;
-static bool commFilterTagCollapsed    = true;
-static bool commFilterSizeCollapsed   = true;
-static bool commFilterBWCollapsed     = true;
-static bool eventFilterCatCollapsed   = true;
-static bool eventFilterTypeCollapsed  = true;
-static bool eventFilterValueCollapsed = true;
-static bool semanticCatCollapsed      = true;
+static bool filterCatCollapsed           = true;
+static bool commFilterCatCollapsed       = true;
+static bool commFilterFromCollapsed      = true;
+static bool commFilterToCollapsed        = true;
+static bool commFilterTagCollapsed       = true;
+static bool commFilterSizeCollapsed      = true;
+static bool commFilterBWCollapsed        = true;
+static bool eventFilterCatCollapsed      = true;
+static bool eventFilterTypeCollapsed     = true;
+static bool eventFilterValueCollapsed    = true;
+static bool semanticCatCollapsed         = true;
 
-static bool statCatCollapsed          = true;
-static bool ctrlCatCollapsed          = true;
-static bool dataCatCollapsed          = true;
-static bool thirdWinCatCollapsed      = true;
-static unsigned int propNameCounter   = 0;
+static bool statCatCollapsed             = true;
+static bool ctrlCatCollapsed             = true;
+static bool dataCatCollapsed             = true;
+static bool thirdWinCatCollapsed         = true;
+static bool derivedHistogramCatCollapsed = true;
+static unsigned int propNameCounter      = 0;
 
 /*
 class wxSpinButtonsEditor : public wxPGTextCtrlEditor
@@ -704,22 +705,24 @@ inline void updateStateOf( wxPropertyGrid *windowProperties, bool& categoryStat,
 
 inline void updateCategoriesState( wxPropertyGrid *windowProperties )
 {
-  updateStateOf( windowProperties, filterCatCollapsed,        wxT( "Filter" ) );
-  updateStateOf( windowProperties, commFilterCatCollapsed,    wxT( "Communications" ) );
-  updateStateOf( windowProperties, commFilterFromCollapsed,   wxT( "Comm from" ) );
-  updateStateOf( windowProperties, commFilterToCollapsed,     wxT( "Comm to" ) );
-  updateStateOf( windowProperties, commFilterTagCollapsed,    wxT( "Comm tag" ) );
-  updateStateOf( windowProperties, commFilterSizeCollapsed,   wxT( "Comm size" ) );
-  updateStateOf( windowProperties, commFilterBWCollapsed,     wxT( "Comm bandwidth" ) );
-  updateStateOf( windowProperties, eventFilterCatCollapsed,   wxT( "Events" ) );
-  updateStateOf( windowProperties, eventFilterTypeCollapsed,  wxT( "Event type" ) );
-  updateStateOf( windowProperties, eventFilterValueCollapsed, wxT( "Event value" ) );
-  updateStateOf( windowProperties, semanticCatCollapsed,      wxT( "Semantic" ) );
-
-  updateStateOf( windowProperties, statCatCollapsed,      wxT( "Statistics" ) );
-  updateStateOf( windowProperties, ctrlCatCollapsed,      wxT( "Control" ) );
-  updateStateOf( windowProperties, dataCatCollapsed,      wxT( "Data" ) );
-  updateStateOf( windowProperties, thirdWinCatCollapsed,  wxT( "3D" ) );
+  updateStateOf( windowProperties, filterCatCollapsed,           wxT( "Filter" ) );
+  updateStateOf( windowProperties, commFilterCatCollapsed,       wxT( "Communications" ) );
+  updateStateOf( windowProperties, commFilterFromCollapsed,      wxT( "Comm from" ) );
+  updateStateOf( windowProperties, commFilterToCollapsed,        wxT( "Comm to" ) );
+  updateStateOf( windowProperties, commFilterTagCollapsed,       wxT( "Comm tag" ) );
+  updateStateOf( windowProperties, commFilterSizeCollapsed,      wxT( "Comm size" ) );
+  updateStateOf( windowProperties, commFilterBWCollapsed,        wxT( "Comm bandwidth" ) );
+  updateStateOf( windowProperties, eventFilterCatCollapsed,      wxT( "Events" ) );
+  updateStateOf( windowProperties, eventFilterTypeCollapsed,     wxT( "Event type" ) );
+  updateStateOf( windowProperties, eventFilterValueCollapsed,    wxT( "Event value" ) );
+  updateStateOf( windowProperties, semanticCatCollapsed,         wxT( "Semantic" ) );
+   
+  updateStateOf( windowProperties, statCatCollapsed,             wxT( "Statistics" ) );
+  updateStateOf( windowProperties, ctrlCatCollapsed,             wxT( "Control" ) );
+  updateStateOf( windowProperties, dataCatCollapsed,             wxT( "Data" ) );
+  updateStateOf( windowProperties, thirdWinCatCollapsed,         wxT( "3D" ) );
+  
+  updateStateOf( windowProperties, derivedHistogramCatCollapsed, wxT( "Derived" ) );
 }
 
 
@@ -2006,9 +2009,9 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
   AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, statCat,
                        wxT("Maximum Gradient"), HISTOGRAM_MAXIMUMGRADIENT, CFG4DPropertyCustomOptions(), whichHisto->getMaxGradient() );
 
-  if( !whichHisto->isCommunicationStat( whichHisto->getCurrentStat() ) )
+  // Data Window related properties (not applied in communication histograms or derived histograms )
+  if( !whichHisto->isCommunicationStat( whichHisto->getCurrentStat() ) && !whichHisto->isDerivedHistogram() )
   {
-    // Data Window related properties
     wxPGId dataCat = (wxPGId)nullptr;
     if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
     {
@@ -2017,7 +2020,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
         dataCat->SetFlagsFromString( _( "COLLAPSED" ) );
     }
 
-    validWin.clear();  //  vector<TWindowID> validWin;
+    validWin.clear();
     LoadedWindows::getInstance()->getValidDataWindow( whichHisto->getControlWindow(),
                                                       whichHisto->getExtraControlWindow(),
                                                       validWin );
@@ -2027,99 +2030,147 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
                         wxT("Window"), HISTOGRAM_DATAWINDOW, tmpOptions, validWin );
   }
 
-  // 3rd window related properties
-  wxPGId thirdWinCat = (wxPGId)nullptr;
-  if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
+  if ( whichHisto->isDerivedHistogram() )
   {
-    thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D"), wxT("3D") ) );
-    if( thirdWinCatCollapsed )
-      thirdWinCat->SetFlagsFromString( _( "COLLAPSED" ) );
-  }
-
-  validWin.clear();
-  dataWindow = ( whichHisto->getDataWindow() == nullptr ) ? whichHisto->getControlWindow() :
-                                                         whichHisto->getDataWindow();
-  LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getControlWindow(), validWin );
-
-  tmpOptions = { NO_BUTTON, nullptr, true, whichHisto->getExtraControlWindow() };
-  AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
-                       wxT("3rd Window"), HISTOGRAM_3D3RDWINDOW, tmpOptions, validWin );
-
-  wxPGId thirdWinMinimum = AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
-                                                wxT("Minimum"), HISTOGRAM_3DMINIMUM, CFG4DPropertyCustomOptions(), whichHisto->getExtraControlMin() );
-
-  wxPGId thirdWinMaximum = AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
-                                                wxT("Maximum"), HISTOGRAM_3DMAXIMUM, CFG4DPropertyCustomOptions(), whichHisto->getExtraControlMax() );
-
-  wxPGId thirdWinDelta   = AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
-                                                wxT("Delta"), HISTOGRAM_3DDELTA, CFG4DPropertyCustomOptions(), whichHisto->getExtraControlDelta() );
-
-  arrayStr.Clear();
-  arrayInt.Clear();
-  pos = 0;
-  selected = -1;
-  bool tmpIsCommStat = whichHisto->isCommunicationStat( whichHisto->getCurrentStat() );
-
-  for( THistogramColumn i = 0; i < whichHisto->getNumPlanes(); ++i )
-  {
-    bool tmpPlaneWithValues;
-    if( tmpIsCommStat )
-      tmpPlaneWithValues = whichHisto->planeCommWithValues( i );
-    else
-      tmpPlaneWithValues = whichHisto->planeWithValues( i );
-
-    if( tmpPlaneWithValues )
+    wxPGId derivedHistogramCat = (wxPGId)nullptr;
+    if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
     {
-      arrayStr.Add( wxString::FromUTF8( whichHisto->getPlaneLabel( i ).c_str() ) );
+      derivedHistogramCat = windowProperties->Append( new wxPropertyCategory( wxT("Derived"), wxT("Derived") ) );
+      if( derivedHistogramCatCollapsed )
+        derivedHistogramCat->SetFlagsFromString( _( "COLLAPSED" ) );
+    }
+
+    tmpV.clear();
+    PRV_UINT32 dummyGroup = 0;
+    bool getOriginalList = ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() );
+    whichHisto->getDerivedOperationLabels( tmpV, dummyGroup, getOriginalList );
+
+    string selectedStat;
+    if ( getOriginalList )
+    {
+      selectedStat = whichHisto->getDerivedOperation();
+    }
+    // TODO: wait for CFG4D
+    // else
+    // {
+    //   map< string, string > statList( whichHisto->getCFG4DStatisticsAliasList() );
+    //   selectedStat = statList[  whichHisto->getCurrentStat() ];
+    // }
+
+    arrayStr.Clear();
+    arrayInt.Clear();
+    selected = 0;
+    pos = 0;
+    for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
+    {
+      arrayStr.Add( wxString::FromUTF8( (*it).c_str() ) );
       arrayInt.Add( pos );
-      if( (  tmpIsCommStat && pos == whichHisto->getCommSelectedPlane() ) ||
-          ( !tmpIsCommStat && pos == whichHisto->getSelectedPlane() ) )
+      if( (*it) == selectedStat )
         selected = pos;
-    }
-    ++pos;
-  }
-
-  wxPGId thirdWinPlane = AppendCFG4DProperty( (wxEnumProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown,
-                                              thirdWinCat, wxT("Plane"), HISTOGRAM_3DPLANE, CFG4DPropertyCustomOptions(), arrayStr, arrayInt, selected );
-
-  if( !whichHisto->getThreeDimensions() )
-  {
-    if ( thirdWinMinimum != nullptr )
-      thirdWinMinimum->Enable( false );
-
-    if ( thirdWinMaximum != nullptr )
-      thirdWinMaximum->Enable( false );
-
-    if ( thirdWinDelta != nullptr )
-      thirdWinDelta->Enable( false );
-
-    if ( thirdWinPlane != nullptr )
-      thirdWinPlane->Enable( false );
-  }
-
-  if ( whichHisto->getCFG4DEnabled() && whichHisto->getCFG4DMode() )
-  {
-    updateTimelinePropertiesRecursive( windowProperties,
-                                       whichHisto->getControlWindow(),
-                                       whichPropertiesClientData,
-                                       linkedPropertiesShown );
-    if( whichHisto->getDataWindow() != nullptr &&
-        whichHisto->getDataWindow() != whichHisto->getControlWindow() )
-    {
-      updateTimelinePropertiesRecursive( windowProperties,
-                                         whichHisto->getDataWindow(),
-                                         whichPropertiesClientData,
-                                         linkedPropertiesShown );
+      ++pos;
     }
 
-    if( whichHisto->getThreeDimensions() &&
-        whichHisto->getExtraControlWindow() != whichHisto->getControlWindow() &&
-        whichHisto->getExtraControlWindow() != whichHisto->getDataWindow() )
+    AppendCFG4DProperty( (wxEnumProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, derivedHistogramCat,
+                         wxT("Operation"), HISTOGRAM_DERIVED_OP, CFG4DPropertyCustomOptions(), arrayStr, arrayInt, selected );
+  }
+
+  // 3rd window related properties
+  // Hidden if derived histogram?
+  if ( !whichHisto->isDerivedHistogram() )
+  {
+    wxPGId thirdWinCat = (wxPGId)nullptr;
+    if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
+    {
+      thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D"), wxT("3D") ) );
+      if( thirdWinCatCollapsed )
+        thirdWinCat->SetFlagsFromString( _( "COLLAPSED" ) );
+    }
+
+    validWin.clear();
+    dataWindow = ( whichHisto->getDataWindow() == nullptr ) ? whichHisto->getControlWindow() :
+                                                              whichHisto->getDataWindow();
+    LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getControlWindow(), validWin );
+
+    tmpOptions = { NO_BUTTON, nullptr, true, whichHisto->getExtraControlWindow() };
+    AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
+                        wxT("3rd Window"), HISTOGRAM_3D3RDWINDOW, tmpOptions, validWin );
+
+    wxPGId thirdWinMinimum = AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
+                                                  wxT("Minimum"), HISTOGRAM_3DMINIMUM, CFG4DPropertyCustomOptions(), whichHisto->getExtraControlMin() );
+
+    wxPGId thirdWinMaximum = AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
+                                                  wxT("Maximum"), HISTOGRAM_3DMAXIMUM, CFG4DPropertyCustomOptions(), whichHisto->getExtraControlMax() );
+
+    wxPGId thirdWinDelta   = AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
+                                                  wxT("Delta"), HISTOGRAM_3DDELTA, CFG4DPropertyCustomOptions(), whichHisto->getExtraControlDelta() );
+
+    arrayStr.Clear();
+    arrayInt.Clear();
+    pos = 0;
+    selected = -1;
+    bool tmpIsCommStat = whichHisto->isCommunicationStat( whichHisto->getCurrentStat() );
+
+    for( THistogramColumn i = 0; i < whichHisto->getNumPlanes(); ++i )
+    {
+      bool tmpPlaneWithValues;
+      if( tmpIsCommStat )
+        tmpPlaneWithValues = whichHisto->planeCommWithValues( i );
+      else
+        tmpPlaneWithValues = whichHisto->planeWithValues( i );
+
+      if( tmpPlaneWithValues )
+      {
+        arrayStr.Add( wxString::FromUTF8( whichHisto->getPlaneLabel( i ).c_str() ) );
+        arrayInt.Add( pos );
+        if( (  tmpIsCommStat && pos == whichHisto->getCommSelectedPlane() ) ||
+            ( !tmpIsCommStat && pos == whichHisto->getSelectedPlane() ) )
+          selected = pos;
+      }
+      ++pos;
+    }
+
+    wxPGId thirdWinPlane = AppendCFG4DProperty( (wxEnumProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown,
+                                                thirdWinCat, wxT("Plane"), HISTOGRAM_3DPLANE, CFG4DPropertyCustomOptions(), arrayStr, arrayInt, selected );
+
+    if( !whichHisto->getThreeDimensions() )
+    {
+      if ( thirdWinMinimum != nullptr )
+        thirdWinMinimum->Enable( false );
+
+      if ( thirdWinMaximum != nullptr )
+        thirdWinMaximum->Enable( false );
+
+      if ( thirdWinDelta != nullptr )
+        thirdWinDelta->Enable( false );
+
+      if ( thirdWinPlane != nullptr )
+        thirdWinPlane->Enable( false );
+    }
+
+    if ( whichHisto->getCFG4DEnabled() && whichHisto->getCFG4DMode() )
     {
       updateTimelinePropertiesRecursive( windowProperties,
-                                         whichHisto->getExtraControlWindow(),
-                                         whichPropertiesClientData,
-                                         linkedPropertiesShown );
+                                        whichHisto->getControlWindow(),
+                                        whichPropertiesClientData,
+                                        linkedPropertiesShown );
+      if( whichHisto->getDataWindow() != nullptr &&
+          whichHisto->getDataWindow() != whichHisto->getControlWindow() )
+      {
+        updateTimelinePropertiesRecursive( windowProperties,
+                                          whichHisto->getDataWindow(),
+                                          whichPropertiesClientData,
+                                          linkedPropertiesShown );
+      }
+
+      if( whichHisto->getThreeDimensions() &&
+          whichHisto->getExtraControlWindow() != whichHisto->getControlWindow() &&
+          whichHisto->getExtraControlWindow() != whichHisto->getDataWindow() )
+      {
+        updateTimelinePropertiesRecursive( windowProperties,
+                                          whichHisto->getExtraControlWindow(),
+                                          whichPropertiesClientData,
+                                          linkedPropertiesShown );
+      }
     }
   }
 

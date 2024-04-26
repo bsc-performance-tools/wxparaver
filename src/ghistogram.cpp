@@ -3624,6 +3624,12 @@ void gHistogram::DisableCustomSortOption()
     choiceSortBy->Delete( customPos );
 }
 
+void gHistogram::setDerivedOperation( const std::string& whichOperation )
+{
+  if ( myHistogram->isDerivedHistogram( ))
+    myHistogram->setDerivedOperation( whichOperation );
+}
+
 /*!
  * wxEVT_UPDATE_UI event handler for ID_AUTOREDRAW
  */
