@@ -78,9 +78,11 @@
 #include <wx/mimetype.h>
 
 #include <signal.h>
-#include <iostream>
-#include <sstream>
 #include <algorithm>
+#include <iostream>
+#include <set>
+#include <sstream>
+
 //#include "connection.h"
 
 #ifdef _WIN32
@@ -1043,6 +1045,20 @@ bool paraverMain::DoLoadCFG( const string &path )
         }
       }
 
+      // Derived histograms: check which histograms are parents to execute them to let derived histograms have data
+      std::set<Histogram *> parentHistograms;
+      for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
+      {
+        if ( (*it)->isDerivedHistogram() )
+        {
+          for ( PRV_UINT16 i = 0; i < 2; ++i  )
+          {
+            if ( !(*it)->getParent( i )->isDerivedHistogram() )
+              parentHistograms.insert( (*it)->getParent( i ) );
+          }
+        }
+      }
+
       int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
       for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
       {
@@ -1077,6 +1093,17 @@ bool paraverMain::DoLoadCFG( const string &path )
           tmpHisto->Show();
         }
         tmpHisto->GetHistogram()->setRecalc( true );
+
+        // Derived histograms: parents execution itself
+        if ( parentHistograms.find( (*it) ) != parentHistograms.end() )
+        {
+          vector<TObjectOrder> selectedRows;
+          TObjectOrder beginRow = (*it)->getControlWindow()->getZoomSecondDimension().first;
+          TObjectOrder endRow =  (*it)->getControlWindow()->getZoomSecondDimension().second;
+          (*it)->getControlWindow()->getSelectedRows( (*it)->getControlWindow()->getLevel(), selectedRows, beginRow, endRow );
+          //(*it)->execute(); // tmpHisto?
+          (*it)->execute( (*it)->getBeginTime(), (*it)->getEndTime(), selectedRows, nullptr );
+        }
 
         if ( it + 1 == newHistograms.end() )
         {
@@ -3573,7 +3600,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
 
         // TODO: if compatible?
         // Maybe a new ghistogram constructor should be responsible for the creation
-        Histogram *tmpDerivedHistogram = Histogram::create( localKernel, beginDragHistogram, endDragHistogram );
+        Histogram *tmpDerivedHistogram = Histogram::create( localKernel, beginDragHistogram->clone(), endDragHistogram->clone() );
         //tmpDerivedHistogram->setControlWindow( beginDragHistogram->getControlWindow() ); // para GetTrace ??
         string composedName = beginDragHistogram->getName() + " X " + endDragHistogram->getName();
         tmpDerivedHistogram->setName( composedName );
