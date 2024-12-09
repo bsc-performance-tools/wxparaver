@@ -1156,7 +1156,7 @@ void gHistogram::updateHistogram()
   }
   else if( this->IsShown() )
   {
-    if( myHistogram->getRedraw() )
+    if( ready && myHistogram->getRedraw() )
     {
       wxString winTitle = GetTitle();
       SetTitle( _("(Working...) ") + winTitle );
