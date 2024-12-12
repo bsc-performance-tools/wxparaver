@@ -321,9 +321,14 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
     int iTotal = getIndexTotal( row, col );
     if( iTotal == 0 )
     {
-      HistogramTotals *totals = myHisto->GetHistogram()->getTotals( myHisto->GetHistogram()->getCurrentStat() );
-      TSemanticValue numCells = totals->getNumCells( idStat, myHisto->GetHistogram()->getHorizontal() ? col : row, myHisto->GetHistogram()->getSelectedPlane() );
-      if( numCells == ( myHisto->GetHistogram()->getHorizontal() ? myHisto->GetHistogram()->getNumRows() : myHisto->GetHistogram()->getNumColumns() ) )
+      HistogramTotals *tmpTotals = myHisto->GetHistogram()->getTotals( myHisto->GetHistogram()->getCurrentStat() );
+      int tmpCol = myHisto->GetHistogram()->getHorizontal() ? col : row;
+      THistogramColumn tmpRealColumn = myHisto->GetHistogram()->getSemanticSortedColumn( myHisto->GetHistogram()->getSemanticRealColumn( tmpCol, *noVoidSemRanges ) );
+
+      TSemanticValue numCells = tmpTotals->getNumCells( idStat, tmpRealColumn, myHisto->GetHistogram()->getSelectedPlane() );
+      TObjectOrder numRows = myHisto->GetHistogram()->getHorizontal() ? myHisto->GetHistogram()->getNumRows() : myHisto->GetHistogram()->getNumColumns();
+
+      if( numCells == numRows )
         tmpAttr->SetFont( cellFontBold );
     }
   };
