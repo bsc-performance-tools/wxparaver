@@ -340,6 +340,7 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
+  gHistogram* clone( bool showWindow = false, const std::vector< Timeline* >& sourceTimelines = {} );
 
   // Pop Up Menu Methods
   void OnPopUpCopy( wxCommandEvent& event );
