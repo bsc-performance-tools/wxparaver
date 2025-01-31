@@ -480,7 +480,7 @@ private:
   // Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
   wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;
 
-  void updateHistogram();
+  void updateHistogram( bool updateParents = true );
 
   void OnTimerZoom( wxTimerEvent& event );
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const std::vector<THistogramColumn>& noVoidSemRanges ) const;

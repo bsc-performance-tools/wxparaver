@@ -1133,9 +1133,33 @@ bool isSyncedWithGroup( Timeline *whichWindow, unsigned int whichGroup )
 }
 
 
-void gHistogram::updateHistogram()
+void gHistogram::updateHistogram( bool updateParents )
 {
   //rowSelection.getSelected( selectedRows );
+
+  if ( myHistogram->isDerivedHistogram() )
+  {
+    if ( updateParents )
+    {
+      for ( auto i: {0, 1} )
+      {
+        Histogram *parentHistogram = myHistogram->getParent( i );
+        if ( parentHistogram != nullptr )
+        {
+          auto parentGHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), parentHistogram );
+          if ( !parentGHistogram->GetReady() )
+          {
+            parentGHistogram->updateHistogram( updateParents );
+            parentHistogram->setReady( true ); // bien!
+          }
+        }
+      }
+    }
+
+    if ( !getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), myHistogram->getParent( 0 ) )->isReady() ||
+         !getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), myHistogram->getParent( 1 ) )->isReady() )
+      return;
+  }
 
   if( myHistogram->getForceRecalc() || 
       ( wxparaverApp::mainWindow->getAutoRedraw() && myHistogram->getRecalc() && !wxparaverApp::mainWindow->GetSomeWinIsRedraw() ) )
@@ -1157,6 +1181,9 @@ void gHistogram::updateHistogram()
   }
   else if( this->IsShown() )
   {
+    // TODO check already solved bug in devel 
+    // if( ready && myHistogram->getRedraw() )
+    // if( myHistogram->getRedraw() && myHistogram->isReady() )
     if( myHistogram->getRedraw() )
     {
       wxString winTitle = GetTitle();
