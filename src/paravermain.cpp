@@ -1062,6 +1062,9 @@ bool paraverMain::DoLoadCFG( const string &path )
       int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
       for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
       {
+        if ( parentHistograms.find( (*it) ) != parentHistograms.end() )
+          continue;
+
         wxPoint tmpPos( (*it)->getPosX(), (*it)->getPosY() );
         if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
         {
@@ -1084,6 +1087,19 @@ bool paraverMain::DoLoadCFG( const string &path )
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( (*it) );
 
+        tmpHisto->GetHistogram()->setRecalc( true );
+
+        // Derived histograms: parents execution itself
+        // if ( parentHistograms.find( (*it) ) != parentHistograms.end() )
+        // {
+        //   vector<TObjectOrder> selectedRows;
+        //   TObjectOrder beginRow = (*it)->getControlWindow()->getZoomSecondDimension().first;
+        //   TObjectOrder endRow =  (*it)->getControlWindow()->getZoomSecondDimension().second;
+        //   (*it)->getControlWindow()->getSelectedRows( (*it)->getControlWindow()->getLevel(), selectedRows, beginRow, endRow );
+        //   (*it)->execute( (*it)->getBeginTime(), (*it)->getEndTime(), selectedRows, nullptr );
+        //   std::cout << "LoadCFG Histo executed" << std::endl;
+        // }
+
         tmpHisto->SetClientSize( wxSize( (*it)->getWidth(), (*it)->getHeight() ) );
         if( (*it)->getShowWindow() )
         {
@@ -1092,17 +1108,61 @@ bool paraverMain::DoLoadCFG( const string &path )
 #endif
           tmpHisto->Show();
         }
+
+        if ( it + 1 == newHistograms.end() )
+        {
+          currentTimeline = nullptr;
+          currentHisto = *it;
+        }
+      }
+
+      for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
+      {
+        if ( parentHistograms.find( (*it) ) == parentHistograms.end() )
+          continue;
+
+        wxPoint tmpPos( (*it)->getPosX(), (*it)->getPosY() );
+        if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
+        {
+          if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+          {
+            wxDisplay tmpDisplay( currentDisplay );
+            tmpPos.x += tmpDisplay.GetGeometry().x;
+            tmpPos.y += tmpDisplay.GetGeometry().y;
+            if( tmpPos.x != (*it)->getPosX() ) (*it)->setPosX( tmpPos.x );
+            if( tmpPos.x != (*it)->getPosY() ) (*it)->setPosX( tmpPos.y );
+          }
+        }
+#if !__WXGTK__
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ), tmpPos );
+#else
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
+#endif
+        tmpHisto->SetHistogram( *it );
+
+        appendHistogram2Tree( tmpHisto );
+        LoadedWindows::getInstance()->add( (*it) );
+
         tmpHisto->GetHistogram()->setRecalc( true );
 
         // Derived histograms: parents execution itself
-        if ( parentHistograms.find( (*it) ) != parentHistograms.end() )
+        // if ( parentHistograms.find( (*it) ) != parentHistograms.end() )
+        // {
+        //   vector<TObjectOrder> selectedRows;
+        //   TObjectOrder beginRow = (*it)->getControlWindow()->getZoomSecondDimension().first;
+        //   TObjectOrder endRow =  (*it)->getControlWindow()->getZoomSecondDimension().second;
+        //   (*it)->getControlWindow()->getSelectedRows( (*it)->getControlWindow()->getLevel(), selectedRows, beginRow, endRow );
+        //   (*it)->execute( (*it)->getBeginTime(), (*it)->getEndTime(), selectedRows, nullptr );
+        //   std::cout << "LoadCFG Histo executed" << std::endl;
+        // }
+
+        tmpHisto->SetClientSize( wxSize( (*it)->getWidth(), (*it)->getHeight() ) );
+        if( (*it)->getShowWindow() )
         {
-          vector<TObjectOrder> selectedRows;
-          TObjectOrder beginRow = (*it)->getControlWindow()->getZoomSecondDimension().first;
-          TObjectOrder endRow =  (*it)->getControlWindow()->getZoomSecondDimension().second;
-          (*it)->getControlWindow()->getSelectedRows( (*it)->getControlWindow()->getLevel(), selectedRows, beginRow, endRow );
-          //(*it)->execute(); // tmpHisto?
-          (*it)->execute( (*it)->getBeginTime(), (*it)->getEndTime(), selectedRows, nullptr );
+#if __WXGTK__
+          tmpHisto->Move( tmpPos );
+#endif
+          tmpHisto->Show();
         }
 
         if ( it + 1 == newHistograms.end() )
