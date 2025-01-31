@@ -1156,8 +1156,8 @@ void gHistogram::updateHistogram( bool updateParents )
       }
     }
 
-    if ( !getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), myHistogram->getParent( 0 ) )->isReady() ||
-         !getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), myHistogram->getParent( 1 ) )->isReady() )
+    if ( !getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), myHistogram->getParent( 0 ) )->GetReady() ||
+         !getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), myHistogram->getParent( 1 ) )->GetReady() )
       return;
   }
 
