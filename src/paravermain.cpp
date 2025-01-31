@@ -3656,24 +3656,75 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
     {
       if ( beginDragHistogram != nullptr )
       {
-        endDragHistogram = histogram->GetHistogram();
+        Histogram *endDragHistogram = histogram->GetHistogram();
 
-        // TODO: if compatible?
-        // Maybe a new ghistogram constructor should be responsible for the creation
-        Histogram *tmpDerivedHistogram = Histogram::create( localKernel, beginDragHistogram->clone(), endDragHistogram->clone() );
-        //tmpDerivedHistogram->setControlWindow( beginDragHistogram->getControlWindow() ); // para GetTrace ??
+        std::vector< Histogram * > sourceParents = { beginDragHistogram, endDragHistogram };
+        std::vector< Histogram * > clonedParents;
+
+        // TODO: Avoid clone of parents
+        auto recursiveClone = [this]( Histogram *originalParent )
+                              {
+                                gHistogram *tmpParent = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), originalParent );
+
+                                std::vector< Timeline* > parentTimelines;
+                                parentTimelines.push_back( originalParent->getControlWindow() );
+                                //std::cout << "paraverMain::OnTreeEndDrag: originalParent->getControlWindow() = "<< originalParent->getControlWindow() << std::endl;
+                                parentTimelines.push_back( originalParent->getDataWindow() );
+                                if ( originalParent->getExtraControlWindow() != nullptr )
+                                  parentTimelines.push_back( originalParent->getExtraControlWindow() );
+
+                                bool showWindow = false;
+                                return tmpParent->clone( showWindow, parentTimelines )->GetHistogram();
+                              };
+        std::transform( sourceParents.cbegin(), sourceParents.cend(), std::back_inserter( clonedParents ), recursiveClone );
+        clonedParents = sourceParents;
+
+        Histogram *tmpDerivedHistogram = Histogram::create( localKernel, clonedParents[ 0 ], clonedParents[ 1 ] );
+        //Histogram *tmpDerivedHistogram = localKernel->newDerivedHistogram( clonedParents[ 0 ], clonedParents[ 1 ] );
         string composedName = beginDragHistogram->getName() + " X " + endDragHistogram->getName();
         tmpDerivedHistogram->setName( composedName );
         tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
         tmpDerivedHistogram->setDerivedOperation( "add" );
 
-        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
-        tmpHisto->SetHistogram( tmpDerivedHistogram );
+        // Time
+        // TODO:try to put begintime endtime
+        tmpDerivedHistogram->setWindowBeginTime( clonedParents[ 0 ]->getBeginTime() );
+        tmpDerivedHistogram->setWindowEndTime( clonedParents[ 0 ]->getEndTime() );
 
+        // Zoom
+        tmpDerivedHistogram->setZoom( clonedParents[ 0 ]->getZoom() );
+
+        // TODO: First Row -> no change
+        //tmpDerivedHistogram->setFirstRowColored( clonedParents[ 0 ]->getFirstRowColored() );
+
+        // Position
+        gHistogram *tmpParent1 = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), beginDragHistogram );
+        wxSize titleBarSize = tmpParent1->GetSize() - tmpParent1->GetClientSize();
+        if ( titleBarSize.GetHeight() == 0 )
+          titleBarSize = paraverMain::defaultTitleBarSize;
+        wxPoint position =  wxPoint( tmpParent1->GetPosition().x + titleBarSize.GetHeight(),
+                                     tmpParent1->GetPosition().y + titleBarSize.GetHeight() );
+
+/* TODO: clone is not doing WXGTK distinction
+#if !__WXGTK__
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
+#else
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ) );
+#endif
+*/
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
+
+        // Size
+        //wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
+        tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
+        
+        tmpHisto->SetHistogram( tmpDerivedHistogram );
+        //tmpHisto->SetReady( false ); //? no usado
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( tmpDerivedHistogram );
-        
-        //tmpHisto->saveText(true);
+
+        tmpDerivedHistogram->setRecalc( true );
+        tmpDerivedHistogram->setForceRecalc( true ); // execute!
       }
     }
   }
