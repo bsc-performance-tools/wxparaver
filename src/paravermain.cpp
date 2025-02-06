@@ -3677,7 +3677,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
                                 return tmpParent->clone( showWindow, parentTimelines )->GetHistogram();
                               };
         std::transform( sourceParents.cbegin(), sourceParents.cend(), std::back_inserter( clonedParents ), recursiveClone );
-        clonedParents = sourceParents;
+        //clonedParents = sourceParents;
 
         Histogram *tmpDerivedHistogram = Histogram::create( localKernel, clonedParents[ 0 ], clonedParents[ 1 ] );
         //Histogram *tmpDerivedHistogram = localKernel->newDerivedHistogram( clonedParents[ 0 ], clonedParents[ 1 ] );
@@ -3685,7 +3685,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
         tmpDerivedHistogram->setName( composedName );
         tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
         tmpDerivedHistogram->setDerivedOperation( "add" );
-
+        
         // Time
         // TODO:try to put begintime endtime
         tmpDerivedHistogram->setWindowBeginTime( clonedParents[ 0 ]->getBeginTime() );
@@ -4110,7 +4110,15 @@ bool paraverMain::getUsedBySomeHistogram( Timeline *whichWindow, bool deleteAllT
 void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 {
   if( currentHisto != nullptr )
-    currentHisto->setDestroy( true );
+  {
+    // TODO extend check of not being used by histograms of other traces
+    if( currentHisto->haveChildren() )
+      wxMessageBox( _( "Cannot delete parent histograms. Delete first derived histogram" ),
+                    _( "Paraver information" ),
+                    wxOK | wxICON_INFORMATION );
+    else
+      currentHisto->setDestroy( true );
+  }
 
   if( currentTimeline != nullptr )
   {
