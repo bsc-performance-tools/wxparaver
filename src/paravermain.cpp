@@ -3658,52 +3658,29 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
       {
         Histogram *endDragHistogram = histogram->GetHistogram();
 
-        std::vector< Histogram * > sourceParents = { beginDragHistogram, endDragHistogram };
-        std::vector< Histogram * > clonedParents;
+        Histogram *tmpDerivedHistogram = Histogram::create( localKernel, beginDragHistogram, endDragHistogram );
 
-        // TODO: Avoid clone of parents
-        auto recursiveClone = [this]( Histogram *originalParent )
-                              {
-                                gHistogram *tmpParent = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), originalParent );
-
-                                std::vector< Timeline* > parentTimelines;
-                                parentTimelines.push_back( originalParent->getControlWindow() );
-                                //std::cout << "paraverMain::OnTreeEndDrag: originalParent->getControlWindow() = "<< originalParent->getControlWindow() << std::endl;
-                                parentTimelines.push_back( originalParent->getDataWindow() );
-                                if ( originalParent->getExtraControlWindow() != nullptr )
-                                  parentTimelines.push_back( originalParent->getExtraControlWindow() );
-
-                                bool showWindow = false;
-                                return tmpParent->clone( showWindow, parentTimelines )->GetHistogram();
-                              };
-        std::transform( sourceParents.cbegin(), sourceParents.cend(), std::back_inserter( clonedParents ), recursiveClone );
-        //clonedParents = sourceParents;
-
-        Histogram *tmpDerivedHistogram = Histogram::create( localKernel, clonedParents[ 0 ], clonedParents[ 1 ] );
-        //Histogram *tmpDerivedHistogram = localKernel->newDerivedHistogram( clonedParents[ 0 ], clonedParents[ 1 ] );
-        string composedName = beginDragHistogram->getName() + " X " + endDragHistogram->getName();
         tmpDerivedHistogram->setName( composedName );
         tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
         tmpDerivedHistogram->setDerivedOperation( "add" );
+        string composedName = beginDragHistogram->getName() + " + " + endDragHistogram->getName(); //? +-x/(m) /$(M) !=
         
-        // Time
         // TODO:try to put begintime endtime
-        tmpDerivedHistogram->setWindowBeginTime( clonedParents[ 0 ]->getBeginTime() );
-        tmpDerivedHistogram->setWindowEndTime( clonedParents[ 0 ]->getEndTime() );
+        tmpDerivedHistogram->setWindowBeginTime( beginDragHistogram->getBeginTime() );
+        tmpDerivedHistogram->setWindowEndTime( beginDragHistogram->getEndTime() );
 
-        // Zoom
-        tmpDerivedHistogram->setZoom( clonedParents[ 0 ]->getZoom() );
+        tmpDerivedHistogram->setZoom( beginDragHistogram->getZoom() );
 
         // TODO: First Row -> no change
-        //tmpDerivedHistogram->setFirstRowColored( clonedParents[ 0 ]->getFirstRowColored() );
+        //tmpDerivedHistogram->setFirstRowColored( beginDragHistogram->getFirstRowColored() );
 
         // Position
         gHistogram *tmpParent1 = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), beginDragHistogram );
         wxSize titleBarSize = tmpParent1->GetSize() - tmpParent1->GetClientSize();
         if ( titleBarSize.GetHeight() == 0 )
           titleBarSize = paraverMain::defaultTitleBarSize;
-        wxPoint position =  wxPoint( tmpParent1->GetPosition().x + titleBarSize.GetHeight(),
-                                     tmpParent1->GetPosition().y + titleBarSize.GetHeight() );
+        wxPoint position = wxPoint( tmpParent1->GetPosition().x + titleBarSize.GetHeight(),
+                                    tmpParent1->GetPosition().y + titleBarSize.GetHeight() );
 
 /* TODO: clone is not doing WXGTK distinction
 #if !__WXGTK__
@@ -3714,7 +3691,6 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
 */
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
 
-        // Size
         //wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
         tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
         
