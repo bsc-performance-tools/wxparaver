@@ -3660,10 +3660,14 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
 
         Histogram *tmpDerivedHistogram = Histogram::create( localKernel, beginDragHistogram, endDragHistogram );
 
-        tmpDerivedHistogram->setName( composedName );
-        tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
+        std::map< std::string, std::string > tmpOperations;
+        PRV_UINT32 dummyGroup = 0;
+        tmpDerivedHistogram->getDerivedOperationLabelsAndSymbols( tmpOperations, dummyGroup );
         tmpDerivedHistogram->setDerivedOperation( "add" );
-        string composedName = beginDragHistogram->getName() + " + " + endDragHistogram->getName(); //? +-x/(m) /$(M) !=
+        string composedName = beginDragHistogram->getName() + " " + tmpOperations[ "add" ] + " " + endDragHistogram->getName();
+        tmpDerivedHistogram->setName( composedName );
+        
+        tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
         
         // TODO:try to put begintime endtime
         tmpDerivedHistogram->setWindowBeginTime( beginDragHistogram->getBeginTime() );
