@@ -96,10 +96,11 @@ void gPopUpMenu<gHistogram>::enableMenu( gHistogram *whichHistogram )
 
   Enable( FindItem( _( STR_CLONE ) ), true );
   Enable( FindItem( _( STR_RENAME ) ), true );
-  Enable( FindItem( _( STR_FIT_TIME ) ), true );
+
+  enable( STR_FIT_TIME, !whichHistogram->GetHistogram()->isDerivedHistogram() );
   Enable( FindItem( _( STR_FIT_OBJECTS ) ), true );
   
-  Enable( FindItem( _( STR_CONTROL_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_SCALE ) );
+  Enable( FindItem( _( STR_CONTROL_SCALE ) ),       sharedProperties->isAllowed( whichHistogram, STR_CONTROL_SCALE ) );
   Enable( FindItem( _( STR_PASTE_SEMANTIC_SORT ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_SEMANTIC_SORT ) );
   Enable( FindItem( _( STR_CONTROL_DIMENSIONS ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS ) );
   if( whichHistogram->GetHistogram()->getThreeDimensions() )
@@ -107,7 +108,8 @@ void gPopUpMenu<gHistogram>::enableMenu( gHistogram *whichHistogram )
   else
     Enable( FindItem( _( STR_3D_SCALE ) ), false );
 
-  Enable( FindItem( _( STR_AUTOFIT_CONTROL_ZERO ) ), whichHistogram->GetHistogram()->getCompute2DScale() );
+  enable( STR_AUTOFIT_CONTROL_SCALE, !whichHistogram->GetHistogram()->isDerivedHistogram() );
+  enable( STR_AUTOFIT_CONTROL_ZERO, !whichHistogram->GetHistogram()->isDerivedHistogram() && whichHistogram->GetHistogram()->getCompute2DScale() );
 }
 
 
@@ -726,7 +728,7 @@ gPopUpMenu<gHistogram>::gPopUpMenu( gHistogram *whichHistogram )
   buildItem( this, _( "Select Objects..." ), wxITEM_NORMAL, &gHistogram::OnPopUpRowSelection, ID_MENU_ROW_SELECTION );
 
   buildItem( this, 
-             _( "Auto Fit Control Scale" ),
+             _( STR_AUTOFIT_CONTROL_SCALE ),
              wxITEM_CHECK,
              &gHistogram::OnPopUpAutoControlScale,
              ID_MENU_AUTO_CONTROL_SCALE,

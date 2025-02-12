@@ -64,6 +64,7 @@ constexpr char STR_SAVE_IMAGE[] =             "Save Image...";
 constexpr char STR_SAVE_IMAGE_LEGEND[] =      "Image Legend...";
 constexpr char STR_UNDO_ZOOM[] =              "Undo Zoom\tCTRL+U";
 constexpr char STR_REDO_ZOOM[] =              "Redo Zoom\tCTRL+R";
+constexpr char STR_AUTOFIT_CONTROL_SCALE[] =  "Auto Fit Control Scale";
 constexpr char STR_AUTOFIT_CONTROL_ZERO[] =   "Auto Fit Control Scale Zeros";
 constexpr char STR_CUSTOM_PALETTE[] =         "Custom Palette";
 

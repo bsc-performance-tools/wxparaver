@@ -1083,6 +1083,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
 #endif
         tmpHisto->SetHistogram( *it );
+        tmpHisto->disableControlsForDerivedHistogram();
 
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( (*it) );
@@ -1139,6 +1140,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
 #endif
         tmpHisto->SetHistogram( *it );
+        tmpHisto->disableControlsForDerivedHistogram();
 
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( (*it) );
@@ -3705,6 +3707,8 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
           tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
           
           tmpHisto->SetHistogram( tmpDerivedHistogram );
+          tmpHisto->disableControlsForDerivedHistogram();
+
           //tmpHisto->SetReady( false ); //? no usado
           appendHistogram2Tree( tmpHisto );
           LoadedWindows::getInstance()->add( tmpDerivedHistogram );

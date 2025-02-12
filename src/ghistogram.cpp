@@ -415,8 +415,24 @@ void gHistogram::CreateControls()
   gridHisto->EnableEditing( false );
   gridHisto->SetDefaultCellAlignment( wxALIGN_RIGHT, wxALIGN_CENTRE );
   gridHisto->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
+
+  // TODO: Needs to give myHistogram to the constructor so it is known here.
+  //       But a better and clean option would be to do it in setHistogram method,
+  //       maybe copying whole disableControlsForDerivedHistogram code there.
+  //
+  // disableControlsForDerivedHistogram();
 }
 
+void gHistogram::disableButtonsForDerivedHistogram()
+{
+  if ( myHistogram != nullptr && myHistogram->isDerivedHistogram() )
+  {
+    tbarHisto->EnableTool( ID_TOOL_OPEN_CONTROL_WINDOW, false );
+    tbarHisto->EnableTool( ID_TOOL_OPEN_DATA_WINDOW, false );
+    tbarHisto->EnableTool( ID_TOOL_OPEN_EXTRA_WINDOW, false );
+    tbarHisto->EnableTool( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, false );
+  }
+}
 
 void gHistogram::execute()
 {
@@ -2327,7 +2343,7 @@ void gHistogram::OnToolOpenFilteredControlWindowClick( wxCommandEvent& event )
 
 void gHistogram::OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myHistogram->getZoom() );
+  event.Enable( !myHistogram->isDerivedHistogram() && myHistogram->getZoom() );
 }
 
 
@@ -2947,7 +2963,7 @@ void gHistogram::OnToolOpenExtraWindowClick( wxCommandEvent& event )
 
 void gHistogram::OnToolOpenExtraWindowUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myHistogram->getExtraControlWindow() != nullptr );
+  event.Enable( !myHistogram->isDerivedHistogram() && myHistogram->getExtraControlWindow() != nullptr );
 }
 
 
