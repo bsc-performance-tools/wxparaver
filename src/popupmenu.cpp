@@ -89,7 +89,12 @@ void gPopUpMenu<gHistogram>::enableMenu( gHistogram *whichHistogram )
   bool tmpEnableRemoveGroup = SyncWindows::getInstance()->getNumGroups() > 1 ||
                               SyncWindows::getInstance()->getNumWindows( 0 ) > 0;
   popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), tmpEnableRemoveGroup );
-
+  enable( STR_SYNCHRONIZE, !whichHistogram->GetHistogram()->isDerivedHistogram() ||
+                           ( whichHistogram->GetHistogram()->getParent( 0 )->isSync() &&
+                             whichHistogram->GetHistogram()->getParent( 1 )->isSync() && 
+                             ( whichHistogram->GetHistogram()->getParent( 0 )->getSyncGroup() ==
+                               whichHistogram->GetHistogram()->getParent( 1 )->getSyncGroup() ) ) );
+  
   Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE ) );
   Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_DEFAULT_SPECIAL ) );
   Enable( FindItem( _( STR_PASTE_SPECIAL ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_SPECIAL ) );
@@ -995,6 +1000,8 @@ gPopUpMenu<gHistogram>::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
 
+
+  // Synchronize
   vector< TGroupId > tmpGroups;
   SyncWindows::getInstance()->getGroups( tmpGroups );
   TGroupId i = 0;
@@ -1014,13 +1021,12 @@ gPopUpMenu<gHistogram>::gPopUpMenu( gHistogram *whichHistogram )
     ++i;
   }
   popUpMenuSyncRemove->AppendSeparator();
-  buildItem( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_ALL_GROUPS ), wxITEM_NORMAL, &gHistogram::OnPopUpRemoveAllGroups,
-             ID_MENU_SYNC_REMOVE_ALL_GROUPS );
+  buildItem( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_ALL_GROUPS ), wxITEM_NORMAL, &gHistogram::OnPopUpRemoveAllGroups, ID_MENU_SYNC_REMOVE_ALL_GROUPS );
 
   popUpMenuSync->AppendSubMenu( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_GROUP ) );
   
   AppendSubMenu( popUpMenuSync, _( STR_SYNCHRONIZE ) );
-
+                           
   AppendSeparator();
 
   buildItem( popUpMenuSave, _( "Configuration..." ), wxITEM_NORMAL, &gHistogram::OnPopUpSaveCFG, ID_MENU_SAVE_HISTOGRAM_AS_CFG );
