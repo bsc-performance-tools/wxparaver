@@ -352,6 +352,7 @@ public:
   void setClustering( wxString whichClusteringCSV );
   void setFolding( wxString whichFoldingCSV );
   void setProfet();
+  void setCARM();
   void setUserCommand();
 
   void closeWindow();

@@ -1454,6 +1454,9 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
+    case TExternalAppID::CARM:
+      break;
+
     case TExternalAppID::USER_COMMAND:
       
       tmpParams = expandVariables( textCtrlDefaultParameters->GetValue() );
@@ -1578,6 +1581,10 @@ wxString RunScript::GetReachableCommand( TExternalAppID selectedApp )
         }
 
         break;
+
+      case TExternalAppID::CARM:
+        // python3
+        //break;
 
       case TExternalAppID::CLUSTERING:
       case TExternalAppID::FOLDING:
@@ -1894,6 +1901,9 @@ void RunScript::adaptWindowToApplicationSelection()
       }
       break;
 
+    case TExternalAppID::CARM:
+      break;
+
     case TExternalAppID::USER_COMMAND:
     default:
       toolTip = wxString( wxT( "Command and parameters to execute\n"
@@ -1916,6 +1926,7 @@ void RunScript::adaptWindowToApplicationSelection()
   adaptClusteringAlgorithmParameters();
   foldingSection->Show( currentApp == TExternalAppID::FOLDING );
   profetSection->Show( currentApp == TExternalAppID::PROFET );
+  //carmSection->Show( currentApp == TExternalAppID::CARM );
 
   Layout();
 }
@@ -2042,12 +2053,13 @@ void RunScript::InitOutputLinks()
 
   defaultLinkMaker = makeLinkComponents;
 
-  applicationLinkMaker[ TExternalAppID::DIMEMAS ]  = makeLinkComponents;
-  applicationLinkMaker[ TExternalAppID::PRVSTATS ] = makeLinkComponents;
-  applicationLinkMaker[ TExternalAppID::CLUSTERING ]       = makeLinkComponentsClustering;
-  applicationLinkMaker[ TExternalAppID::FOLDING ]          = makeLinkComponentsFolding;
-  applicationLinkMaker[ TExternalAppID::PROFET ]           = makeLinkComponents;
-  applicationLinkMaker[ TExternalAppID::USER_COMMAND ]     = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::DIMEMAS ]      = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::PRVSTATS ]     = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::CLUSTERING ]   = makeLinkComponentsClustering;
+  applicationLinkMaker[ TExternalAppID::FOLDING ]      = makeLinkComponentsFolding;
+  applicationLinkMaker[ TExternalAppID::PROFET ]       = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponents; // TODO: probably different due to csv
+  applicationLinkMaker[ TExternalAppID::USER_COMMAND ] = makeLinkComponents;
   
   // These applications aren't executed by "Run" button, so will not generate links
   // applicationLinkMaker[ DIMEMAS_GUI ]     = makeLinkComponents;
@@ -2624,6 +2636,12 @@ void RunScript::setFolding( wxString whichFoldingCSV )
 void RunScript::setProfet()
 {
   setApp( TExternalAppID::PROFET );
+}
+
+
+void RunScript::setCARM()
+{
+  setApp( TExternalAppID::CARM );
 }
 
 

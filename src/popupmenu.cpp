@@ -622,6 +622,8 @@ gPopUpMenu<gTimeline>::gPopUpMenu( gTimeline *whichTimeline )
     buildItem( popUpMenuRun, ExternalApps::getApplicationLabel( TExternalAppID::FOLDING ), wxITEM_NORMAL, &gTimeline::OnPopUpRunApp, ID_MENU_FOLDING );
   if( suitableApps[ (int)TExternalAppID::PROFET ] )
     buildItem( popUpMenuRun, ExternalApps::getApplicationLabel( TExternalAppID::PROFET ), wxITEM_NORMAL, &gTimeline::OnPopUpRunApp, ID_MENU_PROFET );
+  if( suitableApps[ (int)TExternalAppID::CARM ] )
+    buildItem( popUpMenuRun, ExternalApps::getApplicationLabel( TExternalAppID::CARM ), wxITEM_NORMAL, &gTimeline::OnPopUpRunApp, ID_MENU_CARM );
   buildItem( popUpMenuRun, ExternalApps::getApplicationLabel( TExternalAppID::USER_COMMAND ), wxITEM_NORMAL, &gTimeline::OnPopUpRunApp, ID_MENU_USER_COMMAND );
   AppendSubMenu( popUpMenuRun, _( "Run" ) );
   

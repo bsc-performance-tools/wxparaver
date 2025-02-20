@@ -38,6 +38,7 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
   wxString( "Clustering" ),   //CLUSTERING
   wxString( "Folding" ),      //FOLDING
   wxString( "Mess" ),         //PROFET
+  wxString( "CARM" ),
   wxString( "User command" ), //USER_COMMAND
 
   // Following only for warning dialogs
@@ -55,6 +56,7 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
   wxString( "BurstClustering"),     // CLUSTERING
   wxString( "rri-auto"),            // FOLDING
   wxString( "mess-prv"),          // PROFET
+  wxString( "tmpcarm.py" ),// TODO: set real name
   wxString( "" ),                   // USER_COMMAND
   wxString( "DimemasGUI")           // DIMEMAS_GUI
 };
@@ -66,6 +68,7 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
   wxString( "BurstClustering" ), // CLUSTERING
   wxString( "rri-auto" ),        // FOLDING
   wxString( "mess-prv" ),        // PROFET
+  wxString( "tmpcarm.py" ),// TODO: set real name
   wxString( "" ),                // USER_COMMAND
   wxString( "DimemasGUI")        // DIMEMAS_GUI
 };
@@ -151,12 +154,19 @@ bool verifyProfet( const Trace& whichTrace )
 }
 
 
+bool verifyCARM( const Trace& whichTrace )
+{
+  return true;
+}
+
+
 const std::array< std::function< bool( const Trace& ) >, (int)TExternalAppID::NUMBER_APPS > ExternalApps::applicationVerifyFunctions = { {
   { verifyDimemas },    // DIMEMAS
   {},                   // PRVSTATS
   { verifyClustering }, // CLUSTERING
   { verifyFolding },    // FOLDING
   { verifyProfet },     // PROFET
+  { verifyCARM },       // CARM
   {},                   // USER_COMMAND
   {},                   // DIMEMAS_GUI
 } };
