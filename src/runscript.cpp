@@ -2344,7 +2344,9 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
     if( currentWindow != nullptr ) currentWindow->setEnableDestroyButton( true );
   }
-  else if ( matchHrefExtension( event, wxT(".prv") ) || matchHrefExtension( event, wxT(".prv.gz")))
+  else if ( matchHrefExtension( event, wxT(".prv") ) || 
+            matchHrefExtension( event, wxT(".prv.gz") ) || 
+            matchHrefExtension( event, wxT(".csv" ) ) )
   {
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
