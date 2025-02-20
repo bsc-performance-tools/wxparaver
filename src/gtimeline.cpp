@@ -5198,7 +5198,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
         firstValue = *( semanticColorsToValue[ color ].begin() );
         tmpString = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
         if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
-          LabelConstructor::transformToShort( tmpString );
+          tmpString = LabelConstructor::transformToShort( tmpString );
         label = wxString::FromUTF8( tmpString.c_str() );
       }
       else if( winToUse->isColorOutlier( color ) )
