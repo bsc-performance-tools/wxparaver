@@ -1455,6 +1455,9 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       break;
 
     case TExternalAppID::CARM:
+      command = ExternalApps::getApplicationBin( TExternalAppID::CARM );
+      parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
+
       break;
 
     case TExternalAppID::USER_COMMAND:

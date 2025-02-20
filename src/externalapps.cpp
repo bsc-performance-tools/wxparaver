@@ -56,7 +56,8 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
   wxString( "BurstClustering"),     // CLUSTERING
   wxString( "rri-auto"),            // FOLDING
   wxString( "mess-prv"),          // PROFET
-  wxString( "tmpcarm.py" ),// TODO: set real name
+  wxString( "tmpcarm.py" ),        // TODO: set real name and choose veersion without or with python3
+  //wxString( "python3 tmpcarm.py" ),   // 
   wxString( "" ),                   // USER_COMMAND
   wxString( "DimemasGUI")           // DIMEMAS_GUI
 };
@@ -68,7 +69,8 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
   wxString( "BurstClustering" ), // CLUSTERING
   wxString( "rri-auto" ),        // FOLDING
   wxString( "mess-prv" ),        // PROFET
-  wxString( "tmpcarm.py" ),// TODO: set real name
+  wxString( "tmpcarm.py" ),        // TODO: set real name and choose veersion without or with python3
+  // wxString( "python3 tmpcarm.py" ),   // 
   wxString( "" ),                // USER_COMMAND
   wxString( "DimemasGUI")        // DIMEMAS_GUI
 };
