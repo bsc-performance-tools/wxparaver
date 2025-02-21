@@ -158,7 +158,14 @@ bool verifyProfet( const Trace& whichTrace )
 
 bool verifyCARM( const Trace& whichTrace )
 {
-  return true;
+  const auto& traceEvents = whichTrace.getLoadedEvents();
+
+  constexpr size_t CARM_LABELS_SIZE = 3;
+  const std::array< std::string, CARM_LABELS_SIZE > carmLabels { "PAPI_FP_INS",
+                                                                 "PAPI_LD_INS",
+                                                                 "PAPI_SR_INS" };
+
+  return verifyEventLabels( whichTrace, traceEvents, carmLabels );
 }
 
 
