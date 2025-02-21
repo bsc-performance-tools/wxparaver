@@ -1712,6 +1712,10 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       active &= !textCtrlProfetOutputTrace->IsEmpty();
       break;
 
+    case TExternalAppID::CARM:
+      active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
+      break;
+
     case TExternalAppID::USER_COMMAND:
       active &= !textCtrlDefaultParameters->GetValue().IsEmpty();
       break;
