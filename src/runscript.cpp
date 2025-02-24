@@ -2350,7 +2350,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, wxT(".prv") ) || 
             matchHrefExtension( event, wxT(".prv.gz") ) || 
-            matchHrefExtension( event, wxT(".csv" ) ) )
+            ( currentApp == TExternalAppID::CARM && matchHrefExtension( event, wxT(".csv") ) ) ) 
   {
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
