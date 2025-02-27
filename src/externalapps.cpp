@@ -159,10 +159,10 @@ bool verifyCARM( const Trace& whichTrace )
   const auto& traceEvents = whichTrace.getLoadedEvents();
 
   constexpr size_t CARM_LABELS_SIZE = 3;
-  const std::array< std::string, CARM_LABELS_SIZE > carmLabels { "PAPI_FP_INS",
-                                                                 "PAPI_LD_INS",
-                                                                 "PAPI_SR_INS" };
-
+  const std::array< std::string, CARM_LABELS_SIZE > carmLabels { "floating-point",
+                                                                 "load",
+                                                                 "store" };
+ 
   return verifyEventLabels( whichTrace, traceEvents, carmLabels );
 }
 
