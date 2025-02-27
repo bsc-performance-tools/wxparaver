@@ -56,7 +56,7 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
   wxString( "BurstClustering"),     // CLUSTERING
   wxString( "rri-auto"),            // FOLDING
   wxString( "mess-prv"),            // PROFET
-  wxString( "paraver_GUI.py" ),     // CARM
+  wxString( "Paraver_CARM.py" ),    // CARM
   wxString( "" ),                   // USER_COMMAND
   wxString( "DimemasGUI")           // DIMEMAS_GUI
 };
@@ -68,7 +68,7 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
   wxString( "BurstClustering" ), // CLUSTERING
   wxString( "rri-auto" ),        // FOLDING
   wxString( "mess-prv" ),        // PROFET
-  wxString( "paraver_GUI.py" ),  // CARM
+  wxString( "Paraver_CARM.py" ), // CARM
   wxString( "" ),                // USER_COMMAND
   wxString( "DimemasGUI")        // DIMEMAS_GUI
 };
