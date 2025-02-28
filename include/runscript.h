@@ -156,6 +156,9 @@ class wxHtmlWindow;
 #define ID_TEXTCTRL_PROFET_CONFIG_FILE 10011
 #define ID_BUTTON_PROFET_CONFIG_FILE 10012
 #define ID_PROFET_ADDITIONAL_PLOTS 10013
+#define ID_TEXTCTRL_CARM_MIN_BURST_DURATION 10014
+#define ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW 10015
+#define ID_CHECKBOX_CARM_ACCUMULATE_VALUES 10016
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
@@ -434,6 +437,10 @@ public:
   wxTextCtrl* textCtrlProfetCFG;
   FileBrowserButton* fileBrowserButtonProfetCFG;
   wxCheckBox* checkProfetAdditionalPlots;
+  wxBoxSizer* carmSection;
+  wxTextCtrl* textCtrlCarmMinBurstDuration;
+  wxCheckBox* checkCarmUseSemanticWindow;
+  wxCheckBox* checkCarmAccumulateValues;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;

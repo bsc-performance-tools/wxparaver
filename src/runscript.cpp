@@ -359,6 +359,10 @@ void RunScript::Init()
   textCtrlProfetCFG = NULL;
   fileBrowserButtonProfetCFG = NULL;
   checkProfetAdditionalPlots = NULL;
+  carmSection = NULL;
+  textCtrlCarmMinBurstDuration = NULL;
+  checkCarmUseSemanticWindow = NULL;
+  checkCarmAccumulateValues = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
@@ -980,6 +984,39 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   checkProfetAdditionalPlots->SetValue(false);
   itemBoxSizer6->Add(checkProfetAdditionalPlots, 12, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+  carmSection = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(carmSection, 0, wxGROW|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
+  carmSection->Add(itemBoxSizer10, 0, wxGROW|wxALL, 0);
+
+  wxStaticText* itemStaticText11 = new wxStaticText( itemDialog1, wxID_STATIC, _("Min.Burst Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(itemStaticText11, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  textCtrlCarmMinBurstDuration = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CARM_MIN_BURST_DURATION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(textCtrlCarmMinBurstDuration, 5, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxStaticText* itemStaticText1 = new wxStaticText( itemDialog1, wxID_STATIC, _("us"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(itemStaticText1, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  itemBoxSizer10->Add(5, 5, 6, wxGROW|wxALL, 0);
+
+  wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
+  carmSection->Add(itemBoxSizer11, 0, wxGROW|wxALL, 0);
+
+  itemBoxSizer11->Add(5, 5, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  checkCarmUseSemanticWindow = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, _("Use semantic window"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCarmUseSemanticWindow->SetValue(false);
+  itemBoxSizer11->Add(checkCarmUseSemanticWindow, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  checkCarmAccumulateValues = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_ACCUMULATE_VALUES, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCarmAccumulateValues->SetValue(false);
+  checkCarmAccumulateValues->Enable(false);
+  itemBoxSizer11->Add(checkCarmAccumulateValues, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  itemBoxSizer11->Add(5, 5, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
 
@@ -1091,6 +1128,7 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   clusteringTextBoxRefinementEpsilonMin->SetValidator( validator );
   clusteringTextBoxRefinementEpsilonMax->SetValidator( validator );
   clusteringTextBoxNumberOfSamples->SetValidator( validator );
+  textCtrlCarmMinBurstDuration->SetValidator( validator );
 
   choiceApplication->Select( 0 );
 
@@ -1456,6 +1494,20 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
     case TExternalAppID::CARM:
       command = ExternalApps::getApplicationBin( TExternalAppID::CARM );
+
+      parameters = wxString( wxT("") ); // TODO: remove in final release after removing first '+='
+
+      tmpValue.Clear();
+      tmpValue = textCtrlCarmMinBurstDuration->GetValue(); // us
+      if ( !tmpValue.IsEmpty() )
+      {
+        parameters += wxString( wxT( " --min_dur" ) );
+        parameters += wxString( wxT( " " ) ) + tmpValue;
+      }
+
+      parameters += wxString( wxT( " --color_csv" ) );
+      parameters += wxString( wxT( " tmp_label.csv" ) ); // TODO: place correct one
+
       parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
 
       break;
@@ -1933,7 +1985,7 @@ void RunScript::adaptWindowToApplicationSelection()
   adaptClusteringAlgorithmParameters();
   foldingSection->Show( currentApp == TExternalAppID::FOLDING );
   profetSection->Show( currentApp == TExternalAppID::PROFET );
-  //carmSection->Show( currentApp == TExternalAppID::CARM );
+  carmSection->Show( currentApp == TExternalAppID::CARM );
 
   Layout();
 }
