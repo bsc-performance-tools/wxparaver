@@ -297,6 +297,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_PROFET_ADDITIONAL_PLOTS
   void OnProfetAdditionalPlotsUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW
+  void OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
   void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
 

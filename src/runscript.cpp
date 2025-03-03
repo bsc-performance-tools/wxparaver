@@ -180,6 +180,7 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
   EVT_UPDATE_UI( ID_PROFET_ADDITIONAL_PLOTS, RunScript::OnProfetAdditionalPlotsUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, RunScript::OnCheckboxCarmUseSemanticWindowUpdate )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
@@ -1505,6 +1506,15 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         parameters += wxString( wxT( " " ) ) + tmpValue;
       }
 
+      if ( checkCarmUseSemanticWindow->IsChecked() )
+      {
+        parameters += wxString( wxT( " --mask_csv" ) );
+        parameters += wxString( wxT( " tmp.csv" ) ); // TODO: place correct one
+
+        if ( checkCarmAccumulateValues->IsChecked() )
+          parameters += wxString( wxT( " -ac" ) );
+      }
+
       parameters += wxString( wxT( " --color_csv" ) );
       parameters += wxString( wxT( " tmp_label.csv" ) ); // TODO: place correct one
 
@@ -1961,6 +1971,11 @@ void RunScript::adaptWindowToApplicationSelection()
       break;
 
     case TExternalAppID::CARM:
+      labelTextCtrlDefaultParameters->Hide();
+      textCtrlDefaultParameters->Hide();
+
+      checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
+
       break;
 
     case TExternalAppID::USER_COMMAND:
@@ -2984,3 +2999,14 @@ TExternalAppID RunScript::getSelectedApp() const
 {
   return static_cast<TExternalAppID>( (long int)choiceApplication->GetClientData( choiceApplication->GetSelection() ) );
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW
+ */
+
+void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
+{
+  checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
+}
+
