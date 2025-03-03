@@ -358,7 +358,7 @@ public:
   void setClustering( wxString whichClusteringCSV );
   void setFolding( wxString whichFoldingCSV );
   void setProfet();
-  void setCARM();
+  void setCarm( const wxString& whichCarmSemanticCSV, const wxString& whichCarmLabelsCSV );
   void setUserCommand();
 
   void closeWindow();
@@ -491,6 +491,11 @@ private:
 
   // PROFET
   wxString lastProcessedTrace;
+
+  // CARM
+  wxString carmSemanticCSV = wxT("tmpSemantic.csv"); // TODO: dummy value for test only; change to "" as carmLabelsCSV
+  wxString carmLabelsCSV = wxT("");
+
 
   wxProgressDialog *progressBar;
 

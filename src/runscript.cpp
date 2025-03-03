@@ -1496,7 +1496,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case TExternalAppID::CARM:
       command = ExternalApps::getApplicationBin( TExternalAppID::CARM );
 
-      parameters = wxString( wxT("") ); // TODO: remove in final release after removing first '+='
+      parameters = wxString( wxT("") );
 
       tmpValue.Clear();
       tmpValue = textCtrlCarmMinBurstDuration->GetValue(); // us
@@ -1506,17 +1506,20 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         parameters += wxString( wxT( " " ) ) + tmpValue;
       }
 
-      if ( checkCarmUseSemanticWindow->IsChecked() )
+      if ( checkCarmUseSemanticWindow->IsChecked() && !carmSemanticCSV.IsEmpty() )
       {
         parameters += wxString( wxT( " --mask_csv" ) );
-        parameters += wxString( wxT( " tmp.csv" ) ); // TODO: place correct one
+        parameters += wxString( wxT( " " ) ) + carmSemanticCSV;
 
         if ( checkCarmAccumulateValues->IsChecked() )
           parameters += wxString( wxT( " -ac" ) );
       }
 
-      parameters += wxString( wxT( " --color_csv" ) );
-      parameters += wxString( wxT( " tmp_label.csv" ) ); // TODO: place correct one
+      if ( !carmLabelsCSV.IsEmpty() )
+      {
+        parameters += wxString( wxT( " --color_csv" ) );
+        parameters += wxString( wxT( " " ) ) + carmLabelsCSV;
+      }
 
       parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
 
@@ -2715,8 +2718,10 @@ void RunScript::setProfet()
 }
 
 
-void RunScript::setCARM()
+void RunScript::setCarm( const wxString& whichCarmSemanticCSV, const wxString& whichCarmLabelsCSV )
 {
+  carmSemanticCSV = whichCarmSemanticCSV;
+  carmLabelsCSV = whichCarmLabelsCSV;
   setApp( TExternalAppID::CARM );
 }
 
