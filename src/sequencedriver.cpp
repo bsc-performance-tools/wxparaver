@@ -207,6 +207,41 @@ bool RunProfetAction::execute( std::string whichTrace )
 }
 
 
+/****************************************************************************
+ ********                 RunCarmAction                            ********
+ ****************************************************************************/
+vector<TSequenceStates> RunCarmAction::getStateDependencies() const
+{
+  vector<TSequenceStates> tmpStates;
+  return tmpStates;
+}
+
+bool RunCarmAction::execute( std::string whichTrace )
+{
+  bool errorFound = false;
+
+  TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+  RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
+  if( runAppDialog == nullptr )
+  {
+    std::vector<bool> tmpAcceptableApps = ( ( AcceptableAppsState * )tmpSequence->getState( TSequenceStates::acceptableAppsState ) )->getData();
+    runAppDialog = new RunScript( wxparaverApp::mainWindow, tmpAcceptableApps );
+    wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
+  }
+  runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
+  std::string tmpCSVFileName = ( (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState ) )->getData();
+  //std::string tmpCSVLabelsFileName = ( (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvLabelsFileNameState ) )->getData();
+  std::string tmpCSVLabelsFileName = "tmpfile_label.csv";
+
+  runAppDialog->setCarm( wxString::FromUTF8( tmpCSVFileName.c_str() ), wxString::FromUTF8( tmpCSVLabelsFileName.c_str() ) );
+  
+  runAppDialog->Show();
+  runAppDialog->Raise();
+  
+  return errorFound;
+}
+
+
 
 /****************************************************************************
  ********              ExternalSortAction                            ********
@@ -505,6 +540,81 @@ void SequenceDriver::sequenceProfet( gTimeline *whichTimeline )
   OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
   tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameProfet );
   mySequence->addState( TSequenceStates::outputDirSuffixState, tmpOutputDirSuffixState );
+
+  // Engage sequence
+  vector<std::string> traces;
+  traces.push_back( whichTimeline->GetMyWindow()->getTrace()->getFileName() );
+  mySequence->execute( traces );
+  
+  delete mySequence;
+}
+
+
+void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
+{
+  // Create sequence
+  KernelConnection *myKernel = whichTimeline->GetMyWindow()->getKernel();
+  TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
+
+  // Define sequence
+  mySequence->pushbackAction( TSequenceActions::traceCutterAction );
+  mySequence->pushbackAction( TSequenceActions::csvOutputAction );
+  mySequence->pushbackAction( new RunCarmAction( mySequence ) );
+
+  // States for RunCarmAction
+  AcceptableAppsState *tmpAcceptableAppsState = new AcceptableAppsState( mySequence );
+  tmpAcceptableAppsState->setData( whichTimeline->GetMyWindow()->getTrace()->getSuitableApps() );
+  mySequence->addState( TSequenceStates::acceptableAppsState, tmpAcceptableAppsState );
+
+  // States for TSequenceActions::traceCutterAction
+  TraceOptions *tmpOptions = TraceOptions::create( myKernel );
+  tmpOptions->set_by_time( true );
+  tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
+  tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
+  tmpOptions->set_original_time( false ); //TODO: true? -- OFFSET?
+  tmpOptions->set_break_states( false );
+
+  OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
+  tmpOutputDirSuffixState->setData( "carm" /*TraceEditSequence::dirNameUserCommand*/ );
+  mySequence->addState( TSequenceStates::outputDirSuffixState, tmpOutputDirSuffixState );
+
+
+  TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
+  tmpOptionsState->setData( tmpOptions );
+  mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
+
+  // States for TSequenceActions::csvOutputAction
+  SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
+  tmpWindowState->setData( whichTimeline->GetMyWindow() );
+  mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
+  
+  CSVFileNameState *tmpCSVFilenameState = new CSVFileNameState( mySequence );
+  std::string tmpFileName;
+  wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
+  tmpTraceName.ClearExt();
+  tmpTraceName.AppendDir( wxString::FromUTF8( "carm" /* TraceEditSequence::dirNameCarm.c_str() */ ) );  // TODO: substitute with proper defined
+  
+  if( !tmpTraceName.DirExists() )
+    tmpTraceName.Mkdir();
+  // std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
+  std::string auxName = whichTimeline->GetMyWindow()->getName();
+  // std::replace( auxName.begin(), auxName.end(), ',', '-' );
+  tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() ) + std::string( ".csv" );
+  
+  tmpCSVFilenameState->setData( tmpFileName );
+  mySequence->addState( TSequenceStates::csvFileNameState, tmpCSVFilenameState );
+  
+  TextOutput output;
+  output.setWindowTimeUnits( false );
+  CSVOutputState *tmpOutputState = new CSVOutputState( mySequence );
+  tmpOutputState->setData( output );
+  mySequence->addState( TSequenceStates::csvOutputState, tmpOutputState );
+
+  // Generate labels csv
+
+  // Clone timeline
+
+  // Change to us
 
   // Engage sequence
   vector<std::string> traces;

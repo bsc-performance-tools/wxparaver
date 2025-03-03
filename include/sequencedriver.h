@@ -117,7 +117,7 @@ class RunAppFoldingAction: public TraceToTraceAction
 
 
 /****************************************************************************
- ********              RunProfetAction                             ********
+ ********              RunProfetAction                               ********
  ****************************************************************************/
 class RunProfetAction: public TraceToTraceAction
 {
@@ -125,6 +125,28 @@ class RunProfetAction: public TraceToTraceAction
     RunProfetAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
     {}
     ~RunProfetAction()
+    {}
+
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
+
+    virtual bool execute( std::string whichTrace ) override;
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
+ ********              RunCarmAction                               ********
+ ****************************************************************************/
+class RunCarmAction: public TraceToTraceAction
+{
+  public:
+    RunCarmAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~RunCarmAction()
     {}
 
     virtual std::vector<TSequenceStates> getStateDependencies() const override;
@@ -193,6 +215,7 @@ class SequenceDriver
     static void sequenceDimemas( gTimeline *whichTimeline );
     static void sequenceFolding( gTimeline *whichTimeline );
     static void sequenceProfet( gTimeline *whichTimeline );
+    static void sequenceCarm( gTimeline *whichTimeline );
     static void sequenceUserCommand( gTimeline *whichTimeline );
 
     //static void sequenceTraceShifter( std::string trace,
