@@ -3121,9 +3121,26 @@ Timeline *paraverMain::createBaseWindow( wxString whichName )
   if ( semanticFunction != "" )
     newWindow->setLevelFunction( THREAD, semanticFunction );
   else if ( traceFileExt == "csv" ) // csv
+  {
     newWindow->setLevelFunction( THREAD, "Last Evt Val" );
+    auto& tmpLabels = newWindow->getTrace()->getEventLabels();
+    map<TEventValue, string> tmpValues;
+    if( tmpLabels.getValues( 1, tmpValues ) )
+    {
+      newWindow->setMinimumY( tmpValues.begin()->first );
+      newWindow->setMaximumY( ( --tmpValues.end() )->first );
+    }
+  }
   else
+  {
     newWindow->setLevelFunction( THREAD, "State As Is" );
+    auto& tmpStates = newWindow->getTrace()->getLoadedStates();
+    if( !tmpStates.empty() )
+    {
+      newWindow->setMinimumY( *tmpStates.begin() );
+      newWindow->setMaximumY( *( --tmpStates.end() ) );
+    }
+  }
 
   return newWindow;
 }
