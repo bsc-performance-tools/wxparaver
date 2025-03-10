@@ -322,8 +322,9 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
     if( iTotal == 0 )
     {
       HistogramTotals *tmpTotals = myHisto->GetHistogram()->getTotals( myHisto->GetHistogram()->getCurrentStat() );
-      int tmpCol = myHisto->GetHistogram()->getHorizontal() ? col : row;
-      THistogramColumn tmpRealColumn = myHisto->GetHistogram()->getSemanticSortedColumn( myHisto->GetHistogram()->getSemanticRealColumn( tmpCol, *noVoidSemRanges ) );
+      THistogramColumn tmpRealColumn = myHisto->GetHistogram()->getHorizontal() ? 
+                                          myHisto->GetHistogram()->getSemanticSortedColumn( myHisto->GetHistogram()->getSemanticRealColumn( col, *noVoidSemRanges ) ) :
+                                          row;
 
       TSemanticValue numCells = tmpTotals->getNumCells( idStat, tmpRealColumn, myHisto->GetHistogram()->getSelectedPlane() );
       TObjectOrder numRows = myHisto->GetHistogram()->getHorizontal() ? myHisto->GetHistogram()->getNumRows() : myHisto->GetHistogram()->getNumColumns();
