@@ -310,6 +310,9 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
   wxGridCellAttr *tmpAttr = new wxGridCellAttr();
   Timeline *controlWindow = myHisto->GetHistogram()->getControlWindow();
 
+  if( controlWindow == nullptr )
+    return tmpAttr;
+
   int tmpNumColumns = getNumSemanticColumns();
 
   PRV_UINT16 idStat;
