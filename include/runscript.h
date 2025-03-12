@@ -493,7 +493,7 @@ private:
   wxString lastProcessedTrace;
 
   // CARM
-  wxString carmSemanticCSV = wxT("tmpSemantic.csv"); // TODO: dummy value for test only; change to "" as carmLabelsCSV
+  wxString carmSemanticCSV = wxT("");
   wxString carmLabelsCSV = wxT("");
 
 
