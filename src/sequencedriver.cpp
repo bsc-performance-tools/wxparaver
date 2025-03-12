@@ -235,6 +235,11 @@ bool RunCarmAction::execute( std::string whichTrace )
 
   runAppDialog->setCarm( wxString::FromUTF8( tmpCSVFileName.c_str() ), wxString::FromUTF8( tmpCSVLabelsFileName.c_str() ) );
   
+  // Clone timeline && change to us --> not correct, has to use cut trace. It's a "clone".
+  // gTimeline *clonedTimeline = whichTimeline->clone();
+  // clonedTimeline->GetMyWindow()->setTimeUnit( US );
+  // whichTimeline->showClonedWindowAsSourceWindow( clonedTimeline );
+
   runAppDialog->Show();
   runAppDialog->Raise();
   
@@ -575,7 +580,7 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   tmpOptions->set_break_states( false );
 
   OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
-  tmpOutputDirSuffixState->setData( "carm" /*TraceEditSequence::dirNameUserCommand*/ );
+  tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameUserCommand );
   mySequence->addState( TSequenceStates::outputDirSuffixState, tmpOutputDirSuffixState );
 
 
@@ -592,8 +597,7 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   std::string tmpFileName;
   wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
   tmpTraceName.ClearExt();
-  tmpTraceName.AppendDir( wxString::FromUTF8( "carm" /* TraceEditSequence::dirNameCarm.c_str() */ ) );  // TODO: substitute with proper defined
-  
+  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameCarm.c_str() ) );
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
   // std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
@@ -609,12 +613,6 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   CSVOutputState *tmpOutputState = new CSVOutputState( mySequence );
   tmpOutputState->setData( output );
   mySequence->addState( TSequenceStates::csvOutputState, tmpOutputState );
-
-  // Generate labels csv
-
-  // Clone timeline
-
-  // Change to us
 
   // Engage sequence
   vector<std::string> traces;
