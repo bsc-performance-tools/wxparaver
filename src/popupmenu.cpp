@@ -277,6 +277,7 @@ gPopUpMenu<gTimeline>::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuLabels = new wxMenu;
   popUpMenuObjectAxis = new wxMenu;
   popUpMenuSave = new wxMenu;
+  popUpMenuCopy = new wxMenu;
   popUpMenuRun = new wxMenu;
   popUpMenuSync = new wxMenu;
   popUpMenuSyncRemove = new wxMenu;
@@ -661,6 +662,13 @@ gPopUpMenu<gTimeline>::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
 
+  AppendSubMenu( popUpMenuCopy, _( "Copy to Clipboard" ) );
+  buildItem( popUpMenuCopy, _( "Timeline with Legend" ), wxITEM_NORMAL, &gTimeline::OnPopUpSaveToClipboardWithLegend, ID_MENU_SAVE_TO_CLIPBOARD_WITH_LEGEND );
+  buildItem( popUpMenuCopy, _( "Timeline w.o. Legend" ), wxITEM_NORMAL, &gTimeline::OnPopUpSaveToClipboardWithOutLegend, ID_MENU_SAVE_TO_CLIPBOARD_WO_LEGEND );
+  buildItem( popUpMenuCopy, _( "Legend" ), wxITEM_NORMAL, &gTimeline::OnPopUpSaveToClipboardLegend, ID_MENU_SAVE_TO_CLIPBOARD_LEGEND );
+
+  AppendSeparator();
+
   buildItem( this,
              _( "Timing\tCTRL+T" ),
              wxITEM_CHECK,
@@ -697,6 +705,7 @@ gPopUpMenu<gHistogram>::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuSaveAsText = new wxMenu;
   popUpMenuColor2D = new wxMenu;
   popUpMenuSave = new wxMenu;
+  popUpMenuCopy = new wxMenu;
   popUpMenuSync = new wxMenu;
   popUpMenuSyncRemove = new wxMenu;
   

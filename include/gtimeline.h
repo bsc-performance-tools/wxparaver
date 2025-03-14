@@ -603,7 +603,9 @@ public:
   void OnPopUpSaveCFG( wxCommandEvent& event );
   void OnPopUpSaveImageDialog( wxCommandEvent& event );
   void OnPopUpSaveText( wxCommandEvent& event );
-  void OnPopUpSaveToClipboard( wxCommandEvent& event );
+  void OnPopUpSaveToClipboardWithLegend( wxCommandEvent& event );
+  void OnPopUpSaveToClipboardWithOutLegend( wxCommandEvent& event );
+  void OnPopUpSaveToClipboardLegend( wxCommandEvent& event );
 
   void OnMenuGradientFunction( TGradientFunction function );
 
@@ -631,6 +633,7 @@ public:
 
   void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
   void saveImageToClipboard(bool withLegend);
+  void saveLegendToClipboard();
   void saveImageLegend( wxString whichFileName = _( "" ),
                         TImageFormat filterIndex =  TImageFormat::PNG,
                         bool appendLegendSuffix = true );
@@ -650,7 +653,7 @@ public:
   //        as its only makes sense to embed the legend with 
   //        continous data representation
   wxBitmap getBitmapForImage(bool withLegend);
-  wxBitmap getBitmapForLegend();
+  wxBitmap getBitmapForLegend(TImageFormat filterIndex);
   
   public:
   

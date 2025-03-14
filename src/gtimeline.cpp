@@ -3472,11 +3472,23 @@ void gTimeline::OnPopUpSaveText( wxCommandEvent& event )
   saveText();
 }
 
-void gTimeline::OnPopUpSaveToClipboard( wxCommandEvent& event )
+
+void gTimeline::OnPopUpSaveToClipboardWithLegend( wxCommandEvent& event )
 {
-  std::cout << "Trying to save to clipboard"<<std::endl;
   saveImageToClipboard(true);
 }
+
+void gTimeline::OnPopUpSaveToClipboardWithOutLegend( wxCommandEvent& event )
+{
+  saveImageToClipboard(false);
+}
+
+
+void gTimeline::OnPopUpSaveToClipboardLegend( wxCommandEvent& event )
+{
+  saveLegendToClipboard();
+}
+
 
 void gTimeline::Unsplit()
 {
@@ -4091,6 +4103,81 @@ wxBitmap gTimeline::getBitmapForImage(bool withLegend){
   }
 }
 
+wxBitmap gTimeline::getBitmapForLegend(TImageFormat filterIndex){
+  // for now this duplicates a bit of code with saveImageLegend(), but i think
+  // saveImageLegend can be refactored to use getBitmapforLegend
+  // Get colors
+  wxColour foregroundColour = GetForegroundColour();
+  wxColour backgroundColour = GetBackgroundColour();
+
+  // Get font
+  wxFont titleFont = semanticFont;
+
+  // Get image type and save
+  wxBitmapType imageType;
+
+  int backgroundMode = wxTRANSPARENT; // default
+  switch( filterIndex )
+  {
+    case  TImageFormat::BMP:
+      backgroundMode = wxSOLID;
+      break;
+    case  TImageFormat::JPG:
+      backgroundMode = wxSOLID;
+      break;
+  }
+
+  if ( myWindow->isGradientColorSet() ||
+       myWindow->isNotNullGradientColorSet() ||
+       myWindow->isAlternativeGradientColorSet() )
+  {
+    auto tmpImage = ScaleImageHorizontalGradientColor( myWindow, semanticValuesToColor,
+                                                       //backgroundColour, foregroundColour, backgroundMode,
+                                                       *wxWHITE, *wxBLACK, backgroundMode,
+                                                       titleFont,
+                                                       wxString( _( "" ) ),
+                                                       imageType );
+    tmpImage.process();
+    return *tmpImage.getBitmap();
+   }
+  else if ( myWindow->isCodeColorSet() )
+  {
+    auto tmpImage = ScaleImageVerticalCodeColor( myWindow, semanticValuesToColor,
+                                                 //backgroundColour, foregroundColour, backgroundMode,
+                                                 *wxWHITE, *wxBLACK, backgroundMode,
+                                                 titleFont,
+                                                 wxString( _( "" ) ),
+                                                 imageType );
+    tmpImage.process();
+    return *tmpImage.getBitmap();
+  }
+  else if ( myWindow->isFusedLinesColorSet() )
+  {
+    std::map< TSemanticValue, rgb > tmpObjects;
+
+    TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+    TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
+    vector<TObjectOrder> selected;
+    myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
+
+    for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+    {
+      rgb tmprgb = myWindow->getSemanticColor().calcColor( (*it) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1 );
+      tmpObjects[ (TSemanticValue)(*it) ] = tmprgb;
+    }
+    auto tmpImage = ScaleImageVerticalFusedLines( myWindow, tmpObjects,
+                                                 //backgroundColour, foregroundColour, backgroundMode,
+                                                 *wxWHITE, *wxBLACK, backgroundMode,
+                                                 titleFont,
+                                                 wxString( _( "" ) ),
+                                                 imageType );
+    tmpImage.process();
+    return *tmpImage.getBitmap();
+  }
+  // fallback to empty bitmap
+  return wxBitmap();
+}
+
 void gTimeline::saveImageToClipboard(bool withLegend)
 {
   setEnableDestroyButton( false );
@@ -4098,7 +4185,6 @@ void gTimeline::saveImageToClipboard(bool withLegend)
 
   if (wxTheClipboard->Open())
   {
-    std::cout<< "Clipboard Open" <<std::endl; 
     // This data objects are held by the clipboard,
     // so do not delete them in the app.
     if(!wxTheClipboard->SetData( new wxBitmapDataObject(bitmap) )){
@@ -4106,10 +4192,24 @@ void gTimeline::saveImageToClipboard(bool withLegend)
     }
     wxTheClipboard->Close();
   }
-  else{
-    std::cout<< "Clipboard NOT Open :/" <<std::endl; 
-  }
+ 
+  setEnableDestroyButton( true );
+}
+
+void gTimeline::saveLegendToClipboard(){
   
+  setEnableDestroyButton( false );
+  wxBitmap bitmap = this->getBitmapForLegend(TImageFormat::PNG);
+
+  if (wxTheClipboard->Open())
+  {
+    // This data objects are held by the clipboard,
+    // so do not delete them in the app.
+    if(!wxTheClipboard->SetData( new wxBitmapDataObject(bitmap) )){
+      std::cout<< "Could not copy to clipboard" <<std::endl;        
+    }
+    wxTheClipboard->Close();
+  }
   setEnableDestroyButton( true );
 }
 
