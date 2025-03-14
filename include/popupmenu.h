@@ -144,6 +144,9 @@
 #define ID_MENU_PROFET                                     30108
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR                 30109
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR_2D              30110
+#define ID_MENU_SAVE_TO_CLIPBOARD_WITH_LEGEND              30111
+#define ID_MENU_SAVE_TO_CLIPBOARD_WO_LEGEND                30112
+#define ID_MENU_SAVE_TO_CLIPBOARD_LEGEND                   30113
 
 #define ID_MENU_SYNC_GROUP_BASE                            31000
 #define ID_MENU_SYNC_REMOVE_GROUP_BASE                     32000
@@ -190,6 +193,8 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuLabels;
     wxMenu *popUpMenuObjectAxis;
     wxMenu *popUpMenuSave;
+    // only used in timeline for now
+    wxMenu *popUpMenuCopy;
     wxMenu *popUpMenuRun;
     wxMenu *popUpMenuSync;
     wxMenu *popUpMenuSyncRemove;

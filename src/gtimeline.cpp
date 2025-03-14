@@ -43,6 +43,7 @@
 #include <wx/filename.h>
 #include <wx/display.h>
 #include <wx/valnum.h>
+#include <wx/clipbrd.h>
 
 #include "config_traits.h"
 #include "wxparaverapp.h"
@@ -3471,6 +3472,24 @@ void gTimeline::OnPopUpSaveText( wxCommandEvent& event )
   saveText();
 }
 
+
+void gTimeline::OnPopUpSaveToClipboardWithLegend( wxCommandEvent& event )
+{
+  saveImageToClipboard(true);
+}
+
+void gTimeline::OnPopUpSaveToClipboardWithOutLegend( wxCommandEvent& event )
+{
+  saveImageToClipboard(false);
+}
+
+
+void gTimeline::OnPopUpSaveToClipboardLegend( wxCommandEvent& event )
+{
+  saveLegendToClipboard();
+}
+
+
 void gTimeline::Unsplit()
 {
   canRedraw = false;
@@ -3829,6 +3848,8 @@ wxString gTimeline::buildFormattedFileName() const
 }
 
 
+
+
 void gTimeline::saveImageDialog( wxString whichFileName )
 {
   wxString imageName;
@@ -3877,11 +3898,10 @@ void gTimeline::saveImageDialog( wxString whichFileName )
 
 void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
 {
-  wxString imagePath;
- /* TImageFormat filterIndex;*/
-
+ 
   setEnableDestroyButton( false );
-
+  // construct valid imagePath
+  wxString imagePath;
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
@@ -3906,7 +3926,37 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     imagePath = imageName + tmpSuffix;
   }
-  
+
+  // Select imageType
+  wxBitmapType imageType = wxBITMAP_TYPE_PNG;
+  switch( filterIndex )
+  {
+    case  TImageFormat::BMP:
+      imageType = wxBITMAP_TYPE_BMP;
+      break;
+    case  TImageFormat::JPG:
+      imageType = wxBITMAP_TYPE_JPEG;
+      break;
+    case  TImageFormat::PNG:
+      imageType = wxBITMAP_TYPE_PNG;
+      break;
+    case TImageFormat::XPM:
+      imageType = wxBITMAP_TYPE_XPM;
+      break;
+    default:
+      imageType = wxBITMAP_TYPE_PNG;
+      break;
+  }
+
+  wxBitmap bitmap = this->getBitmapForImage(true);
+  wxImage finalImage = bitmap.ConvertToImage();
+  finalImage.SaveFile( imagePath, imageType );
+  setEnableDestroyButton( true );
+}
+
+// Return the current timeline as bitmap to be used in saveImage and to
+// be copied to the clipboard
+wxBitmap gTimeline::getBitmapForImage(bool withLegend){
   // Get title
   wxString longTitle = wxString::FromUTF8(
           ( myWindow->getName() + " @ " +
@@ -3983,32 +4033,14 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
   // Get image type and save
   wxBitmapType imageType;
 
-  switch( filterIndex )
-  {
-    case  TImageFormat::BMP:
-      imageType = wxBITMAP_TYPE_BMP;
-      break;
-    case  TImageFormat::JPG:
-      imageType = wxBITMAP_TYPE_JPEG;
-      break;
-    case  TImageFormat::PNG:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
-    case TImageFormat::XPM:
-      imageType = wxBITMAP_TYPE_XPM;
-      break;
-    default:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
-  }
-
   imageDC.SelectObject( wxNullBitmap );
   wxImage baseLayer = imageBitmap.ConvertToImage();
 
-  // Save timeline with gradient scale
-  if ( myWindow->isGradientColorSet() ||
+  // Return timeline with gradient scale
+  if ( (myWindow->isGradientColorSet() ||
        myWindow->isNotNullGradientColorSet() ||
-       myWindow->isAlternativeGradientColorSet() )
+       myWindow->isAlternativeGradientColorSet())  
+       && withLegend )
   {
     ScaleImageVertical *tmpImage;
 
@@ -4023,7 +4055,7 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
             semanticValuesToColor,
             backgroundColour, foregroundColour, backgroundMode,
             titleFont,
-            imagePath, wxString( _( "horiz.labels" ) ),
+            wxString( _( "horiz.labels" ) ),
             imageType,
             wantedWidth );
     tmpImage->process();
@@ -4062,25 +4094,124 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
                               &tmpScaleDC,
                               xsrc, ysrc );
 
-    //tmpScaledTimelineDC->SelectObject( wxNullBitmap );
 
-    wxImage tmpScaledTimeline( tmpScaledTimelineBitmap.ConvertToImage() );
-    wxString currentFormat =
-            wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    TImageFormat( filterIndex ) ).c_str() );
-    wxString tmpScaledTimelinePath = wxFileName( imagePath ).GetPathWithSep() +
-                                     wxFileName( imagePath ).GetName() +
-                                     wxString( _(".w_legend.") ) +
-                                     currentFormat;
-    tmpScaledTimeline.SaveFile( tmpScaledTimelinePath, imageType );
+    return tmpScaledTimelineBitmap;
+  }
+  else{
+    // Return the bitmap without gradient scale
+    return baseLayer;
+  }
+}
+
+wxBitmap gTimeline::getBitmapForLegend(TImageFormat filterIndex){
+  // for now this duplicates a bit of code with saveImageLegend(), but i think
+  // saveImageLegend can be refactored to use getBitmapforLegend
+  // Get colors
+  wxColour foregroundColour = GetForegroundColour();
+  wxColour backgroundColour = GetBackgroundColour();
+
+  // Get font
+  wxFont titleFont = semanticFont;
+
+  // Get image type and save
+  wxBitmapType imageType;
+
+  int backgroundMode = wxTRANSPARENT; // default
+  switch( filterIndex )
+  {
+    case  TImageFormat::BMP:
+      backgroundMode = wxSOLID;
+      break;
+    case  TImageFormat::JPG:
+      backgroundMode = wxSOLID;
+      break;
   }
 
-  // Save timeline image without scale
-  baseLayer.SaveFile( imagePath, imageType );
+  if ( myWindow->isGradientColorSet() ||
+       myWindow->isNotNullGradientColorSet() ||
+       myWindow->isAlternativeGradientColorSet() )
+  {
+    auto tmpImage = ScaleImageHorizontalGradientColor( myWindow, semanticValuesToColor,
+                                                       //backgroundColour, foregroundColour, backgroundMode,
+                                                       *wxWHITE, *wxBLACK, backgroundMode,
+                                                       titleFont,
+                                                       wxString( _( "" ) ),
+                                                       imageType );
+    tmpImage.process();
+    return *tmpImage.getBitmap();
+   }
+  else if ( myWindow->isCodeColorSet() )
+  {
+    auto tmpImage = ScaleImageVerticalCodeColor( myWindow, semanticValuesToColor,
+                                                 //backgroundColour, foregroundColour, backgroundMode,
+                                                 *wxWHITE, *wxBLACK, backgroundMode,
+                                                 titleFont,
+                                                 wxString( _( "" ) ),
+                                                 imageType );
+    tmpImage.process();
+    return *tmpImage.getBitmap();
+  }
+  else if ( myWindow->isFusedLinesColorSet() )
+  {
+    std::map< TSemanticValue, rgb > tmpObjects;
 
+    TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+    TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
+    vector<TObjectOrder> selected;
+    myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
+
+    for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+    {
+      rgb tmprgb = myWindow->getSemanticColor().calcColor( (*it) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1 );
+      tmpObjects[ (TSemanticValue)(*it) ] = tmprgb;
+    }
+    auto tmpImage = ScaleImageVerticalFusedLines( myWindow, tmpObjects,
+                                                 //backgroundColour, foregroundColour, backgroundMode,
+                                                 *wxWHITE, *wxBLACK, backgroundMode,
+                                                 titleFont,
+                                                 wxString( _( "" ) ),
+                                                 imageType );
+    tmpImage.process();
+    return *tmpImage.getBitmap();
+  }
+  // fallback to empty bitmap
+  return wxBitmap();
+}
+
+void gTimeline::saveImageToClipboard(bool withLegend)
+{
+  setEnableDestroyButton( false );
+  wxBitmap bitmap = this->getBitmapForImage(withLegend);
+
+  if (wxTheClipboard->Open())
+  {
+    // This data objects are held by the clipboard,
+    // so do not delete them in the app.
+    if(!wxTheClipboard->SetData( new wxBitmapDataObject(bitmap) )){
+      std::cout<< "Could not copy to clipboard" <<std::endl;        
+    }
+    wxTheClipboard->Close();
+  }
+ 
   setEnableDestroyButton( true );
 }
 
+void gTimeline::saveLegendToClipboard(){
+  
+  setEnableDestroyButton( false );
+  wxBitmap bitmap = this->getBitmapForLegend(TImageFormat::PNG);
+
+  if (wxTheClipboard->Open())
+  {
+    // This data objects are held by the clipboard,
+    // so do not delete them in the app.
+    if(!wxTheClipboard->SetData( new wxBitmapDataObject(bitmap) )){
+      std::cout<< "Could not copy to clipboard" <<std::endl;        
+    }
+    wxTheClipboard->Close();
+  }
+  setEnableDestroyButton( true );
+}
 
 void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterIndex, bool appendLegendSuffix )
 {
@@ -4170,11 +4301,10 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
                                                        //backgroundColour, foregroundColour, backgroundMode,
                                                        *wxWHITE, *wxBLACK, backgroundMode,
                                                        titleFont,
-                                                       //imagePath, wxString( _( "horiz.labels.transp" ) ),
-                                                       imagePath, wxString( _( "" ) ),
+                                                       wxString( _( "" ) ),
                                                        imageType );
     tmpImage->process();
-    tmpImage->save();
+    tmpImage->save(imagePath);
     delete tmpImage;
    }
   else if ( myWindow->isCodeColorSet() )
@@ -4183,11 +4313,10 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
                                                  //backgroundColour, foregroundColour, backgroundMode,
                                                  *wxWHITE, *wxBLACK, backgroundMode,
                                                  titleFont,
-                                                 // imagePath, wxString( _( "vert.labels.transp" ) ),
-                                                 imagePath, wxString( _( "" ) ),
+                                                 wxString( _( "" ) ),
                                                  imageType );
     tmpImage->process();
-    tmpImage->save();
+    tmpImage->save(imagePath);
     delete tmpImage;
   }
   else if ( myWindow->isFusedLinesColorSet() )
@@ -4208,11 +4337,10 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
                                                  //backgroundColour, foregroundColour, backgroundMode,
                                                  *wxWHITE, *wxBLACK, backgroundMode,
                                                  titleFont,
-                                                 // imagePath, wxString( _( "vert.labels.transp" ) ),
-                                                 imagePath, wxString( _( "" ) ),
+                                                 wxString( _( "" ) ),
                                                  imageType );
     tmpImage->process();
-    tmpImage->save();
+    tmpImage->save(imagePath);
     delete tmpImage;
   }
 
@@ -4232,7 +4360,6 @@ gTimeline::ScaleImageVertical::ScaleImageVertical(
         wxColour whichForeground,
         int whichBackgroundMode,
         wxFont whichTextFont,
-        wxString& whichImagePath,
         const wxString& whichImageInfix,
         wxBitmapType& whichImageType 
         ) : myWindow( whichMyWindow ),
@@ -4241,7 +4368,6 @@ gTimeline::ScaleImageVertical::ScaleImageVertical(
             foreground( whichForeground ),
             backgroundMode( whichBackgroundMode ),
             textFont( whichTextFont ),
-            imagePath( whichImagePath ),
             imageInfix( whichImageInfix ),
             imageType( whichImageType )
 {
@@ -4254,7 +4380,7 @@ gTimeline::ScaleImageVertical::~ScaleImageVertical()
 }
 
 
-wxString gTimeline::ScaleImageVertical::buildScaleImagePath()
+wxString gTimeline::ScaleImageVertical::buildScaleImagePath(const wxString &imagePath)
 {
   wxString scaleImagePath;
 
@@ -4300,9 +4426,9 @@ void gTimeline::ScaleImageVertical::process()
 }
 
 
-void gTimeline::ScaleImageVertical::save()
+void gTimeline::ScaleImageVertical::save(const wxString &imagePath)
 {
-  wxString scaleImagePath = buildScaleImagePath();
+  wxString scaleImagePath = buildScaleImagePath(imagePath);
   scaleImage->SaveFile( scaleImagePath, imageType );
 
 // Test code for transparency
@@ -4512,7 +4638,6 @@ gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor(
         wxColour whichForeground,
         int whichBackgroundMode,
         wxFont whichTextFont,
-        wxString& whichImagePath,
         const wxString& whichImageInfix,
         wxBitmapType& whichImageType 
         ) : ScaleImageVertical( whichMyWindow,
@@ -4521,7 +4646,6 @@ gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor(
                                 whichForeground,
                                 whichBackgroundMode,
                                 whichTextFont,
-                                whichImagePath,
                                 whichImageInfix,
                                 whichImageType )
 {
@@ -4548,7 +4672,6 @@ gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor(
         wxColour whichForeground,
         int whichBackgroundMode,
         wxFont whichTextFont,
-        wxString& whichImagePath,
         const wxString& whichImageInfix,
         wxBitmapType& whichImageType 
         ) : ScaleImageVertical( whichMyWindow,
@@ -4557,7 +4680,6 @@ gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor(
                                 whichForeground,
                                 whichBackgroundMode,
                                 whichTextFont,
-                                whichImagePath,
                                 whichImageInfix,
                                 whichImageType )
 {
@@ -4633,7 +4755,6 @@ gTimeline::ScaleImageVerticalFusedLines::ScaleImageVerticalFusedLines(
         wxColour whichForeground,
         int whichBackgroundMode,
         wxFont whichTextFont,
-        wxString& whichImagePath,
         const wxString& whichImageInfix,
         wxBitmapType& whichImageType 
         ) : ScaleImageVertical( whichMyWindow,
@@ -4642,7 +4763,6 @@ gTimeline::ScaleImageVerticalFusedLines::ScaleImageVerticalFusedLines(
                                 whichForeground,
                                 whichBackgroundMode,
                                 whichTextFont,
-                                whichImagePath,
                                 whichImageInfix,
                                 whichImageType )
 {
@@ -4698,7 +4818,6 @@ gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor(
         wxColour whichForeground,
         int whichBackgroundMode,
         wxFont whichTextFont,
-        wxString& whichImagePath,
         const wxString& whichImageInfix,
         wxBitmapType& whichImageType,
         int whichWantedWidth
@@ -4708,7 +4827,6 @@ gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor(
                                              whichForeground,
                                              whichBackgroundMode,
                                              whichTextFont,
-                                             whichImagePath,
                                              whichImageInfix,
                                              whichImageType )
 {

@@ -603,6 +603,9 @@ public:
   void OnPopUpSaveCFG( wxCommandEvent& event );
   void OnPopUpSaveImageDialog( wxCommandEvent& event );
   void OnPopUpSaveText( wxCommandEvent& event );
+  void OnPopUpSaveToClipboardWithLegend( wxCommandEvent& event );
+  void OnPopUpSaveToClipboardWithOutLegend( wxCommandEvent& event );
+  void OnPopUpSaveToClipboardLegend( wxCommandEvent& event );
 
   void OnMenuGradientFunction( TGradientFunction function );
 
@@ -629,6 +632,8 @@ public:
   void OnItemColorLeftUp( wxMouseEvent& event );
 
   void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
+  void saveImageToClipboard(bool withLegend);
+  void saveLegendToClipboard();
   void saveImageLegend( wxString whichFileName = _( "" ),
                         TImageFormat filterIndex =  TImageFormat::PNG,
                         bool appendLegendSuffix = true );
@@ -641,7 +646,16 @@ public:
 
   static wxProgressDialog *dialogProgress;
   static int numberOfProgressDialogUsers;
+
+  private:
+  // Gets the Bitmap for saveImage and saveImageToClipboard
+  // @param withLegend is doing a best effort 
+  //        as its only makes sense to embed the legend with 
+  //        continous data representation
+  wxBitmap getBitmapForImage(bool withLegend);
+  wxBitmap getBitmapForLegend(TImageFormat filterIndex);
   
+  public:
   
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
@@ -856,14 +870,13 @@ private:
               wxColour whichForeground,
               int whichBackgroundMode, // wxSOLID or wxTRANSPARENT; wxTRANSPARENT overrides fore and back
               wxFont whichTextFont,
-              wxString& whichImagePath,
               const wxString& whichImageInfix,
               wxBitmapType& whichImageType );
 
       virtual ~ScaleImageVertical();
 
       void process();
-      void save();
+      void save(const wxString &imagePath);
       wxImage *getImage() { return scaleImage; }
       wxBitmap *getBitmap() { return scaleBitmap; }
 
@@ -875,7 +888,7 @@ private:
       virtual void createDC();
       virtual void draw();
       virtual void bitmapToImage();
-      virtual wxString buildScaleImagePath();
+      virtual wxString buildScaleImagePath(const wxString &imagePath);
       virtual void drawLabeledRectangle( rgb semanticColour,
                                          wxString semanticValueLabel,
                                          bool drawIt = true );
@@ -887,7 +900,6 @@ private:
       wxColour foreground;
       int backgroundMode;
       wxFont textFont;
-      wxString& imagePath;
       wxString imageInfix;
       wxBitmapType& imageType;
       TImageFormat filterIndex;
@@ -929,7 +941,6 @@ private:
               wxColour whichForeground,
               int whichBackgroundMode,
               wxFont whichTextFont,
-              wxString& whichImagePath,
               const wxString& whichImageInfix,
               wxBitmapType& whichImageType );
 
@@ -950,7 +961,6 @@ private:
               wxColour whichForeground,
               int whichBackgroundMode,
               wxFont whichTextFont,
-              wxString& whichImagePath,
               const wxString& whichImageInfix,
               wxBitmapType& whichImageType );
 
@@ -976,7 +986,6 @@ private:
               wxColour whichForeground,
               int whichBackgroundMode,
               wxFont whichTextFont,
-              wxString& whichImagePath,
               const wxString& whichImageInfix,
               wxBitmapType& whichImageType );
 
@@ -999,7 +1008,6 @@ private:
               wxColour whichForeground,
               int whichBackgroundMode,
               wxFont whichTextFont,
-              wxString& whichImagePath,
               const wxString& whichImageInfix,
               wxBitmapType& whichImageType,
               int whichWantedWidth = 0 );
