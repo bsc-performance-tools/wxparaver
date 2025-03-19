@@ -228,17 +228,26 @@ bool RunCarmAction::execute( std::string whichTrace )
     runAppDialog = new RunScript( wxparaverApp::mainWindow, tmpAcceptableApps );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
+
   runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
-  
+
+  bool opened = wxparaverApp::mainWindow->DoLoadTrace( whichTrace );
+  if ( opened )
+  {
+    Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
+    bool dummyFound;
+    gTimeline *sourceTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyFound );
+    std::vector<Trace *> loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
+    gTimeline *clonedTimeline = sourceTimeline->clone( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ], US );
+  }
+  else
+    errorFound = true;
+
+  // Pass csv output files to carm dialog
   std::string tmpCSVFileName       = ( (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState ) )->getData();
   std::string tmpCSVLabelsFileName = ( (CSVLegendFileNameState *)tmpSequence->getState( TSequenceStates::csvLegendFileNameState ) )->getData();
   runAppDialog->setCarm( wxString::FromUTF8( tmpCSVFileName.c_str() ), wxString::FromUTF8( tmpCSVLabelsFileName.c_str() ) );
   
-  // Clone timeline && change to us --> not correct, has to use cut trace. It's a "clone".
-  // gTimeline *clonedTimeline = whichTimeline->clone();
-  // clonedTimeline->GetMyWindow()->setTimeUnit( US );
-  // whichTimeline->showClonedWindowAsSourceWindow( clonedTimeline );
-
   runAppDialog->Show();
   runAppDialog->Raise();
   

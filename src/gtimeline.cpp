@@ -1976,6 +1976,16 @@ void gTimeline::OnPopUpCopy( wxCommandEvent& event )
 }
 
 
+gTimeline *gTimeline::clone( Trace *newTrace, TTimeUnit whichTimeUnit, bool mustRedraw )
+{
+  return clone( myWindow->clone( newTrace, whichTimeUnit ),
+                parent,
+                getAllTracesTree()->GetRootItem(),
+                getSelectedTraceTree( newTrace )->GetRootItem(),
+                mustRedraw ); 
+}
+
+
 // simple windows can let this method do the entire work passing a nullptr clonedWindow
 // derived windows must pass existing clonedWindow, because Timeline::clone is recursive
 gTimeline *gTimeline::clone( Timeline *clonedWindow,
@@ -1996,8 +2006,7 @@ gTimeline *gTimeline::clone( Timeline *clonedWindow,
                                GetPosition().y + titleBarSize.GetHeight() );
   wxSize size = wxSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
 
-  string composedName = myWindow->getName() + " @ " +
-                        myWindow->getTrace()->getTraceNameNumbered();
+  string composedName = myWindow->getName() + " @ " + myWindow->getTrace()->getTraceNameNumbered();
 
 //  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
   gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), position );
@@ -2033,7 +2042,6 @@ gTimeline *gTimeline::clone( Timeline *clonedWindow,
     currentPage->CollapseAllChildren( currentWindowId2 );
   }
 
-
   clonedTimeline->SetBufferImage( bufferImage );
   clonedTimeline->SetCommImage( commImage );
   clonedTimeline->SetEventImage( eventImage );
@@ -2051,6 +2059,7 @@ gTimeline *gTimeline::clone( Timeline *clonedWindow,
   clonedTimeline->redoColorsPanel = true;
 
   clonedTimeline->myWindow->setReady( myWindow->getReady() );
+
   if( mustRedraw )
   {
     if( myWindow->getShowWindow() )
@@ -2071,14 +2080,14 @@ gTimeline *gTimeline::clone( Timeline *clonedWindow,
 
 void gTimeline::OnPopUpClone( wxCommandEvent& event )
 {
-  clone( nullptr, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem());
+  clone( nullptr, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem() );
 }
+
 
 void gTimeline::OnPopUpRename( wxCommandEvent& event )
 {
   ( (paraverMain *) parent )->renameTreeItem( );
 }
-
 
 
 void gTimeline::OnPopUpFitTimeScale( wxCommandEvent& event )

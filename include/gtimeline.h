@@ -613,6 +613,7 @@ public:
                       TObjectOrder lastFoundObject = TObjectOrder(0) );
   void OnFindDialog();
 
+  gTimeline *clone( Trace *newTrace, TTimeUnit whichTimeUnit, bool mustRedraw = true );
   gTimeline *clone( Timeline *clonedWindow,
                     wxWindow *parent,
                     wxTreeItemId idRoot1,
