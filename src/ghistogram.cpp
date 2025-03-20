@@ -418,12 +418,12 @@ void gHistogram::CreateControls()
 
   // TODO: Needs to give myHistogram to the constructor so it is known here.
   //       But a better and clean option would be to do it in setHistogram method,
-  //       maybe copying whole disableControlsForDerivedHistogram code there.
+  //       maybe copying whole adaptControlsForDerivedHistogram code there.
   //
-  // disableControlsForDerivedHistogram();
+  // adaptControlsForDerivedHistogram();
 }
 
-void gHistogram::disableButtonsForDerivedHistogram()
+void gHistogram::adaptControlsForDerivedHistogram()
 {
   if ( myHistogram != nullptr && myHistogram->isDerivedHistogram() )
   {
@@ -431,6 +431,12 @@ void gHistogram::disableButtonsForDerivedHistogram()
     tbarHisto->EnableTool( ID_TOOL_OPEN_DATA_WINDOW, false );
     tbarHisto->EnableTool( ID_TOOL_OPEN_EXTRA_WINDOW, false );
     tbarHisto->EnableTool( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, false );
+    tbarHisto->EnableTool( ID_TOOL_INCLUSIVE, false );
+
+    // TODO: synchronize on creation?
+    // if ( tbarHisto->GetHistogram()->getParent( 0 )->isSync() && tbarHisto->GetHistogram()->getParent( 1 )->isSync() && 
+    //     ( tbarHisto->GetHistogram()->getParent( 0 )->getSyncGroup() == tbarHisto->GetHistogram()->getParent( 1 )->getSyncGroup() ) ) 
+    //   tbarHisto->addToSyncGroup( whichHistogram->GetHistogram()->getParent( 0 )->getSyncGroup() );
   }
 }
 
@@ -3567,8 +3573,11 @@ void gHistogram::OnToolInclusiveClick( wxCommandEvent& event )
 
 void gHistogram::OnToolInclusiveUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myHistogram->getInclusiveEnabled() );
-  event.Check( myHistogram->getInclusive() );
+  if ( !myHistogram->isDerivedHistogram() )
+  {
+    event.Enable( myHistogram->getInclusiveEnabled() );
+    event.Check( myHistogram->getInclusive() );
+  }
 }
 
 

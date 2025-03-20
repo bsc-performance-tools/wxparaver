@@ -1083,7 +1083,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
 #endif
         tmpHisto->SetHistogram( *it );
-        tmpHisto->disableControlsForDerivedHistogram();
+        tmpHisto->adaptControlsForDerivedHistogram();
 
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( (*it) );
@@ -1140,7 +1140,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
 #endif
         tmpHisto->SetHistogram( *it );
-        tmpHisto->disableControlsForDerivedHistogram();
+        tmpHisto->adaptControlsForDerivedHistogram();
 
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( (*it) );
@@ -3676,15 +3676,24 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
           tmpDerivedHistogram->setName( composedName );
           
           tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
-          
-          // TODO:try to put begintime endtime
+
+          // Time
           tmpDerivedHistogram->setWindowBeginTime( beginDragHistogram->getBeginTime() );
           tmpDerivedHistogram->setWindowEndTime( beginDragHistogram->getEndTime() );
 
+          // Display properties
           tmpDerivedHistogram->setZoom( beginDragHistogram->getZoom() );
-
-          // TODO: First Row -> no change
-          //tmpDerivedHistogram->setFirstRowColored( beginDragHistogram->getFirstRowColored() );
+          tmpDerivedHistogram->setShowColor( beginDragHistogram->getShowColor() );
+          tmpDerivedHistogram->setHorizontal( beginDragHistogram->getHorizontal() );
+          tmpDerivedHistogram->setHideColumns( beginDragHistogram->getHideColumns() );
+          tmpDerivedHistogram->setFirstRowColored( beginDragHistogram->getFirstRowColored() );
+          tmpDerivedHistogram->setShortLabels( beginDragHistogram->getShortLabels() );
+          tmpDerivedHistogram->setOnlyTotals( beginDragHistogram->getOnlyTotals() );
+          tmpDerivedHistogram->setInclusive( beginDragHistogram->getInclusive() ); // Will be deselected
+          tmpDerivedHistogram->setFixedSemanticSort( beginDragHistogram->getFixedSemanticSort() );
+          tmpDerivedHistogram->setSemanticSortColumns( beginDragHistogram->getSemanticSortColumns() );
+          tmpDerivedHistogram->setSemanticSortCriteria( beginDragHistogram->getSemanticSortCriteria() );
+          tmpDerivedHistogram->setSemanticSortReverse( beginDragHistogram->getSemanticSortReverse() );
 
           // Position
           gHistogram *tmpParent1 = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), beginDragHistogram );
@@ -3707,7 +3716,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
           tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
           
           tmpHisto->SetHistogram( tmpDerivedHistogram );
-          tmpHisto->disableControlsForDerivedHistogram();
+          tmpHisto->adaptControlsForDerivedHistogram();
 
           //tmpHisto->SetReady( false ); //? no usado
           appendHistogram2Tree( tmpHisto );

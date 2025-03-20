@@ -437,7 +437,7 @@ public:
   void DisableCustomSortOption();
 
   void setDerivedOperation( const std::string& whichOperation );
-  void disableButtonsForDerivedHistogram();
+  void adaptControlsForDerivedHistogram();
 
 ////@begin gHistogram member variables
   wxPanel* panelToolbar;
