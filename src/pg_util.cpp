@@ -1850,6 +1850,9 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
                                 Histogram *whichHisto,
                                 std::vector< PropertyClientData * >& whichPropertiesClientData )
 {
+  vector<TWindowID> validWin;
+  Timeline *dataWindow;
+  CFG4DPropertyCustomOptions tmpOptions = {};
   PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   set< CFGS4DLinkedPropertyShown > linkedPropertiesShown;
   
@@ -1905,44 +1908,45 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
                                                     whichHisto->getControlWindow()->getTimeUnit(),
                                                     precision ) );
 
-  // Control Window related properties
-  wxPGId ctrlCat = (wxPGId)nullptr;
-  if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
+  if ( !whichHisto->isDerivedHistogram() )
   {
-    ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control"), wxT("Control") ) );
-    if( ctrlCatCollapsed )
-      ctrlCat->SetFlagsFromString( _( "COLLAPSED" ) );
+    // Control Window related properties
+    wxPGId ctrlCat = (wxPGId)nullptr;
+    if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
+    {
+      ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control"), wxT("Control") ) );
+      if( ctrlCatCollapsed )
+        ctrlCat->SetFlagsFromString( _( "COLLAPSED" ) );
+    }
+
+    dataWindow = ( whichHisto->getDataWindow() == nullptr ) ? whichHisto->getControlWindow() : whichHisto->getDataWindow();
+    LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getExtraControlWindow(), validWin );
+
+    tmpOptions = { NO_BUTTON, nullptr, false, whichHisto->getControlWindow() };
+    AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
+                        wxT("Window"), HISTOGRAM_CONTROLWINDOW, tmpOptions, validWin );
+
+    AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
+                        wxT("Minimum"), HISTOGRAM_CONTROLMINIMUM, CFG4DPropertyCustomOptions(), whichHisto->getControlMin() );
+    AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
+                        wxT("Maximum"), HISTOGRAM_CONTROLMAXIMUM, CFG4DPropertyCustomOptions(), whichHisto->getControlMax() );
+    AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
+                        wxT("Delta"), HISTOGRAM_CONTROLDELTA, CFG4DPropertyCustomOptions(), whichHisto->getControlDelta() );
+
+    wxPGChoices tmpChoices;
+    NumColumnsChoices::createChoices( [&]( wxString el ) { tmpChoices.Add( el ); } );
+
+    wxString numColumnsSelected;
+    if( whichHisto->getUseFixedDelta() )
+      numColumnsSelected = tmpChoices[ NumColumnsChoices::FIXED_DELTA ].GetText();
+    else if( whichHisto->getNumColumns() == ParaverConfig::getInstance()->getHistogramNumColumns() )
+      numColumnsSelected = tmpChoices[ NumColumnsChoices::DEFAULT ].GetText();
+    else
+      numColumnsSelected << whichHisto->getNumColumns();
+
+    wxPGProperty *tmpNumColumnsProp =  AppendCFG4DProperty( (wxEditEnumProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
+                                                            wxT("Num Columns"), HISTOGRAM_NUMCOLUMNS, CFG4DPropertyCustomOptions(), tmpChoices, numColumnsSelected );
   }
-
-  vector<TWindowID> validWin;
-  Timeline *dataWindow = ( whichHisto->getDataWindow() == nullptr ) ? whichHisto->getControlWindow() :
-                                                                 whichHisto->getDataWindow();
-  LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getExtraControlWindow(), validWin );
-
-  CFG4DPropertyCustomOptions tmpOptions { NO_BUTTON, nullptr, false, whichHisto->getControlWindow() };
-  AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
-                       wxT("Window"), HISTOGRAM_CONTROLWINDOW, tmpOptions, validWin );
-
-  AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
-                       wxT("Minimum"), HISTOGRAM_CONTROLMINIMUM, CFG4DPropertyCustomOptions(), whichHisto->getControlMin() );
-  AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
-                       wxT("Maximum"), HISTOGRAM_CONTROLMAXIMUM, CFG4DPropertyCustomOptions(), whichHisto->getControlMax() );
-  AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
-                       wxT("Delta"), HISTOGRAM_CONTROLDELTA, CFG4DPropertyCustomOptions(), whichHisto->getControlDelta() );
-
-  wxPGChoices tmpChoices;
-  NumColumnsChoices::createChoices( [&]( wxString el ) { tmpChoices.Add( el ); } );
-
-  wxString numColumnsSelected;
-  if( whichHisto->getUseFixedDelta() )
-    numColumnsSelected = tmpChoices[ NumColumnsChoices::FIXED_DELTA ].GetText();
-  else if( whichHisto->getNumColumns() == ParaverConfig::getInstance()->getHistogramNumColumns() )
-    numColumnsSelected = tmpChoices[ NumColumnsChoices::DEFAULT ].GetText();
-  else
-    numColumnsSelected << whichHisto->getNumColumns();
-
-  wxPGProperty *tmpNumColumnsProp =  AppendCFG4DProperty( (wxEditEnumProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
-                                                          wxT("Num Columns"), HISTOGRAM_NUMCOLUMNS, CFG4DPropertyCustomOptions(), tmpChoices, numColumnsSelected );
 
   // Statistic related properties
   wxPGId statCat = (wxPGId)nullptr;
@@ -2027,7 +2031,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
 
     tmpOptions = { NO_BUTTON, nullptr, false, whichHisto->getDataWindow() };
     AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, dataCat,
-                        wxT("Window"), HISTOGRAM_DATAWINDOW, tmpOptions, validWin );
+                         wxT("Window"), HISTOGRAM_DATAWINDOW, tmpOptions, validWin );
   }
 
   if ( whichHisto->isDerivedHistogram() )
@@ -2093,7 +2097,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
 
     tmpOptions = { NO_BUTTON, nullptr, true, whichHisto->getExtraControlWindow() };
     AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
-                        wxT("3rd Window"), HISTOGRAM_3D3RDWINDOW, tmpOptions, validWin );
+                         wxT("3rd Window"), HISTOGRAM_3D3RDWINDOW, tmpOptions, validWin );
 
     wxPGId thirdWinMinimum = AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
                                                   wxT("Minimum"), HISTOGRAM_3DMINIMUM, CFG4DPropertyCustomOptions(), whichHisto->getExtraControlMin() );
