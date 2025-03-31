@@ -3375,7 +3375,7 @@ void paraverMain::ShowHistogramDialog()
     else
     {
       newHistogram->setCompute2DScale( false );
-
+      newHistogram->setUseFixedDelta( true );
       newHistogram->setControlMin( histogramDialog.GetControlTimelineMin() );
       newHistogram->setControlMax( histogramDialog.GetControlTimelineMax() );
       newHistogram->setControlDelta( histogramDialog.GetControlTimelineDelta() );
@@ -4951,7 +4951,7 @@ bool paraverMain::getParaverHome( wxString &paraverHome )
   char tmpPath[PATH_MAX];
   if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)tmpPath, PATH_MAX))
   {
-    throw ParaverKernelException();
+    throw ParaverKernelException( TErrorCode::  undefined  );
   }
   CFRelease(resourcesURL);
 

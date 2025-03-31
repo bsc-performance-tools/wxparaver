@@ -271,6 +271,7 @@ public:
   wxRadioButton* radioAllTrace;
   wxRadioButton* radioManual;
   wxButton* buttonSelect;
+  wxButton* buttonOkHistogramDialog;
 private:
   bool controlTimelineAutofit;
   double controlTimelineDelta;

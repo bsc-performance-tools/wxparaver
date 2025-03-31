@@ -41,6 +41,7 @@
 #include "labelconstructor.h"
 #include "wxparaverapp.h"
 #include "timelinetreeselector.h"
+#include "customalgorithms.h"
 // #include "histogram.h"
 
 // PREFERENCES
@@ -177,6 +178,7 @@ void HistogramDialog::Init()
   radioAllTrace = NULL;
   radioManual = NULL;
   buttonSelect = NULL;
+  buttonOkHistogramDialog = NULL;
 ////@end HistogramDialog member initialisation
 }
 
@@ -352,8 +354,8 @@ void HistogramDialog::CreateControls()
   wxButton* itemButton45 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStdDialogButtonSizer44->AddButton(itemButton45);
 
-  wxButton* itemButton46 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer44->AddButton(itemButton46);
+  buttonOkHistogramDialog = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer44->AddButton(buttonOkHistogramDialog);
 
   itemStdDialogButtonSizer44->Realize();
 
@@ -420,32 +422,42 @@ bool HistogramDialog::TransferDataFromWindow()
 {
   // Copy Selected window
   wxString errorMessage = _( "" );
-  double tmp;
 
   if ( !GetControlTimelineAutofit() )
   {
-    if ( txtControlTimelineMin->GetValue().ToDouble( &tmp ) )
-      controlTimelineMin = tmp;
-    else
-    {
-      controlTimelineMin = controlTimelineSelected->getMinimumY();
-      errorMessage = _( "\tControl Timeline Minimum : " ) + formatNumber( controlTimelineMin ) + _( "\n" );
-    }
+    double tmpControlTimelineMin = std::numeric_limits<double>::quiet_NaN(),tmpControlTimelineMax = std::numeric_limits<double>::quiet_NaN(),tmpControlTimelineDelta = std::numeric_limits<double>::quiet_NaN();
 
-    if ( txtControlTimelineMax->GetValue().ToDouble( &tmp ) )
-      controlTimelineMax = tmp;
-    else
+    //If value is not auto, check conversions control timeline defined by user to double
+    if ( !txtControlTimelineMin->GetValue().ToDouble( &tmpControlTimelineMin ) )
     {
-      controlTimelineMax = controlTimelineSelected->getMaximumY();
-      errorMessage += _( "\tControl Timeline Maximum : " ) + formatNumber( controlTimelineMax ) + _( "\n" );
+      errorMessage += _( "\tCONTROL TIMELINE MIN NOT VALID: Conversion Problems \n" );
     }
-
-    if ( txtControlTimelineDelta->GetValue().ToDouble( &tmp ) )
-      controlTimelineDelta = tmp;
-    else
+    
+    if ( !txtControlTimelineMax->GetValue().ToDouble( &tmpControlTimelineMax ) )
     {
-      controlTimelineDelta = computeDelta( controlTimelineMin, controlTimelineMax );
-      errorMessage += _( "\tControl Timeline Delta : " ) + formatNumber( controlTimelineDelta ) + _( "\n" );
+      errorMessage += _( "\tCONTROL TIMELINE MAX NOT VALID: Conversion Problems \n" );
+    }
+    
+    if ( !txtControlTimelineDelta->GetValue().ToDouble( &tmpControlTimelineDelta ) )
+    {
+      errorMessage += _( "\tCONTROL TIMELINE DELTA NOT VALID: Conversion Problems \n" );
+    }
+    if ( !std::isnan(tmpControlTimelineMin) && !std::isnan(tmpControlTimelineMax) && !std::isnan(tmpControlTimelineDelta) )
+    {
+      if ( tmpControlTimelineMax <= tmpControlTimelineMin )
+      {
+        errorMessage += _( "\tCONTROL TIMELINE MIN/MAX NOT VALID: Control Max is lower/equal than control timeline min\n" );
+      }
+      else
+      {
+        controlTimelineMin = tmpControlTimelineMin;
+        controlTimelineMax = tmpControlTimelineMax;
+        //Check Control timeline value delta valid        
+        if ( tmpControlTimelineDelta <= 0 )
+          errorMessage += _( "\tCONTROL TIMELINE DELTA NOT VALID: Value 0 or lower not allowed\n" );
+        else
+          controlTimelineDelta = tmpControlTimelineDelta;       
+      }
     }
   }
 
@@ -454,34 +466,49 @@ bool HistogramDialog::TransferDataFromWindow()
   {
     if ( !GetExtraControlTimelineAutofit() )
     {
-      if ( txt3DTimelineMin->GetValue().ToDouble( &tmp ) )
-        extraControlTimelineMin = tmp;
-      else
+      double tmpExtraControlTimelineMin = std::numeric_limits<double>::quiet_NaN(),tmpExtraControlTimelineMax = std::numeric_limits<double>::quiet_NaN(),tmpExtraControlTimelineDelta = std::numeric_limits<double>::quiet_NaN();
+
+      //If value is not auto, check conversions control timeline defined by user to double
+      if ( !txt3DTimelineMin->GetValue().ToDouble( &tmpExtraControlTimelineMin ) )
       {
-        extraControlTimelineMin = extraControlTimelineSelected->getMinimumY();
-        errorMessage += _( "\t3D Timeline Min : " ) + formatNumber( extraControlTimelineMin ) + _( "\n" );
+        errorMessage += _( "\tEXTRA CONTROL TIMELINE MIN NOT VALID: Conversion Problems \n" );
       }
 
-      if ( txt3DTimelineMax->GetValue().ToDouble( &tmp ) )
-        extraControlTimelineMax = tmp;
-      else
+      if ( !txt3DTimelineMax->GetValue().ToDouble( &tmpExtraControlTimelineMax ) )
       {
-        extraControlTimelineMax = extraControlTimelineSelected->getMaximumY();
-        errorMessage += _( "\t3D Timeline Max : " ) + formatNumber( extraControlTimelineMax ) + _( "\n" );
+        errorMessage += _( "\tEXTRA CONTROL TIMELINE MAX NOT VALID: Conversion Problems \n" );
       }
 
-      if ( txt3DTimelineDelta->GetValue().ToDouble( &tmp ) )
-        extraControlTimelineDelta = tmp;
-      else
+      if ( !txt3DTimelineDelta->GetValue().ToDouble( &tmpExtraControlTimelineDelta ) )
       {
-        extraControlTimelineDelta = computeDelta( extraControlTimelineMin, extraControlTimelineMax );
-        errorMessage += _( "\t3D Timeline Delta : " ) +  formatNumber( extraControlTimelineDelta ) + _( "\n" );
+        errorMessage += _( "\tEXTRA CONTROL TIMELINE DELTA NOT VALID: Conversion Problems \n" );
+      }
+      if ( !std::isnan(tmpExtraControlTimelineMin) && !std::isnan(tmpExtraControlTimelineMax) && !std::isnan(tmpExtraControlTimelineDelta) )
+      {
+
+        if ( tmpExtraControlTimelineMax <= tmpExtraControlTimelineMin )
+        {
+          errorMessage += _( "\tEXTRA CONTROL TIMELINE MIN/MAX NOT VALID: Control Max is lower/equal than control timeline min\n" );
+        }
+        else
+        {
+          extraControlTimelineMin = tmpExtraControlTimelineMin;
+          extraControlTimelineMax = tmpExtraControlTimelineMax;
+
+          //Check Control timeline extra value delta valid        
+          if ( tmpExtraControlTimelineDelta <= 0 )
+            errorMessage += _( "\tEXTRA CONTROL TIMELINE DELTA NOT VALID: Value 0 or lower not allowed: " ) + formatNumber( controlTimelineMin ) + _( "\n" );
+          else
+            extraControlTimelineDelta = tmpExtraControlTimelineDelta;       
+        }
       }
     }
   }
   else
+  {
     extraControlTimelines.clear();
-
+  }
+  
   timeRange.clear();
 
   TRecordTime auxBegin, auxEnd;
@@ -492,14 +519,14 @@ bool HistogramDialog::TransferDataFromWindow()
                                               auxBegin );
   if ( !done )
   {
-    if( radioAllTrace->GetValue() )
-      auxBegin = 0.0;
-    else
-      auxBegin = controlTimelineSelected->getWindowBeginTime();
-    errorMessage += _( "\tBegin Time : " ) + formatNumber( auxBegin ) + _( "\n" );
+    errorMessage += _( "\tBEGIN TIME NOT VALID: Conversion Problems \n" );
   }
   else
+  {
     auxBegin = controlTimelineSelected->windowUnitsToTraceUnits( auxBegin );
+  }
+
+
 
   done = LabelConstructor::getTimeValue( std::string( txtEndTime->GetValue().mb_str() ),
                                          controlTimelineSelected->getTimeUnit(),
@@ -507,28 +534,38 @@ bool HistogramDialog::TransferDataFromWindow()
                                          auxEnd );
   if ( !done )
   {
-    if( radioAllTrace->GetValue() )
-      auxEnd = controlTimelineSelected->getTrace()->getEndTime();
-    else
-      auxEnd = controlTimelineSelected->getWindowEndTime();
-    errorMessage += _( "\tEnd Time : " ) + formatNumber( auxEnd ) + _( "\n" );
+    errorMessage += _( "\tEND TIME NOT VALID: Conversion Problems \n" );
   }
   else
+  {
     auxEnd = controlTimelineSelected->windowUnitsToTraceUnits( auxEnd );
+  }
 
-  timeRange.push_back( make_pair( auxBegin, auxEnd ) );
+  if (auxBegin >= auxEnd)
+  {
+    errorMessage += _( "\tBEGIN/END TIME NOT VALID: Begin is bigger than end \n" );
+  }
+  else
+  {
+    timeRange.push_back( make_pair( auxBegin, auxEnd ) );
+  }  
 
   if ( errorMessage != _( "" ) )
   {
-    wxString prefix = _( "Following substitutions will be applied:\n\n" );
+    wxString prefix = _( "Following values are not correct:\n\n" );
     wxMessageDialog message( this,
                              prefix + errorMessage,
-                             _( "Conversion problem" ),
+                             _( "Problem parameters" ),
                              wxOK | wxICON_EXCLAMATION );
     message.ShowModal();
+    return false;
+  }
+  else
+  {
+    return true;
   }
 
-  return true;
+  
 }
 
 
@@ -538,7 +575,7 @@ bool HistogramDialog::TransferDataFromWindow()
  */
 
 void HistogramDialog::OnOkClick( wxCommandEvent& event )
-{
+{ 
   if ( TransferDataFromWindow() )
   {
     EndModal( wxID_OK );
@@ -679,11 +716,12 @@ wxString HistogramDialog::formatNumber( double value )
   {
     auxSStr.imbue( std::locale::classic() );
   }
-  auxSStr.precision( ParaverConfig::getInstance()->getHistogramPrecision() );
+  auxSStr.precision( calculatePrecision(value) );
+
   auxSStr << fixed;
   auxSStr << value;
   auxNumber << wxString::FromUTF8( auxSStr.str().c_str() );
-
+  
   return auxNumber;
 }
 
@@ -694,7 +732,7 @@ TSemanticValue HistogramDialog::computeDelta( TSemanticValue min, TSemanticValue
 
   if ( max - min < ( TSemanticValue )1.0 )
     delta = ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns();
-  else if ( max - min <= ParaverConfig::getInstance()->getHistogramNumColumns() )
+  else if ( max - min <= ParaverConfig::getInstance()->getHistogramNumColumns() && controlTimelineSelected->isCodeColorSet())
     delta = (double )1.0;
   else
     delta = ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns();
