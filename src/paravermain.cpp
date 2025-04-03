@@ -3121,7 +3121,6 @@ Timeline *paraverMain::createBaseWindow( wxString whichName )
     CSVMetadata *tmpCSVMetadata = nullptr;
     if( tmpCurrentTrace->getMetadata().getMetadata< MetadataManager::TAppID::CSV >( tmpCSVMetadata ) )
     {
-      newWindow->setTimeUnit( tmpCSVMetadata->getTimeUnits() );
       newWindow->getSemanticColor().setColorMode( tmpCSVMetadata->getColorMode() );
     }
     auto& tmpLabels = newWindow->getTrace()->getEventLabels();
