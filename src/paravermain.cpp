@@ -3110,12 +3110,10 @@ Timeline *paraverMain::createBaseWindow( wxString whichName )
   for ( PRV_UINT16 windowLevel = TOPCOMPOSE1; windowLevel <= COMPOSECPU; windowLevel++ )
     newWindow->setLevelFunction( (TWindowLevel)windowLevel, "As Is" );
 
-  string semanticFunction = tmpCurrentTrace->getDefaultSemanticFunc( THREAD );
   std::string traceFileName = tmpCurrentTrace->getFileName() ;
   std::string traceFileExt = traceFileName.substr( traceFileName.length() - 3 ) ;
-  if ( semanticFunction != "" )
-    newWindow->setLevelFunction( THREAD, semanticFunction );
-  else if ( traceFileExt == "csv" )
+
+  if ( traceFileExt == "csv" )
   {
     newWindow->setLevelFunction( THREAD, "Last Evt Val" );
     CSVMetadata *tmpCSVMetadata = nullptr;
@@ -3123,6 +3121,7 @@ Timeline *paraverMain::createBaseWindow( wxString whichName )
     {
       newWindow->getSemanticColor().setColorMode( tmpCSVMetadata->getColorMode() );
     }
+
     auto& tmpLabels = newWindow->getTrace()->getEventLabels();
     map<TEventValue, string> tmpValues;
     if( tmpLabels.getValues( 1, tmpValues ) )
@@ -3134,6 +3133,7 @@ Timeline *paraverMain::createBaseWindow( wxString whichName )
   else
   {
     newWindow->setLevelFunction( THREAD, "State As Is" );
+
     auto& tmpStates = newWindow->getTrace()->getLoadedStates();
     if( !tmpStates.empty() )
     {
