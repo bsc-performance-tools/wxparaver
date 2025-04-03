@@ -73,6 +73,7 @@
 #include "sessionselectiondialog.h"
 #include "traceinformationdialog.h"
 #include "externalapps.h"
+#include "ParaverMetadataManager.h"
 
 #include <wx/display.h>
 #include <wx/process.h>
@@ -3075,8 +3076,9 @@ int paraverMain::initialPosY = 0;
 
 Timeline *paraverMain::createBaseWindow( wxString whichName )
 {
+  auto *tmpCurrentTrace = getCurrentTrace();
   // Create new window
-  Timeline *newWindow = Timeline::create( localKernel, getCurrentTrace() );
+  Timeline *newWindow = Timeline::create( localKernel, tmpCurrentTrace );
   ++numNewWindows;
 
   if ( whichName.IsEmpty() )
@@ -3086,20 +3088,13 @@ Timeline *paraverMain::createBaseWindow( wxString whichName )
   }
 
   newWindow->setName( std::string( whichName.mb_str() ) );
-  newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit());
-  newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
+  newWindow->setTimeUnit( tmpCurrentTrace->getTimeUnit());
+  newWindow->addZoom( 0, tmpCurrentTrace->getEndTime(),
                       0, newWindow->getWindowLevelObjects() - 1 );
 
   // Position window in screen
   newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
   newWindow->setHeight( defaultWindowSize.GetHeight() );
-
-  /*
-  if ( initialPosX != 0 )
-    initialPosX += defaultTitleBarSize.GetHeight();
-  else
-    initialPosX += GetSize().GetWidth();
-  */
 
 #ifdef __WXMAC__
   if( initialPosY < GetPosition().y )
@@ -3115,14 +3110,20 @@ Timeline *paraverMain::createBaseWindow( wxString whichName )
   for ( PRV_UINT16 windowLevel = TOPCOMPOSE1; windowLevel <= COMPOSECPU; windowLevel++ )
     newWindow->setLevelFunction( (TWindowLevel)windowLevel, "As Is" );
 
-  string semanticFunction = loadedTraces[ currentTrace ]->getDefaultSemanticFunc( THREAD );
-  std::string traceFileName = loadedTraces[ currentTrace ]->getFileName() ;
+  string semanticFunction = tmpCurrentTrace->getDefaultSemanticFunc( THREAD );
+  std::string traceFileName = tmpCurrentTrace->getFileName() ;
   std::string traceFileExt = traceFileName.substr( traceFileName.length() - 3 ) ;
   if ( semanticFunction != "" )
     newWindow->setLevelFunction( THREAD, semanticFunction );
-  else if ( traceFileExt == "csv" ) // csv
+  else if ( traceFileExt == "csv" )
   {
     newWindow->setLevelFunction( THREAD, "Last Evt Val" );
+    CSVMetadata *tmpCSVMetadata = nullptr;
+    if( tmpCurrentTrace->getMetadata().getMetadata< MetadataManager::TAppID::CSV >( tmpCSVMetadata ) )
+    {
+      newWindow->setTimeUnit( tmpCSVMetadata->getTimeUnits() );
+      newWindow->getSemanticColor().setColorMode( tmpCSVMetadata->getColorMode() );
+    }
     auto& tmpLabels = newWindow->getTrace()->getEventLabels();
     map<TEventValue, string> tmpValues;
     if( tmpLabels.getValues( 1, tmpValues ) )
