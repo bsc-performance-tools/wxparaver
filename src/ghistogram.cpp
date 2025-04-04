@@ -1461,8 +1461,8 @@ gHistogram* gHistogram::clone( bool showWindow, const std::vector< Timeline* >& 
 
   clonedGHistogram->ready = false;
 
-  LoadedWindows::getInstance()->add( clonedHistogram );
-  appendHistogram2Tree( clonedGHistogram );
+  // LoadedWindows::getInstance()->add( clonedHistogram );
+  // appendHistogram2Tree( clonedGHistogram );
   
   if ( !myHistogram->isDerivedHistogram() )
   {
@@ -1509,30 +1509,40 @@ gHistogram* gHistogram::clone( bool showWindow, const std::vector< Timeline* >& 
            sourceTimelines[ 2 ] != sourceTimelines[ 1 ] &&
            sourceTimelines[ 2 ] != sourceTimelines[ 0 ] )
         cloneTimeline( "EXTRA CONTROL", sourceTimelines[ 2 ], clonedHistogram->getExtraControlWindow() );
-    }      
+    } 
+    
+    LoadedWindows::getInstance()->add( clonedHistogram );
+    appendHistogram2Tree( clonedGHistogram );
   }
   else // isDerived
   {
-    std::vector< size_t > indexParents = { 0, 1 };
-    std::vector< Histogram * > tmpParents;
-    auto recursiveClone = [this]( int i )
-                          {
-                            gHistogram *tmpParent = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(),
-                                                                             GetHistogram()->getParent( i ) );
-                            std::vector< Timeline* > parentTimelines;
-                            parentTimelines.push_back( GetHistogram()->getParent( 0 )->getControlWindow() );
-                            parentTimelines.push_back( GetHistogram()->getParent( 0 )->getDataWindow() );
-                            if ( GetHistogram()->getParent( 0 )->getExtraControlWindow() != nullptr )
-                              parentTimelines.push_back( GetHistogram()->getParent( 0 )->getExtraControlWindow() );
+    // // std::vector< size_t > indexParents = { 0, 1 };
+    // // std::vector< Histogram * > tmpParents;
+    // // auto recursiveClone = [this]( int i )
+    // //                       {
+    // //                         gHistogram *tmpParent = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(),
+    // //                                                                          GetHistogram()->getParent( i ) );
+    // //                         std::vector< Timeline* > parentTimelines;
+    // //                         parentTimelines.push_back( GetHistogram()->getParent( 0 )->getControlWindow() );
+    // //                         parentTimelines.push_back( GetHistogram()->getParent( 0 )->getDataWindow() );
+    // //                         if ( GetHistogram()->getParent( 0 )->getExtraControlWindow() != nullptr )
+    // //                           parentTimelines.push_back( GetHistogram()->getParent( 0 )->getExtraControlWindow() );
 
-                            bool showWindow = false;
-                            return tmpParent->clone( showWindow, parentTimelines )->GetHistogram();
-                          };
-    std::transform( indexParents.cbegin(), indexParents.cend(), std::back_inserter( tmpParents ), recursiveClone );
+    // //                         bool showWindow = false;
+    // //                         return tmpParent->clone( showWindow, parentTimelines )->GetHistogram();
+    // //                       };
+    // // std::transform( indexParents.cbegin(), indexParents.cend(), std::back_inserter( tmpParents ), recursiveClone );
 
-    clonedGHistogram->myHistogram->setParents( tmpParents );
-    clonedGHistogram->myHistogram->setCurrentStat( clonedHistogram->getFirstStatistic() );
+    // clonedGHistogram->myHistogram->setParents( tmpParents );
+    //clonedGHistogram->myHistogram->setParents( myHistogram->getParent( 0 )->clone(), myHistogram->getParent( 1 )->clone() );
+    // clonedGHistogram->myHistogram->setCurrentStat( clonedHistogram->getFirstStatistic() );
+    //clonedGHistogram->myHistogram->setCurrentStat( clonedHistogram->getFirstStatistic() );
     clonedGHistogram->myHistogram->setDerivedOperation( clonedHistogram->getDerivedOperation() );
+
+    clonedGHistogram->adaptControlsForDerivedHistogram();
+
+    LoadedWindows::getInstance()->add( clonedHistogram );
+    appendHistogram2Tree( clonedGHistogram );  
 
     clonedGHistogram->myHistogram->setForceRecalc( true ); // testing execute?
   }
