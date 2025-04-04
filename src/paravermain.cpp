@@ -3675,7 +3675,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
           string composedName = beginDragHistogram->getName() + " " + tmpOperations[ "add" ] + " " + endDragHistogram->getName();
           tmpDerivedHistogram->setName( composedName );
           
-          tmpDerivedHistogram->setCurrentStat( tmpDerivedHistogram->getFirstStatistic() );
+          tmpDerivedHistogram->setCurrentStat( beginDragHistogram->getCurrentStat() );
 
           // Time
           tmpDerivedHistogram->setWindowBeginTime( beginDragHistogram->getBeginTime() );
