@@ -3666,7 +3666,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
         }
         else
         {
-          Histogram *tmpDerivedHistogram = Histogram::create( localKernel, beginDragHistogram, endDragHistogram );
+          Histogram *tmpDerivedHistogram = Histogram::create( localKernel, { beginDragHistogram, endDragHistogram } );
 
           std::map< std::string, std::string > tmpOperations;
           PRV_UINT32 dummyGroup = 0;
@@ -4249,7 +4249,9 @@ void paraverMain::UnloadTrace( int whichTrace )
     (*it)->clearDataWindow();
     (*it)->clearExtraControlWindow();
     (*it)->setShowWindow( false );
-    (*it)->setDestroy( true );
+
+    if( !(*it)->haveChildren() )
+      (*it)->setDestroy( true );
   }
 
   traceWorkspaces.erase( loadedTraces[ whichTrace ] );
