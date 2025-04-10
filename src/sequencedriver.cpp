@@ -218,7 +218,7 @@ vector<TSequenceStates> RunCarmAction::getStateDependencies() const
 
 bool RunCarmAction::execute( std::string whichTrace )
 {
-  bool errorFound = false;
+  bool errorFound = true;
 
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
@@ -231,17 +231,40 @@ bool RunCarmAction::execute( std::string whichTrace )
 
   runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
 
-  bool opened = wxparaverApp::mainWindow->DoLoadTrace( whichTrace );
-  if ( opened )
-  {
-    Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
-    bool dummyFound;
-    gTimeline *sourceTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyFound );
-    std::vector<Trace *> loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
-    gTimeline *clonedTimeline = sourceTimeline->clone( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ], US );
-  }
-  else
-    errorFound = true;
+  if ( !wxparaverApp::mainWindow->DoLoadTrace( whichTrace ) )
+    return errorFound;
+
+  // Create copy of source window but using whichTrace.
+  Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
+  bool dummyFound;
+  //gTimeline *sourceTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyFound );
+  std::vector<Trace *> loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
+  //gTimeline *clonedTimeline = sourceTimeline->clone( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ], US );
+  SaveOptions saveOptions = SaveOptions();
+  std::vector<Timeline *> windows = { sourceWindow };
+  std::vector<Histogram *> dummyHistograms;
+  std::vector<CFGS4DLinkedPropertiesManager> linkedProperties;
+
+  if ( !CFGLoader::saveCFG( saveOptions, windows, dummyHistograms, linkedProperties ) )
+    return errorFound;
+
+  windows.clear();
+  bool overrideChecks = true;
+  if ( !CFGLoader::loadCFG( sourceWindow->getKernel(),
+                            loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ],
+                            windows,
+                            dummyHistograms, 
+                            saveOptions,
+                            overrideChecks ) )
+    return errorFound;
+
+  Timeline *clonedWindow = windows.front();
+
+  wxTreeCtrl *allTracesPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( 0 );
+  wxTreeCtrl *currentPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( wxparaverApp::mainWindow->getTracePosition( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ] ) + 1 );
+
+  if ( clonedWindow->getChild() == nullptr )
+    BuildTree( wxparaverApp::mainWindow, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), clonedWindow );
 
   // Pass csv output files to carm dialog
   std::string tmpCSVFileName       = ( (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState ) )->getData();
@@ -251,7 +274,7 @@ bool RunCarmAction::execute( std::string whichTrace )
   runAppDialog->Show();
   runAppDialog->Raise();
   
-  return errorFound;
+  return false;
 }
 
 
@@ -580,7 +603,11 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
   tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
   tmpOptions->set_original_time( false ); //TODO: true? -- OFFSET?
-  tmpOptions->set_break_states( false );
+  tmpOptions->set_break_states( true );
+  tmpOptions->set_keep_boundary_events( true );
+  tmpOptions->set_remFirstStates( false );
+  tmpOptions->set_remLastStates( true );
+  tmpOptions->set_keep_all_events( true );
 
   OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
   tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameCarm );
