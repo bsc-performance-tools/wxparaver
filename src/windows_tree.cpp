@@ -34,9 +34,9 @@ wxTreeCtrl * createTree( wxImageList *imageList )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
   wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxTR_HIDE_ROOT|wxTR_DEFAULT_STYLE );
+                                         wxTR_HIDE_ROOT|wxTR_DEFAULT_STYLE|wxTR_MULTIPLE );
 #ifndef _WIN32
-  newTree->SetWindowStyle( wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_SINGLE );
+  newTree->SetWindowStyle( wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_MULTIPLE );
 #endif
   newTree->SetImageList( imageList );
   newTree->AddRoot( wxT( "Root" ), -1, -1, new TreeBrowserItemData( _( "Root" ), (gTimeline *)nullptr ) );
@@ -471,7 +471,7 @@ void iconizeWindows( wxTreeCtrl *tree,
       if( gTimeline *tmpTimeline = itemData->getTimeline() )
       {
         if( tmpTimeline->GetMyWindow()->getShowWindow() )
-          tmpTimeline->Show( iconize );
+          tmpTimeline->Show( true );
       }
       else if( gHistogram *tmpHistogram = itemData->getHistogram() )
       {

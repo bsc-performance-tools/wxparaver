@@ -2243,6 +2243,11 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
 void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+
+  wxArrayTreeItemIds selectedItems;
+  tmpTree->GetSelections(selectedItems); 
+
+
   if( tmpTree->GetParent()->GetId() == ID_DIRCTRLFILES )
   {
     wxFileName fileName( dirctrlFiles->GetPath() );
@@ -2257,29 +2262,41 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
     event.Skip();
     return;
   }
-  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
-  endDragWindow = nullptr;
-  if( gHistogram *histo = itemData->getHistogram() )
+  for (size_t i = 0; i < selectedItems.GetCount(); ++i)
   {
-    Histogram *tmpHisto = histo->GetHistogram();
+      wxTreeItemId selectedItem = selectedItems[i];
 
-    beginDragWindow = nullptr;
+      wxString itemText = tmpTree->GetItemText(selectedItem);
 
-    tmpHisto->setShowWindow( !tmpHisto->getShowWindow() );
-    if( tmpHisto->getShowWindow() )
-      histo->Raise();
+      TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+
+      endDragWindow = nullptr;
+
+      if( gHistogram *histo = itemData->getHistogram() )
+      {
+        Histogram *tmpHisto = histo->GetHistogram();
+
+        beginDragWindow = nullptr;
+
+        tmpHisto->setShowWindow( !tmpHisto->getShowWindow() );
+        if( tmpHisto->getShowWindow() )
+          histo->Raise();
+      }
+      else if( gTimeline *timeline = itemData->getTimeline() )
+      {
+        Timeline *tmpWin = timeline->GetMyWindow();
+
+        beginDragWindow = timeline->GetMyWindow();
+
+        tmpWin->setShowWindow( !tmpWin->getShowWindow() );
+        if( tmpWin->getShowWindow() )
+          timeline->Raise();
+      }
   }
-  else if( gTimeline *timeline = itemData->getTimeline() )
-  {
-    Timeline *tmpWin = timeline->GetMyWindow();
 
-    beginDragWindow = timeline->GetMyWindow();
 
-    tmpWin->setShowWindow( !tmpWin->getShowWindow() );
-    if( tmpWin->getShowWindow() )
-      timeline->Raise();
-  }
+  
 }
 
 
