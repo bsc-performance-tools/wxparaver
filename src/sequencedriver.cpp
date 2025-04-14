@@ -245,13 +245,15 @@ bool RunCarmAction::execute( std::string whichTrace )
   std::vector<Histogram *> dummyHistograms;
   std::vector<CFGS4DLinkedPropertiesManager> linkedProperties;
 
-  if ( !CFGLoader::saveCFG( saveOptions, windows, dummyHistograms, linkedProperties ) )
+  std::stringstream tmpCFG;
+  if ( !CFGLoader::saveCFG( tmpCFG, saveOptions, windows, dummyHistograms, linkedProperties ) )
     return errorFound;
 
   windows.clear();
   bool overrideChecks = true;
   if ( !CFGLoader::loadCFG( sourceWindow->getKernel(),
                             loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ],
+                            tmpCFG,
                             windows,
                             dummyHistograms, 
                             saveOptions,
@@ -602,7 +604,7 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   tmpOptions->set_by_time( true );
   tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
   tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
-  tmpOptions->set_original_time( false ); //TODO: true? -- OFFSET?
+  tmpOptions->set_original_time( false );
   tmpOptions->set_break_states( true );
   tmpOptions->set_keep_boundary_events( true );
   tmpOptions->set_remFirstStates( false );

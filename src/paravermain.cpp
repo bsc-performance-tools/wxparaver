@@ -980,116 +980,124 @@ bool paraverMain::DoLoadTrace( const string &path )
 
 bool paraverMain::DoLoadCFG( const string &path )
 {
-  if( !CFGLoader::isCFGFile( path ))
+  auto errorMessage = [this]( const wxString& whichTitle, const wxString& whichMessage, long whichStyle = wxOK|wxICON_ERROR )
   {
-    wxString errMessage = wxString::FromUTF8( path.c_str() ) + _( " isn't a valid cfg." );
-    wxMessageDialog message( this, errMessage, _( "Invalid file" ), wxOK );
+    wxMessageDialog message( this, whichMessage, whichTitle, whichStyle );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
+  };
+
+  if( !CFGLoader::isCFGFile( path ))
+  {
+    errorMessage( _( "Invalid file" ), wxString::FromUTF8( path.c_str() ) + _( " isn't a valid cfg." ) );
+    return false;
+  }
+
+  ifstream cfgFile( path.c_str() );
+  if ( !cfgFile.good() )
+  {
+    errorMessage( _( "Open error" ), _( "Unable to open " ) + wxString::FromUTF8( path.c_str() ) );
+    return false;
+  }
+
+  Trace *tmpTraceToUse = getCurrentTrace();
+
+  vector<Timeline *> newWindows;
+  vector<Histogram *> newHistograms;
+  SaveOptions options;
+
+  if( !CFGLoader::loadCFG( localKernel, tmpTraceToUse, cfgFile, newWindows, newHistograms, options ) )
+  {
+    errorMessage( _( "Loading error" ),
+                  wxString::FromUTF8( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromUTF8( CFGLoader::errorLine.c_str() ) + _( "'" ) );
+
+    for ( PRV_UINT32 i = 0; i < newHistograms.size(); ++i )
+    {
+      if ( newHistograms[ i ] != nullptr )
+        delete newHistograms[ i ];
+    }
+    newHistograms.clear();
+
+    for ( PRV_UINT32 i = 0; i < newWindows.size(); ++i )
+    {
+      if ( newWindows[ i ] != nullptr )
+        delete newWindows[ i ];
+    }
+    newWindows.clear();
   }
   else
   {
-    vector<Timeline *> newWindows;
-    vector<Histogram *> newHistograms;
-    SaveOptions options;
-
-    Trace *tmpTraceToUse = getCurrentTrace();
-
-    if( !CFGLoader::loadCFG( localKernel, path, tmpTraceToUse,
-                             newWindows, newHistograms, options ) )
+    if( !CFGLoader::errorLine.empty() )
     {
-      wxString errMessage = wxString::FromUTF8( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromUTF8( CFGLoader::errorLine.c_str() ) + _( "'" );
-      wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK|wxICON_ERROR );
-      raiseCurrentWindow = false;
-      message.ShowModal();
-      raiseCurrentWindow = true;
-      for ( PRV_UINT32 i = 0; i < newHistograms.size(); ++i )
-      {
-        if ( newHistograms[ i ] != nullptr )
-          delete newHistograms[ i ];
-      }
-      newHistograms.clear();
-
-      for ( PRV_UINT32 i = 0; i < newWindows.size(); ++i )
-      {
-        if ( newWindows[ i ] != nullptr )
-          delete newWindows[ i ];
-      }
-      newWindows.clear();
+      errorMessage( _( "Loading error" ),
+                    wxString::FromUTF8( path.c_str() ) + _( " loaded with error in:\n'" ) + wxString::FromUTF8( CFGLoader::errorLine.c_str() ) + _( "'" ),
+                    wxOK|wxICON_EXCLAMATION );
     }
-    else
+
+    wxTreeItemId child;
+    for( vector<Timeline *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
     {
-      if( !CFGLoader::errorLine.empty() )
+      wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+      wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( getTracePosition( tmpTraceToUse ) + 1 );
+
+      if ( (*it)->getChild() == nullptr )
+        BuildTree( this, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
+
+      if ( it + 1 == newWindows.end() )
       {
-        wxString errMessage = wxString::FromUTF8( path.c_str() ) + _( " loaded with error in:\n'" ) + wxString::FromUTF8( CFGLoader::errorLine.c_str() ) + _( "'" );
-        wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK|wxICON_EXCLAMATION );
-        raiseCurrentWindow = false;
-        message.ShowModal();
-        raiseCurrentWindow = true;
+        currentTimeline = *it;
+        currentHisto = nullptr;
       }
+    }
 
-      wxTreeItemId child;
-      for( vector<Timeline *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
+    int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
+    for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
+    {
+      wxPoint tmpPos( (*it)->getPosX(), (*it)->getPosY() );
+      if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
       {
-        wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
-        wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( getTracePosition( tmpTraceToUse ) + 1 );
-
-        if ( (*it)->getChild() == nullptr )
-          BuildTree( this, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
-
-        if ( it + 1 == newWindows.end() )
+        if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
         {
-          currentTimeline = *it;
-          currentHisto = nullptr;
+          wxDisplay tmpDisplay( currentDisplay );
+          tmpPos.x += tmpDisplay.GetGeometry().x;
+          tmpPos.y += tmpDisplay.GetGeometry().y;
+          if( tmpPos.x != (*it)->getPosX() ) (*it)->setPosX( tmpPos.x );
+          if( tmpPos.x != (*it)->getPosY() ) (*it)->setPosX( tmpPos.y );
         }
       }
-
-      int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
-      for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
-      {
-        wxPoint tmpPos( (*it)->getPosX(), (*it)->getPosY() );
-        if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
-        {
-          if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
-          {
-            wxDisplay tmpDisplay( currentDisplay );
-            tmpPos.x += tmpDisplay.GetGeometry().x;
-            tmpPos.y += tmpDisplay.GetGeometry().y;
-            if( tmpPos.x != (*it)->getPosX() ) (*it)->setPosX( tmpPos.x );
-            if( tmpPos.x != (*it)->getPosY() ) (*it)->setPosX( tmpPos.y );
-          }
-        }
 #if !__WXGTK__
-        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ), tmpPos );
+      gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ), tmpPos );
 #else
-        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
+      gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
 #endif
-        tmpHisto->SetHistogram( *it );
+      tmpHisto->SetHistogram( *it );
 
-        appendHistogram2Tree( tmpHisto );
-        LoadedWindows::getInstance()->add( (*it) );
+      appendHistogram2Tree( tmpHisto );
+      LoadedWindows::getInstance()->add( (*it) );
 
-        tmpHisto->SetClientSize( wxSize( (*it)->getWidth(), (*it)->getHeight() ) );
-        if( (*it)->getShowWindow() )
-        {
+      tmpHisto->SetClientSize( wxSize( (*it)->getWidth(), (*it)->getHeight() ) );
+      if( (*it)->getShowWindow() )
+      {
 #if __WXGTK__
-          tmpHisto->Move( tmpPos );
+        tmpHisto->Move( tmpPos );
 #endif
-          tmpHisto->Show();
-        }
-        tmpHisto->GetHistogram()->setRecalc( true );
-
-        if ( it + 1 == newHistograms.end() )
-        {
-          currentTimeline = nullptr;
-          currentHisto = *it;
-        }
+        tmpHisto->Show();
       }
+      tmpHisto->GetHistogram()->setRecalc( true );
 
-      previousCFGs->add( path );
+      if ( it + 1 == newHistograms.end() )
+      {
+        currentTimeline = nullptr;
+        currentHisto = *it;
+      }
     }
+
+    previousCFGs->add( path );
   }
+
+  cfgFile.close();
+
   return true;
 }
 
@@ -2961,7 +2969,7 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
                                          const vector<CFGS4DLinkedPropertiesManager>& linkedProperties )
 {
   if ( !CFGLoadedBefore )
-    CFGPath =  wxString::FromUTF8( paraverConfig->getGlobalCFGsPath().c_str() );
+    CFGPath = wxString::FromUTF8( paraverConfig->getGlobalCFGsPath().c_str() );
 
   vector< wxString > extensions;
   extensions.push_back( wxT( "cfg" ) );
@@ -2979,10 +2987,15 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
   if( dialog.ShowModal() == wxID_OK )
   {
     CFGPath = dialog.GetPath();
-    CFGLoadedBefore = true;
-
-    CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms, linkedProperties );
-    previousCFGs->add( std::string( CFGPath.mb_str() ) );
+    
+    std::string cfgFileName = std::string( CFGPath.mb_str() );
+    std::ofstream cfgFile( cfgFileName.c_str() );
+    if ( cfgFile.good() )
+    {
+      CFGLoader::saveCFG( cfgFile, options, timelines, histograms, linkedProperties );
+      previousCFGs->add( cfgFileName );
+      CFGLoadedBefore = true;
+    }
   }
 }
 

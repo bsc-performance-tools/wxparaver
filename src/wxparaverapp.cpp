@@ -701,9 +701,10 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
         vector<Histogram *> newHistograms;
         SaveOptions options;
 
-
-        if( CFGLoader::loadCFG( mainWindow->GetLocalKernel(), fileName, currentTrace,
-                                newWindows, newHistograms, options ) )
+        ifstream cfgFile( fileName.c_str() );
+        if ( cfgFile.good() &&
+             CFGLoader::loadCFG( mainWindow->GetLocalKernel(), currentTrace, cfgFile,
+                                 newWindows, newHistograms, options ) )
         {
           if( !newHistograms.empty() )
           {
@@ -761,6 +762,8 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             delete (*it);
           newWindows.clear();
         }
+
+        cfgFile.close();
       }
 
       fileName.erase();
