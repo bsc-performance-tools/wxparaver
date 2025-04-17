@@ -157,6 +157,8 @@ enum class PopUpMenuType
   POPUP_MENU_MAX_VALUE = 6,
 };
 
+
+
 class gPopUpMenu : public wxMenu
 {
 
@@ -219,6 +221,7 @@ class gPopUpMenu : public wxMenu
 
     // builder methods
 
+
     wxMenuItem *buildItem (
         wxMenu *baseMenuContainer, const wxString &titleMenuItem,
         const wxItemKind &typeMenuItem,
@@ -243,6 +246,20 @@ class gPopUpMenu : public wxMenu
     void buildPopUpMenuLabels ();
     void buildPopUpMenuSync ();
     void buildPopUpExtraPanel ();
+
+
+    struct BuildMenuItem {
+      wxMenu* menuBaseItem;
+      const wxString& labelStringItem;
+      wxItemKind kindItem;
+      void (gPopUpMenu::*functionHandler)(wxCommandEvent &);
+      int idItem;
+      bool customConditionItem = true; 
+      bool itemHasSeparator = false;
+    };
+
+    void buildListOfItems(std::vector<BuildMenuItem>& itemList );
+
 
     // Pop Up Menu Methods
   public:
@@ -303,7 +320,7 @@ class gPopUpMenu : public wxMenu
     void OnPopUpUndoZoom (wxCommandEvent &event);
     void OnPopUpRedoZoom (wxCommandEvent &event);
 
-    // TIMELINE
+    // MIX
     void OnPopUpDrawModeTimeLast (wxCommandEvent &event);
     void OnPopUpDrawModeTimeRandom (wxCommandEvent &event);
     void OnPopUpDrawModeTimeRandomNotZero (wxCommandEvent &event);
@@ -315,18 +332,7 @@ class gPopUpMenu : public wxMenu
     void OnPopUpDrawModeTimeAverageNotZero (wxCommandEvent &event);
     void OnPopUpDrawModeTimeMode (wxCommandEvent &event);
 
-    // Histogram
-    void OnPopUpDrawModeSemanticLast (wxCommandEvent &event);
-    void OnPopUpDrawModeSemanticRandom (wxCommandEvent &event);
-    void OnPopUpDrawModeSemanticRandomNotZero (wxCommandEvent &event);
-    void OnPopUpDrawModeSemanticMaximum (wxCommandEvent &event);
-    void OnPopUpDrawModeSemanticMinimumNotZero (wxCommandEvent &event);
-    void OnPopUpDrawModeSemanticAbsoluteMaximum (wxCommandEvent &event);
-    void OnPopUpDrawModeSemanticAbsoluteMinimumNotZero (wxCommandEvent &event);
-    void OnPopUpDrawModeSemanticAverage (wxCommandEvent &event);
-    void OnPopUpDrawModeSemanticAverageNotZero (wxCommandEvent &event);
-    void OnPopUpDrawModeSemanticMode (wxCommandEvent &event);
-
+   
     // MIX
     void OnPopUpDrawModeObjectsLast (wxCommandEvent &event);
     void OnPopUpDrawModeObjectsRandom (wxCommandEvent &event);
