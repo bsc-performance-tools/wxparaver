@@ -2287,7 +2287,7 @@ void gTimeline::OnPopUpPasteSpecial( wxCommandEvent& event )
 {
   wxArrayString choices;
 
-  wxMultiChoiceDialog *dialog = gPopUpMenu<gTimeline>::createPasteSpecialDialog( choices, this );
+  wxMultiChoiceDialog *dialog = gPopUpMenu::createPasteSpecialDialog( choices, this );
 
   if ( dialog->ShowModal() == wxID_OK )
   {
@@ -2297,8 +2297,8 @@ void gTimeline::OnPopUpPasteSpecial( wxCommandEvent& event )
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
         gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
-        if ( pasteActions->isAllowed( this, gPopUpMenu<gTimeline>::getOption( choices, selections[i] ) ) )
-          pasteActions->paste( this, gPopUpMenu<gTimeline>::getOption( choices, selections[i] ) );
+        if ( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[i] ) ) )
+          pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[i] ) );
       }
 
       myWindow->setRedraw( true );
@@ -2314,7 +2314,7 @@ void gTimeline::OnPopUpRowSelection( wxCommandEvent& event )
 {
   setEnableDestroyButton( false );
 
-  RowsSelectionDialog *dialog = gPopUpMenu<gTimeline>::createRowSelectionDialog( this );
+  RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
 
   if ( dialog->ShowModal() == wxID_OK )
   {
@@ -2764,12 +2764,17 @@ void gTimeline::OnPopUpRedoZoom( wxCommandEvent& event )
 
 void gTimeline::rightDownManager()
 {
-  gPopUpMenu<gTimeline> popUpMenu( this );
+  vector<gTimeline*> timelines;
+  timelines.push_back(this);
 
-  popUpMenu.enable( "Undo Zoom", !myWindow->emptyPrevZoom() );
-  popUpMenu.enable( "Redo Zoom", !myWindow->emptyNextZoom() );
+  gPopUpMenu popUpMenu( timelines );
 
-  popUpMenu.enableMenu( this );
+  popUpMenu.initializePopUpMenu();
+  popUpMenu.enablePopUpMenu( );
+  
+  popUpMenu.enableItemByTag( "Undo Zoom", !myWindow->emptyPrevZoom() );
+  popUpMenu.enableItemByTag( "Redo Zoom", !myWindow->emptyNextZoom() );
+
   PopupMenu( &popUpMenu );
 }
 
@@ -3445,15 +3450,16 @@ bool gTimeline::IsSplit() const
 
 void gTimeline::OnPopUpInfoPanel( wxCommandEvent& event )
 {
-  if( splitter->IsSplit() )
+  if( !event.IsChecked() )
   {
     canRedraw = false;
     infoZoneLastSize = infoZone->GetSize().GetHeight();
     splitter->Unsplit();
     Unsplit();
   }
-  else
+  else{
     Split();
+  }
 }
 
 void gTimeline::OnPopUpSaveCFG( wxCommandEvent& event )

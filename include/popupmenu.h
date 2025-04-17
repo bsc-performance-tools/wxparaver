@@ -21,16 +21,14 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-
 #pragma once
 
-
-#include <wx/menu.h>
-#include <wx/choicdlg.h>
-#include <wx/propdlg.h>
-#include <wx/generic/propdlg.h>
-#include "rowsselectiondialog.h"
 #include "copypaste.h"
+#include "rowsselectiondialog.h"
+#include <wx/choicdlg.h>
+#include <wx/generic/propdlg.h>
+#include <wx/menu.h>
+#include <wx/propdlg.h>
 
 #include <map>
 
@@ -145,34 +143,54 @@
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR                 30109
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR_2D              30110
 
-#define ID_MENU_SYNC_GROUP_BASE                            31000
-#define ID_MENU_SYNC_REMOVE_GROUP_BASE                     32000
+#define ID_MENU_SYNC_GROUP_BASE        31000
+#define ID_MENU_SYNC_REMOVE_GROUP_BASE 32000
 
-template< class T >
+enum class PopUpMenuType
+{
+  POPUP_MENU_INI = 0,
+  POPUP_MENU_TYPE_MIXED,
+  POPUP_MENU_TYPE_HISTOGRAM_SINGLE,
+  POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE,
+  POPUP_MENU_TYPE_TIMELINE_SINGLE,
+  POPUP_MENU_TYPE_TIMELINE_MULTIPLE,
+  POPUP_MENU_MAX_VALUE = 6,
+};
+
 class gPopUpMenu : public wxMenu
 {
 
   public:
-    gPopUpMenu() = delete;
-    
-    gPopUpMenu( T *whichWindow );
-    virtual ~gPopUpMenu() = default;
+    gPopUpMenu () = delete;
 
-    void enablePaste( const std::string tag, bool checkPaste );
-    void enable( const std::string tag, bool enable );
-    void enable( const std::string tag );
-    void disable( const std::string tag );
+    gPopUpMenu (std::vector<gHistogram *> wichHistogramDerivedList, std::vector<gTimeline *> wichTimelineDerivedList);
+    gPopUpMenu (std::vector<gHistogram *> wichHistogramDerivedList);
+    gPopUpMenu (std::vector<gTimeline *> wichTimelineDerivedList);
+    virtual ~gPopUpMenu () = default;
 
-    void enableMenu( T *whichWindow );
+    void initializePopUpMenu ();
 
-    static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, T *whichWindow );
-    // static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gTimeline *whichTimeline );
-    static RowsSelectionDialog *createRowSelectionDialog( T *whichWindow );
-    // static RowsSelectionDialog *createRowSelectionDialog( gHistogram *histogram );
-    static std::string getOption( wxArrayString& choices, int position );
+    void enablePopUpMenu ();
+
+    void enableItemByTag (const std::string tag, bool enable);
+    void enableItemByTag (const std::string tag);
+
+    void disableItemByTag (const std::string tag);
+
+    // Static functtions
+    static wxMultiChoiceDialog *createPasteSpecialDialog (wxArrayString &choices, gHistogram *whichWindow);
+    static wxMultiChoiceDialog *createPasteSpecialDialog (wxArrayString &choices, gTimeline *whichWindow);
+
+    static RowsSelectionDialog *createRowSelectionDialog (gHistogram *whichWindow);
+    static RowsSelectionDialog *createRowSelectionDialog (gTimeline *whichWindow);
+
+    static std::string getOption (wxArrayString &choices, int position);
 
   private:
-    T *window;
+    std::vector<gHistogram *> histogramDerivedList;
+    std::vector<gTimeline *> timelineDerivedList;
+
+    PopUpMenuType typeDataPopup;
 
     wxMenu *popUpMenuView;
     wxMenu *popUpMenuColor;
@@ -194,88 +212,161 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuSync;
     wxMenu *popUpMenuSyncRemove;
 
-    template< typename F >
-    wxMenuItem *buildItem( wxMenu *popUp,
-                           const wxString &title,
-                           wxItemKind itemType,
-                           F function,
-                           wxWindowID id,
-                           bool checked = false );
+    bool checkAllowedProperties (const char *property);
+
+    bool allWindowsHas (std::vector<gTimeline *> timelineWindows, std::function<bool (gTimeline *)> function);
+    bool allWindowsHas (std::vector<gHistogram *> histogramWindows, std::function<bool (gHistogram *)> function);
+
+    // builder methods
+
+    wxMenuItem *buildItem (
+        wxMenu *baseMenuContainer, const wxString &titleMenuItem,
+        const wxItemKind &typeMenuItem,
+        void (gPopUpMenu::*callbackFunctionMenuItem) (wxCommandEvent &),
+        const wxWindowID &windowId,
+        bool isChecked = false);
+
+    void buildPopUpMenuZoom ();
+    void buildPopUpMenuView ();
+    void buildPopUpMenuPaste ();
+    void buildPopUpMenuColor ();
+    void buildPopUpMenuPasteFilter ();
+    void buildPopUpMenuDimensionsConfiguration ();
+    void buildPopUpMenuFitSemantic ();
+    void buildPopUpMenuFitObjects ();
+    void buildPopUpMenuDrawMode ();
+    void buildPopUpMenuPixelSize ();
+    void buildPopUpMenuGradientFunction ();
+    void buildPopUpMenuObjectAxis ();
+    void buildPopUpMenuSave ();
+    void buildPopUpMenuRun ();
+    void buildPopUpMenuLabels ();
+    void buildPopUpMenuSync ();
+    void buildPopUpExtraPanel ();
+
+    // Pop Up Menu Methods
+  public:
+    // MIX
+    void OnPopUpCopy (wxCommandEvent &event);
+    void OnPopUpPasteDefaultSpecial (wxCommandEvent &event);
+    void OnPopUpPasteSpecial (wxCommandEvent &event);
+    void OnPopUpPasteTime (wxCommandEvent &event);
+    void OnPopUpPasteObjects (wxCommandEvent &event);
+    void OnPopUpPasteSize (wxCommandEvent &event);
+    void OnPopUpPasteDuration (wxCommandEvent &event);
+    void OnPopUpPasteSemanticScale (wxCommandEvent &event);
+    void OnPopUpPasteSemanticSort (wxCommandEvent &event);
+
+    // TIMELINE
+    void OnPopUpPasteCustomPalette (wxCommandEvent &event);
+    void OnPopUpPasteFilterAll (wxCommandEvent &event);
+    void OnPopUpPasteFilterCommunications (wxCommandEvent &event);
+    void OnPopUpPasteFilterEvents (wxCommandEvent &event);
+
+    // HISGORAM
+    void OnPopUpPasteControlScale (wxCommandEvent &event);
+    void OnPopUpPaste3DScale (wxCommandEvent &event);
+    void OnPopUpPasteControlDimensions (wxCommandEvent &event);
+
+    // MIX
+    void OnPopUpClone (wxCommandEvent &event);
+    void OnPopUpRename (wxCommandEvent &event);
+    void OnPopUpFitTimeScale (wxCommandEvent &event);
+    void OnPopUpFitObjects (wxCommandEvent &event);
+
+    // TIMELINE
+    void OnPopUpFitSemanticScaleMin (wxCommandEvent &event);
+    void OnPopUpFitSemanticScaleMax (wxCommandEvent &event);
+    void OnPopUpFitSemanticScale (wxCommandEvent &event);
+    void OnPopUpViewCommunicationLines (wxCommandEvent &event);
+    void OnPopUpViewEventFlags (wxCommandEvent &event);
+    void OnPopUpFunctionLineColor (wxCommandEvent &event);
+    void OnPopUpFusedLinesColor (wxCommandEvent &event);
+    void OnPopUpPunctualColor (wxCommandEvent &event);
+    void OnPopUpPunctualColorWindow (wxCommandEvent &event);
+    void OnPopUpCodeColor (wxCommandEvent &event);
+    void OnPopUpGradientColor (wxCommandEvent &event);
+    void OnPopUpNotNullGradientColor (wxCommandEvent &event);
+    void OnPopUpAlternativeGradientColor (wxCommandEvent &event);
+    void OnPopUpSemanticScaleMinAtZero (wxCommandEvent &event);
+    void OnPopUpRowSelection (wxCommandEvent &event);
+
+    // HISTOGRAM
+    void OnPopUpAutoControlScale (wxCommandEvent &event);
+    void OnPopUpAutoControlScaleZero (wxCommandEvent &event);
+    void OnPopUpAuto3DScale (wxCommandEvent &event);
+    void OnPopUpAutoDataGradient (wxCommandEvent &event);
+    void OnPopUpColor2D (wxCommandEvent &event);
+
+    // MIX
+    void OnPopUpGradientFunction (wxCommandEvent &event);
+    void OnPopUpUndoZoom (wxCommandEvent &event);
+    void OnPopUpRedoZoom (wxCommandEvent &event);
+
+    // TIMELINE
+    void OnPopUpDrawModeTimeLast (wxCommandEvent &event);
+    void OnPopUpDrawModeTimeRandom (wxCommandEvent &event);
+    void OnPopUpDrawModeTimeRandomNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeTimeMaximum (wxCommandEvent &event);
+    void OnPopUpDrawModeTimeMinimumNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeTimeAbsoluteMaximum (wxCommandEvent &event);
+    void OnPopUpDrawModeTimeAbsoluteMinimumNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeTimeAverage (wxCommandEvent &event);
+    void OnPopUpDrawModeTimeAverageNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeTimeMode (wxCommandEvent &event);
+
+    // Histogram
+    void OnPopUpDrawModeSemanticLast (wxCommandEvent &event);
+    void OnPopUpDrawModeSemanticRandom (wxCommandEvent &event);
+    void OnPopUpDrawModeSemanticRandomNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeSemanticMaximum (wxCommandEvent &event);
+    void OnPopUpDrawModeSemanticMinimumNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeSemanticAbsoluteMaximum (wxCommandEvent &event);
+    void OnPopUpDrawModeSemanticAbsoluteMinimumNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeSemanticAverage (wxCommandEvent &event);
+    void OnPopUpDrawModeSemanticAverageNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeSemanticMode (wxCommandEvent &event);
+
+    // MIX
+    void OnPopUpDrawModeObjectsLast (wxCommandEvent &event);
+    void OnPopUpDrawModeObjectsRandom (wxCommandEvent &event);
+    void OnPopUpDrawModeObjectsRandomNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeObjectsMaximum (wxCommandEvent &event);
+    void OnPopUpDrawModeObjectsMinimumNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeObjectsAbsoluteMaximum (wxCommandEvent &event);
+    void OnPopUpDrawModeObjectsAbsoluteMinimumNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeObjectsAverage (wxCommandEvent &event);
+    void OnPopUpDrawModeObjectsAverageNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeObjectsMode (wxCommandEvent &event);
+
+    void OnPopUpDrawModeBothLast (wxCommandEvent &event);
+    void OnPopUpDrawModeBothRandom (wxCommandEvent &event);
+    void OnPopUpDrawModeBothRandomNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeBothMaximum (wxCommandEvent &event);
+    void OnPopUpDrawModeBothMinimumNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeBothAbsoluteMaximum (wxCommandEvent &event);
+    void OnPopUpDrawModeBothAbsoluteMinimumNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeBothAverage (wxCommandEvent &event);
+    void OnPopUpDrawModeBothAverageNotZero (wxCommandEvent &event);
+    void OnPopUpDrawModeBothMode (wxCommandEvent &event);
+
+    void OnPopUpPixelSize (wxCommandEvent &event);
+    void OnPopUpSynchronize (wxCommandEvent &event);
+    void OnPopUpRemoveGroup (wxCommandEvent &event);
+    void OnPopUpRemoveAllGroups (wxCommandEvent &event);
+
+    // Timeline
+    void OnPopUpLabels (wxCommandEvent &event);
+    void OnPopUpObjectAxis (wxCommandEvent &event);
+    void OnPopUpRunApp (wxCommandEvent &event);
+
+    void OnPopUpTiming (wxCommandEvent &event);
+    void OnPopUpInfoPanel (wxCommandEvent &event);
+
+    // MIX
+    void OnPopUpSaveCFG (wxCommandEvent &event);
+    void OnPopUpSaveImageDialog (wxCommandEvent &event);
+
+    // Timeline
+    void OnPopUpSaveText (wxCommandEvent &event);
 };
-
-
-template< class T >
-template< typename F >
-wxMenuItem *gPopUpMenu<T>::buildItem( wxMenu *popUp,
-                                      const wxString &title,
-                                      wxItemKind itemType,
-                                      F function,
-                                      wxWindowID id,
-                                      bool checked )
-{
-  wxMenuItem *tmp;
-
-  tmp = new wxMenuItem( popUp, id, title, _( "" ), itemType );
-
-  popUp->Append( tmp );
-  if ( tmp->IsCheckable() )
-    tmp->Check( checked );
-
-#ifdef _WIN32
-  Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
-#else
-  popUp->Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
-#endif
-
-  return tmp;
-}
-
-
-template< class T >
-void gPopUpMenu<T>::enablePaste( const std::string tag, bool checkPaste )
-{
-  if ( checkPaste )
-  {
-    Enable( FindItem( _( STR_PASTE ) ),
-            gPasteWindowProperties::getInstance()->isAllowed( window, STR_PASTE ));
-    Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ),
-            gPasteWindowProperties::getInstance()->isAllowed( window, STR_PASTE_DEFAULT_SPECIAL ));
-    Enable( FindItem( _( STR_PASTE_SPECIAL ) ),
-            gPasteWindowProperties::getInstance()->isAllowed( window, STR_PASTE_SPECIAL ));
-
-  }
-  Enable( FindItem( wxString::FromUTF8( tag.c_str() ) ), gPasteWindowProperties::getInstance()->isAllowed( window, tag ));
-}
-
-
-template< class T >
-void gPopUpMenu<T>::enable( const std::string tag, bool enable )
-{
-  Enable( FindItem( wxString::FromUTF8( tag.c_str() ) ), enable );
-}
-
-
-template< class T >
-void gPopUpMenu<T>::enable( const std::string tag )
-{
-  Enable( FindItem( wxString::FromUTF8( tag.c_str() ) ), true );
-}
-
-
-template< class T >
-void gPopUpMenu<T>::disable( const std::string tag )
-{
-  Enable( FindItem( wxString::FromUTF8( tag.c_str() ) ), false );
-}
-
-
-template< class T >
-std::string gPopUpMenu<T>::getOption( wxArrayString& choices, int position )
-{
-  if ( choices[ position ].Cmp( _( STR_FILTER_COMMS_XT ) ) == 0 )
-    return std::string( STR_FILTER_COMMS );
-  else if ( choices[ position ].Cmp( _( STR_FILTER_EVENTS_XT ) ) == 0 )
-    return std::string( STR_FILTER_EVENTS );
-  else  
-    return std::string( choices[ position ].mb_str() );
-}

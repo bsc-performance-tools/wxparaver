@@ -1247,7 +1247,7 @@ void gHistogram::OnPopUpPasteSpecial( wxCommandEvent& event )
 {
   wxArrayString choices;
   
-  wxMultiChoiceDialog *dialog = gPopUpMenu<gHistogram>::createPasteSpecialDialog( choices, this );
+  wxMultiChoiceDialog *dialog = gPopUpMenu::createPasteSpecialDialog( choices, this );
 
   if ( dialog->ShowModal() == wxID_OK )
   {
@@ -1258,21 +1258,21 @@ void gHistogram::OnPopUpPasteSpecial( wxCommandEvent& event )
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
         gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
-        if ( pasteActions->isAllowed( this, gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) ) )
+        if ( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[i] ) ) )
         {
-          if ( gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) == "Time" )
+          if ( gPopUpMenu::getOption( choices, selections[i] ) == "Time" )
             recalc = true;
-          else if ( gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) == STR_CONTROL_SCALE )
+          else if ( gPopUpMenu::getOption( choices, selections[i] ) == STR_CONTROL_SCALE )
           {
             myHistogram->setCompute2DScale( false );
             recalc = true;
           }
-          else if ( gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) == STR_3D_SCALE )
+          else if ( gPopUpMenu::getOption( choices, selections[i] ) == STR_3D_SCALE )
           {
             myHistogram->setCompute3DScale( false );
             recalc = true;
           }
-          pasteActions->paste( this, gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) );
+          pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[i] ) );
         }
       }
 
@@ -1501,7 +1501,7 @@ void gHistogram::OnPopUpRowSelection( wxCommandEvent& event )
 {
   setEnableDestroyButton( false );
 
-  RowsSelectionDialog *dialog = gPopUpMenu<gHistogram>::createRowSelectionDialog( this );
+  RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
 
   if ( dialog->ShowModal() == wxID_OK )
   {
@@ -1925,13 +1925,17 @@ void gHistogram::OnPopUpRedoZoom( wxCommandEvent& event )
 
 void gHistogram::rightDownManager()
 {
-  paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
+  vector<gHistogram*> histogram;
+  histogram.push_back(this);
 
-  gPopUpMenu<gHistogram> popUpMenu( this );
-  popUpMenu.enable( "Undo Zoom", !GetHistogram()->emptyPrevZoom() );
-  popUpMenu.enable( "Redo Zoom", !GetHistogram()->emptyNextZoom() );
+  gPopUpMenu popUpMenu( histogram );
 
-  popUpMenu.enableMenu( this );
+  popUpMenu.initializePopUpMenu();
+  popUpMenu.enablePopUpMenu( );
+  
+  popUpMenu.enableItemByTag( "Undo Zoom", !GetHistogram()->emptyPrevZoom() );
+  popUpMenu.enableItemByTag( "Redo Zoom", !GetHistogram()->emptyNextZoom() );
+
   PopupMenu( &popUpMenu );
 }
 

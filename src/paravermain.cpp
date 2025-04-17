@@ -73,6 +73,7 @@
 #include "sessionselectiondialog.h"
 #include "traceinformationdialog.h"
 #include "externalapps.h"
+#include "popupmenu.h"
 
 #include <wx/display.h>
 #include <wx/process.h>
@@ -2312,19 +2313,44 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
     return;
   }
 
-  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
-  endDragWindow = nullptr;
+  wxArrayTreeItemIds selectedItems;
+  tmpTree->GetSelections(selectedItems); 
+  
 
-  if( gHistogram *histo = itemData->getHistogram() )
+  std::vector<gHistogram *> itemDataWindowHistogram;
+  std::vector<gTimeline *> itemDataWindowTimeline;
+
+  for (size_t i = 0; i < selectedItems.GetCount(); ++i)
   {
-    beginDragWindow = nullptr;
-    histo->rightDownManager();
+      wxTreeItemId selectedItem = selectedItems[i];
+
+      wxString itemText = tmpTree->GetItemText(selectedItem);
+      
+      TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+      endDragWindow = nullptr;
+    
+      if( gHistogram *histo = itemData->getHistogram() )
+      {
+        itemDataWindowHistogram.push_back(histo);
+        //beginDragWindow = nullptr;
+        //histo->rightDownManager();
+      }
+      else if( gTimeline *timeline = itemData->getTimeline() )
+      {
+        itemDataWindowTimeline.push_back(timeline);
+        //beginDragWindow = timeline->GetMyWindow();
+        //timeline->rightDownManager();
+      }
+      
   }
-  else if( gTimeline *timeline = itemData->getTimeline() )
-  {
-    beginDragWindow = timeline->GetMyWindow();
-    timeline->rightDownManager();
-  }
+
+  gPopUpMenu popUpMenu( itemDataWindowHistogram, itemDataWindowTimeline );
+  
+  popUpMenu.initializePopUpMenu();
+  popUpMenu.enablePopUpMenu(  );
+
+  PopupMenu( &popUpMenu );
+
 }
 
 
@@ -2348,8 +2374,11 @@ void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
   wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
   if ( !event.IsEditCancelled() )
   {
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( 
-        currentTree->GetItemData( currentTree->GetSelection() ) );
+
+    wxArrayTreeItemIds selectedItems;
+    currentTree->GetSelections(selectedItems); 
+
+    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( selectedItems[0] ) );
 
     if( gHistogram *histo = itemData->getHistogram() )
     {
@@ -2384,8 +2413,15 @@ gHistogram * paraverMain::GetSelectedHistogram()
 void paraverMain::renameTreeItem( ) 
 {
   wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
-  if( !currentTree->IsEmpty() )
-    currentTree->EditLabel( currentTree->GetSelection() );
+
+  wxArrayTreeItemIds selectedItems;
+  currentTree->GetSelections(selectedItems); 
+
+  if (currentTree->GetSelections(selectedItems) == 1){
+    wxString itemText = currentTree->GetItemText(selectedItems[0]);
+    currentTree->EditLabel( selectedItems[0] );
+    }
+    
 }
 
 
