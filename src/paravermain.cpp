@@ -2362,7 +2362,12 @@ void paraverMain::OnTreeKeyPress( wxKeyEvent& event )
   wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
 
   if ( event.GetKeyCode() == WXK_F2 && !currentTree->IsEmpty() )
-    currentTree->EditLabel( currentTree->GetSelection() );
+  {
+    wxArrayTreeItemIds selectedItems;
+    currentTree->GetSelections(selectedItems); 
+
+    currentTree->EditLabel( selectedItems[0] );
+  }
 }
 
 
@@ -2405,7 +2410,10 @@ gTimeline * paraverMain::GetSelectedTimeline()
 gHistogram * paraverMain::GetSelectedHistogram()
 {
   wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
-  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( currentTree->GetSelection() ) );
+  wxArrayTreeItemIds selectedItems;
+  currentTree->GetSelections(selectedItems); 
+  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( selectedItems[0] ) );
+
   return itemData->getHistogram();
 }
 
@@ -2418,7 +2426,6 @@ void paraverMain::renameTreeItem( )
   currentTree->GetSelections(selectedItems); 
 
   if (currentTree->GetSelections(selectedItems) == 1){
-    wxString itemText = currentTree->GetItemText(selectedItems[0]);
     currentTree->EditLabel( selectedItems[0] );
     }
     
@@ -2983,9 +2990,12 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
     currentTrace = selPage - 1;
 
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
-  if( tree->GetSelection().IsOk() )
+  wxArrayTreeItemIds selectedItems;
+  tree->GetSelections(selectedItems); 
+  TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[0] ) );
+  if( !item )
   {
-    TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
+
     if( item->getTimeline() != nullptr )
     {
       currentWindow = item->getTimeline();
@@ -3965,28 +3975,72 @@ bool paraverMain::getUsedBySomeHistogram( Timeline *whichWindow, bool deleteAllT
 
 void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 {
-  if( currentHisto != nullptr )
-    currentHisto->setDestroy( true );
-
-  if( currentTimeline != nullptr )
+  wxTreeCtrl *tmpTree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
+ 
+ // wxTreeCtrl* tmpTree = wxDynamicCast(this->FindWindow(ID_MY_TREECTRL), wxTreeCtrl);
+  if( tmpTree->GetParent()->GetId() == ID_DIRCTRLFILES )
   {
-    wxArrayInt dummyArray;
-    if( !getUsedBySomeHistogram( currentTimeline, false, dummyArray ) )
+    event.Skip();
+    return;
+  }
+
+  wxArrayTreeItemIds selectedItems;
+  tmpTree->GetSelections(selectedItems); 
+  
+
+  std::vector<gHistogram *> itemDataWindowHistogram;
+  std::vector<gTimeline *> itemDataWindowTimeline;
+
+  for (size_t i = 0; i < selectedItems.GetCount(); ++i)
+  {
+      wxTreeItemId selectedItem = selectedItems[i];
+
+      wxString itemText = tmpTree->GetItemText(selectedItem);
+      
+      TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    
+      if( gHistogram *histo = itemData->getHistogram() )
+      {
+        itemDataWindowHistogram.push_back(histo);
+      }
+      else if( gTimeline *timeline = itemData->getTimeline() )
+      {
+        itemDataWindowTimeline.push_back(timeline);
+      }
+      
+  }
+  for (gHistogram *histo: itemDataWindowHistogram)
+  {
+    if( histo != nullptr )
+    histo->GetHistogram()->setDestroy( true );
+  }
+
+  for (gTimeline *timeline: itemDataWindowTimeline)
+  {
+    if( timeline != nullptr )
     {
-      if( currentTimeline->getChild() != nullptr )
-        wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
+      wxArrayInt dummyArray;
+      if( !getUsedBySomeHistogram( timeline->GetMyWindow(), false, dummyArray ) )
+      {
+        if( timeline->GetMyWindow()->getChild() != nullptr )
+          wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
+                        _( "Paraver information" ),
+                        wxOK | wxICON_INFORMATION );
+        else
+        timeline->GetMyWindow()->setDestroy( true );
+      }
+      else
+      {
+        wxMessageBox( _( "Cannot delete windows used by histograms." ),
                       _( "Paraver information" ),
                       wxOK | wxICON_INFORMATION );
-      else
-        currentTimeline->setDestroy( true );
-    }
-    else
-    {
-      wxMessageBox( _( "Cannot delete windows used by histograms." ),
-                    _( "Paraver information" ),
-                    wxOK | wxICON_INFORMATION );
+      }
     }
   }
+ 
+
+
+  
 }
 
 
@@ -4498,9 +4552,12 @@ void paraverMain::OnKeyCopy()
   wxCommandEvent dummyEvent;
 
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
-  if( !tree->GetSelection().IsOk() )
+  wxArrayTreeItemIds selectedItems;
+  tree->GetSelections(selectedItems); 
+  TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[0] ) );
+
+  if( !item )
     return;
-  TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
   if( item->getTimeline() != nullptr )
     item->getTimeline()->OnPopUpCopy( dummyEvent );
   else if( item->getHistogram() != nullptr )
@@ -4513,9 +4570,11 @@ void paraverMain::OnKeyPaste()
   wxCommandEvent dummyEvent;
 
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
-  if( !tree->GetSelection().IsOk() )
+  wxArrayTreeItemIds selectedItems;
+  tree->GetSelections(selectedItems); 
+  TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[0] ) );
+  if( !item )
     return;
-  TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
   if( item->getTimeline() != nullptr )
     item->getTimeline()->OnPopUpPasteDefaultSpecial( dummyEvent );
   else if( item->getHistogram() != nullptr )
@@ -4526,9 +4585,12 @@ void paraverMain::OnKeyPaste()
 void paraverMain::OnFindDialog()
 {
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
-  if( !tree->GetSelection().IsOk() )
+  wxArrayTreeItemIds selectedItems;
+  tree->GetSelections(selectedItems); 
+  TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[0] ) );
+
+  if( !item )
     return;
-  TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
   if( item->getTimeline() != nullptr )
   {
     item->getTimeline()->setEnableDestroyButton( false );
