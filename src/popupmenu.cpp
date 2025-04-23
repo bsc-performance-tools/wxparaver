@@ -260,7 +260,6 @@ void gPopUpMenu ::buildPopUpMenuPaste ()
       {popUpMenuPaste, _ (STR_CUSTOM_PALETTE), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteCustomPalette, ID_MENU_PASTE_CUSTOM_PALETTE},
   };
 
-  // Items para el submenú Filter
   std::vector<BuildMenuItem>
       pasteItemsFilterSubmenu = {
           {popUpMenuPasteFilter, _ (STR_FILTER_ALL), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteFilterAll, ID_MENU_PASTE_FILTER_ALL},
@@ -324,13 +323,11 @@ void gPopUpMenu ::buildPopUpMenuColor ()
        true},
   };
 
-  // Agrega ítems según tipo de popup
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
   {
     buildListOfItems (popUpColorTimelineItems);
   }
 
-  // Comunes a todos
   buildListOfItems (popUpColorCommonItems);
 }
 
@@ -395,17 +392,14 @@ void gPopUpMenu ::buildPopUpMenuFitObjects ()
 
       {this, _ (STR_FIT_OBJECTS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpFitObjects, ID_MENU_FIT_OBJECTS}};
 
-  // Agregamos los items a su respectivo menú
   buildListOfItems (fitItemsCommon);
 
-  // Si el tipo de menú es de tipo HISTOGRAM_SINGLE o TIMELINE_SINGLE, agregamos el ítem adicional
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
   {
     this->buildItem (this, _ ("Select Objects..."), wxITEM_NORMAL,
                      &gPopUpMenu::OnPopUpRowSelection, ID_MENU_ROW_SELECTION);
   }
 
-  // Si el tipo de menú es de tipo HISTOGRAM_SINGLE o HISTOGRAM_MULTIPLE, agregamos los ítems adicionales
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE)
   {
     std::vector<BuildMenuItem> fitItemsHistogram = {
@@ -421,10 +415,8 @@ void gPopUpMenu ::buildPopUpMenuFitObjects ()
          allWindowsHas (histogramDerivedList, static_cast<std::function<bool (gHistogram *)>> ([] (gHistogram *win)
                                                                                                { return win->GetHistogram ()->getComputeGradient (); }))}};
 
-    // Agregamos los ítems de "Auto Fit" al menú
     buildListOfItems (fitItemsHistogram);
 
-    // Agregamos el ítem de "Auto Fit 3D Scale" si es necesario
     if (allWindowsHas (histogramDerivedList, [] (gHistogram *win)
                        { return win->GetHistogram ()->getThreeDimensions (); }))
     {

@@ -2210,7 +2210,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   endDragWindow = nullptr;
   if( gHistogram *histo = itemData->getHistogram() ) // Is a histogram?
   {
-    if(!event.GetItem().IsOk())
+    if(tmpTree->IsSelected(event.GetItem()))
     {
       currentHisto = histo->GetHistogram();
       currentWindow = (wxWindow *)histo;
@@ -2219,11 +2219,11 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
       beginDragWindow = nullptr;
       if( histo->IsShown() )
         histo->Raise();
-    }
+     }
   }
   else if( gTimeline *timeline = itemData->getTimeline() ) // Is a timeline.
   {
-    if(!event.GetItem().IsOk())
+    if(tmpTree->IsSelected(event.GetItem()))
     {
       currentTimeline = timeline->GetMyWindow();
       beginDragWindow = timeline->GetMyWindow();
@@ -2405,20 +2405,57 @@ void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
 
 gTimeline * paraverMain::GetSelectedTimeline()
 {
-  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
-  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( currentTree->GetSelection() ) );
-  return itemData->getTimeline();
+  wxTreeCtrl *tmpTree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
+  wxArrayTreeItemIds selectedItems;
+  
+  tmpTree->GetSelections(selectedItems); 
+
+  for (size_t i = 0; i < selectedItems.GetCount(); ++i)
+  {
+      wxTreeItemId selectedItem = selectedItems[i];
+
+      wxString itemText = tmpTree->GetItemText(selectedItem);
+      
+      TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    
+      if( gTimeline *timeline = itemData->getTimeline() )
+      {
+        if(timeline->GetMyWindow() == paraverMain::myParaverMain->GetCurrentTimeline())
+        {
+          return timeline;
+        }
+      }
+      
+  }
+  return nullptr;
 }
 
 
 gHistogram * paraverMain::GetSelectedHistogram()
 {
-  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
+  wxTreeCtrl *tmpTree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
   wxArrayTreeItemIds selectedItems;
-  currentTree->GetSelections(selectedItems); 
-  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( selectedItems[0] ) );
+  
+  tmpTree->GetSelections(selectedItems); 
 
-  return itemData->getHistogram();
+  for (size_t i = 0; i < selectedItems.GetCount(); ++i)
+  {
+      wxTreeItemId selectedItem = selectedItems[i];
+
+      wxString itemText = tmpTree->GetItemText(selectedItem);
+      
+      TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    
+      if( gHistogram *histo = itemData->getHistogram() )
+      {
+        if(histo->GetHistogram () == paraverMain::myParaverMain->GetCurrentHisto())
+        {
+          return histo;
+        }
+      }
+      
+  }
+  return nullptr;
 }
 
 

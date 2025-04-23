@@ -1090,11 +1090,11 @@ void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
 {
   // if timeline is not on visible, show it
   gTimeline * timeline = paraverMain::myParaverMain->GetSelectedTimeline();
-  if ( timeline != nullptr && 
-       timeline->GetMyWindow() == paraverMain::myParaverMain->GetCurrentTimeline() &&
-       !timeline->IsShown() )  
+  
+  if ( timeline != nullptr && !timeline->IsShown() )  
   {
     Timeline *tmpWin = timeline->GetMyWindow();
+    
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
 
     if( tmpWin->getShowWindow() )
