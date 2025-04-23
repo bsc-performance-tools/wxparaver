@@ -177,6 +177,8 @@ void gPopUpMenu::initializePopUpMenu ()
   this->AppendSeparator ();
 
   this->buildPopUpExtraPanel ();
+
+  this->buildPopUpRunApp ();
 }
 
 /*************************************************************/
@@ -191,12 +193,7 @@ void gPopUpMenu ::buildPopUpMenuZoom ()
         {this, _ (STR_UNDO_ZOOM), wxITEM_NORMAL, &gPopUpMenu::OnPopUpUndoZoom, wxID_UNDO},
         {this, _ (STR_REDO_ZOOM), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRedoZoom, wxID_REDO}};
 
-    for (const auto &item : zoomItems)
-    {
-
-      this->buildItem (item.menuBaseItem, item.labelStringItem, item.kindItem,
-                       item.functionHandler, item.idItem, item.customConditionItem);
-    }
+    buildListOfItems (zoomItems);
   }
 }
 void gPopUpMenu ::buildListOfItems (std::vector<BuildMenuItem> &itemList)
@@ -904,6 +901,31 @@ void gPopUpMenu ::buildPopUpMenuSync ()
                                 _ (STR_SYNC_REMOVE_GROUP));
 
   AppendSubMenu (popUpMenuSync, _ (STR_SYNCHRONIZE));
+}
+
+void gPopUpMenu::buildPopUpRunApp ()
+{
+  if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
+  {
+    auto suitableApps = (*timelineDerivedList.begin ())->GetMyWindow ()->getTrace ()->getSuitableApps ();
+
+    this->buildItem (popUpMenuRun, _ ("Cutter"), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_CUTTER);
+
+    if (suitableApps[(int)TExternalAppID::DIMEMAS])
+      this->buildItem (popUpMenuRun, ExternalApps::getApplicationLabel (TExternalAppID::DIMEMAS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_DIMEMAS);
+
+    if (suitableApps[(int)TExternalAppID::CLUSTERING])
+      this->buildItem (popUpMenuRun, ExternalApps::getApplicationLabel (TExternalAppID::CLUSTERING), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_CLUSTERING);
+
+    if (suitableApps[(int)TExternalAppID::FOLDING])
+      this->buildItem (popUpMenuRun, ExternalApps::getApplicationLabel (TExternalAppID::FOLDING), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_FOLDING);
+
+    if (suitableApps[(int)TExternalAppID::PROFET])
+      this->buildItem (popUpMenuRun, ExternalApps::getApplicationLabel (TExternalAppID::PROFET), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_PROFET);
+
+    this->buildItem (popUpMenuRun, ExternalApps::getApplicationLabel (TExternalAppID::USER_COMMAND), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_USER_COMMAND);
+    AppendSubMenu (popUpMenuRun, _ ("Run"));
+  }
 }
 
 void gPopUpMenu::buildPopUpExtraPanel ()

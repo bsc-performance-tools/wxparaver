@@ -153,8 +153,7 @@ enum class PopUpMenuType
   POPUP_MENU_TYPE_HISTOGRAM_SINGLE,
   POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE,
   POPUP_MENU_TYPE_TIMELINE_SINGLE,
-  POPUP_MENU_TYPE_TIMELINE_MULTIPLE,
-  POPUP_MENU_MAX_VALUE = 6,
+  POPUP_MENU_TYPE_TIMELINE_MULTIPLE
 };
 
 
@@ -166,6 +165,8 @@ class gPopUpMenu : public wxMenu
     gPopUpMenu () = delete;
 
     gPopUpMenu (std::vector<gHistogram *> wichHistogramDerivedList, std::vector<gTimeline *> wichTimelineDerivedList);
+    //TODO: Change vector to only ne element if the timeline/histogram creates itself
+    
     gPopUpMenu (std::vector<gHistogram *> wichHistogramDerivedList);
     gPopUpMenu (std::vector<gTimeline *> wichTimelineDerivedList);
     virtual ~gPopUpMenu () = default;
@@ -246,6 +247,7 @@ class gPopUpMenu : public wxMenu
     void buildPopUpMenuLabels ();
     void buildPopUpMenuSync ();
     void buildPopUpExtraPanel ();
+    void buildPopUpRunApp();
 
 
     struct BuildMenuItem {
@@ -262,7 +264,7 @@ class gPopUpMenu : public wxMenu
 
 
     // Pop Up Menu Methods
-  public:
+  private:
     // MIX
     void OnPopUpCopy (wxCommandEvent &event);
     void OnPopUpPasteDefaultSpecial (wxCommandEvent &event);
