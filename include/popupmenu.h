@@ -234,7 +234,6 @@ class gPopUpMenu : public wxMenu
     void buildPopUpMenuView ();
     void buildPopUpMenuPaste ();
     void buildPopUpMenuColor ();
-    void buildPopUpMenuPasteFilter ();
     void buildPopUpMenuDimensionsConfiguration ();
     void buildPopUpMenuFitSemantic ();
     void buildPopUpMenuFitObjects ();

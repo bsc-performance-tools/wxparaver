@@ -133,8 +133,6 @@ void gPopUpMenu::initializePopUpMenu ()
 
   this->buildPopUpMenuPaste ();
 
-  this->buildPopUpMenuPasteFilter ();
-
   this->buildItem (this, _ (STR_CLONE), wxITEM_NORMAL, &gPopUpMenu::OnPopUpClone,
                    ID_MENU_CLONE);
 
@@ -280,7 +278,11 @@ void gPopUpMenu ::buildPopUpMenuPaste ()
   }
 
   buildListOfItems (pasteItemsExtraCommon);
-  buildListOfItems (pasteItemsFilterSubmenu);
+
+  if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
+  {
+    buildListOfItems (pasteItemsFilterSubmenu);
+  }
 
   popUpMenuPaste->AppendSubMenu (popUpMenuPasteFilter, _ (STR_FILTER));
 
@@ -332,19 +334,6 @@ void gPopUpMenu ::buildPopUpMenuColor ()
   buildListOfItems (popUpColorCommonItems);
 }
 
-void gPopUpMenu ::buildPopUpMenuPasteFilter ()
-{
-
-  std::vector<BuildMenuItem> pasteItemsFilterSubmenu = {
-      {popUpMenuPasteFilter, _ (STR_FILTER_ALL), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteFilterAll, ID_MENU_PASTE_FILTER_ALL},
-
-      {popUpMenuPasteFilter, _ (STR_FILTER_COMMS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteFilterCommunications, ID_MENU_PASTE_FILTER_COMMS},
-
-      {popUpMenuPasteFilter, _ (STR_FILTER_EVENTS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteFilterEvents, ID_MENU_PASTE_FILTER_EVENTS},
-  };
-
-  buildListOfItems (pasteItemsFilterSubmenu);
-}
 
 void gPopUpMenu ::buildPopUpMenuDimensionsConfiguration ()
 {
