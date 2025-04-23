@@ -2210,27 +2210,31 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   endDragWindow = nullptr;
   if( gHistogram *histo = itemData->getHistogram() ) // Is a histogram?
   {
-    currentHisto = histo->GetHistogram();
-    currentWindow = (wxWindow *)histo;
+    if(!event.GetItem().IsOk())
+    {
+      currentHisto = histo->GetHistogram();
+      currentWindow = (wxWindow *)histo;
 
-    currentTimeline = nullptr;
-    beginDragWindow = nullptr;
-
-    if( histo->IsShown() )
-      histo->Raise();
+      currentTimeline = nullptr;
+      beginDragWindow = nullptr;
+      if( histo->IsShown() )
+        histo->Raise();
+    }
   }
   else if( gTimeline *timeline = itemData->getTimeline() ) // Is a timeline.
   {
-    currentTimeline = timeline->GetMyWindow();
-    beginDragWindow = timeline->GetMyWindow();
-    currentWindow = (wxWindow *)timeline;
+    if(!event.GetItem().IsOk())
+    {
+      currentTimeline = timeline->GetMyWindow();
+      beginDragWindow = timeline->GetMyWindow();
+      currentWindow = (wxWindow *)timeline;
 
-    currentHisto = nullptr;
+      currentHisto = nullptr;
 
-    if( timeline->IsShown() )
-      timeline->Raise();
+      if( timeline->IsShown() )
+        timeline->Raise();
+    }
   }
-
   if( choiceWindowBrowser->GetSelection() == 0 )
   {
     refreshMenuHints();
