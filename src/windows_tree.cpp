@@ -68,6 +68,9 @@ void appendHistogram2Tree( gHistogram *ghistogram )
   // Refresh tree in current page and always in global page
   wxTreeCtrl *allTracesPage = getAllTracesTree();
   wxTreeCtrl *currentPage = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
+
+  currentPage->UnselectAll();
+  
   TreeBrowserItemData *currentData =  new TreeBrowserItemData( wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), ghistogram );
 
   wxTreeItemId tmpCurrentWindowId;
@@ -264,6 +267,9 @@ void BuildTree( paraverMain *parent,
                 Timeline *window,
                 string nameSuffix )
 {
+  root1->UnselectAll();
+  root2->UnselectAll();
+
   wxTreeItemId currentWindowId1, currentWindowId2;
   TreeBrowserItemData *currentData;
 

@@ -4599,6 +4599,44 @@ void paraverMain::OnFindDialog()
   }
 }
 
+void  paraverMain::OnSyncNewGroup()
+{
+  SyncWindows::getInstance()->newGroup(); 
+}
+
+void paraverMain::OnSyncWindows(TGroupId& wichGroup)
+{
+  if(!SyncWindows::getInstance()-> isGroupCreated(wichGroup) )
+  {
+    wxMessageBox(wxString::Format("Group %d does not exist", wichGroup), "Warning",wxOK | wxICON_INFORMATION);
+    return;
+  }
+  wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>(choiceWindowBrowser->GetCurrentPage() );
+
+  wxArrayTreeItemIds selectedItems;
+  tmpTree->GetSelections(selectedItems); 
+  
+
+  for (size_t i = 0; i < selectedItems.GetCount(); ++i)
+  {
+      wxTreeItemId selectedItem = selectedItems[i];
+      
+      TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    
+      if( gHistogram *histo = itemData->getHistogram() )
+      {
+        histo->OnPopUpSynchronizeById(wichGroup);
+      }
+      else if( gTimeline *timeline = itemData->getTimeline() )
+      {
+        timeline->OnPopUpSynchronizeById(wichGroup);
+      }
+      
+  }
+
+
+}
+
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_CUT_TRACE
  */

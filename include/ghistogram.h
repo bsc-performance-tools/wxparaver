@@ -408,6 +408,9 @@ public:
   void OnPopUpPixelSize( wxCommandEvent& event );
   
   void OnPopUpSynchronize( wxCommandEvent& event );
+  void OnPopUpSynchronizeById( TGroupId& wichGroup );
+
+
   void OnPopUpRemoveGroup( wxCommandEvent& event );
   void OnPopUpRemoveAllGroups( wxCommandEvent& event );
 

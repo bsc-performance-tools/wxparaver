@@ -146,6 +146,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_UPDATE_UI( ID_SLIDER_BLUE, gTimeline::OnSliderSelectedColorUpdateUI )
   EVT_TEXT( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdated )
   EVT_UPDATE_UI( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdate )
+  EVT_ACTIVATE( gTimeline::OnActivateWindow )
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -2680,6 +2681,23 @@ void gTimeline::OnPopUpSynchronize( wxCommandEvent& event )
     else
       myWindow->addToSyncGroup( group );
   }
+}
+
+
+void gTimeline::OnPopUpSynchronizeById( TGroupId wichGroup )
+{
+  if(!SyncWindows::getInstance()-> isGroupCreated(wichGroup) )
+  {
+    wxMessageBox("Group not exist", "Warning",wxOK | wxICON_INFORMATION);
+  }
+  else
+  {
+    if( myWindow->isSync() && wichGroup == myWindow->getSyncGroup() )
+      myWindow->removeFromSync();
+    else
+      myWindow->addToSyncGroup( wichGroup );
+  }
+  
 }
 
 
@@ -6559,6 +6577,11 @@ void gTimeline::OnTextSelectedColorUpdated( wxCommandEvent& event )
     myWindow->getSemanticColor().setCustomColor( selectedCustomColor->myValue, tmpRGBColor );
 
   enableApplyButton = true;
+}
+
+void gTimeline::OnActivateWindow(wxActivateEvent& event)
+{
+
 }
 
 

@@ -578,7 +578,9 @@ public:
   void OnKeyPaste();
 #endif // _WIN32
   void OnFindDialog();
-  
+  void OnSyncWindows(TGroupId& wichGroup);
+  void OnSyncNewGroup();
+
   void DoLoadSession( const std::string &whichFileName );
   bool DoLoadTrace( const std::string &path );
   void UnloadTrace( int whichTrace );

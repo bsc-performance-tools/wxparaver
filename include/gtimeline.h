@@ -276,6 +276,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TEXT_RED
   void OnTextSelectedColorUpdate( wxUpdateUIEvent& event );
 
+  void OnActivateWindow(wxActivateEvent& event);
+
+
 ////@end gTimeline event handler declarations
 
   void MousePanMotion();
@@ -593,6 +596,8 @@ public:
   void OnPopUpRunApp( wxCommandEvent& event );
 
   void OnPopUpSynchronize( wxCommandEvent& event );
+  void OnPopUpSynchronizeById( TGroupId wichGroup );
+
   void OnPopUpRemoveGroup( wxCommandEvent& event );
   void OnPopUpRemoveAllGroups( wxCommandEvent& event );
 

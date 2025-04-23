@@ -1849,6 +1849,17 @@ void gHistogram::OnPopUpSynchronize( wxCommandEvent& event )
   }
 }
 
+void gHistogram::OnPopUpSynchronizeById( TGroupId& wichGroup )
+{
+  if(SyncWindows::getInstance()-> isGroupCreated(wichGroup) )
+  {
+    if( myHistogram->isSync() && wichGroup == myHistogram->getSyncGroup() )
+      myHistogram->removeFromSync();
+    else
+      myHistogram->addToSyncGroup( wichGroup );
+  }
+}
+
 
 void gHistogram::OnPopUpRemoveGroup( wxCommandEvent& event )
 {

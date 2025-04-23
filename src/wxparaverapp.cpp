@@ -873,6 +873,13 @@ int wxparaverApp::FilterEvent(wxEvent& event)
           SessionSaver::LoadSession( dialog.GetPath() );
         }
       }
+      else if (keyCode >= '1' && keyCode <= '9') {
+        // It's a number key from 0 to 9
+        TGroupId number = keyCode - '0' - 1;  // Convert char to int (e.g., '3' -> 3)
+        mainWindow->OnSyncWindows(number);
+      } 
+      else if (keyCode == (long) 'N')
+        mainWindow->OnSyncNewGroup();
       else if ( keyCode == (long) 'F' )
         mainWindow->OnFindDialog();
       else if ( keyCode == (long) 'Q' )
