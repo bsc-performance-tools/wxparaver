@@ -791,12 +791,10 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
   if ( propgrid->IsMainButtonEvent(event) )
   {
     bool parentIsGtimeline = false;
-    RowsSelectionDialog *dialog = new RowsSelectionDialog( (wxWindow *)propgrid,
-                                                           myTimeline,
-                                                           &mySelectedRows,
-                                                           ID_ROWSSELECTIONDIALOG,
-                                                           myWindowName,
-                                                           parentIsGtimeline );
+    bool isProcessModel = ((myTimeline->getLevel () >= TTraceLevel::WORKLOAD) && (myTimeline->getLevel () <= TTraceLevel::THREAD));
+
+    RowsSelectionDialog *dialog = new RowsSelectionDialog (myTimeline->getTrace(), isProcessModel, myTimeline->getSelectedRows ());
+  
     wxparaverApp::mainWindow->SetOpenedPropertyDialog( dialog );
     
     if ( dialog->ShowModal() == wxID_OK )
