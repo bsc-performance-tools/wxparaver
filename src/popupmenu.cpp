@@ -25,6 +25,7 @@
 #include <iostream>
 #include <optional>
 #include <wx/event.h>
+#include <wx/msgdlg.h>
 
 #include "popupmenu.h"
 
@@ -394,11 +395,8 @@ void gPopUpMenu ::buildPopUpMenuFitObjects ()
 
   buildListOfItems (fitItemsCommon);
 
-  if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
-  {
-    this->buildItem (this, _ ("Select Objects..."), wxITEM_NORMAL,
-                     &gPopUpMenu::OnPopUpRowSelection, ID_MENU_ROW_SELECTION);
-  }
+  this->buildItem (this, _ ("Select Objects..."), wxITEM_NORMAL,
+                   &gPopUpMenu::OnPopUpRowSelection, ID_MENU_ROW_SELECTION);
 
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE)
   {
@@ -1065,6 +1063,10 @@ void gPopUpMenu::enablePopUpMenu ()
     this->Enable (FindItem (_ (STR_UNDO_ZOOM)),
                   !(*timelineDerivedList.begin ())->GetMyWindow ()->emptyPrevZoom ());
   }
+
+  this->Enable (FindItem (_ ("Select Objects...")),
+          isSelectObjectsAvailable ());
+
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE)
   {
     popUpMenuColor->Enable (FindItem (_ ("Punctual Window...")), allWindowsHas (timelineDerivedList, [] (gTimeline *window)
@@ -1270,16 +1272,209 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog (wxArrayString &choice
   return tmpDialog;
 }
 
+bool gPopUpMenu ::isSelectObjectsAvailable ()
+{
+
+  bool sameTraceParameters = true;
+  bool sameTraceLevelMode = true;
+  bool isProcessModel;
+
+  Trace *trace = nullptr;
+  TTraceLevel dataLevel;
+  SelectionManagement<TObjectOrder, TTraceLevel> *whichSelectedRows;
+
+  auto isProcessModelCheck = [&] (TTraceLevel traceLevel) -> bool
+  {
+    return ((traceLevel >= TTraceLevel::WORKLOAD) && (traceLevel <= TTraceLevel::THREAD));
+  };
+
+  if (!timelineDerivedList.empty ())
+  {
+    auto timeline = (*timelineDerivedList.begin ());
+    trace = timeline->GetMyWindow ()->getTrace ();
+    isProcessModel = isProcessModelCheck (timeline->GetMyWindow ()->getLevel ());
+    whichSelectedRows = timeline->GetMyWindow ()->getSelectedRows ();
+
+    for (gTimeline *timeline : timelineDerivedList)
+    {
+      if (!trace->isSameObjectStruct (timeline->GetMyWindow ()->getTrace (), true))
+      {
+        sameTraceParameters = false;
+        break;
+      }
+      if (!(isProcessModel == isProcessModelCheck (timeline->GetMyWindow ()->getLevel ())))
+      {
+        sameTraceLevelMode = false;
+        break;
+      }
+    }
+  }
+  if (!histogramDerivedList.empty () && sameTraceParameters && sameTraceLevelMode)
+  {
+    if (trace == nullptr)
+    {
+      trace = (*histogramDerivedList.begin ())->GetHistogram ()->getDataWindow ()->getTrace ();
+      isProcessModel = isProcessModelCheck ((*histogramDerivedList.begin ())->GetHistogram ()->getDataWindow ()->getLevel ());
+    }
+
+    for (gHistogram *histogram : histogramDerivedList)
+    {
+      if (!trace->isSameObjectStruct (histogram->GetHistogram ()->getDataWindow ()->getTrace (), true))
+      {
+        sameTraceParameters = false;
+        break;
+      }
+      if (!(isProcessModel == isProcessModelCheck (histogram->GetHistogram ()->getDataWindow ()->getLevel ())))
+      {
+        sameTraceLevelMode = false;
+        break;
+      }
+    }
+  }
+  return (sameTraceParameters && sameTraceLevelMode);
+}
+
+void gPopUpMenu ::createRowSelectionDialog ()
+{
+  bool isInitialized = false;
+  bool isProcessModel = false;
+  Trace *trace = nullptr;
+ SelectionManagement<TObjectOrder, TTraceLevel> *intersectionSelectedRows = new SelectionManagement<TObjectOrder, TTraceLevel> ();
+
+  SelectionManagement<TObjectOrder, TTraceLevel> *whichSelectedRows;
+  for (gTimeline *itTimeline : timelineDerivedList)
+  {
+    whichSelectedRows = itTimeline->GetMyWindow ()->getSelectedRows ();
+
+    if (!isInitialized)
+    {
+      intersectionSelectedRows->copy (*whichSelectedRows);
+      isProcessModel = ((itTimeline->GetMyWindow ()->getLevel () >= TTraceLevel::WORKLOAD) && (itTimeline->GetMyWindow ()->getLevel () <= TTraceLevel::THREAD));
+      trace = itTimeline->GetMyWindow ()->getTrace ();
+
+      isInitialized = true;
+    }
+    else
+    {
+      intersectionSelectedRows->setIntersection (*whichSelectedRows);
+    }
+  }
+  for (gHistogram *itHistogram : histogramDerivedList)
+  {
+    whichSelectedRows = itHistogram->GetHistogram ()->getRowSelectionManagement ();
+
+    if (!isInitialized)
+    {
+      intersectionSelectedRows->copy (*whichSelectedRows);
+      isProcessModel = ((itHistogram->GetHistogram ()->getDataWindow ()->getLevel () >= TTraceLevel::WORKLOAD)
+                        && (itHistogram->GetHistogram ()->getDataWindow ()->getLevel () <= TTraceLevel::THREAD));
+      trace = itHistogram->GetHistogram ()->getDataWindow ()->getTrace ();
+
+      isInitialized = true;
+    }
+    else
+    {
+      intersectionSelectedRows->setIntersection (*whichSelectedRows);
+    }
+  }
+
+  RowsSelectionDialog *myDialog = new RowsSelectionDialog (trace, isProcessModel, intersectionSelectedRows);
+
+  if (myDialog->ShowModal () == wxID_OK)
+  {
+
+    bool applyZoom = ZoomAwareTransferData(myDialog);
+    
+    transferDataSelectionToObjects (myDialog,isProcessModel, intersectionSelectedRows, applyZoom);    
+  }
+
+  delete myDialog;
+  delete intersectionSelectedRows;
+}
+bool gPopUpMenu::ZoomAwareTransferData(RowsSelectionDialog *myDialog)
+{
+  auto isZoomAware = true;
+  bool applyZoom = true;
+
+  for (gTimeline *timeline : timelineDerivedList)
+  {
+    if(!isZoomAware) break;
+    isZoomAware = myDialog->isZoomAwareTransferData( timeline->GetMyWindow()->getCurrentZoomRange() ); 
+  }
+
+  for (gHistogram *histogram : histogramDerivedList)
+  {
+    if(!isZoomAware) break;
+    isZoomAware = myDialog->isZoomAwareTransferData( histogram->GetHistogram()->getCurrentZoomRange() ); 
+  }
+  if(!isZoomAware)
+  {
+    wxString tmpMsg = wxT("Do you want to extend the zoom to fit selected objects?");
+    int answer = wxMessageBox(tmpMsg, _("Paraver question"), wxYES_NO | wxICON_QUESTION, myDialog);
+    
+    applyZoom = (answer == wxYES);
+  }
+  return applyZoom;
+
+
+}
+void gPopUpMenu ::transferDataSelectionToObjects (RowsSelectionDialog *myDialog, bool isProcessModel, SelectionManagement<TObjectOrder, TTraceLevel> *intersectionSelectedRows, bool applyZoom)
+{
+  TTraceLevel beginLevel;
+  TTraceLevel endLevel;
+
+  // Set range of levels for update loop
+  if (isProcessModel)
+  {
+    beginLevel = TTraceLevel::APPLICATION;
+    endLevel = TTraceLevel::THREAD;
+  }
+  else
+  {
+    beginLevel = TTraceLevel::NODE;
+    endLevel = TTraceLevel::CPU;
+  }
+
+  // Loop through levels to update gTimeline
+  for (TTraceLevel whichLevel = beginLevel; whichLevel <= endLevel; ++whichLevel)
+  {
+    std::vector<bool> whichSelected;
+    intersectionSelectedRows->getSelected (whichSelected, whichLevel);
+
+    for (gTimeline *timeline : timelineDerivedList)
+    {
+      auto zoomAware = myDialog->isZoomAwareTransferData( timeline->GetMyWindow()->getCurrentZoomRange() );
+      if(applyZoom && !zoomAware)
+      {
+        timeline->GetMyWindow ()->addZoom( myDialog->GetNewBeginZoom(), myDialog->GetNewEndZoom() );
+      }
+      timeline->GetMyWindow ()->setSelectedRows (whichLevel, whichSelected);
+      timeline->GetMyWindow ()->setRedraw (true);
+      timeline->GetMyWindow ()->setChanged (true);   
+
+    }
+    for (gHistogram *histogram : histogramDerivedList)
+    {
+      std::vector< TObjectOrder > selection;
+      histogram->GetHistogram ()->getRowSelectionManagement()->getSelected (selection, histogram-> GetHistogram ()->getDataWindow ()->getLevel ());
+      
+      auto zoomAware = myDialog->isZoomAwareTransferData( selection );
+      if (applyZoom && !zoomAware)
+      {
+        histogram->GetHistogram ()->addZoom( myDialog->GetNewBeginZoom(), myDialog->GetNewEndZoom() );
+      }
+      histogram->GetHistogram ()->getRowSelectionManagement()->setSelected (whichSelected, whichLevel);
+      histogram->GetHistogram ()->setRecalc( true );
+    }
+  }
+}
+
 RowsSelectionDialog *
 gPopUpMenu ::createRowSelectionDialog (gTimeline *whichTimeline)
 {
-  bool parentIsgPopUpMenu = true;
+  bool isProcessModel = ((whichTimeline->GetMyWindow ()->getLevel () >= TTraceLevel::WORKLOAD) && (whichTimeline->GetMyWindow ()->getLevel () <= TTraceLevel::THREAD));
 
-  RowsSelectionDialog *myDialog = new RowsSelectionDialog (
-      (wxWindow *)whichTimeline, whichTimeline->GetMyWindow (),
-      whichTimeline->GetMyWindow ()->getSelectedRows (),
-      ID_ROWSSELECTIONDIALOG, _ ("Timeline Row Selection"),
-      parentIsgPopUpMenu);
+  RowsSelectionDialog *myDialog = new RowsSelectionDialog (whichTimeline->GetMyWindow ()->getTrace(), isProcessModel, whichTimeline->GetMyWindow ()->getSelectedRows ());
 
   return myDialog;
 }
@@ -1287,13 +1482,10 @@ gPopUpMenu ::createRowSelectionDialog (gTimeline *whichTimeline)
 RowsSelectionDialog *
 gPopUpMenu::createRowSelectionDialog (gHistogram *histogram)
 {
-  bool parentIsgPopUpMenu = true;
+  bool isProcessModel = ((histogram->GetHistogram ()->getDataWindow ()->getLevel () >= TTraceLevel::WORKLOAD)
+          && (histogram->GetHistogram ()->getDataWindow ()->getLevel () <= TTraceLevel::THREAD));
 
-  RowsSelectionDialog *myDialog = new RowsSelectionDialog (
-      (wxWindow *)histogram, histogram->GetHistogram (),
-      histogram->GetHistogram ()->getRowSelectionManagement (),
-      ID_ROWSSELECTIONDIALOG, _ ("Histogram Row Selection"),
-      parentIsgPopUpMenu);
+  RowsSelectionDialog *myDialog = new RowsSelectionDialog (histogram->GetHistogram ()->getTrace(), isProcessModel, histogram->GetHistogram ()->getRowSelectionManagement ());
 
   return myDialog;
 }
@@ -1613,15 +1805,7 @@ void gPopUpMenu::OnPopUpSemanticScaleMinAtZero (wxCommandEvent &event)
 // HISTOGRAM
 void gPopUpMenu::OnPopUpRowSelection (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpRowSelection (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpRowSelection (event);
-  }
+    createRowSelectionDialog ();
 }
 void gPopUpMenu::OnPopUpAutoControlScale (wxCommandEvent &event)
 {

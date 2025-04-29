@@ -2197,43 +2197,69 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
  */
 void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
 {
-  wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
-  if( tmpTree->GetParent()->GetId() == ID_DIRCTRLFILES ||
-      !event.GetItem().IsOk() )
+  wxTreeCtrl *tmpTree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
+  if(tmpTree == nullptr)
   {
-    event.Skip();
-    return;
+     return;
   }
+  wxArrayTreeItemIds selectedItems;
+  
+  tmpTree->GetSelections(selectedItems); 
 
-  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+  TreeBrowserItemData *itemSelected = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+  bool hasTimeline = false;
+  bool hasHistogram = false;
 
-  endDragWindow = nullptr;
-  if( gHistogram *histo = itemData->getHistogram() ) // Is a histogram?
+  for (size_t i = 0; i < selectedItems.GetCount(); ++i)
   {
-    if(tmpTree->IsSelected(event.GetItem()))
-    {
-      currentHisto = histo->GetHistogram();
-      currentWindow = (wxWindow *)histo;
+      wxTreeItemId selectedItem = selectedItems[i];
 
-      currentTimeline = nullptr;
-      beginDragWindow = nullptr;
-      if( histo->IsShown() )
-        histo->Raise();
-     }
+      wxString itemText = tmpTree->GetItemText(selectedItem);
+      
+      TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+      
+      if(itemSelected == itemData)
+      {
+        if( gTimeline *timeline = itemSelected->getTimeline() )
+        {
+          currentTimeline = timeline->GetMyWindow();
+          beginDragWindow = timeline->GetMyWindow();
+          currentWindow = (wxWindow *)timeline;
+    
+          currentHisto = nullptr;
+    
+          if( timeline->IsShown() )
+            timeline->Raise();
+        }
+        else if( gHistogram *histo = itemSelected->getHistogram() ) // Is a histogram?
+        {
+          currentHisto = histo->GetHistogram();
+          currentWindow = (wxWindow *)histo;
+
+          beginDragWindow = nullptr;
+          if( histo->IsShown() )
+            histo->Raise();
+        }
+      }
+      
+      if( gTimeline *timeline = itemData->getTimeline() )
+      {
+       hasTimeline = true;
+       if(currentTimeline == nullptr) currentTimeline =  timeline->GetMyWindow();
+      } 
+      else if( gHistogram *histo = itemData->getHistogram() )
+      {
+        hasHistogram = true;
+        if(currentHisto == nullptr && !histo->GetHistogram()->getDestroy()) currentHisto =  histo->GetHistogram();
+      }  
   }
-  else if( gTimeline *timeline = itemData->getTimeline() ) // Is a timeline.
+  if(!hasTimeline)
   {
-    if(tmpTree->IsSelected(event.GetItem()))
-    {
-      currentTimeline = timeline->GetMyWindow();
-      beginDragWindow = timeline->GetMyWindow();
-      currentWindow = (wxWindow *)timeline;
-
-      currentHisto = nullptr;
-
-      if( timeline->IsShown() )
-        timeline->Raise();
-    }
+    currentTimeline  = nullptr;
+  }
+  if(!hasHistogram)
+  {
+    currentHisto  = nullptr;
   }
   if( choiceWindowBrowser->GetSelection() == 0 )
   {
@@ -3033,22 +3059,24 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
   wxArrayTreeItemIds selectedItems;
   tree->GetSelections(selectedItems); 
-  TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[0] ) );
-  if( !item )
-  {
+  if( !selectedItems.empty() ){
+    TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[0] ) );
+    if( !item )
+    {
 
-    if( item->getTimeline() != nullptr )
-    {
-      currentWindow = item->getTimeline();
-      currentTimeline = item->getTimeline()->GetMyWindow();
-      beginDragWindow = currentTimeline;
-      currentHisto = nullptr;
-    }
-    else if( item->getHistogram() != nullptr )
-    {
-      currentWindow = item->getHistogram();
-      currentHisto = item->getHistogram()->GetHistogram();
-      currentTimeline = nullptr;
+      if( item->getTimeline() != nullptr )
+      {
+        currentWindow = item->getTimeline();
+        currentTimeline = item->getTimeline()->GetMyWindow();
+        beginDragWindow = currentTimeline;
+        currentHisto = nullptr;
+      }
+      else if( item->getHistogram() != nullptr )
+      {
+        currentWindow = item->getHistogram();
+        currentHisto = item->getHistogram()->GetHistogram();
+        currentTimeline = nullptr;
+      }
     }
   }
 
@@ -3577,11 +3605,13 @@ void paraverMain::OnTreeBeginDrag( wxTreeEvent& event )
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
   beginDragWindow = nullptr;
-
-  if( gTimeline *timeline = itemData->getTimeline() )
+  if(itemData != nullptr)
   {
-    beginDragWindow = timeline->GetMyWindow();
-    event.Allow();
+    if( gTimeline *timeline = itemData->getTimeline() )
+    {
+      beginDragWindow = timeline->GetMyWindow();
+      event.Allow();
+    }
   }
 }
 
@@ -4078,9 +4108,8 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
       }
     }
   }
- 
-
-
+  currentTimeline = nullptr;
+  currentHisto = nullptr;
   
 }
 

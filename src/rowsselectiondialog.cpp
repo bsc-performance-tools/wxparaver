@@ -76,87 +76,37 @@ RowsSelectionDialog::RowsSelectionDialog()
   Init();
 }
 
-// Constructor for Timelines
-RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
-                                          Timeline *whichTimeline,
-                                          SelectionManagement< TObjectOrder, TTraceLevel > *whichSelectedRows,
-                                          wxWindowID id,
-                                          const wxString& caption,
-                                          bool whichParentIsGtimeline,
-                                          const wxPoint& pos,
-                                          const wxSize& size,
-                                          long style ) :
-        myTimeline( whichTimeline ), mySelectedRows( whichSelectedRows ), parentIsGtimeline( whichParentIsGtimeline )
-                                          
+// Generic Constructor
+RowsSelectionDialog::RowsSelectionDialog (
+  Trace *dataTrace,
+  bool isTraceLevelProcessParam,
+  SelectionManagement<TObjectOrder, TTraceLevel>* whichSelectedRows)
+: myTrace(dataTrace), isTraceLevelProcess(isTraceLevelProcessParam), mySelectedRowsAux (whichSelectedRows),lockedByUpdate(false)
+
 {
-  Init();
-  Create( parent, id, caption, pos, size, style );
+  Init ();
+  Create (this, ID_ROWSSELECTIONDIALOG, _ ("Row Selection"), SYMBOL_ROWSSELECTIONDIALOG_POSITION, SYMBOL_ROWSSELECTIONDIALOG_SIZE, SYMBOL_ROWSSELECTIONDIALOG_STYLE);
 
-  myHistogram = nullptr;
-  myLevel = myTimeline->getLevel();
-  myTrace = myTimeline->getTrace();
-  lockedByUpdate = false;
-
-  if ( ( myLevel >= TTraceLevel::SYSTEM ) && ( myLevel <= TTraceLevel::CPU ) )
+  if (!isTraceLevelProcess)
   {
+    maxLevel = TTraceLevel::CPU;
     minLevel = TTraceLevel::NODE;
-    buildPanel( wxT("Node"), TTraceLevel::NODE );
-    buildPanel( wxT("CPU"), TTraceLevel::CPU );
+    buildPanel (wxT ("Node"), TTraceLevel::NODE);
+    buildPanel (wxT ("CPU"), TTraceLevel::CPU);
   }
-  else if ( ( myLevel >= TTraceLevel::WORKLOAD ) && ( myLevel <= TTraceLevel::THREAD ) )
+  else 
   {
+    maxLevel = TTraceLevel::THREAD;
     minLevel = TTraceLevel::APPLICATION;
-    buildPanel( _("Application"), TTraceLevel::APPLICATION );
-    buildPanel( _("Task"), TTraceLevel::TASK );
-    buildPanel( _("Thread"), TTraceLevel::THREAD );
+    buildPanel (_ ("Application"), TTraceLevel::APPLICATION);
+    buildPanel (_ ("Task"), TTraceLevel::TASK);
+    buildPanel (_ ("Thread"), TTraceLevel::THREAD);
   }
-  
-  LayoutDialog();
-  Centre();
+
+  // TODO: REpetido, check si es al principio o al final
+  LayoutDialog ();
+  Centre ();
 }
-
-// Constructor for Histograms
-RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
-                                          Histogram* histogram,
-                                          SelectionManagement< TObjectOrder, TTraceLevel > *whichSelectedRows,
-                                          wxWindowID id,
-                                          const wxString& caption,
-                                          bool whichParentIsGtimeline,
-                                          const wxPoint& pos,
-                                          const wxSize& size,
-                                          long style ) :
-        myHistogram( histogram ), mySelectedRows( whichSelectedRows ), parentIsGtimeline( whichParentIsGtimeline )                       
-{
-  Init();
-  Create( parent, id, caption, pos, size, style );
-  
-  SelectionManagement< TObjectOrder, TTraceLevel > sm = ( *myHistogram->getRowSelectionManagement() );
-  vector< TObjectOrder > rowsel;
-  sm.getSelected( rowsel, myHistogram->getControlWindow()->getLevel() );
-
-  myTimeline = nullptr;
-  myLevel = myHistogram->getControlWindow()->getLevel();
-  myTrace = myHistogram->getTrace();
-  lockedByUpdate = false;
-
-  if (( myLevel >= TTraceLevel::SYSTEM ) && ( myLevel <= TTraceLevel::CPU ))
-  {
-    minLevel = TTraceLevel::NODE;
-    buildPanel( wxT("Node"), TTraceLevel::NODE );
-    buildPanel( wxT("CPU"), TTraceLevel::CPU );
-  }
-  else if (( myLevel >= TTraceLevel::WORKLOAD ) && ( myLevel <= TTraceLevel::THREAD ))
-  {
-    minLevel = TTraceLevel::APPLICATION;
-    buildPanel( wxT("Application"), TTraceLevel::APPLICATION );
-    buildPanel( wxT("Task"), TTraceLevel::TASK );
-    buildPanel( wxT("Thread"), TTraceLevel::THREAD );
-  }
-  
-  LayoutDialog();
-  Centre();
-}
-
 
 /*!
  * RowsSelectionDialog creator
@@ -170,6 +120,7 @@ bool RowsSelectionDialog::Create( wxWindow* parent,
 {
   SetExtraStyle( wxWS_EX_VALIDATE_RECURSIVELY | wxWS_EX_BLOCK_EVENTS );
   SetSheetStyle( wxPROPSHEET_DEFAULT );
+
   wxPropertySheetDialog::Create( parent, id, caption, pos, size, style );
 
   CreateButtons( wxOK | wxCANCEL );
@@ -202,53 +153,60 @@ void RowsSelectionDialog::OnRegularExpressionHelp( wxCommandEvent& event )
   paraverMain::myParaverMain->createHelpContentsWindow( helpContentsDir, helpChapter, helpRegEx, true );
 }
 
-
 /*
  * Dynamic panel building
  */
 void RowsSelectionDialog::buildPanel( const wxString& title, TTraceLevel whichLevel )
 {
-  wxPanel *myPanel;
-
-  myPanel = new wxPanel( GetBookCtrl(),
+  wxPanel *myPanel = new wxPanel( GetBookCtrl(),
                          wxID_ANY,
                          wxDefaultPosition,
                          wxDefaultSize,
                          wxSUNKEN_BORDER | wxTAB_TRAVERSAL );
-
-  GetBookCtrl()->AddPage( myPanel, title, whichLevel == myLevel ); //myTimeline->getLevel() );
+  GetBookCtrl()->AddPage( myPanel, title, true ); 
 
   wxBoxSizer *panelSizer = new wxBoxSizer( wxVERTICAL );
-  wxBoxSizer *buttonsSizer = new wxBoxSizer( wxHORIZONTAL );
-
   myPanel->SetSizer( panelSizer );
+  
+  wxCheckListBox *auxCheckList = createCheckListBox(myPanel,whichLevel);
+  panelSizer->Add( auxCheckList, 3, wxALL | wxGROW, 5 );
 
+  wxBoxSizer *buttonsSizer = createSelectionButtons(myPanel);
+  panelSizer->Add( buttonsSizer, 0, wxGROW | wxALL , 5 );
+
+  wxStaticBoxSizer *regularExpressionBoxSizer = createRegularExpressionBox(myPanel);
+  panelSizer->Add( regularExpressionBoxSizer, 0, wxGROW | wxALL , 5 );
+}
+
+
+wxCheckListBox* RowsSelectionDialog::createCheckListBox(wxPanel *myPanel,TTraceLevel whichLevel )
+{
   // Add Checklist lines
   wxArrayString choices;
 
   for ( size_t row = (size_t)0; row < myTrace->getLevelObjects( whichLevel ); ++row )
   {
-    if( whichLevel == TTraceLevel::CPU || whichLevel == TTraceLevel::NODE )
-      choices.Add( wxString::FromUTF8( LabelConstructor::objectLabel( (TObjectOrder)row + 1,
-                                                                       whichLevel,
-                                                                       myTrace ).c_str() ) );
-    else
-      choices.Add( wxString::FromUTF8( LabelConstructor::objectLabel( (TObjectOrder)row,
-                                                                       whichLevel,
-                                                                       myTrace ).c_str() ) );
+    size_t labelIndex = (whichLevel == TTraceLevel::CPU || whichLevel == TTraceLevel::NODE) ? row + 1 : row;
+
+    choices.Add( wxString::FromUTF8( LabelConstructor::objectLabel( (TObjectOrder)labelIndex,
+                                                                      whichLevel,
+                                                                      myTrace ).c_str() ) );
   }
 
-  //vector< TObjectOrder > selectedIndex;
-  mySelectedRows->getSelected( selectedIndex[ whichLevel ], whichLevel );
-  
   wxCheckListBox * auxCheckList = new wxCheckListBox( myPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, choices );
+
   auxCheckList->Connect(
-          wxEVT_COMMAND_LISTBOX_SELECTED,
-          wxCommandEventHandler( RowsSelectionDialog::OnCheckListBoxSelected ),
-          nullptr,
-          this );
+    wxEVT_COMMAND_LISTBOX_SELECTED,
+    wxCommandEventHandler( RowsSelectionDialog::OnCheckListBoxSelected ),
+    nullptr,
+    this );
+
   levelCheckList.push_back( auxCheckList );
 
+  std::map< TTraceLevel , std::vector< TObjectOrder > >selectedIndex;
+  mySelectedRowsAux->getSelected( selectedIndex[ whichLevel ], whichLevel );
+  
+  
   PRV_INT16 firstFound = -1;
   for ( unsigned int i = 0; i < (unsigned int)selectedIndex[ whichLevel ].size(); ++i )
   {
@@ -261,11 +219,14 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TTraceLevel whichLe
   if ( firstFound != -1 )
     auxCheckList->SetFirstItem( (int)firstFound );
 
-  panelSizer->Add( auxCheckList, 3, wxALL | wxGROW, 5 );
-  
-  //
-  // BUTTONS
-  //
+  return auxCheckList;
+}
+
+
+wxBoxSizer *RowsSelectionDialog::createSelectionButtons(wxPanel *myPanel )
+{
+  wxBoxSizer *buttonsSizer = new wxBoxSizer( wxHORIZONTAL );
+
   wxButton *auxButton = new wxButton( myPanel, wxID_ANY, _("Select All") );
   selectionButtons.push_back( auxButton );
   auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
@@ -290,15 +251,11 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TTraceLevel whichLe
                       this ); 
   buttonsSizer->Add( auxButton, 1, wxGROW | wxALL, 5 );
 
-  // Build Panel
-  panelSizer->Add( buttonsSizer, 0, wxGROW | wxALL , 5 );
+  return buttonsSizer;
+}
 
-
-  //
-  // REGULAR EXPRESSION BOX
-  //
-
-  // RE: Text box
+wxStaticBoxSizer *RowsSelectionDialog::createRegularExpressionBox(wxPanel *myPanel )
+{
   bool initialCheckState = false;
 
   wxStaticBox* regularExpressionBox = new wxStaticBox(myPanel, wxID_ANY, wxT(" Add checks by objects matching "));
@@ -324,7 +281,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TTraceLevel whichLe
   validRE.push_back( aux );
 
   // RE: APPLY button
-  auxButton = new wxButton( myPanel, wxID_ANY, _("Apply") );
+  wxButton *auxButton = new wxButton( myPanel, wxID_ANY, _("Apply") );
   auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                       wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionApply ),
                       nullptr,
@@ -370,8 +327,9 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TTraceLevel whichLe
   regularExpressionBoxSizer->Add( regularExpressionSizerUp, 0, wxGROW | wxALL , 0 );
   regularExpressionBoxSizer->Add( regularExpressionSizerDown, 0, wxGROW | wxALL , 0 );
 
-  panelSizer->Add( regularExpressionBoxSizer, 0, wxGROW | wxALL , 5 );
+  return regularExpressionBoxSizer;
 }
+
 
 /*!
  * RowsSelectionDialog destructor
@@ -421,19 +379,14 @@ RowsSelectionDialog::~RowsSelectionDialog()
     (*it)->Disconnect( wxEVT_COMMAND_TEXT_ENTER ,
                        wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionHelp ) );
   }
-
-  /*if ( myTimeline != nullptr )
-    TWindowLevel myLevel = myTimeline->getLevel();
-  else if ( myHistogram != nullptr )
-    TWindowLevel myLevel = myHistogram->getControlWindow()->getLevel();*/
   
   TTraceLevel beginLevel, endLevel;
-  if (( myLevel >= TTraceLevel::SYSTEM ) && ( myLevel <= TTraceLevel::CPU ))
+  if (!isTraceLevelProcess)
   {
     beginLevel = TTraceLevel::NODE;
     endLevel = TTraceLevel::CPU;
   }
-  else if (( myLevel >= TTraceLevel::WORKLOAD ) && ( myLevel <= TTraceLevel::THREAD ))
+  else
   {
     beginLevel = TTraceLevel::APPLICATION;
     endLevel = TTraceLevel::THREAD;
@@ -520,6 +473,22 @@ int RowsSelectionDialog::GetSelections( TTraceLevel whichLevel, wxArrayInt &sele
   return selected;
 }
 
+int RowsSelectionDialog::GetNumberSelections( TTraceLevel whichLevel )
+{
+  int selected = 0;
+  size_t levelDiff = static_cast<size_t>( whichLevel ) - static_cast<size_t>( minLevel );
+  if ( levelCheckList[ levelDiff ] != nullptr )
+  for ( unsigned int i = 0; i < levelCheckList[ levelDiff ]->GetCount(); ++i )
+  {
+    if ( levelCheckList[ levelDiff ]->IsChecked( i ) )
+    {
+      ++selected;
+    }
+  }
+  
+  return selected;
+}
+
 
 bool RowsSelectionDialog::TransferDataFromWindow()
 {
@@ -527,7 +496,7 @@ bool RowsSelectionDialog::TransferDataFromWindow()
   TTraceLevel endLevel;
 
   // Set range of levels for update loop
-  if (( myLevel >= TTraceLevel::WORKLOAD ) && ( myLevel <= TTraceLevel::THREAD ))
+  if (isTraceLevelProcess)
   {
     beginLevel = TTraceLevel::APPLICATION;
     endLevel = TTraceLevel::THREAD;
@@ -552,7 +521,7 @@ bool RowsSelectionDialog::TransferDataFromWindow()
         newSelection.push_back( (TObjectOrder)selections[ row ] );
       }
       
-      mySelectedRows->setSelected( newSelection,
+      mySelectedRowsAux->setSelected( newSelection,
                                    myTrace->getLevelObjects( whichLevel ),
                                    whichLevel );
     }
@@ -853,9 +822,11 @@ void RowsSelectionDialog::OnInvertButtonClicked( wxCommandEvent& event )
 }
 
 
-void RowsSelectionDialog::ZoomAwareTransferData( const wxArrayInt &dialogSelections,
-                                                  const vector< TObjectOrder > &timelineZoomRange )
+bool RowsSelectionDialog::isZoomAwareTransferData( const vector< TObjectOrder > &timelineZoomRange )
 {
+  wxArrayInt dialogSelections;
+
+  int numberSelected = GetSelections( maxLevel, dialogSelections );
   if ( timelineZoomRange.size() > 0 )
   {
     TObjectOrder newBegin( dialogSelections[0] );
@@ -863,37 +834,27 @@ void RowsSelectionDialog::ZoomAwareTransferData( const wxArrayInt &dialogSelecti
     TObjectOrder curBegin( timelineZoomRange.front() );
     TObjectOrder curEnd( timelineZoomRange.back() );
 
-    if ( curBegin <= newBegin && newEnd <= curEnd ) // Are new limits inside/visible?
+    if ( curBegin > newBegin || newEnd > curEnd ) // Are new limits inside/visible?
     {      
-      if ( TransferDataFromWindow() )
-        EndModal( wxID_OK );        
+      shouldChangeTimelineZoom = true;
+      beginZoom = curBegin < newBegin ? curBegin : newBegin;
+      endZoom = curEnd > newEnd ? curEnd : newEnd;
+      return false;        
     }
     else
     {
-      wxString tmpMsg( wxT( "Do you want to extend the zoom to fit selected objects?" ) );
-      wxMessageDialog tmpDialog( this, tmpMsg, _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
-      if ( tmpDialog.ShowModal() == wxID_YES )
-      {
-        if ( TransferDataFromWindow() )
-        {      
-          // Extend to the maximum
-          shouldChangeTimelineZoom = true;
-          beginZoom = curBegin < newBegin ? curBegin : newBegin;
-          endZoom = curEnd > newEnd ? curEnd : newEnd;
-
-          EndModal( wxID_OK );        
-        }
-      }
+      return true;
     }
   }
+  return true;
 }
 
 
 void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
 {  // Are selected into the current zoom?
-  wxArrayInt dialogSelections;
 
-  int numberSelected = GetSelections( myLevel, dialogSelections );
+  int numberSelected = GetNumberSelections( maxLevel);
+
   if ( numberSelected == 0 )
   {
     wxString tmpMsg( wxT( "No object selected!" ) );
@@ -902,19 +863,11 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
     {
     }
   }
-  else if ( parentIsGtimeline && myTimeline != nullptr )
-  {
-    ZoomAwareTransferData( dialogSelections, myTimeline->getCurrentZoomRange() );
-  }
-  else if ( parentIsGtimeline && myHistogram != nullptr )
-  {
-    std::vector< TObjectOrder > selection;
-    mySelectedRows->getSelected( selection, myLevel );
-    ZoomAwareTransferData( dialogSelections, selection );
-  }
   else
   {
     if ( TransferDataFromWindow() )
+    {
       EndModal( wxID_OK );
+    }
   }
 }

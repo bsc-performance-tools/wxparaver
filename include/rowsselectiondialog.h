@@ -75,27 +75,9 @@ public:
 
   /// Constructors
   RowsSelectionDialog();
-  RowsSelectionDialog( wxWindow* parent,
-                       Timeline *whichWindow,
-                       SelectionManagement< TObjectOrder, TTraceLevel > *whichSelectedRows,
-                       wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
-                       const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
-                       bool parentIsGtimeline = false,
-                       const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION,
-                       const wxSize& size = SYMBOL_ROWSSELECTIONDIALOG_SIZE,
-                       long style = SYMBOL_ROWSSELECTIONDIALOG_STYLE );
-  
-  RowsSelectionDialog( wxWindow* parent,
-                       Histogram* histogram,
-                       SelectionManagement< TObjectOrder, TTraceLevel > *whichSelectedRows,
-                       wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
-                       const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
-                       bool parentIsGtimeline = false,
-                       const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION,
-                       const wxSize& size = SYMBOL_ROWSSELECTIONDIALOG_SIZE,
-                       long style = SYMBOL_ROWSSELECTIONDIALOG_STYLE );
-
-
+  RowsSelectionDialog ( Trace *dataTrace,
+                        bool isTraceLevelProcess,
+                        SelectionManagement<TObjectOrder, TTraceLevel>* whichSelectedRows);
   /// Creation
   bool Create( wxWindow* parent,
                wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
@@ -123,6 +105,7 @@ public:
   static bool ShowToolTips();
 
   int GetSelections( TTraceLevel whichLevel, wxArrayInt &selections );
+  int GetNumberSelections( TTraceLevel whichLevel);
 
   virtual bool TransferDataFromWindow();
   
@@ -133,31 +116,31 @@ public:
   TObjectOrder GetNewBeginZoom() const { return beginZoom; }
   TObjectOrder GetNewEndZoom() const { return endZoom; }
 
+  bool isZoomAwareTransferData( const std::vector< TObjectOrder > &timelineZoomRange );
+
+
+
 private:
-  Timeline *myTimeline;
-  Histogram *myHistogram;
   
-  SelectionManagement< TObjectOrder, TTraceLevel > *mySelectedRows;
+  bool parentIsGtimeline;
+  bool isTraceLevelProcess;
+  
+  SelectionManagement< TObjectOrder, TTraceLevel > *mySelectedRowsAux;
 
   TTraceLevel minLevel; 
+  TTraceLevel maxLevel;
   TTraceLevel myLevel;
-  std::vector< wxButton * > selectionButtons;
-  std::vector< wxCheckListBox* > levelCheckList;
 
-  bool parentIsGtimeline;   // true => we come from gTimeline --> popup menu
-                            //        don't show zoom window
-                            // false => we come from main window --> Filter button
-
-  bool shouldChangeTimelineZoom;
   TObjectOrder beginZoom;
   TObjectOrder endZoom;
 
   Trace *myTrace;
   
-  std::map< TTraceLevel , std::vector< TObjectOrder > >selectedIndex;
-
-  // RE
   bool lockedByUpdate;
+  bool shouldChangeTimelineZoom;
+
+  std::vector< wxButton * > selectionButtons;
+  std::vector< wxCheckListBox* > levelCheckList;
   std::vector< wxStaticText *> messageMatchesFound;
   std::vector< wxCheckBox *> checkBoxPosixBasicRegExp;
   std::vector< wxTextCtrl *> textCtrlRegularExpr;
@@ -172,17 +155,18 @@ private:
   wxString buildRegularExpressionString( const wxString& enteredRE );
   int countMatches( int iTab, wxRegEx *&levelRE );
   void checkMatches( const int &iTab, wxRegEx *&levelRE );
+
+  void buildPanel( const wxString& title, TTraceLevel level );
+  wxCheckListBox* createCheckListBox(wxPanel *myPanel,TTraceLevel whichLevel );
+  wxBoxSizer * createSelectionButtons(wxPanel *myPanel );
+  wxStaticBoxSizer *createRegularExpressionBox(wxPanel *myPanel );
+  
   void OnRegularExpressionApply( wxCommandEvent& event );
   void OnRegularExpressionHelp( wxCommandEvent& event );
   void OnCheckListBoxSelected( wxCommandEvent& event );
-
   void OnSelectAllButtonClicked( wxCommandEvent& event );
   void OnUnselectAllButtonClicked( wxCommandEvent& event );
   void OnInvertButtonClicked( wxCommandEvent& event );
-  void buildPanel( const wxString& title, TTraceLevel level );
-
-  void ZoomAwareTransferData( const wxArrayInt &dialogSelections,
-                               const std::vector< TObjectOrder > &timelineZoomRange );
   void OnOkClick( wxCommandEvent& event );
 };
 

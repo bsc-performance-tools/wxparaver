@@ -2319,13 +2319,24 @@ void gTimeline::OnPopUpRowSelection( wxCommandEvent& event )
 
   if ( dialog->ShowModal() == wxID_OK )
   {
-    if ( dialog->ShouldChangeTimelineZoom() )
+    bool applyZoom = true;
+    bool isZoomAware = dialog->isZoomAwareTransferData( GetMyWindow()->getCurrentZoomRange() );
+    
+    if(!isZoomAware)
+    {
+      wxString tmpMsg = wxT("Do you want to extend the zoom to fit selected objects?");
+      int answer = wxMessageBox(tmpMsg, _("Paraver question"), wxYES_NO | wxICON_QUESTION, dialog);
+      
+      applyZoom = (answer == wxYES);
+    }
+
+    if(applyZoom && !isZoomAware)
     {
       myWindow->addZoom( dialog->GetNewBeginZoom(), dialog->GetNewEndZoom() );
     }
-  
-    myWindow->setRedraw( true );
-    myWindow->setChanged( true );
+    
+    myWindow->setRedraw (true);
+    myWindow->setChanged (true);
   }
 
   delete dialog;

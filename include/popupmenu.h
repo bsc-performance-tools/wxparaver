@@ -180,6 +180,14 @@ class gPopUpMenu : public wxMenu
 
     void disableItemByTag (const std::string tag);
 
+    bool isSelectObjectsAvailable ();
+    
+    void createRowSelectionDialog ();
+    bool ZoomAwareTransferData(RowsSelectionDialog *myDialog);
+    
+    void transferDataSelectionToObjects(RowsSelectionDialog *myDialog,bool isProcessModel,SelectionManagement<TObjectOrder, TTraceLevel>* intersectionSelectedRows, bool applyZoom);
+
+
     // Static functtions
     static wxMultiChoiceDialog *createPasteSpecialDialog (wxArrayString &choices, gHistogram *whichWindow);
     static wxMultiChoiceDialog *createPasteSpecialDialog (wxArrayString &choices, gTimeline *whichWindow);
