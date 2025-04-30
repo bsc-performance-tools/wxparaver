@@ -2704,9 +2704,14 @@ void gTimeline::OnPopUpSynchronizeById( TGroupId wichGroup )
   else
   {
     if( myWindow->isSync() && wichGroup == myWindow->getSyncGroup() )
+    {
       myWindow->removeFromSync();
+    }
     else
+    {
+      myWindow->removeFromSync();
       myWindow->addToSyncGroup( wichGroup );
+    }
   }
   
 }

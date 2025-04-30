@@ -137,6 +137,17 @@ constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits<PRV_INT16>::max
 ////@end control identifiers
 #define ID_TIMER_MAIN 40010
 
+#define ID_CTRL_1 wxID_HIGHEST + 101
+#define ID_CTRL_2 wxID_HIGHEST + 102
+#define ID_CTRL_3 wxID_HIGHEST + 103
+#define ID_CTRL_4 wxID_HIGHEST + 104
+#define ID_CTRL_5 wxID_HIGHEST + 105
+#define ID_CTRL_6 wxID_HIGHEST + 106
+#define ID_CTRL_7 wxID_HIGHEST + 107
+#define ID_CTRL_8 wxID_HIGHEST + 108
+#define ID_CTRL_9 wxID_HIGHEST + 109
+#define ID_CREATE_NEW_GROUP wxID_HIGHEST + 110
+
 
 
 class gTimeline;
@@ -254,6 +265,8 @@ public:
 
   /// Initialises member variables
   void Init();
+
+  void initAcceleratorEntryTable();
 
   /// Creates the controls and sizers
   void CreateControls();
@@ -578,8 +591,8 @@ public:
   void OnKeyPaste();
 #endif // _WIN32
   void OnFindDialog();
-  void OnSyncWindows(TGroupId& wichGroup);
-  void OnSyncNewGroup();
+  void OnSyncWindows(wxCommandEvent& event);
+  void OnSyncNewGroup(wxCommandEvent& event);
 
   void DoLoadSession( const std::string &whichFileName );
   bool DoLoadTrace( const std::string &path );

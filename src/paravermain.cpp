@@ -130,6 +130,9 @@
 
 #include <algorithm>
 
+
+
+
 using namespace std;
 
 class MenuHintFile : public wxObjectRefData
@@ -215,6 +218,19 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   
   EVT_TIMER( ID_TIMER_MAIN, paraverMain::OnSessionTimer )
 
+  //Accelerator talbe functions
+  EVT_MENU(ID_CTRL_1, paraverMain::OnSyncWindows)
+  EVT_MENU(ID_CTRL_2, paraverMain::OnSyncWindows)
+  EVT_MENU(ID_CTRL_3, paraverMain::OnSyncWindows)
+  EVT_MENU(ID_CTRL_4, paraverMain::OnSyncWindows)
+  EVT_MENU(ID_CTRL_5, paraverMain::OnSyncWindows)
+  EVT_MENU(ID_CTRL_6, paraverMain::OnSyncWindows)
+  EVT_MENU(ID_CTRL_7, paraverMain::OnSyncWindows)
+  EVT_MENU(ID_CTRL_8, paraverMain::OnSyncWindows)
+  EVT_MENU(ID_CTRL_9, paraverMain::OnSyncWindows)
+  EVT_MENU(ID_CREATE_NEW_GROUP, paraverMain::OnSyncNewGroup)
+
+
 END_EVENT_TABLE()
 
 
@@ -287,6 +303,7 @@ paraverMain::paraverMain()
   myParaverMain = this;
 
   Init();
+  initAcceleratorEntryTable();
   ShowToolTips();
 }
 
@@ -299,10 +316,30 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
   myParaverMain = this;
 
   Init();
+  initAcceleratorEntryTable();
   Create( parent, id, caption, pos, size, style );
 
   defaultTitleBarSize = GetSize() - GetClientSize();
   ShowToolTips();
+}
+
+void paraverMain::initAcceleratorEntryTable()
+{
+  wxAcceleratorEntry entries[9];
+  entries[0].Set(wxACCEL_CTRL, (int)'1', ID_CTRL_1);
+  entries[1].Set(wxACCEL_CTRL, (int)'2', ID_CTRL_2);
+  entries[2].Set(wxACCEL_CTRL, (int)'3', ID_CTRL_3);
+  entries[3].Set(wxACCEL_CTRL, (int)'4', ID_CTRL_4);
+  entries[4].Set(wxACCEL_CTRL, (int)'5', ID_CTRL_5);
+  entries[5].Set(wxACCEL_CTRL, (int)'6', ID_CTRL_6);
+  entries[6].Set(wxACCEL_CTRL, (int)'7', ID_CTRL_7);
+  entries[7].Set(wxACCEL_CTRL, (int)'8', ID_CTRL_8);
+  entries[8].Set(wxACCEL_CTRL, (int)'9', ID_CTRL_9);
+  entries[8].Set(wxACCEL_CTRL, (int)'N', ID_CREATE_NEW_GROUP);
+
+  
+  wxAcceleratorTable accel(9, entries);
+  SetAcceleratorTable(accel);
 }
 
 
@@ -4669,16 +4706,18 @@ void paraverMain::OnFindDialog()
   }
 }
 
-void  paraverMain::OnSyncNewGroup()
+void  paraverMain::OnSyncNewGroup(wxCommandEvent& event)
 {
   SyncWindows::getInstance()->newGroup(); 
 }
 
-void paraverMain::OnSyncWindows(TGroupId& wichGroup)
+void paraverMain::OnSyncWindows(wxCommandEvent& event)
 {
+
+  TGroupId wichGroup = (TGroupId)(event.GetId() - wxID_HIGHEST - 100 - 1);
   if(!SyncWindows::getInstance()-> isGroupCreated(wichGroup) )
   {
-    wxMessageBox(wxString::Format("Group %d does not exist", wichGroup), "Warning",wxOK | wxICON_INFORMATION);
+    wxMessageBox(wxString::Format("Group %d does not exist", wichGroup + 1), "Warning",wxOK | wxICON_INFORMATION);
     return;
   }
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>(choiceWindowBrowser->GetCurrentPage() );
