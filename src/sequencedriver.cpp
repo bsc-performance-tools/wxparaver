@@ -610,7 +610,7 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   tmpOptions->set_break_states( true );
   tmpOptions->set_keep_boundary_events( true );
   tmpOptions->set_remFirstStates( false );
-  tmpOptions->set_remLastStates( true );
+  tmpOptions->set_remLastStates( false );
   tmpOptions->set_keep_all_events( true );
 
   OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
