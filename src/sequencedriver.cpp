@@ -236,11 +236,13 @@ bool RunCarmAction::execute( std::string whichTrace )
 
   // Create copy of source window but using whichTrace.
   Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
-  bool dummyFound;
+  //bool dummyFound;
   //gTimeline *sourceTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyFound );
   std::vector<Trace *> loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
   //gTimeline *clonedTimeline = sourceTimeline->clone( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ], US );
   SaveOptions saveOptions = SaveOptions();
+  saveOptions.windowBeginTimeRelative = false;
+  saveOptions.windowScaleRelative = false;
   std::vector<Timeline *> windows = { sourceWindow };
   std::vector<Histogram *> dummyHistograms;
   std::vector<CFGS4DLinkedPropertiesManager> linkedProperties;
@@ -260,13 +262,13 @@ bool RunCarmAction::execute( std::string whichTrace )
                             overrideChecks ) )
     return errorFound;
 
-  Timeline *clonedWindow = windows.front();
-
   wxTreeCtrl *allTracesPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( 0 );
   wxTreeCtrl *currentPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( wxparaverApp::mainWindow->getTracePosition( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ] ) + 1 );
-
-  if ( clonedWindow->getChild() == nullptr )
-    BuildTree( wxparaverApp::mainWindow, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), clonedWindow );
+  for( auto& it : windows )
+  {
+    if ( it->getChild() == nullptr )
+      BuildTree( wxparaverApp::mainWindow, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), it );
+  }
 
   // Pass csv output files to carm dialog
   std::string tmpCSVFileName       = ( (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState ) )->getData();
