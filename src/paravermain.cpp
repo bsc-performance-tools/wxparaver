@@ -3672,8 +3672,10 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
           PRV_UINT32 dummyGroup = 0;
           tmpDerivedHistogram->getDerivedOperationLabelsAndSymbols( tmpOperations, dummyGroup, true );
           tmpDerivedHistogram->setDerivedOperation( "add" );
-          string composedName = beginDragHistogram->getName() + " " + tmpOperations[ "add" ] + " " + endDragHistogram->getName();
-          tmpDerivedHistogram->setName( composedName );
+
+          std::ostringstream tmpNum;
+          tmpNum << ++numNewDerivedHistogram;
+          tmpDerivedHistogram->setName( "New Derived Histogram #" + tmpNum.str() );
           
           tmpDerivedHistogram->setCurrentStat( beginDragHistogram->getCurrentStat() );
 

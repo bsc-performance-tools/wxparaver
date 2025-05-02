@@ -710,6 +710,7 @@ private:
 ////@end paraverMain member variables
   SessionInfo sessionInfo;
   bool firstSave;
+  PRV_UINT16 numNewDerivedHistogram = 0;
 
   wxSingleInstanceChecker *instChecker;
   std::map< std::string, PRV_UINT32 > traceInstance;
