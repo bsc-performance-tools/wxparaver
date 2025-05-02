@@ -1118,6 +1118,11 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   fileBrowserButtonProfetCFG->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonProfetCFG->Enable();
 
+  if ( whichAcceptableApps.empty() )
+  {
+    checkCarmUseSemanticWindow->Disable();
+  }
+
   // Filter forbidden chars
   wxArrayString forbidden;
   forbidden.Add( _( "-" ) );
@@ -1977,6 +1982,8 @@ void RunScript::adaptWindowToApplicationSelection()
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
 
+      // TODO: must be enabled?
+      // checkCarmAccumulateValues->Enable( !checkCarmUseSemanticWindow->IsEnabled() || checkCarmUseSemanticWindow->IsChecked() );
       checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
 
       break;
@@ -3012,6 +3019,8 @@ TExternalAppID RunScript::getSelectedApp() const
 
 void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
 {
+  // TODO: must be enabled?
+  //  checkCarmAccumulateValues->Enable( !checkCarmUseSemanticWindow->IsEnabled() || checkCarmUseSemanticWindow->IsChecked() );
   checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
 }
 
