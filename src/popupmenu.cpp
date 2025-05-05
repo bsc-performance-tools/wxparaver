@@ -282,9 +282,9 @@ void gPopUpMenu ::buildPopUpMenuPaste ()
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
   {
     buildListOfItems (pasteItemsFilterSubmenu);
-  }
+    popUpMenuPaste->AppendSubMenu (popUpMenuPasteFilter, _ (STR_FILTER));
 
-  popUpMenuPaste->AppendSubMenu (popUpMenuPasteFilter, _ (STR_FILTER));
+  }
 
   this->AppendSubMenu (popUpMenuPaste, _ (STR_PASTE));
 }

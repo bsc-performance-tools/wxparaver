@@ -28,7 +28,6 @@
  */
 
 ////@begin includes
-#include "filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/statline.h"
 #include "wx/spinctrl.h"
