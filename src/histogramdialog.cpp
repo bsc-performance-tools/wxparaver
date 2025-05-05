@@ -716,7 +716,7 @@ wxString HistogramDialog::formatNumber( double value )
   {
     auxSStr.imbue( std::locale::classic() );
   }
-  auxSStr.precision( calculatePrecision(value) );
+  auxSStr.precision( calculate_precision(value) );
 
   auxSStr << fixed;
   auxSStr << value;

@@ -25,6 +25,8 @@
 
 #include "copypaste.h"
 #include "rowsselectiondialog.h"
+#include "customalgorithms.h"
+
 #include <wx/choicdlg.h>
 #include <wx/generic/propdlg.h>
 #include <wx/menu.h>
