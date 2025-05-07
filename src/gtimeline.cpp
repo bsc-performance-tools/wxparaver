@@ -60,6 +60,7 @@
 #include "saveimagedialog.h"
 #include "sequencedriver.h"
 #include "popupmenu.h"
+#include "ParaverMetadataManager.h"
 
 #include "autoredraw_refresh.xpm"
 #include "caution.xpm"
@@ -5029,8 +5030,7 @@ void gTimeline::saveText()
     // Clustering default options
     output->setWindowTimeUnits( false );
     
-    
-    output->dumpWindow( myWindow, fileName, progress );
+    output->dumpWindow( myWindow, fileName, CSVMetadataAction::MANUAL_ORIGIN_ID, progress );
     delete output;
     
     // Delete progress controller
