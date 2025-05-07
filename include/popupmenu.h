@@ -33,6 +33,7 @@
 #include <wx/propdlg.h>
 
 #include <map>
+#include <variant>
 
 #define ID_MENU_COPY                                       30000
 #define ID_MENU_PASTE_TIME                                 30001
@@ -158,6 +159,15 @@ enum class PopUpMenuType
   POPUP_MENU_TYPE_TIMELINE_MULTIPLE
 };
 
+// Helper para sobrecargar lambdas
+template <class... Ts>
+struct overloads : Ts... { using Ts::operator()...; };
+
+// Deduce constructor automatico para templates.CTAD
+template <class... Ts> 
+overloads(Ts...) -> overloads<Ts...>;
+
+using WindowGenericItem = std::variant<gHistogram*, gTimeline*>;
 
 
 class gPopUpMenu : public wxMenu
@@ -166,11 +176,10 @@ class gPopUpMenu : public wxMenu
   public:
     gPopUpMenu () = delete;
 
-    gPopUpMenu (std::vector<gHistogram *> wichHistogramDerivedList, std::vector<gTimeline *> wichTimelineDerivedList);
-    //TODO: Change vector to only ne element if the timeline/histogram creates itself
+    gPopUpMenu (std::vector<WindowGenericItem>);
     
-    gPopUpMenu (std::vector<gHistogram *> wichHistogramDerivedList);
-    gPopUpMenu (std::vector<gTimeline *> wichTimelineDerivedList);
+    gPopUpMenu (gHistogram * wichHistogramDerivedList);
+    gPopUpMenu (gTimeline * wichTimelineDerivedList);
     virtual ~gPopUpMenu () = default;
 
     void initializePopUpMenu ();
@@ -200,10 +209,9 @@ class gPopUpMenu : public wxMenu
     static std::string getOption (wxArrayString &choices, int position);
 
   private:
-    std::vector<gHistogram *> histogramDerivedList;
-    std::vector<gTimeline *> timelineDerivedList;
+    std::vector<WindowGenericItem> windowGenericList;
 
-    PopUpMenuType typeDataPopup;
+    PopUpMenuType typeDataPopup = PopUpMenuType::POPUP_MENU_INI;
 
     wxMenu *popUpMenuView;
     wxMenu *popUpMenuColor;
@@ -229,6 +237,10 @@ class gPopUpMenu : public wxMenu
 
     bool allWindowsHas (std::vector<gTimeline *> timelineWindows, std::function<bool (gTimeline *)> function);
     bool allWindowsHas (std::vector<gHistogram *> histogramWindows, std::function<bool (gHistogram *)> function);
+
+    template<typename... Funcs>
+    bool allWindowHas( Funcs&&... funcs);
+
 
     // builder methods
 
@@ -386,4 +398,9 @@ class gPopUpMenu : public wxMenu
 
     // Timeline
     void OnPopUpSaveText (wxCommandEvent &event);
+
+
+    template<typename... Funcs>
+    void onAllWindowsCall(  Funcs&&... funcs);
+
 };

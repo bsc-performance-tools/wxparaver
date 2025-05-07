@@ -43,56 +43,47 @@ using namespace std;
 
 /* Constructor of gPopUpMenu initialize menu variables and build them. There are three different
 types of menus that will change the available options */
-gPopUpMenu::gPopUpMenu (std::vector<gHistogram *> wichHistogramDerivedList, std::vector<gTimeline *> wichTimelineDerivedList)
+
+gPopUpMenu::gPopUpMenu (std::vector<WindowGenericItem> argWindowGenericList)
 {
+  windowGenericList = argWindowGenericList;
 
-  histogramDerivedList = wichHistogramDerivedList;
-  timelineDerivedList = wichTimelineDerivedList;
 
-  typeDataPopup = PopUpMenuType::POPUP_MENU_INI;
-
-  if (!histogramDerivedList.empty ())
+  for (auto &elementItemList : argWindowGenericList)
   {
-    typeDataPopup = (histogramDerivedList.size () > 1) ? PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE : PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE;
-  }
-
-  if (!timelineDerivedList.empty ())
-  {
-    if (typeDataPopup != PopUpMenuType::POPUP_MENU_INI)
+    if (std::holds_alternative<gHistogram *> (elementItemList))
     {
-
-      typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_MIXED;
+      if (typeDataPopup == PopUpMenuType::POPUP_MENU_INI)
+        typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE;
+      else if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE)
+        typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE;
+      else
+        typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_MIXED;
     }
-    else
+    if (std::holds_alternative<gTimeline *> (elementItemList))
     {
-      typeDataPopup = (timelineDerivedList.size () > 1) ? PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE : PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE;
+      if (typeDataPopup == PopUpMenuType::POPUP_MENU_INI)
+        typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE;
+      else if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
+        typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE;
+      else
+        typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_MIXED;
     }
   }
 }
-gPopUpMenu::gPopUpMenu (std::vector<gHistogram *> wichHistogramDerivedList)
+
+gPopUpMenu::gPopUpMenu (gHistogram *wichHistogramDerivedList)
 {
 
-  histogramDerivedList = wichHistogramDerivedList;
-
-  typeDataPopup = PopUpMenuType::POPUP_MENU_INI;
-
-  if (!histogramDerivedList.empty ())
-  {
-    typeDataPopup = (histogramDerivedList.size () > 1) ? PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE : PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE;
-  }
+  typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE;
+  windowGenericList.emplace_back (wichHistogramDerivedList); // Implicitly creates a variant with gTimeline*
+  
 }
 
-gPopUpMenu::gPopUpMenu (std::vector<gTimeline *> wichTimelineDerivedList)
+gPopUpMenu::gPopUpMenu (gTimeline *wichTimelineDerivedList)
 {
-
-  timelineDerivedList = wichTimelineDerivedList;
-
-  typeDataPopup = PopUpMenuType::POPUP_MENU_INI;
-
-  if (!timelineDerivedList.empty ())
-  {
-    typeDataPopup = (timelineDerivedList.size () > 1) ? PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE : PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE;
-  }
+  typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE;
+  windowGenericList.emplace_back (wichTimelineDerivedList); // Implicitly creates a variant with gTimeline*
 }
 
 void gPopUpMenu::initializePopUpMenu ()
@@ -218,12 +209,16 @@ void gPopUpMenu ::buildPopUpMenuView ()
   {
     std::vector<BuildMenuItem> viewItems = {
         {popUpMenuView, _ ("Communication Lines"), wxITEM_CHECK, &gPopUpMenu::OnPopUpViewCommunicationLines, ID_MENU_VIEW_COMMUNICATION_LINES,
-         allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                        { return win->GetMyWindow ()->getDrawCommLines (); })},
+         allWindowHas ([] (gTimeline *win)
+                       { return win->GetMyWindow ()->getDrawCommLines (); },
+                       [] (gHistogram *win)
+                       { return true; })},
 
         {popUpMenuView, _ ("Event Flags"), wxITEM_CHECK, &gPopUpMenu::OnPopUpViewEventFlags, ID_MENU_VIEW_EVENT_FLAGS,
-         allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                        { return win->GetMyWindow ()->getDrawFlags (); })}};
+         allWindowHas ([] (gTimeline *win)
+                       { return win->GetMyWindow ()->getDrawFlags (); },
+                       [] (gHistogram *win)
+                       { return true; })}};
 
     buildListOfItems (viewItems);
   }
@@ -283,7 +278,6 @@ void gPopUpMenu ::buildPopUpMenuPaste ()
   {
     buildListOfItems (pasteItemsFilterSubmenu);
     popUpMenuPaste->AppendSubMenu (popUpMenuPasteFilter, _ (STR_FILTER));
-
   }
 
   this->AppendSubMenu (popUpMenuPaste, _ (STR_PASTE));
@@ -293,36 +287,49 @@ void gPopUpMenu ::buildPopUpMenuColor ()
 {
   std::vector<BuildMenuItem> popUpColorTimelineItems = {
       {popUpMenuColor, _ ("Function Line"), wxITEM_CHECK, &gPopUpMenu::OnPopUpFunctionLineColor, ID_MENU_VIEW_FUNCTION_LINE,
-       allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                      { return win->GetMyWindow ()->isFunctionLineColorSet (); })},
+       allWindowHas ([] (gTimeline *win)
+                     { return win->GetMyWindow ()->isFunctionLineColorSet (); },
+                     [] (gHistogram *win)
+                     { return true; })},
 
       {popUpMenuColor, _ ("Fused Lines"), wxITEM_CHECK, &gPopUpMenu::OnPopUpFusedLinesColor, ID_MENU_VIEW_FUSED_LINES,
-       allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                      { return win->GetMyWindow ()->isFusedLinesColorSet (); })},
+       allWindowHas ([] (gTimeline *win)
+                     { return win->GetMyWindow ()->isFusedLinesColorSet (); },
+                     [] (gHistogram *win)
+                     { return true; })},
 
       {popUpMenuColor, _ ("Punctual"), wxITEM_CHECK, &gPopUpMenu::OnPopUpPunctualColor, ID_MENU_PUNCTUAL,
-       allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                      { return win->GetMyWindow ()->isPunctualColorSet (); })},
+       allWindowHas ([] (gTimeline *win)
+                     { return win->GetMyWindow ()->isPunctualColorSet (); },
+                     [] (gHistogram *win)
+                     { return true; })},
   };
 
   std::vector<BuildMenuItem> popUpColorCommonItems = {
       {popUpMenuColor, _ ("Code Color"), wxITEM_CHECK, &gPopUpMenu::OnPopUpCodeColor, ID_MENU_CODE_COLOR,
-       allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                      { return win->GetMyWindow ()->isCodeColorSet (); })},
+       allWindowHas ([] (gTimeline *win)
+                     { return win->GetMyWindow ()->isCodeColorSet (); },
+                     [] (gHistogram *win)
+                     { return true; })},
 
       {popUpMenuColor, _ ("Gradient Color"), wxITEM_CHECK, &gPopUpMenu::OnPopUpGradientColor, ID_MENU_GRADIENT_COLOR,
-       allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                      { return win->GetMyWindow ()->isGradientColorSet (); })},
+       allWindowHas ([] (gTimeline *win)
+                     { return win->GetMyWindow ()->isGradientColorSet (); },
+                     [] (gHistogram *win)
+                     { return true; })},
 
       {popUpMenuColor, _ ("Not Null Gradient Color"), wxITEM_CHECK, &gPopUpMenu::OnPopUpNotNullGradientColor, ID_MENU_NOT_NULL_GRADIENT_COLOR,
-       allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                      { return win->GetMyWindow ()->isNotNullGradientColorSet (); })},
+       allWindowHas ([] (gTimeline *win)
+                     { return win->GetMyWindow ()->isNotNullGradientColorSet (); },
+                     [] (gHistogram *win)
+                     { return true; })},
 
       {popUpMenuColor, _ ("Alternative Gradient Color"), wxITEM_CHECK, &gPopUpMenu::OnPopUpAlternativeGradientColor, ID_MENU_ALTERNATIVE_GRADIENT_COLOR,
-       allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                      { return win->GetMyWindow ()->isAlternativeGradientColorSet (); }),
-       true},
-  };
+       allWindowHas ([] (gTimeline *win)
+                     { return win->GetMyWindow ()->isAlternativeGradientColorSet (); },
+                     [] (gHistogram *win)
+                     { return true; }),
+       true}};
 
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
   {
@@ -337,12 +344,12 @@ void gPopUpMenu ::buildPopUpMenuDimensionsConfiguration ()
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE)
   {
 
-    auto generalCodeColor = (*histogramDerivedList.begin ())->GetHistogram ()->getColorMode ();
+    auto generalCodeColor = std::get<gHistogram *> (*windowGenericList.begin ())->GetHistogram ()->getColorMode ();
     auto colorSyncronized = true;
 
-    for (gHistogram *histogram : histogramDerivedList)
+    for (auto &histogram : windowGenericList)
     {
-      if (!(generalCodeColor == histogram->GetHistogram ()->getColorMode ()))
+      if (!(generalCodeColor == std::get<gHistogram *> (histogram)->GetHistogram ()->getColorMode ()))
       {
         colorSyncronized = false;
         break;
@@ -400,26 +407,33 @@ void gPopUpMenu ::buildPopUpMenuFitObjects ()
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE)
   {
     std::vector<BuildMenuItem> fitItemsHistogram = {
-        {this, _ ("Auto Fit Control Scale"), wxITEM_CHECK, &gPopUpMenu::OnPopUpAutoControlScale, ID_MENU_AUTO_CONTROL_SCALE,
-         allWindowsHas (histogramDerivedList, static_cast<std::function<bool (gHistogram *)>> ([] (gHistogram *win)
-                                                                                               { return win->GetHistogram ()->getCompute2DScale (); }))},
+        {this, _ ("Auto Fit Control Scale"), wxITEM_CHECK, &gPopUpMenu::OnPopUpAutoControlScale, ID_MENU_AUTO_CONTROL_SCALE, allWindowHas ([] (gHistogram *win)
+                                                                                                                                           { return win->GetHistogram ()->getCompute2DScale (); },
+                                                                                                                                           [] (gTimeline *win)
+                                                                                                                                           { return true; })},
 
-        {this, _ (STR_AUTOFIT_CONTROL_ZERO), wxITEM_CHECK, &gPopUpMenu::OnPopUpAutoControlScaleZero, ID_MENU_AUTO_CONTROL_SCALE_ZERO,
-         allWindowsHas (histogramDerivedList, static_cast<std::function<bool (gHistogram *)>> ([] (gHistogram *win)
-                                                                                               { return win->GetHistogram ()->getCompute2DScaleZero (); }))},
+        {this, _ (STR_AUTOFIT_CONTROL_ZERO), wxITEM_CHECK, &gPopUpMenu::OnPopUpAutoControlScaleZero, ID_MENU_AUTO_CONTROL_SCALE_ZERO, allWindowHas ([] (gHistogram *win)
+                                                                                                                                                    { return win->GetHistogram ()->getCompute2DScaleZero (); },
+                                                                                                                                                    [] (gTimeline *win)
+                                                                                                                                                    { return true; })},
 
-        {this, _ ("Auto Fit Data Gradient"), wxITEM_CHECK, &gPopUpMenu::OnPopUpAutoDataGradient, ID_MENU_AUTO_DATA_GRADIENT,
-         allWindowsHas (histogramDerivedList, static_cast<std::function<bool (gHistogram *)>> ([] (gHistogram *win)
-                                                                                               { return win->GetHistogram ()->getComputeGradient (); }))}};
+        {this, _ ("Auto Fit Data Gradient"), wxITEM_CHECK, &gPopUpMenu::OnPopUpAutoDataGradient, ID_MENU_AUTO_DATA_GRADIENT, allWindowHas ([] (gHistogram *win)
+                                                                                                                                           { return win->GetHistogram ()->getComputeGradient (); },
+                                                                                                                                           [] (gTimeline *win)
+                                                                                                                                           { return true; })}};
 
     buildListOfItems (fitItemsHistogram);
 
-    if (allWindowsHas (histogramDerivedList, [] (gHistogram *win)
-                       { return win->GetHistogram ()->getThreeDimensions (); }))
+    if (allWindowHas ([] (gHistogram *win)
+                      { return win->GetHistogram ()->getThreeDimensions (); },
+                      [] (gTimeline *win)
+                      { return true; }))
     {
       this->buildItem (this, _ ("Auto Fit 3D Scale"), wxITEM_CHECK, &gPopUpMenu::OnPopUpAuto3DScale, ID_MENU_AUTO_3D_SCALE,
-                       allWindowsHas (histogramDerivedList, static_cast<std::function<bool (gHistogram *)>> ([] (gHistogram *win)
-                                                                                                             { return win->GetHistogram ()->getCompute3DScale (); })));
+                       allWindowHas ([] (gHistogram *win)
+                                     { return win->GetHistogram ()->getCompute3DScale (); },
+                                     [] (gTimeline *win)
+                                     { return true; }));
     }
   }
 
@@ -430,48 +444,37 @@ void gPopUpMenu ::buildPopUpMenuDrawMode ()
 {
   if (typeDataPopup != PopUpMenuType::POPUP_MENU_TYPE_MIXED)
   {
+
     DrawModeMethod drawModeTime;
     DrawModeMethod drawModeObject;
     auto drawModeTimeSync = true;
     auto drawModeObjectSync = true;
 
-    if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
+    auto visitorDrawModeTime = overloads{
+        [] (gHistogram *histogram)
+        { return histogram->GetHistogram ()->getDrawModeColumns (); },
+        [] (gTimeline *timeline)
+        { return timeline->GetMyWindow ()->getDrawModeTime (); }
+
+    };
+    auto visitorDrawModeObjects = overloads{
+        [] (gHistogram *histogram)
+        { return histogram->GetHistogram ()->getDrawModeObjects (); },
+        [] (gTimeline *timeline)
+        { return timeline->GetMyWindow ()->getDrawModeObject (); }};
+
+    drawModeTime = std::visit (visitorDrawModeTime, *windowGenericList.begin ());
+    drawModeObject = std::visit (visitorDrawModeTime, *windowGenericList.begin ());
+
+    for (auto &window : windowGenericList)
     {
-
-      drawModeTime = (*timelineDerivedList.begin ())->GetMyWindow ()->getDrawModeTime ();
-      drawModeObject = (*timelineDerivedList.begin ())->GetMyWindow ()->getDrawModeObject ();
-
-      for (gTimeline *timeline : timelineDerivedList)
+      if (drawModeTime != std::visit (visitorDrawModeTime, window))
       {
-        if (!(drawModeTime == timeline->GetMyWindow ()->getDrawModeTime ()))
-        {
-          drawModeTimeSync = false;
-        }
-        if (!(drawModeObject == timeline->GetMyWindow ()->getDrawModeObject ()))
-        {
-          drawModeObjectSync = false;
-        }
+        drawModeTimeSync = false;
       }
-    }
-
-    if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE)
-    {
-
-      drawModeTime = (*histogramDerivedList.begin ())->GetHistogram ()->getDrawModeColumns ();
-      drawModeObject = (*histogramDerivedList.begin ())->GetHistogram ()->getDrawModeObjects ();
-
-      for (gHistogram *histogram : histogramDerivedList)
+      if (drawModeObject != std::visit (visitorDrawModeObjects, window))
       {
-        if (!(drawModeTime == histogram->GetHistogram ()->getDrawModeColumns ()))
-        {
-          drawModeTimeSync = false;
-          break;
-        }
-        if (!(drawModeObject == histogram->GetHistogram ()->getDrawModeObjects ()))
-        {
-          drawModeObjectSync = false;
-          break;
-        }
+        drawModeObjectSync = false;
       }
     }
     std::vector<BuildMenuItem> drawModeTimeItems = {
@@ -566,8 +569,10 @@ void gPopUpMenu ::buildPopUpMenuDrawMode ()
     if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE)
     {
       Enable (tmpDrawModeSubMenu->GetId (),
-              (allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                              { return ((!window->GetMyWindow ()->isPunctualColorSet ()) || (window->GetMyWindow ()->getPunctualColorWindow () != nullptr)); })));
+              (allWindowHas ([] (gTimeline *window)
+                             { return ((!window->GetMyWindow ()->isPunctualColorSet ()) || (window->GetMyWindow ()->getPunctualColorWindow () != nullptr)); },
+                             [] (gHistogram *win)
+                             { return true; })));
     }
   }
 }
@@ -576,31 +581,25 @@ void gPopUpMenu::buildPopUpMenuPixelSize ()
 {
   bool isSync = true;
   int pixelSize = 0;
-  for (gHistogram *histogram : histogramDerivedList)
+
+  auto visitor = overloads{
+      [] (gHistogram *histogram)
+      { return histogram->GetHistogram ()->getPixelSize (); },
+      [] (gTimeline *timeline)
+      { return timeline->GetMyWindow ()->getPixelSize (); }
+
+  };
+
+  for (auto &window : windowGenericList)
   {
     if (pixelSize == 0)
     {
-      pixelSize = histogram->GetHistogram ()->getPixelSize ();
+      pixelSize = std::visit (visitor, window);
     }
-    else if (histogram->GetHistogram ()->getPixelSize () != pixelSize)
+    else if (std::visit (visitor, window) != pixelSize)
     {
       isSync = false;
       break;
-    }
-  }
-  if (isSync == true)
-  {
-    for (gTimeline *timeline : timelineDerivedList)
-    {
-      if (pixelSize == 0)
-      {
-        pixelSize = timeline->GetMyWindow ()->getPixelSize ();
-      }
-      else if (timeline->GetMyWindow ()->getPixelSize () != pixelSize)
-      {
-        isSync = false;
-        break;
-      }
     }
   }
 
@@ -639,24 +638,20 @@ void gPopUpMenu ::buildPopUpMenuGradientFunction ()
       return gradientFunctionSelected == timelineFunction;
     };
 
-    for (gTimeline *timeline : timelineDerivedList)
+    auto visitor = overloads{
+        [] (gHistogram *histogram)
+        { return histogram->GetHistogram ()->getSemanticColor ().getGradientFunction (); },
+        [] (gTimeline *timeline)
+        { return timeline->GetMyWindow ()->getSemanticColor ().getGradientFunction (); }
+
+    };
+
+    for (auto &window : windowGenericList)
     {
-      if (!checkGradientFunction (timeline->GetMyWindow ()->getSemanticColor ().getGradientFunction ()))
+      if (!checkGradientFunction (std::visit (visitor, window)))
       {
         valueSynchronyzed = false;
         break;
-      }
-    }
-
-    if (valueSynchronyzed)
-    {
-      for (gHistogram *histogram : histogramDerivedList)
-      {
-        if (!checkGradientFunction (histogram->GetHistogram ()->getSemanticColor ().getGradientFunction ()))
-        {
-          valueSynchronyzed = false;
-          break;
-        }
       }
     }
 
@@ -691,8 +686,10 @@ void gPopUpMenu ::buildPopUpMenuGradientFunction ()
       wxMenuItem *tmpSemScaleMinZero = buildItem (popUpMenuColor, _ ("Semantic scale min at 0"), wxITEM_CHECK,
                                                   &gPopUpMenu::OnPopUpSemanticScaleMinAtZero,
                                                   ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO,
-                                                  allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                                                 { return window->GetMyWindow ()->getSemanticScaleMinAtZero (); }));
+                                                  allWindowHas ([] (gTimeline *window)
+                                                                { return window->GetMyWindow ()->getSemanticScaleMinAtZero (); },
+                                                                [] (gHistogram *win)
+                                                                { return true; }));
 
       this->AppendSubMenu (popUpMenuColor, _ ("Paint As"));
     }
@@ -705,11 +702,19 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis ()
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE)
   {
     bool isSync = true;
-    TObjectAxisSize objectAxis = (*timelineDerivedList.begin ())->GetMyWindow ()->getObjectAxisSize ();
+    TObjectAxisSize objectAxis = (std::get<gTimeline *> (*windowGenericList.begin ()))->GetMyWindow ()->getObjectAxisSize ();
 
-    for (gTimeline *timeline : timelineDerivedList)
+    auto visitor = overloads{
+        [] (gHistogram *histogram)
+        { return histogram->GetHistogram ()->getDataWindow (); },
+        [] (gTimeline *timeline)
+        { return timeline->GetMyWindow (); }
+
+    };
+
+    for (auto &window : windowGenericList)
     {
-      if (timeline->GetMyWindow ()->getObjectAxisSize () != objectAxis)
+      if (std::visit (visitor, window)->getObjectAxisSize () != objectAxis)
       {
         isSync = false;
         break;
@@ -771,16 +776,22 @@ void gPopUpMenu ::buildPopUpMenuLabels ()
   {
     std::vector<BuildMenuItem> objectLabelItems = {
         {popUpMenuLabels, _ ("All"), wxITEM_CHECK, &gPopUpMenu::OnPopUpLabels, ID_MENU_LABELS_ALL,
-         allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                        { return win->GetMyWindow ()->getObjectLabels () == TObjectLabels::ALL_LABELS; })},
+         allWindowHas ([] (gTimeline *win)
+                       { return win->GetMyWindow ()->getObjectLabels () == TObjectLabels::ALL_LABELS; },
+                       [] (gHistogram *win)
+                       { return true; })},
 
         {popUpMenuLabels, _ ("Spaced"), wxITEM_CHECK, &gPopUpMenu::OnPopUpLabels, ID_MENU_LABELS_SPACED,
-         allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                        { return win->GetMyWindow ()->getObjectLabels () == TObjectLabels::SPACED_LABELS; })},
+         allWindowHas ([] (gTimeline *win)
+                       { return win->GetMyWindow ()->getObjectLabels () == TObjectLabels::SPACED_LABELS; },
+                       [] (gHistogram *win)
+                       { return true; })},
 
         {popUpMenuLabels, _ ("2^n"), wxITEM_CHECK, &gPopUpMenu::OnPopUpLabels, ID_MENU_LABELS_POWER2,
-         allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                        { return win->GetMyWindow ()->getObjectLabels () == TObjectLabels::POWER2_LABELS; })}};
+         allWindowHas ([] (gTimeline *win)
+                       { return win->GetMyWindow ()->getObjectLabels () == TObjectLabels::POWER2_LABELS; },
+                       [] (gHistogram *win)
+                       { return true; })}};
 
     buildListOfItems (objectLabelItems);
 
@@ -805,12 +816,27 @@ void gPopUpMenu ::buildPopUpMenuSync ()
     }
     return syncValue == group;
   };
+  auto visitor_isSync = overloads{
+      [] (gHistogram *histogram)
+      { return histogram->GetHistogram ()->isSync (); },
+      [] (gTimeline *timeline)
+      { return timeline->GetMyWindow ()->isSync (); }
 
-  for (gTimeline *timeline : timelineDerivedList)
+  };
+
+  auto visitor = overloads{
+      [] (gHistogram *histogram)
+      { return histogram->GetHistogram ()->getSyncGroup (); },
+      [] (gTimeline *timeline)
+      { return timeline->GetMyWindow ()->getSyncGroup (); }
+
+  };
+
+  for (auto &window : windowGenericList)
   {
-    if (timeline->GetMyWindow ()->isSync ())
+    if (std::visit (visitor_isSync, window))
     {
-      if (!checkSyncronizedGroup (timeline->GetMyWindow ()->getSyncGroup ()))
+      if (!checkSyncronizedGroup (std::visit (visitor, window)))
       {
         windowsSyncronized = false;
         break;
@@ -820,27 +846,6 @@ void gPopUpMenu ::buildPopUpMenuSync ()
     {
       windowsSyncronized = false;
       break;
-    }
-  }
-
-  if (windowsSyncronized == true)
-  {
-    for (gHistogram *histogram : histogramDerivedList)
-    {
-      if (histogram->GetHistogram ()->isSync ())
-      {
-
-        if (!checkSyncronizedGroup (histogram->GetHistogram ()->getSyncGroup ()))
-        {
-          windowsSyncronized = false;
-          break;
-        }
-      }
-      else
-      {
-        windowsSyncronized = false;
-        break;
-      }
     }
   }
 
@@ -885,7 +890,7 @@ void gPopUpMenu::buildPopUpRunApp ()
 {
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
   {
-    auto suitableApps = (*timelineDerivedList.begin ())->GetMyWindow ()->getTrace ()->getSuitableApps ();
+    auto suitableApps = (std::get<gTimeline *> (*windowGenericList.begin ()))->GetMyWindow ()->getTrace ()->getSuitableApps ();
 
     this->buildItem (popUpMenuRun, _ ("Cutter"), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_CUTTER);
 
@@ -914,12 +919,16 @@ void gPopUpMenu::buildPopUpExtraPanel ()
 
     std::vector<BuildMenuItem> viewMenuItems = {
         {this, _ ("Timing\tCTRL+T"), wxITEM_CHECK, &gPopUpMenu::OnPopUpTiming, ID_MENU_TIMING,
-         allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                        { return win->GetTiming (); })},
+         allWindowHas ([] (gTimeline *win)
+                       { return win->GetTiming (); },
+                       [] (gHistogram *win)
+                       { return true; })},
 
         {this, _ ("Info Panel"), wxITEM_CHECK, &gPopUpMenu::OnPopUpInfoPanel, ID_MENU_INFO_PANEL,
-         allWindowsHas (timelineDerivedList, [] (gTimeline *win)
-                        { return win->IsSplit (); })}};
+         allWindowHas ([] (gTimeline *win)
+                       { return win->IsSplit (); },
+                       [] (gHistogram *win)
+                       { return true; })}};
     buildListOfItems (viewMenuItems);
   }
 }
@@ -950,6 +959,15 @@ wxMenuItem *gPopUpMenu::buildItem (
 #endif
 
   return newMenuItem;
+}
+
+template <typename... Funcs>
+bool gPopUpMenu::allWindowHas (Funcs &&...funcs)
+{
+  auto visitor = overloads{std::forward<Funcs> (funcs)...};
+
+  return std::all_of (windowGenericList.begin (), windowGenericList.end (), [&] (const WindowGenericItem &item)
+                      { return std::visit (visitor, item); });
 }
 
 bool gPopUpMenu::allWindowsHas (vector<gTimeline *> timelineWindows, std::function<bool (gTimeline *)> function)
@@ -986,16 +1004,17 @@ bool gPopUpMenu::checkAllowedProperties (const char *property)
   gPasteWindowProperties *sharedProperties =
       gPasteWindowProperties::getInstance ();
 
-  for (gTimeline *timeline : timelineDerivedList)
+  auto visitor = [&] (auto *win)
   {
-    if (!sharedProperties->isAllowed (timeline, property))
-      return false;
-  }
+    return sharedProperties->isAllowed (win, property);
+  };
 
-  for (gHistogram *histogram : histogramDerivedList)
+  for (auto &window : windowGenericList)
   {
-    if (!sharedProperties->isAllowed (histogram, property))
+    if (!std::visit (visitor, window))
+    {
       return false;
+    }
   }
 
   return rv;
@@ -1034,11 +1053,15 @@ void gPopUpMenu::enablePopUpMenu ()
                   checkAllowedProperties (STR_CONTROL_DIMENSIONS));
 
     this->Enable (FindItem (_ (STR_AUTOFIT_CONTROL_ZERO)),
-                  allWindowsHas (histogramDerivedList, [] (gHistogram *win)
-                                 { return win->GetHistogram ()->getCompute2DScale (); }));
+                  allWindowHas ([] (gHistogram *win)
+                                { return win->GetHistogram ()->getCompute2DScale (); },
+                                [] (gTimeline *win)
+                                { return true; }));
 
-    if (allWindowsHas (histogramDerivedList, [] (gHistogram *win)
-                       { return win->GetHistogram ()->getThreeDimensions (); }))
+    if (allWindowHas ([] (gHistogram *win)
+                      { return win->GetHistogram ()->getThreeDimensions (); },
+                      [] (gTimeline *win)
+                      { return true; }))
     {
       this->Enable (FindItem (_ (STR_3D_SCALE)),
                     checkAllowedProperties (STR_3D_SCALE));
@@ -1051,16 +1074,16 @@ void gPopUpMenu::enablePopUpMenu ()
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE)
   {
     this->Enable (FindItem (_ (STR_REDO_ZOOM)),
-                  !(*histogramDerivedList.begin ())->GetHistogram ()->emptyPrevZoom ());
+                  !(std::get<gHistogram *> (*windowGenericList.begin ()))->GetHistogram ()->emptyPrevZoom ());
     this->Enable (FindItem (_ (STR_UNDO_ZOOM)),
-                  !(*histogramDerivedList.begin ())->GetHistogram ()->emptyNextZoom ());
+                  !(std::get<gHistogram *> (*windowGenericList.begin ()))->GetHistogram ()->emptyNextZoom ());
   }
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
   {
     this->Enable (FindItem (_ (STR_REDO_ZOOM)),
-                  !(*timelineDerivedList.begin ())->GetMyWindow ()->emptyNextZoom ());
+                  !(std::get<gTimeline *> (*windowGenericList.begin ()))->GetMyWindow ()->emptyNextZoom ());
     this->Enable (FindItem (_ (STR_UNDO_ZOOM)),
-                  !(*timelineDerivedList.begin ())->GetMyWindow ()->emptyPrevZoom ());
+                  !(std::get<gTimeline *> (*windowGenericList.begin ()))->GetMyWindow ()->emptyPrevZoom ());
   }
 
   this->Enable (FindItem (_ ("Select Objects...")),
@@ -1068,28 +1091,46 @@ void gPopUpMenu::enablePopUpMenu ()
 
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE)
   {
-    popUpMenuColor->Enable (FindItem (_ ("Punctual Window...")), allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                                                                { return window->GetMyWindow ()->isPunctualColorSet (); }));
+    popUpMenuColor->Enable (FindItem (_ ("Punctual Window...")), allWindowHas ([] (gTimeline *window)
+                                                                               { return window->GetMyWindow ()->isPunctualColorSet (); },
+                                                                               [] (gHistogram *win)
+                                                                               { return true; }));
 
     popUpMenuColor->Enable (FindItem (_ ("Gradient Function")),
-                            (allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                            { return window->GetMyWindow ()->isGradientColorSet (); })
-                             || allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                               { return window->GetMyWindow ()->isNotNullGradientColorSet (); })
-                             || allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                               { return window->GetMyWindow ()->isAlternativeGradientColorSet (); })
-                             || allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                               { return window->GetMyWindow ()->isFunctionLineColorSet (); })
-                             || allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                               { return window->GetMyWindow ()->isPunctualColorSet (); })));
+                            (allWindowHas ([] (gTimeline *window)
+                                           { return window->GetMyWindow ()->isGradientColorSet (); },
+                                           [] (gHistogram *win)
+                                           { return true; })
+                             || allWindowHas ([] (gTimeline *window)
+                                              { return window->GetMyWindow ()->isNotNullGradientColorSet (); },
+                                              [] (gHistogram *win)
+                                              { return true; })
+                             || allWindowHas ([] (gTimeline *window)
+                                              { return window->GetMyWindow ()->isAlternativeGradientColorSet (); },
+                                              [] (gHistogram *win)
+                                              { return true; })
+                             || allWindowHas ([] (gTimeline *window)
+                                              { return window->GetMyWindow ()->isFunctionLineColorSet (); },
+                                              [] (gHistogram *win)
+                                              { return true; })
+                             || allWindowHas ([] (gTimeline *window)
+                                              { return window->GetMyWindow ()->isPunctualColorSet (); },
+                                              [] (gHistogram *win)
+                                              { return true; })));
 
     popUpMenuColor->Enable (FindItem (_ ("Semantic scale min at 0")),
-                            (allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                            { return window->GetMyWindow ()->isFunctionLineColorSet (); })
-                             || allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                               { return window->GetMyWindow ()->isFusedLinesColorSet (); })
-                             || allWindowsHas (timelineDerivedList, [] (gTimeline *window)
-                                               { return window->GetMyWindow ()->isPunctualColorSet (); })));
+                            (allWindowHas ([] (gTimeline *window)
+                                           { return window->GetMyWindow ()->isFunctionLineColorSet (); },
+                                           [] (gHistogram *win)
+                                           { return true; })
+                             || allWindowHas ([] (gTimeline *window)
+                                              { return window->GetMyWindow ()->isFusedLinesColorSet (); },
+                                              [] (gHistogram *win)
+                                              { return true; })
+                             || allWindowHas ([] (gTimeline *window)
+                                              { return window->GetMyWindow ()->isPunctualColorSet (); },
+                                              [] (gHistogram *win)
+                                              { return true; })));
   }
 
   popUpMenuPaste->Enable (
@@ -1280,56 +1321,39 @@ bool gPopUpMenu ::isSelectObjectsAvailable ()
 
   Trace *trace = nullptr;
   TTraceLevel dataLevel;
-  SelectionManagement<TObjectOrder, TTraceLevel> *whichSelectedRows;
 
   auto isProcessModelCheck = [&] (TTraceLevel traceLevel) -> bool
   {
     return ((traceLevel >= TTraceLevel::WORKLOAD) && (traceLevel <= TTraceLevel::THREAD));
   };
 
-  if (!timelineDerivedList.empty ())
-  {
-    auto timeline = (*timelineDerivedList.begin ());
-    trace = timeline->GetMyWindow ()->getTrace ();
-    isProcessModel = isProcessModelCheck (timeline->GetMyWindow ()->getLevel ());
-    whichSelectedRows = timeline->GetMyWindow ()->getSelectedRows ();
+  auto visitor = overloads{
+      [] (gHistogram *histogram)
+      { return histogram->GetHistogram ()->getDataWindow (); },
+      [] (gTimeline *timeline)
+      { return timeline->GetMyWindow (); }
 
-    for (gTimeline *timeline : timelineDerivedList)
+  };
+
+  auto dataWindow = std::visit (visitor, (windowGenericList[0]));
+  trace = dataWindow->getTrace ();
+  isProcessModel = isProcessModelCheck (dataWindow->getLevel ());
+
+  for (auto &window : windowGenericList)
+  {
+    dataWindow = std::visit (visitor, window);
+    if (!trace->isSameObjectStruct (dataWindow->getTrace (), true))
     {
-      if (!trace->isSameObjectStruct (timeline->GetMyWindow ()->getTrace (), true))
-      {
-        sameTraceParameters = false;
-        break;
-      }
-      if (!(isProcessModel == isProcessModelCheck (timeline->GetMyWindow ()->getLevel ())))
-      {
-        sameTraceLevelMode = false;
-        break;
-      }
+      sameTraceParameters = false;
+      break;
+    }
+    if (!(isProcessModel == isProcessModelCheck (dataWindow->getLevel ())))
+    {
+      sameTraceLevelMode = false;
+      break;
     }
   }
-  if (!histogramDerivedList.empty () && sameTraceParameters && sameTraceLevelMode)
-  {
-    if (trace == nullptr)
-    {
-      trace = (*histogramDerivedList.begin ())->GetHistogram ()->getDataWindow ()->getTrace ();
-      isProcessModel = isProcessModelCheck ((*histogramDerivedList.begin ())->GetHistogram ()->getDataWindow ()->getLevel ());
-    }
 
-    for (gHistogram *histogram : histogramDerivedList)
-    {
-      if (!trace->isSameObjectStruct (histogram->GetHistogram ()->getDataWindow ()->getTrace (), true))
-      {
-        sameTraceParameters = false;
-        break;
-      }
-      if (!(isProcessModel == isProcessModelCheck (histogram->GetHistogram ()->getDataWindow ()->getLevel ())))
-      {
-        sameTraceLevelMode = false;
-        break;
-      }
-    }
-  }
   return (sameTraceParameters && sameTraceLevelMode);
 }
 
@@ -1343,43 +1367,42 @@ void gPopUpMenu ::createRowSelectionDialog ()
   std::vector<std::vector<TObjectOrder>> tmpWindowSelection;
   std::vector<std::vector<TObjectOrder>> intersectedSelection;
 
-  for (gTimeline *itTimeline : timelineDerivedList)
-  {
-    itTimeline->GetMyWindow ()->getSelectedRows ()->getAllSelected (tmpWindowSelection);
+  auto visitor = overloads{
+      [] (gHistogram *histogram)
+      { return histogram->GetHistogram ()->getDataWindow (); },
+      [] (gTimeline *timeline)
+      { return timeline->GetMyWindow (); }
 
-    if (intersectedSelection.empty ())
-    {
-      intersectedSelection = tmpWindowSelection;
-      isProcessModel = ((itTimeline->GetMyWindow ()->getLevel () >= TTraceLevel::WORKLOAD) && (itTimeline->GetMyWindow ()->getLevel () <= TTraceLevel::THREAD));
-      trace = itTimeline->GetMyWindow ()->getTrace ();
-    }
-    else
-    {
-      intersectedSelection = matrix_intersection (tmpWindowSelection, intersectedSelection);
-    }
+  };
+
+  auto visitorSelectedRows = overloads{
+      [] (gHistogram *histogram)
+      { return histogram->GetHistogram ()->getRowSelectionManagement (); },
+      [] (gTimeline *timeline)
+      { return timeline->GetMyWindow ()->getSelectedRows (); }
+
+  };
+
+  auto dataWindow = std::visit (visitor, *windowGenericList.begin ());
+  auto selectedRows = std::visit (visitorSelectedRows, *windowGenericList.begin ());
+  selectedRows->getAllSelected (intersectedSelection);
+
+  isProcessModel = ((dataWindow->getLevel () >= TTraceLevel::WORKLOAD) && (dataWindow->getLevel () <= TTraceLevel::THREAD));
+  trace = dataWindow->getTrace ();
+
+  for (auto &window : windowGenericList)
+  {
+    dataWindow = std::visit (visitor, window);
+    dataWindow->getSelectedRows ()->getAllSelected (tmpWindowSelection);
+
+    intersectedSelection = matrix_intersection (tmpWindowSelection, intersectedSelection);
   }
 
-  for (gHistogram *itHistogram : histogramDerivedList)
-  {
-    itHistogram->GetHistogram ()->getRowSelectionManagement ()->getAllSelected (tmpWindowSelection);
-
-    if (intersectedSelection.empty ())
-    {
-      intersectedSelection = tmpWindowSelection;
-      isProcessModel = ((itHistogram->GetHistogram ()->getDataWindow ()->getLevel () >= TTraceLevel::WORKLOAD)
-                        && (itHistogram->GetHistogram ()->getDataWindow ()->getLevel () <= TTraceLevel::THREAD));
-      trace = itHistogram->GetHistogram ()->getDataWindow ()->getTrace ();
-    }
-    else
-    {
-      intersectedSelection = matrix_intersection (tmpWindowSelection, intersectedSelection);
-    }
-  }
   TTraceLevel beginLevel;
   TTraceLevel endLevel;
 
-  intersectionSelectedRows.init(trace);
-  
+  intersectionSelectedRows.init (trace);
+
   intersectionSelectedRows.setAllSelected (intersectedSelection);
 
   RowsSelectionDialog *myDialog = new RowsSelectionDialog (trace, isProcessModel, &intersectionSelectedRows);
@@ -1399,19 +1422,11 @@ bool gPopUpMenu::ZoomAwareTransferData (RowsSelectionDialog *myDialog)
   auto isZoomAware = true;
   bool applyZoom = true;
 
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    if (!isZoomAware)
-      break;
-    isZoomAware = myDialog->isZoomAwareTransferData (timeline->GetMyWindow ()->getCurrentZoomRange ());
-  }
+  isZoomAware = allWindowHas ([myDialog] (gHistogram *histogram)
+                              { return myDialog->isZoomAwareTransferData (histogram->GetHistogram ()->getCurrentZoomRange ()); },
+                              [myDialog] (gTimeline *timeline)
+                              { return myDialog->isZoomAwareTransferData (timeline->GetMyWindow ()->getCurrentZoomRange ()); });
 
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    if (!isZoomAware)
-      break;
-    isZoomAware = myDialog->isZoomAwareTransferData (histogram->GetHistogram ()->getCurrentZoomRange ());
-  }
   if (!isZoomAware)
   {
     wxString tmpMsg = wxT ("Do you want to extend the zoom to fit selected objects?");
@@ -1444,29 +1459,45 @@ void gPopUpMenu ::transferDataSelectionToObjects (RowsSelectionDialog *myDialog,
     std::vector<bool> whichSelected;
     intersectionSelectedRows->getSelected (whichSelected, whichLevel);
 
-    for (gTimeline *timeline : timelineDerivedList)
-    {
-      auto zoomAware = myDialog->isZoomAwareTransferData (timeline->GetMyWindow ()->getCurrentZoomRange ());
-      if (applyZoom && !zoomAware)
-      {
-        timeline->GetMyWindow ()->addZoom (myDialog->GetNewBeginZoom (), myDialog->GetNewEndZoom ());
-      }
-      timeline->GetMyWindow ()->setSelectedRows (whichLevel, whichSelected);
-      timeline->GetMyWindow ()->setRedraw (true);
-      timeline->GetMyWindow ()->setChanged (true);
-    }
-    for (gHistogram *histogram : histogramDerivedList)
-    {
-      std::vector<TObjectOrder> selection;
-      histogram->GetHistogram ()->getRowSelectionManagement ()->getSelected (selection, histogram->GetHistogram ()->getDataWindow ()->getLevel ());
+    auto visitor = overloads{
+        [] (gHistogram *histogram)
+        { return histogram->GetHistogram (); },
+        [] (gTimeline *timeline)
+        { return timeline->GetMyWindow (); }
 
-      auto zoomAware = myDialog->isZoomAwareTransferData (selection);
-      if (applyZoom && !zoomAware)
+    };
+
+    gTimeline *tmpTimeline;
+    gHistogram *tmpHistogram;
+
+    for (auto &window : windowGenericList)
+    {
+      if (std::holds_alternative<gTimeline *> (window))
       {
-        histogram->GetHistogram ()->addZoom (myDialog->GetNewBeginZoom (), myDialog->GetNewEndZoom ());
+        tmpTimeline = std::get<gTimeline *> (window);
+        auto zoomAware = myDialog->isZoomAwareTransferData (tmpTimeline->GetMyWindow ()->getCurrentZoomRange ());
+        if (applyZoom && !zoomAware)
+        {
+          tmpTimeline->GetMyWindow ()->addZoom (myDialog->GetNewBeginZoom (), myDialog->GetNewEndZoom ());
+        }
+        tmpTimeline->GetMyWindow ()->setSelectedRows (whichLevel, whichSelected);
+        tmpTimeline->GetMyWindow ()->setRedraw (true);
+        tmpTimeline->GetMyWindow ()->setChanged (true);
       }
-      histogram->GetHistogram ()->getRowSelectionManagement ()->setSelected (whichSelected, whichLevel);
-      histogram->GetHistogram ()->setRecalc (true);
+      if (std::holds_alternative<gHistogram *> (window))
+      {
+        tmpHistogram = std::get<gHistogram *> (window);
+        std::vector<TObjectOrder> selection;
+        tmpHistogram->GetHistogram ()->getRowSelectionManagement ()->getSelected (selection, tmpHistogram->GetHistogram ()->getDataWindow ()->getLevel ());
+
+        auto zoomAware = myDialog->isZoomAwareTransferData (selection);
+        if (applyZoom && !zoomAware)
+        {
+          tmpHistogram->GetHistogram ()->addZoom (myDialog->GetNewBeginZoom (), myDialog->GetNewEndZoom ());
+        }
+        tmpHistogram->GetHistogram ()->getRowSelectionManagement ()->setSelected (whichSelected, whichLevel);
+        tmpHistogram->GetHistogram ()->setRecalc (true);
+      }
     }
   }
 }
@@ -1498,310 +1529,220 @@ gPopUpMenu::createRowSelectionDialog (gHistogram *histogram)
 
 void gPopUpMenu::OnPopUpCopy (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpCopy (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpCopy (event);
-  }
+    onAllWindowsCall ([&event] (auto *item)
+    { item->OnPopUpCopy (event); });
 }
+
 void gPopUpMenu::OnPopUpPasteDefaultSpecial (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteDefaultSpecial (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteDefaultSpecial (event);
-  }
+    onAllWindowsCall ([&event] (auto *item)
+    { item->OnPopUpPasteDefaultSpecial (event); });
 }
 void gPopUpMenu::OnPopUpPasteSpecial (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteSpecial (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteSpecial (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+  { item->OnPopUpPasteSpecial (event); });
 }
+
 void gPopUpMenu::OnPopUpPasteTime (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteTime (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteTime (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+  { item->OnPopUpPasteTime (event); });
 }
 void gPopUpMenu::OnPopUpPasteObjects (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteObjects (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteObjects (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+  { item->OnPopUpPasteObjects (event); });
 }
 void gPopUpMenu::OnPopUpPasteSize (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteSize (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteSize (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+  { item->OnPopUpPasteSize (event); });
 }
 void gPopUpMenu::OnPopUpPasteDuration (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteDuration (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteDuration (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+  { item->OnPopUpPasteDuration (event); });
 }
 void gPopUpMenu::OnPopUpPasteSemanticScale (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteSemanticScale (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteSemanticScale (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+  { item->OnPopUpPasteSemanticScale (event); });
 }
 void gPopUpMenu::OnPopUpPasteSemanticSort (wxCommandEvent &event)
 {
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteSemanticSort (event);
-  }
+  onAllWindowsCall ([&event] (gHistogram *item)
+  { item->OnPopUpPasteSemanticSort (event); },
+  [] (gTimeline *item) {});
 }
 
 // TIMELINE
 void gPopUpMenu::OnPopUpPasteCustomPalette (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteCustomPalette (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+  { item->OnPopUpPasteCustomPalette (event); },
+  [] (gHistogram *item) {});
 }
 void gPopUpMenu::OnPopUpPasteFilterAll (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteFilterAll (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+  { item->OnPopUpPasteFilterAll (event); },
+  [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpPasteFilterCommunications (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteFilterCommunications (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+  { item->OnPopUpPasteFilterCommunications (event); },
+  [] (gHistogram *item) {});
 }
 void gPopUpMenu::OnPopUpPasteFilterEvents (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPasteFilterEvents (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+  { item->OnPopUpPasteFilterEvents (event); },
+  [] (gHistogram *item) {});
 }
 
 // HISGORAM
 void gPopUpMenu::OnPopUpPasteControlScale (wxCommandEvent &event)
 {
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteControlScale (event);
-  }
+  onAllWindowsCall ([&event] (gHistogram *item)
+                    { item->OnPopUpPasteControlScale (event); },
+                    [] (gTimeline *item) {});
 }
+
 void gPopUpMenu::OnPopUpPaste3DScale (wxCommandEvent &event)
 {
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPaste3DScale (event);
-  }
+  onAllWindowsCall ([&event] (gHistogram *item)
+                    { item->OnPopUpPaste3DScale (event); },
+                    [] (gTimeline *item) {});
 }
 void gPopUpMenu::OnPopUpPasteControlDimensions (wxCommandEvent &event)
 {
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPasteControlDimensions (event);
-  }
+  onAllWindowsCall ([&event] (gHistogram *item)
+                    { item->OnPopUpPasteControlDimensions (event); },
+                    [] (gTimeline *item) {});
 }
 
 // MIX
 void gPopUpMenu::OnPopUpClone (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpClone (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpClone (event);
-  }
+  onAllWindowsCall ([&event] (auto &item)
+                    { item->OnPopUpClone (event); });
 }
+
 void gPopUpMenu::OnPopUpRename (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpRename (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpRename (event);
-  }
+  onAllWindowsCall ([&event] (auto &item)
+                    { item->OnPopUpRename (event); });
 }
+
 void gPopUpMenu::OnPopUpFitTimeScale (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpFitTimeScale (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpFitTimeScale (event);
-  }
+  onAllWindowsCall ([&event] (auto &item)
+                    { item->OnPopUpFitTimeScale (event); });
 }
+
 void gPopUpMenu::OnPopUpFitObjects (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpFitObjects (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpFitObjects (event);
-  }
+  onAllWindowsCall ([&event] (auto &item)
+                    { item->OnPopUpFitObjects (event); });
 }
 
 // TIMELINE
 void gPopUpMenu::OnPopUpFitSemanticScaleMin (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpFitSemanticScaleMin (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpFitSemanticScaleMin (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpFitSemanticScaleMax (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpFitSemanticScaleMax (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpFitSemanticScaleMax (event); },
+                    [] (gHistogram *item) {});
 }
 void gPopUpMenu::OnPopUpFitSemanticScale (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpFitSemanticScale (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpFitSemanticScale (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpViewCommunicationLines (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpViewCommunicationLines (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpViewCommunicationLines (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpViewEventFlags (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpViewEventFlags (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpViewEventFlags (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpFunctionLineColor (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpFunctionLineColor (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpFunctionLineColor (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpFusedLinesColor (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpFusedLinesColor (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpFusedLinesColor (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpPunctualColor (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPunctualColor (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpPunctualColor (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpPunctualColorWindow (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPunctualColorWindow (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpPunctualColorWindow (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpCodeColor (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpCodeColor (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpCodeColor (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpGradientColor (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpGradientColor (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpGradientColor (event); },
+                    [] (gHistogram *item) {});
 }
+
 void gPopUpMenu::OnPopUpNotNullGradientColor (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpNotNullGradientColor (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpNotNullGradientColor (event); },
+                    [] (gHistogram *item) {});
 }
 void gPopUpMenu::OnPopUpAlternativeGradientColor (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpAlternativeGradientColor (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpAlternativeGradientColor (event); },
+                    [] (gHistogram *item) {});
 }
 void gPopUpMenu::OnPopUpSemanticScaleMinAtZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpSemanticScaleMinAtZero (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpSemanticScaleMinAtZero (event); },
+                    [] (gHistogram *item) {});
 }
 
 // HISTOGRAM
@@ -1811,557 +1752,326 @@ void gPopUpMenu::OnPopUpRowSelection (wxCommandEvent &event)
 }
 void gPopUpMenu::OnPopUpAutoControlScale (wxCommandEvent &event)
 {
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpAutoControlScale (event);
-  }
+  onAllWindowsCall ([&event] (gHistogram *item)
+                    { item->OnPopUpAutoControlScale (event); },
+                    [] (gTimeline *item) {});
 }
 void gPopUpMenu::OnPopUpAutoControlScaleZero (wxCommandEvent &event)
 {
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpAutoControlScaleZero (event);
-  }
+  onAllWindowsCall ([&event] (gHistogram *item)
+                    { item->OnPopUpAutoControlScaleZero (event); },
+                    [] (gTimeline *item) {});
 }
 void gPopUpMenu::OnPopUpAuto3DScale (wxCommandEvent &event)
 {
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpAuto3DScale (event);
-  }
+  onAllWindowsCall ([&event] (gHistogram *item)
+                    { item->OnPopUpAuto3DScale (event); },
+                    [] (gTimeline *item) {});
 }
 void gPopUpMenu::OnPopUpAutoDataGradient (wxCommandEvent &event)
 {
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpAutoDataGradient (event);
-  }
+  onAllWindowsCall ([&event] (gHistogram *item)
+                    { item->OnPopUpAutoDataGradient (event); },
+                    [] (gTimeline *item) {});
 }
 
 void gPopUpMenu::OnPopUpColor2D (wxCommandEvent &event)
 {
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpColor2D (event);
-  }
+  onAllWindowsCall ([&event] (gHistogram *item)
+                    { item->OnPopUpColor2D (event); },
+                    [] (gTimeline *item) {});
 }
 
 // MIX
 void gPopUpMenu::OnPopUpGradientFunction (wxCommandEvent &event)
 {
-
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpGradientFunction (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-
-    histogram->OnPopUpGradientFunction (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpGradientFunction (event); });
 }
 void gPopUpMenu::OnPopUpUndoZoom (wxCommandEvent &event)
 {
-
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpUndoZoom (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpUndoZoom (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpUndoZoom (event); });
 }
 void gPopUpMenu::OnPopUpRedoZoom (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpRedoZoom (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpRedoZoom (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpRedoZoom (event); });
 }
 
 // MIX
 void gPopUpMenu::OnPopUpDrawModeTimeLast (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeLast (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticLast (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeLast (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticLast (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeTimeRandom (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeRandom (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticRandom (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeRandom (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticRandom (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeTimeRandomNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeRandomNotZero (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticRandomNotZero (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeRandomNotZero (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticRandomNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeTimeMaximum (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeMaximum (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticMaximum (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeMaximum (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticMaximum (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeTimeMinimumNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeMinimumNotZero (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticMinimumNotZero (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeMinimumNotZero (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticMinimumNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeTimeAbsoluteMaximum (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeAbsoluteMaximum (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticAbsoluteMaximum (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeAbsoluteMaximum (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticAbsoluteMaximum (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeTimeAbsoluteMinimumNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeAbsoluteMinimumNotZero (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticAbsoluteMinimumNotZero (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeAbsoluteMinimumNotZero (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticAbsoluteMinimumNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeTimeAverage (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeAverage (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticAverage (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeAverage (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticAverage (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeTimeAverageNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeAverageNotZero (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticAverageNotZero (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeAverageNotZero (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticAverageNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeTimeMode (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeTimeMode (event);
-  }
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeSemanticMode (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpDrawModeTimeMode (event); },
+                    [&event] (gHistogram *item)
+                    { item->OnPopUpDrawModeSemanticMode (event); });
 }
 
 // MIX
 void gPopUpMenu::OnPopUpDrawModeObjectsLast (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsLast (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsLast (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsLast (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeObjectsRandom (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsRandom (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsRandom (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsRandom (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeObjectsRandomNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsRandomNotZero (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsRandomNotZero (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsRandomNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeObjectsMaximum (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsMaximum (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsMaximum (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsMaximum (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeObjectsMinimumNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsMinimumNotZero (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsMinimumNotZero (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsMinimumNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeObjectsAbsoluteMaximum (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsAbsoluteMaximum (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsAbsoluteMaximum (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsAbsoluteMaximum (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeObjectsAbsoluteMinimumNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsAbsoluteMinimumNotZero (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsAbsoluteMinimumNotZero (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsAbsoluteMinimumNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeObjectsAverage (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsAverage (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsAverage (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsAverage (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeObjectsAverageNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsAverageNotZero (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsAverageNotZero (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsAverageNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeObjectsMode (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeObjectsMode (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeObjectsMode (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeObjectsMode (event); });
 }
-
 void gPopUpMenu::OnPopUpDrawModeBothLast (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothLast (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothLast (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothLast (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeBothRandom (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothRandom (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothRandom (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothRandom (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeBothRandomNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothRandomNotZero (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothRandomNotZero (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothRandomNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeBothMaximum (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothMaximum (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothMaximum (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothMaximum (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeBothMinimumNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothMinimumNotZero (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothMinimumNotZero (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothMinimumNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeBothAbsoluteMaximum (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothAbsoluteMaximum (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothAbsoluteMaximum (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothAbsoluteMaximum (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeBothAbsoluteMinimumNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothAbsoluteMinimumNotZero (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothAbsoluteMinimumNotZero (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothAbsoluteMinimumNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeBothAverage (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothAverage (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothAverage (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothAverage (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeBothAverageNotZero (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothAverageNotZero (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothAverageNotZero (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothAverageNotZero (event); });
 }
 void gPopUpMenu::OnPopUpDrawModeBothMode (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpDrawModeBothMode (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpDrawModeBothMode (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpDrawModeBothMode (event); });
 }
 
 void gPopUpMenu::OnPopUpPixelSize (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpPixelSize (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpPixelSize (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpPixelSize (event); });
 }
 void gPopUpMenu::OnPopUpSynchronize (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
+  TGroupId group;
+  bool isChecked;
+  if( event.GetId() == ID_MENU_NEWGROUP )
   {
-    timeline->OnPopUpSynchronize (event);
+    group = SyncWindows::getInstance()->newGroup();  
+    isChecked = true;
   }
-
-  for (gHistogram *histogram : histogramDerivedList)
+  else
   {
-    histogram->OnPopUpSynchronize (event);
+    isChecked = popUpMenuSync->IsChecked (event.GetId());
+    vector<TGroupId> tmpGroups;
+    SyncWindows::getInstance()->getGroups( tmpGroups );
+    group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
   }
+    
+  onAllWindowsCall ([&group,isChecked] (auto *item)
+  { item->OnPopUpSynchronizeById (group, isChecked); });
 }
 void gPopUpMenu::OnPopUpRemoveGroup (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpRemoveGroup (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpRemoveGroup (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpRemoveGroup (event); });
 }
 void gPopUpMenu::OnPopUpRemoveAllGroups (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpRemoveAllGroups (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpRemoveAllGroups (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpRemoveAllGroups (event); });
 }
 
 // Timeline
 void gPopUpMenu::OnPopUpLabels (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpLabels (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpLabels (event); },
+                    [] (gHistogram *item) {});
 }
 void gPopUpMenu::OnPopUpObjectAxis (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpObjectAxis (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpObjectAxis (event); },
+                    [] (gHistogram *item) {});
 }
 void gPopUpMenu::OnPopUpRunApp (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpRunApp (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpRunApp (event); },
+                    [] (gHistogram *item) {});
 }
 
 void gPopUpMenu::OnPopUpTiming (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpTiming (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpTiming (event); },
+                    [] (gHistogram *item) {});
 }
 
 void gPopUpMenu::OnPopUpInfoPanel (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpInfoPanel (event);
-  }
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpInfoPanel (event); },
+                    [] (gHistogram *item) {});
 }
 
 // Mix
 
 void gPopUpMenu::OnPopUpSaveCFG (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpSaveCFG (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpSaveCFG (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpSaveCFG (event); });
 }
 void gPopUpMenu::OnPopUpSaveImageDialog (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
-  {
-    timeline->OnPopUpSaveImageDialog (event);
-  }
-
-  for (gHistogram *histogram : histogramDerivedList)
-  {
-    histogram->OnPopUpRemoveAllGroups (event);
-  }
+  onAllWindowsCall ([&event] (auto *item)
+                    { item->OnPopUpSaveImageDialog (event); });
 }
 
 // Timeline
 void gPopUpMenu::OnPopUpSaveText (wxCommandEvent &event)
 {
-  for (gTimeline *timeline : timelineDerivedList)
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->OnPopUpSaveText (event); },
+                    [] (gHistogram *item) {});
+}
+
+template <typename... Funcs>
+void gPopUpMenu::onAllWindowsCall (Funcs &&...funcs)
+{
+  auto visitor = overloads{std::forward<Funcs> (funcs)...};
+
+  for (auto &window : windowGenericList)
   {
-    timeline->OnPopUpSaveText (event);
+    std::visit (visitor,
+                window);
   }
 }

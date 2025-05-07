@@ -2716,6 +2716,21 @@ void gTimeline::OnPopUpSynchronizeById( TGroupId wichGroup )
   
 }
 
+void gTimeline::OnPopUpSynchronizeById( TGroupId& wichGroup, bool setSynchronized )
+{
+  if(SyncWindows::getInstance()-> isGroupCreated(wichGroup) )
+  {
+    if(setSynchronized){
+      if( myWindow->isSync()) myWindow->removeFromSync();
+      myWindow->addToSyncGroup( wichGroup );
+    }
+    else
+    {
+      if( myWindow->isSync()) myWindow->removeFromSync();
+    }
+  }
+}
+
 
 void gTimeline::OnPopUpRemoveGroup( wxCommandEvent& event )
 {
@@ -2798,10 +2813,7 @@ void gTimeline::OnPopUpRedoZoom( wxCommandEvent& event )
 
 void gTimeline::rightDownManager()
 {
-  vector<gTimeline*> timelines;
-  timelines.push_back(this);
-
-  gPopUpMenu popUpMenu( timelines );
+  gPopUpMenu popUpMenu( this );
 
   popUpMenu.initializePopUpMenu();
   popUpMenu.enablePopUpMenu( );

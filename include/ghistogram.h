@@ -409,6 +409,8 @@ public:
   
   void OnPopUpSynchronize( wxCommandEvent& event );
   void OnPopUpSynchronizeById( TGroupId& wichGroup );
+  void OnPopUpSynchronizeById( TGroupId& wichGroup, bool isSynchronized );
+
 
 
   void OnPopUpRemoveGroup( wxCommandEvent& event );

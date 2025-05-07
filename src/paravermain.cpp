@@ -2384,8 +2384,7 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
   tmpTree->GetSelections(selectedItems); 
   
 
-  std::vector<gHistogram *> itemDataWindowHistogram;
-  std::vector<gTimeline *> itemDataWindowTimeline;
+  std::vector<std::variant<gHistogram*, gTimeline*>> itemDataWindow;
 
   for (size_t i = 0; i < selectedItems.GetCount(); ++i)
   {
@@ -2398,20 +2397,20 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
     
       if( gHistogram *histo = itemData->getHistogram() )
       {
-        itemDataWindowHistogram.push_back(histo);
+        itemDataWindow.push_back(histo);
         //beginDragWindow = nullptr;
         //histo->rightDownManager();
       }
       else if( gTimeline *timeline = itemData->getTimeline() )
       {
-        itemDataWindowTimeline.push_back(timeline);
+        itemDataWindow.push_back(timeline);
         //beginDragWindow = timeline->GetMyWindow();
         //timeline->rightDownManager();
       }
       
   }
 
-  gPopUpMenu popUpMenu( itemDataWindowHistogram, itemDataWindowTimeline );
+  gPopUpMenu popUpMenu( itemDataWindow );
   
   popUpMenu.initializePopUpMenu();
   popUpMenu.enablePopUpMenu(  );
@@ -4724,7 +4723,25 @@ void paraverMain::OnSyncWindows(wxCommandEvent& event)
 
   wxArrayTreeItemIds selectedItems;
   tmpTree->GetSelections(selectedItems); 
-  
+  bool unsetSelected = true;
+  for (size_t i = 0; i < selectedItems.GetCount(); ++i)
+  {
+      wxTreeItemId selectedItem = selectedItems[i];
+      TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    
+      if( gHistogram *histo = itemData->getHistogram() )
+      {
+        auto *histogram = histo->GetHistogram(); 
+
+        if( !histogram->isSync() || histogram->getSyncGroup() != wichGroup)   unsetSelected = false;
+      }
+      else if( gTimeline *timeline = itemData->getTimeline() )
+      {
+        auto *window = timeline->GetMyWindow(); 
+
+        if( !window->isSync() || window->getSyncGroup() != wichGroup)   unsetSelected = false;
+      }
+  }
 
   for (size_t i = 0; i < selectedItems.GetCount(); ++i)
   {
@@ -4734,11 +4751,11 @@ void paraverMain::OnSyncWindows(wxCommandEvent& event)
     
       if( gHistogram *histo = itemData->getHistogram() )
       {
-        histo->OnPopUpSynchronizeById(wichGroup);
+        histo->OnPopUpSynchronizeById(wichGroup, !unsetSelected);
       }
       else if( gTimeline *timeline = itemData->getTimeline() )
       {
-        timeline->OnPopUpSynchronizeById(wichGroup);
+        timeline->OnPopUpSynchronizeById(wichGroup, !unsetSelected);
       }
       
   }

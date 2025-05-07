@@ -1860,6 +1860,21 @@ void gHistogram::OnPopUpSynchronizeById( TGroupId& wichGroup )
   }
 }
 
+void gHistogram::OnPopUpSynchronizeById( TGroupId& wichGroup, bool setSynchronized )
+{
+  if(SyncWindows::getInstance()-> isGroupCreated(wichGroup) )
+  {
+    if(setSynchronized){
+      if( myHistogram->isSync()) myHistogram->removeFromSync();
+      myHistogram->addToSyncGroup( wichGroup );
+    }
+    else
+    {
+      if( myHistogram->isSync()) myHistogram->removeFromSync();
+    }
+  }
+}
+
 
 void gHistogram::OnPopUpRemoveGroup( wxCommandEvent& event )
 {
@@ -1936,10 +1951,8 @@ void gHistogram::OnPopUpRedoZoom( wxCommandEvent& event )
 
 void gHistogram::rightDownManager()
 {
-  vector<gHistogram*> histogram;
-  histogram.push_back(this);
 
-  gPopUpMenu popUpMenu( histogram );
+  gPopUpMenu popUpMenu( this );
 
   popUpMenu.initializePopUpMenu();
   popUpMenu.enablePopUpMenu( );
