@@ -1506,25 +1506,18 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       tmpValue.Clear();
       tmpValue = textCtrlCarmMinBurstDuration->GetValue(); // us
       if ( !tmpValue.IsEmpty() )
-      {
-        parameters += wxString( wxT( " --min_dur" ) );
-        parameters += wxString( wxT( " " ) ) + tmpValue;
-      }
+        parameters += wxString( wxT( " --min_dur " ) ) + tmpValue;
 
       if ( checkCarmUseSemanticWindow->IsChecked() && !carmSemanticCSV.IsEmpty() )
       {
-        parameters += wxString( wxT( " --mask_csv" ) );
-        parameters += wxString( wxT( " " ) ) + carmSemanticCSV;
+        parameters += wxString( wxT( " --mask_csv " ) ) + doubleQuote( carmSemanticCSV );
 
         if ( checkCarmAccumulateValues->IsChecked() )
           parameters += wxString( wxT( " -ac" ) );
       }
 
       if ( !carmLabelsCSV.IsEmpty() )
-      {
-        parameters += wxString( wxT( " --color_csv" ) );
-        parameters += wxString( wxT( " " ) ) + carmLabelsCSV;
-      }
+        parameters += wxString( wxT( " --color_csv " ) ) + doubleQuote( carmLabelsCSV );
 
       parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
 
