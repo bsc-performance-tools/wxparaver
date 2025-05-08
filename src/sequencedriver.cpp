@@ -271,7 +271,11 @@ bool RunCarmAction::execute( std::string whichTrace )
     for( auto& it : windows )
     {
       if ( it->getChild() == nullptr )
+      {
+        it->setPosX( it->getPosX() + paraverMain::defaultTitleBarSize.y );
+        it->setPosY( it->getPosY() + paraverMain::defaultTitleBarSize.y );
         BuildTree( wxparaverApp::mainWindow, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), it );
+      }
     }
   }
 
