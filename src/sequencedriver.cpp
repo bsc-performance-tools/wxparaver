@@ -213,6 +213,9 @@ bool RunProfetAction::execute( std::string whichTrace )
 vector<TSequenceStates> RunCarmAction::getStateDependencies() const
 {
   vector<TSequenceStates> tmpStates;
+
+  tmpStates.push_back( TSequenceStates::usingWholeTraceState );
+
   return tmpStates;
 }
 
@@ -231,43 +234,45 @@ bool RunCarmAction::execute( std::string whichTrace )
 
   runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
 
-  if ( !wxparaverApp::mainWindow->DoLoadTrace( whichTrace ) )
-    return errorFound;
+  bool usingWholeTrace = ( ( UsingWholeTraceState * )tmpSequence->getState( TSequenceStates::usingWholeTraceState ) )->getData();
 
-  // Create copy of source window but using whichTrace.
-  Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
-  //bool dummyFound;
-  //gTimeline *sourceTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyFound );
-  std::vector<Trace *> loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
-  //gTimeline *clonedTimeline = sourceTimeline->clone( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ], US );
-  SaveOptions saveOptions = SaveOptions();
-  saveOptions.windowBeginTimeRelative = false;
-  saveOptions.windowScaleRelative = false;
-  std::vector<Timeline *> windows = { sourceWindow };
-  std::vector<Histogram *> dummyHistograms;
-  std::vector<CFGS4DLinkedPropertiesManager> linkedProperties;
-
-  std::stringstream tmpCFG;
-  if ( !CFGLoader::saveCFG( tmpCFG, saveOptions, windows, dummyHistograms, linkedProperties ) )
-    return errorFound;
-
-  windows.clear();
-  bool overrideChecks = true;
-  if ( !CFGLoader::loadCFG( sourceWindow->getKernel(),
-                            loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ],
-                            tmpCFG,
-                            windows,
-                            dummyHistograms, 
-                            saveOptions,
-                            overrideChecks ) )
-    return errorFound;
-
-  wxTreeCtrl *allTracesPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( 0 );
-  wxTreeCtrl *currentPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( wxparaverApp::mainWindow->getTracePosition( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ] ) + 1 );
-  for( auto& it : windows )
+  if ( !usingWholeTrace )
   {
-    if ( it->getChild() == nullptr )
-      BuildTree( wxparaverApp::mainWindow, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), it );
+    if ( !wxparaverApp::mainWindow->DoLoadTrace( whichTrace ) )
+      return errorFound;
+  
+    // Create copy of source window but using whichTrace.
+    Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
+    std::vector<Trace *> loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
+    SaveOptions saveOptions = SaveOptions();
+    saveOptions.windowBeginTimeRelative = false;
+    saveOptions.windowScaleRelative = false;
+    std::vector<Timeline *> windows = { sourceWindow };
+    std::vector<Histogram *> dummyHistograms;
+    std::vector<CFGS4DLinkedPropertiesManager> linkedProperties;
+
+    std::stringstream tmpCFG;
+    if ( !CFGLoader::saveCFG( tmpCFG, saveOptions, windows, dummyHistograms, linkedProperties ) )
+      return errorFound;
+
+    windows.clear();
+    bool overrideChecks = true;
+    if ( !CFGLoader::loadCFG( sourceWindow->getKernel(),
+                              loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ],
+                              tmpCFG,
+                              windows,
+                              dummyHistograms, 
+                              saveOptions,
+                              overrideChecks ) )
+      return errorFound;
+
+    wxTreeCtrl *allTracesPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( 0 );
+    wxTreeCtrl *currentPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( wxparaverApp::mainWindow->getTracePosition( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ] ) + 1 );
+    for( auto& it : windows )
+    {
+      if ( it->getChild() == nullptr )
+        BuildTree( wxparaverApp::mainWindow, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), it );
+    }
   }
 
   // Pass csv output files to carm dialog
@@ -596,30 +601,40 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   KernelConnection *myKernel = whichTimeline->GetMyWindow()->getKernel();
   TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
 
+  bool usingWholeTrace = ( whichTimeline->GetMyWindow()->getWindowBeginTime() == 0 ) &&
+                         ( whichTimeline->GetMyWindow()->getWindowEndTime() == whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
+  UsingWholeTraceState *tmpUsingWholeTraceState = new UsingWholeTraceState( mySequence );
+  tmpUsingWholeTraceState->setData( usingWholeTrace );
+  mySequence->addState( TSequenceStates::usingWholeTraceState, tmpUsingWholeTraceState );
+
   // Define sequence
-  mySequence->pushbackAction( TSequenceActions::traceCutterAction );
+  if ( !usingWholeTrace )
+    mySequence->pushbackAction( TSequenceActions::traceCutterAction );
   mySequence->pushbackAction( TSequenceActions::csvOutputAction );
   mySequence->pushbackAction( new RunCarmAction( mySequence ) );
 
   // States for TSequenceActions::traceCutterAction
   TraceOptions *tmpOptions = TraceOptions::create( myKernel );
-  tmpOptions->set_by_time( true );
   tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
   tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
-  tmpOptions->set_original_time( false );
-  tmpOptions->set_break_states( true );
-  tmpOptions->set_keep_boundary_events( true );
-  tmpOptions->set_remFirstStates( false );
-  tmpOptions->set_remLastStates( false );
-  tmpOptions->set_keep_all_events( true );
+  if ( !usingWholeTrace )
+  {
+    tmpOptions->set_by_time( true );
+    tmpOptions->set_original_time( false );
+    tmpOptions->set_break_states( true );
+    tmpOptions->set_keep_boundary_events( true );
+    tmpOptions->set_remFirstStates( false );
+    tmpOptions->set_remLastStates( false );
+    tmpOptions->set_keep_all_events( true );
+  }
+  
+  TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
+  tmpOptionsState->setData( tmpOptions );
+  mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
 
   OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
   tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameCarm );
   mySequence->addState( TSequenceStates::outputDirSuffixState, tmpOutputDirSuffixState );
-
-  TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
-  tmpOptionsState->setData( tmpOptions );
-  mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
 
   // States for TSequenceActions::csvOutputAction
   SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
