@@ -641,7 +641,7 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   mySequence->addState( TSequenceStates::csvFileNameState, tmpCSVFilenameState );
 
   TextOutput output;
-  output.setWindowTimeUnits( false );
+  output.setWindowTimeUnits( true );
   CSVOutputState *tmpOutputState = new CSVOutputState( mySequence );
   tmpOutputState->setData( output );
   mySequence->addState( TSequenceStates::csvOutputState, tmpOutputState );
