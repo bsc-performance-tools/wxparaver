@@ -651,7 +651,7 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   tmpTraceName.ClearExt();
   tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameCarm.c_str() ) );
   if( !tmpTraceName.DirExists() )
-  tmpTraceName.Mkdir();
+    tmpTraceName.Mkdir();
   std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
   std::replace( auxName.begin(), auxName.end(), ',', '-' );
   std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() );
