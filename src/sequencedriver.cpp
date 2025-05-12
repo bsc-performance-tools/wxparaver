@@ -625,7 +625,7 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   {
     tmpOptions->set_by_time( true );
     tmpOptions->set_original_time( false );
-    tmpOptions->set_break_states( true );
+    tmpOptions->set_break_states( false );
     tmpOptions->set_keep_boundary_events( true );
     tmpOptions->set_remFirstStates( false );
     tmpOptions->set_remLastStates( false );
