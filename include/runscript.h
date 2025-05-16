@@ -157,6 +157,7 @@ class wxHtmlWindow;
 #define ID_BUTTON_PROFET_CONFIG_FILE 10012
 #define ID_PROFET_ADDITIONAL_PLOTS 10013
 #define ID_TEXTCTRL_CARM_MIN_BURST_DURATION 10014
+#define ID_CHECKBOX_CARM_USE_WINDOW_COLORS 10017
 #define ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW 10015
 #define ID_CHECKBOX_CARM_ACCUMULATE_VALUES 10016
 #define wxID_LABELCOMMANDPREVIEW 10091
@@ -296,6 +297,9 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_PROFET_ADDITIONAL_PLOTS
   void OnProfetAdditionalPlotsUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_WINDOW_COLORS
+  void OnCheckboxCarmUseWindowColorsUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW
   void OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event );
@@ -442,6 +446,7 @@ public:
   wxCheckBox* checkProfetAdditionalPlots;
   wxBoxSizer* carmSection;
   wxTextCtrl* textCtrlCarmMinBurstDuration;
+  wxCheckBox* checkCarmUseWindowColors;
   wxCheckBox* checkCarmUseSemanticWindow;
   wxCheckBox* checkCarmAccumulateValues;
   wxTextCtrl* labelCommandPreview;

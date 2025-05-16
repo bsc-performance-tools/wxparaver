@@ -180,6 +180,7 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
   EVT_UPDATE_UI( ID_PROFET_ADDITIONAL_PLOTS, RunScript::OnProfetAdditionalPlotsUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_CARM_USE_WINDOW_COLORS, RunScript::OnCheckboxCarmUseWindowColorsUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, RunScript::OnCheckboxCarmUseSemanticWindowUpdate )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
@@ -362,6 +363,7 @@ void RunScript::Init()
   checkProfetAdditionalPlots = NULL;
   carmSection = NULL;
   textCtrlCarmMinBurstDuration = NULL;
+  checkCarmUseWindowColors = NULL;
   checkCarmUseSemanticWindow = NULL;
   checkCarmAccumulateValues = NULL;
   labelCommandPreview = NULL;
@@ -1003,20 +1005,25 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   itemBoxSizer10->Add(5, 5, 6, wxGROW|wxALL, 0);
 
   wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
-  carmSection->Add(itemBoxSizer11, 0, wxGROW|wxALL, 0);
+  carmSection->Add(itemBoxSizer11, 1, wxGROW|wxALL, 0);
 
   itemBoxSizer11->Add(5, 5, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
+  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer11->Add(itemBoxSizer13, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  checkCarmUseWindowColors = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_WINDOW_COLORS, _("Use window colors"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCarmUseWindowColors->SetValue(false);
+  itemBoxSizer13->Add(checkCarmUseWindowColors, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 3);
+
   checkCarmUseSemanticWindow = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, _("Use semantic window"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCarmUseSemanticWindow->SetValue(false);
-  itemBoxSizer11->Add(checkCarmUseSemanticWindow, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer13->Add(checkCarmUseSemanticWindow, 4, wxALIGN_CENTER_VERTICAL|wxALL, 3);
 
   checkCarmAccumulateValues = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_ACCUMULATE_VALUES, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCarmAccumulateValues->SetValue(false);
   checkCarmAccumulateValues->Enable(false);
-  itemBoxSizer11->Add(checkCarmAccumulateValues, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
-
-  itemBoxSizer11->Add(5, 5, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer13->Add(checkCarmAccumulateValues, 4, wxALIGN_CENTER_VERTICAL|wxALL, 3);
 
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
@@ -1120,6 +1127,7 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
 
   if ( whichAcceptableApps.empty() )
   {
+    checkCarmUseWindowColors->Disable();
     checkCarmUseSemanticWindow->Disable();
   }
 
@@ -1508,6 +1516,9 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       if ( !tmpValue.IsEmpty() )
         parameters += wxString( wxT( " --min_dur " ) ) + tmpValue;
 
+      if ( checkCarmUseWindowColors->IsChecked() && !carmLabelsCSV.IsEmpty() )
+        parameters += wxString( wxT( " --color_csv " ) ) + doubleQuote( carmLabelsCSV );
+
       if ( checkCarmUseSemanticWindow->IsChecked() && !carmSemanticCSV.IsEmpty() )
       {
         parameters += wxString( wxT( " --mask_csv " ) ) + doubleQuote( carmSemanticCSV );
@@ -1515,9 +1526,6 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         if ( checkCarmAccumulateValues->IsChecked() )
           parameters += wxString( wxT( " -ac" ) );
       }
-
-      if ( !carmLabelsCSV.IsEmpty() )
-        parameters += wxString( wxT( " --color_csv " ) ) + doubleQuote( carmLabelsCSV );
 
       parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
 
@@ -3015,5 +3023,14 @@ void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
   // TODO: must be enabled?
   //  checkCarmAccumulateValues->Enable( !checkCarmUseSemanticWindow->IsEnabled() || checkCarmUseSemanticWindow->IsChecked() );
   checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_WINDOW_COLORS
+ */
+
+void RunScript::OnCheckboxCarmUseWindowColorsUpdate( wxUpdateUIEvent& event )
+{
 }
 
