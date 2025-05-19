@@ -219,34 +219,29 @@ bool SetCSVFileNameRunCarmDialogAction::execute( std::string whichTrace )
 {
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   
-  bool usingWholeTrace = ( ( UsingWholeTraceState * )tmpSequence->getState( TSequenceStates::usingWholeTraceState ) )->getData();
-  if ( !usingWholeTrace )
-  {
-    // Cut has been done => build new name using chop
-    Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
+  // Cut has been done => build new basename using new chop.
+  Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
 
-    std::string tmpOutputTraceFileName = ( ( OutputTraceFileNameState * )tmpSequence->getState( TSequenceStates::outputTraceFileNameState ) )->getData();
-    wxFileName tmpTraceName( wxString::FromUTF8( tmpOutputTraceFileName.c_str() ) );
-    tmpTraceName.ClearExt();
-    tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameCarm.c_str() ) );
+  std::string tmpOutputTraceFileName = ( ( OutputTraceFileNameState * )tmpSequence->getState( TSequenceStates::outputTraceFileNameState ) )->getData();
+  wxFileName tmpTraceName( wxString::FromUTF8( tmpOutputTraceFileName.c_str() ) );
+  tmpTraceName.ClearExt();
+  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameCarm.c_str() ) );
 
-    std::string auxName = sourceWindow->getName() + "_";
-    std::replace( auxName.begin(), auxName.end(), ',', '-' );
-    std::replace( auxName.begin(), auxName.end(), ' ', '_' );
-    std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() );
-    std::string tmpFileName = tmpFileBaseName + std::string( ".csv" );
+  std::string auxName = sourceWindow->getName() + "_";
+  std::replace( auxName.begin(), auxName.end(), ',', '-' );
+  std::replace( auxName.begin(), auxName.end(), ' ', '_' );
+  std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() );
 
-    // Write state for .csv name
-    CSVFileNameState *tmpCSVFilenameState = (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState );
-    tmpCSVFilenameState->setData( tmpFileName );
+  // Rewrite .csv name in state
+  std::string tmpFileName = tmpFileBaseName + std::string( ".csv" );
+  CSVFileNameState *tmpCSVFilenameState = (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState );
+  tmpCSVFilenameState->setData( tmpFileName );
 
-    // Rebuild .legend.csv
-    tmpFileName = tmpFileBaseName + std::string( ".legend.csv" );
+  // Rewrite new .legend.csv name
+  tmpFileName = tmpFileBaseName + std::string( ".legend.csv" );
+  CSVLegendFileNameState *tmpCSVLegendFilenameState = (CSVLegendFileNameState *)tmpSequence->getState( TSequenceStates::csvLegendFileNameState );
+  tmpCSVLegendFilenameState->setData( tmpFileName );
 
-    // Write state for .legend.csv name
-    CSVLegendFileNameState *tmpCSVLegendFilenameState = (CSVLegendFileNameState *)tmpSequence->getState( TSequenceStates::csvLegendFileNameState );
-    tmpCSVLegendFilenameState->setData( tmpFileName );
-  }
 
   tmpSequence->executeNextAction( whichTrace );
 
@@ -299,6 +294,7 @@ bool CreateTimelineCarmAction::execute( std::string whichTrace )
                               overrideChecks ) )
       return errorFound;
 
+    // Rewrite source timeline with currently generated timeline.
     for( auto& it : windows )
     {
       if ( it->getChild() == nullptr )
@@ -328,9 +324,8 @@ vector<TSequenceStates> RunCarmAction::getStateDependencies() const
 
 bool RunCarmAction::execute( std::string whichTrace )
 {
-  bool errorFound = true;
-
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+  
   RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
   if( runAppDialog == nullptr )
   {
@@ -688,9 +683,10 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   bool usingWholeTrace = ( whichTimeline->GetMyWindow()->getWindowBeginTime() == 0 ) &&
                          ( whichTimeline->GetMyWindow()->getWindowEndTime() == whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
   if ( !usingWholeTrace )
+  {
     mySequence->pushbackAction( TSequenceActions::traceCutterAction );
-  // THINK : se podría poner dentro del if previo y eliminar el if dentro de la action
-  mySequence->pushbackAction( new SetCSVFileNameRunCarmDialogAction( mySequence ) );
+    mySequence->pushbackAction( new SetCSVFileNameRunCarmDialogAction( mySequence ) );
+  }
   mySequence->pushbackAction( new CreateTimelineCarmAction( mySequence ) );
   mySequence->pushbackAction( TSequenceActions::csvOutputAction );
   mySequence->pushbackAction( new RunCarmAction( mySequence ) );
