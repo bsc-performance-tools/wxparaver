@@ -1862,6 +1862,9 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 
   vector<TObjectOrder> selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
+  
+  if( selected.empty()) return;
+  
   TObjectOrder numObjects = selected.size();
   double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
 

@@ -28,6 +28,7 @@
 #include <wx/msgdlg.h>
 
 #include "popupmenu.h"
+#include "propertiesselectiondialog.h"
 
 #include "externalapps.h"
 #include "labelconstructor.h"
@@ -44,7 +45,7 @@ using namespace std;
 /* Constructor of gPopUpMenu initialize menu variables and build them. There are three different
 types of menus that will change the available options */
 
-gPopUpMenu::gPopUpMenu (std::vector<WindowGenericItem> argWindowGenericList)
+gPopUpMenu::gPopUpMenu (std::vector<gWindowGenericItem> argWindowGenericList)
 {
   windowGenericList = argWindowGenericList;
 
@@ -107,6 +108,9 @@ void gPopUpMenu::initializePopUpMenu ()
   INIT_WXMENU (popUpMenuSync);
   INIT_WXMENU (popUpMenuColor2D);
   INIT_WXMENU (popUpMenuSyncRemove);
+  INIT_WXMENU (popUpMenuSyncPropertiesType);
+
+
 
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE)
   {
@@ -865,6 +869,19 @@ void gPopUpMenu ::buildPopUpMenuSync ()
   popUpMenuSync->AppendSeparator ();
   this->buildItem (popUpMenuSync, _ (STR_SYNC_NEW_GROUP), wxITEM_NORMAL,
                    &gPopUpMenu::OnPopUpSynchronize, ID_MENU_NEWGROUP);
+  i = 0;
+  for (std::vector<TGroupId>::const_iterator itGroup = tmpGroups.begin ();
+      itGroup != tmpGroups.end (); ++itGroup)
+  {
+    this->buildItem (popUpMenuSyncPropertiesType,
+                    wxString::Format (_ ("%u"), *itGroup + 1), wxITEM_NORMAL,
+                    &gPopUpMenu::OnPopUpSynchronizeProperties,
+                    ID_MENU_SYNC_REMOVE_GROUP_BASE + i);
+    ++i;
+  }
+  
+  popUpMenuSync->AppendSubMenu (popUpMenuSyncPropertiesType,
+    _ (STR_SYNC_GROUP_PROP));
 
   i = 0;
   for (std::vector<TGroupId>::const_iterator itGroup = tmpGroups.begin ();
@@ -966,7 +983,7 @@ bool gPopUpMenu::allWindowHas (Funcs &&...funcs)
 {
   auto visitor = overloads{std::forward<Funcs> (funcs)...};
 
-  return std::all_of (windowGenericList.begin (), windowGenericList.end (), [&] (const WindowGenericItem &item)
+  return std::all_of (windowGenericList.begin (), windowGenericList.end (), [&] (const gWindowGenericItem &item)
                       { return std::visit (visitor, item); });
 }
 
@@ -1416,6 +1433,66 @@ void gPopUpMenu ::createRowSelectionDialog ()
 
   delete myDialog;
 }
+
+void gPopUpMenu::openSyncSelection(const TGroupId& groupId)
+{
+  wxArrayString choices;
+  wxArrayInt preSelections;
+
+  std::vector<SyncPropertiesType> properties;
+  SyncWindows::getInstance()->getGroupAvailableProperties( groupId,properties );
+
+  auto tmpIt = 0;
+  for (auto& prop: properties)
+  {
+    choices.Add(LabelConstructor::propertyToLabel(prop));
+    
+    if (SyncWindows::getInstance()->isPropertySelected(groupId, prop))
+    {
+      preSelections.Add(tmpIt);
+    }
+     
+    tmpIt += 1;
+  }
+
+  wxMultiChoiceDialog *dialog = new wxMultiChoiceDialog(nullptr, 
+    "Select the properties you want:", 
+    "Sync Group Properties", 
+    choices);  
+
+  dialog->SetSelections(preSelections);
+  if ( dialog->ShowModal() == wxID_OK )
+  {
+    wxArrayInt selections = dialog->GetSelections();
+
+    std::vector<SyncPropertiesType> selectedProperties;
+
+    for ( size_t i = 0; i < selections.GetCount(); i++ )
+    {
+      auto tmpSelectedProperty =  LabelConstructor::labelToProperty(gPopUpMenu::getOption( choices, selections[i] ));
+      selectedProperties.push_back(tmpSelectedProperty);
+    }
+    for (auto& prop: properties)
+    {
+      if (std::find(selectedProperties.begin(), selectedProperties.end(), prop) != selectedProperties.end())
+      {
+          SyncWindows::getInstance()->addProperty(groupId, prop);
+      }
+      else 
+      {
+        SyncWindows::getInstance()->removeProperty(groupId, prop);
+      }
+    }
+    SyncWindows::getInstance()->broadcastProperty(groupId);
+
+
+
+  }
+  
+
+  delete dialog;
+}
+
 
 bool gPopUpMenu::ZoomAwareTransferData (RowsSelectionDialog *myDialog)
 {
@@ -1998,6 +2075,14 @@ void gPopUpMenu::OnPopUpSynchronize (wxCommandEvent &event)
   onAllWindowsCall ([&group,isChecked] (auto *item)
   { item->OnPopUpSynchronizeById (group, isChecked); });
 }
+
+void gPopUpMenu::OnPopUpSynchronizeProperties (wxCommandEvent &event)
+{
+  TGroupId tmpGroup = event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE;
+  openSyncSelection(tmpGroup);
+}
+
+
 void gPopUpMenu::OnPopUpRemoveGroup (wxCommandEvent &event)
 {
   onAllWindowsCall ([&event] (auto *item)

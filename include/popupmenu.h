@@ -32,6 +32,7 @@
 #include <wx/menu.h>
 #include <wx/propdlg.h>
 
+
 #include <map>
 #include <variant>
 
@@ -145,6 +146,7 @@
 #define ID_MENU_PROFET                                     30108
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR                 30109
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR_2D              30110
+#define ID_MENU_SYNC_PROP                                  30111
 
 #define ID_MENU_SYNC_GROUP_BASE        31000
 #define ID_MENU_SYNC_REMOVE_GROUP_BASE 32000
@@ -159,15 +161,15 @@ enum class PopUpMenuType
   POPUP_MENU_TYPE_TIMELINE_MULTIPLE
 };
 
-// Helper para sobrecargar lambdas
-template <class... Ts>
-struct overloads : Ts... { using Ts::operator()...; };
+// // Helper para sobrecargar lambdas
+// template <class... Ts>
+// struct overloads : Ts... { using Ts::operator()...; };
 
-// Deduce constructor automatico para templates.CTAD
-template <class... Ts> 
-overloads(Ts...) -> overloads<Ts...>;
+// // Deduce constructor automatico para templates.CTAD
+// template <class... Ts> 
+// overloads(Ts...) -> overloads<Ts...>;
 
-using WindowGenericItem = std::variant<gHistogram*, gTimeline*>;
+using gWindowGenericItem = std::variant<gHistogram*, gTimeline*>;
 
 
 class gPopUpMenu : public wxMenu
@@ -176,7 +178,7 @@ class gPopUpMenu : public wxMenu
   public:
     gPopUpMenu () = delete;
 
-    gPopUpMenu (std::vector<WindowGenericItem>);
+    gPopUpMenu (std::vector<gWindowGenericItem>);
     
     gPopUpMenu (gHistogram * wichHistogramDerivedList);
     gPopUpMenu (gTimeline * wichTimelineDerivedList);
@@ -194,6 +196,9 @@ class gPopUpMenu : public wxMenu
     bool isSelectObjectsAvailable ();
     
     void createRowSelectionDialog ();
+
+    void openSyncSelection(const TGroupId& groupId);
+
     bool ZoomAwareTransferData(RowsSelectionDialog *myDialog);
     
     void transferDataSelectionToObjects(RowsSelectionDialog *myDialog,bool isProcessModel,SelectionManagement<TObjectOrder, TTraceLevel>* intersectionSelectedRows, bool applyZoom);
@@ -209,7 +214,7 @@ class gPopUpMenu : public wxMenu
     static std::string getOption (wxArrayString &choices, int position);
 
   private:
-    std::vector<WindowGenericItem> windowGenericList;
+    std::vector<gWindowGenericItem> windowGenericList;
 
     PopUpMenuType typeDataPopup = PopUpMenuType::POPUP_MENU_INI;
 
@@ -232,6 +237,8 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuRun;
     wxMenu *popUpMenuSync;
     wxMenu *popUpMenuSyncRemove;
+    wxMenu *popUpMenuSyncPropertiesType;
+
 
     bool checkAllowedProperties (const char *property);
 
@@ -381,6 +388,7 @@ class gPopUpMenu : public wxMenu
 
     void OnPopUpPixelSize (wxCommandEvent &event);
     void OnPopUpSynchronize (wxCommandEvent &event);
+    void OnPopUpSynchronizeProperties (wxCommandEvent &event);
     void OnPopUpRemoveGroup (wxCommandEvent &event);
     void OnPopUpRemoveAllGroups (wxCommandEvent &event);
 
