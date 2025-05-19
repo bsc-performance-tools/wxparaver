@@ -139,6 +139,28 @@ class RunProfetAction: public TraceToTraceAction
 
 
 /****************************************************************************
+ ********              CreateTimelineCarmAction                      ********
+ ****************************************************************************/
+class CreateTimelineCarmAction: public TraceToTraceAction
+{
+  public:
+    CreateTimelineCarmAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~CreateTimelineCarmAction()
+    {}
+
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
+
+    virtual bool execute( std::string whichTrace ) override;
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
  ********              RunCarmAction                               ********
  ****************************************************************************/
 class RunCarmAction: public TraceToTraceAction
@@ -147,6 +169,28 @@ class RunCarmAction: public TraceToTraceAction
     RunCarmAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
     {}
     ~RunCarmAction()
+    {}
+
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
+
+    virtual bool execute( std::string whichTrace ) override;
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
+ ********              SetCSVRunCarmDialogAction                     ********
+ ****************************************************************************/
+class SetCSVFileNameRunCarmDialogAction: public TraceToTraceAction
+{
+  public:
+    SetCSVFileNameRunCarmDialogAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~SetCSVFileNameRunCarmDialogAction()
     {}
 
     virtual std::vector<TSequenceStates> getStateDependencies() const override;

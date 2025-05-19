@@ -208,34 +208,67 @@ bool RunProfetAction::execute( std::string whichTrace )
 
 
 /****************************************************************************
- ********                 RunCarmAction                            ********
+ ********                 SetCSVFileNameRunCarmDialogAction          ********
  ****************************************************************************/
-vector<TSequenceStates> RunCarmAction::getStateDependencies() const
+vector<TSequenceStates> SetCSVFileNameRunCarmDialogAction::getStateDependencies() const
 {
-  vector<TSequenceStates> tmpStates;
-
-  tmpStates.push_back( TSequenceStates::usingWholeTraceState );
-
-  return tmpStates;
+  return {};
 }
 
-bool RunCarmAction::execute( std::string whichTrace )
+bool SetCSVFileNameRunCarmDialogAction::execute( std::string whichTrace )
+{
+  TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+  
+  bool usingWholeTrace = ( ( UsingWholeTraceState * )tmpSequence->getState( TSequenceStates::usingWholeTraceState ) )->getData();
+  if ( !usingWholeTrace )
+  {
+    // Cut has been done => build new name using chop
+    Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
+
+    std::string tmpOutputTraceFileName = ( ( OutputTraceFileNameState * )tmpSequence->getState( TSequenceStates::outputTraceFileNameState ) )->getData();
+    wxFileName tmpTraceName( wxString::FromUTF8( tmpOutputTraceFileName.c_str() ) );
+    tmpTraceName.ClearExt();
+    tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameCarm.c_str() ) );
+
+    std::string auxName = sourceWindow->getName() + "_";
+    std::replace( auxName.begin(), auxName.end(), ',', '-' );
+    std::replace( auxName.begin(), auxName.end(), ' ', '_' );
+    std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() );
+    std::string tmpFileName = tmpFileBaseName + std::string( ".csv" );
+
+    // Write state for .csv name
+    CSVFileNameState *tmpCSVFilenameState = (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState );
+    tmpCSVFilenameState->setData( tmpFileName );
+
+    // Rebuild .legend.csv
+    tmpFileName = tmpFileBaseName + std::string( ".legend.csv" );
+
+    // Write state for .legend.csv name
+    CSVLegendFileNameState *tmpCSVLegendFilenameState = (CSVLegendFileNameState *)tmpSequence->getState( TSequenceStates::csvLegendFileNameState );
+    tmpCSVLegendFilenameState->setData( tmpFileName );
+  }
+
+  tmpSequence->executeNextAction( whichTrace );
+
+  return false;
+}
+
+
+/****************************************************************************
+ ********                 CreateTimelineCarmAction                   ********
+ ****************************************************************************/
+vector<TSequenceStates> CreateTimelineCarmAction::getStateDependencies() const
+{
+  return {};
+}
+
+bool CreateTimelineCarmAction::execute( std::string whichTrace )
 {
   bool errorFound = true;
 
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
-  RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
-  if( runAppDialog == nullptr )
-  {
-    std::vector<bool> tmpAcceptableApps = ( ( AcceptableAppsState * )tmpSequence->getState( TSequenceStates::acceptableAppsState ) )->getData();
-    runAppDialog = new RunScript( wxparaverApp::mainWindow, tmpAcceptableApps );
-    wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
-  }
-
-  runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
 
   bool usingWholeTrace = ( ( UsingWholeTraceState * )tmpSequence->getState( TSequenceStates::usingWholeTraceState ) )->getData();
-
   if ( !usingWholeTrace )
   {
     if ( !wxparaverApp::mainWindow->DoLoadTrace( whichTrace ) )
@@ -266,6 +299,54 @@ bool RunCarmAction::execute( std::string whichTrace )
                               overrideChecks ) )
       return errorFound;
 
+    for( auto& it : windows )
+    {
+      if ( it->getChild() == nullptr )
+      {
+        SourceTimelineState *sourceTimelineState = ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState );
+        sourceTimelineState->setData( it );
+      }
+    }
+
+    CreatedTimelinesState *createdTimelineState = ( CreatedTimelinesState * )tmpSequence->getState( TSequenceStates::createdTimelinesState );
+    createdTimelineState->setData( windows );      
+  }
+
+  tmpSequence->executeNextAction( whichTrace );
+
+  return false;
+}
+
+
+/****************************************************************************
+ ********                 RunCarmAction                              ********
+ ****************************************************************************/
+vector<TSequenceStates> RunCarmAction::getStateDependencies() const
+{
+  return {};
+}
+
+bool RunCarmAction::execute( std::string whichTrace )
+{
+  bool errorFound = true;
+
+  TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+  RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
+  if( runAppDialog == nullptr )
+  {
+    std::vector<bool> tmpAcceptableApps = ( ( AcceptableAppsState * )tmpSequence->getState( TSequenceStates::acceptableAppsState ) )->getData();
+    runAppDialog = new RunScript( wxparaverApp::mainWindow, tmpAcceptableApps );
+    wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
+  }
+
+  runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
+
+  bool usingWholeTrace = ( ( UsingWholeTraceState * )tmpSequence->getState( TSequenceStates::usingWholeTraceState ) )->getData();
+  if ( !usingWholeTrace )
+  {
+    std::vector< Trace * > loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
+    std::vector< Timeline * > windows = ( ( CreatedTimelinesState * )tmpSequence->getState( TSequenceStates::createdTimelinesState ) )->getData();
+
     wxTreeCtrl *allTracesPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( 0 );
     wxTreeCtrl *currentPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( wxparaverApp::mainWindow->getTracePosition( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ] ) + 1 );
     for( auto& it : windows )
@@ -279,17 +360,15 @@ bool RunCarmAction::execute( std::string whichTrace )
     }
   }
 
-  // Pass csv output files to carm dialog
   std::string tmpCSVFileName       = ( (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState ) )->getData();
   std::string tmpCSVLabelsFileName = ( (CSVLegendFileNameState *)tmpSequence->getState( TSequenceStates::csvLegendFileNameState ) )->getData();
   runAppDialog->setCarm( wxString::FromUTF8( tmpCSVFileName.c_str() ), wxString::FromUTF8( tmpCSVLabelsFileName.c_str() ) );
   
   runAppDialog->Show();
   runAppDialog->Raise();
-  
+
   return false;
 }
-
 
 
 /****************************************************************************
@@ -605,15 +684,14 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   KernelConnection *myKernel = whichTimeline->GetMyWindow()->getKernel();
   TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
 
+  // Define sequence
   bool usingWholeTrace = ( whichTimeline->GetMyWindow()->getWindowBeginTime() == 0 ) &&
                          ( whichTimeline->GetMyWindow()->getWindowEndTime() == whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
-  UsingWholeTraceState *tmpUsingWholeTraceState = new UsingWholeTraceState( mySequence );
-  tmpUsingWholeTraceState->setData( usingWholeTrace );
-  mySequence->addState( TSequenceStates::usingWholeTraceState, tmpUsingWholeTraceState );
-
-  // Define sequence
   if ( !usingWholeTrace )
     mySequence->pushbackAction( TSequenceActions::traceCutterAction );
+  // THINK : se podría poner dentro del if previo y eliminar el if dentro de la action
+  mySequence->pushbackAction( new SetCSVFileNameRunCarmDialogAction( mySequence ) );
+  mySequence->pushbackAction( new CreateTimelineCarmAction( mySequence ) );
   mySequence->pushbackAction( TSequenceActions::csvOutputAction );
   mySequence->pushbackAction( new RunCarmAction( mySequence ) );
 
@@ -631,7 +709,6 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
     tmpOptions->set_remLastStates( false );
     tmpOptions->set_keep_all_events( true );
   }
-  
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
   tmpOptionsState->setData( tmpOptions );
   mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
@@ -640,12 +717,35 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameCarm );
   mySequence->addState( TSequenceStates::outputDirSuffixState, tmpOutputDirSuffixState );
 
-  // States for TSequenceActions::csvOutputAction
+  // States for RunCarmAction
+  AcceptableAppsState *tmpAcceptableAppsState = new AcceptableAppsState( mySequence );
+  tmpAcceptableAppsState->setData( whichTimeline->GetMyWindow()->getTrace()->getSuitableApps() );
+  mySequence->addState( TSequenceStates::acceptableAppsState, tmpAcceptableAppsState );
+
+  UsingWholeTraceState *tmpUsingWholeTraceState = new UsingWholeTraceState( mySequence );
+  tmpUsingWholeTraceState->setData( usingWholeTrace );
+  mySequence->addState( TSequenceStates::usingWholeTraceState, tmpUsingWholeTraceState );
+
+  OutputTraceFileNameState *tmpOutputTraceFileNameState = new OutputTraceFileNameState( mySequence );
+  tmpOutputTraceFileNameState->setData( "" );
+  mySequence->addState( TSequenceStates::outputTraceFileNameState, tmpOutputTraceFileNameState );
+
+  // States for RunCarm and TSequenceActions::csvOutputAction
   SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
   tmpWindowState->setData( whichTimeline->GetMyWindow() );
   mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
-  
-  // also for RunCarmAction
+
+  CreatedTimelinesState *tmpCreatedWindowsState = new CreatedTimelinesState( mySequence );
+  tmpCreatedWindowsState->setData( { whichTimeline->GetMyWindow() } );
+  mySequence->addState( TSequenceStates::createdTimelinesState, tmpCreatedWindowsState );
+
+  // States for TSequenceActions::csvOutputAction 
+  TextOutput output;
+  output.setWindowTimeUnits( true );
+  CSVOutputState *tmpOutputState = new CSVOutputState( mySequence );
+  tmpOutputState->setData( output );
+  mySequence->addState( TSequenceStates::csvOutputState, tmpOutputState );
+
   CSVFileNameState *tmpCSVFilenameState = new CSVFileNameState( mySequence );
   wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
   tmpTraceName.ClearExt();
@@ -654,21 +754,11 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
     tmpTraceName.Mkdir();
   std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
   std::replace( auxName.begin(), auxName.end(), ',', '-' );
+  std::replace( auxName.begin(), auxName.end(), ' ', '_' );
   std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() );
   std::string tmpFileName = tmpFileBaseName + std::string( ".csv" );
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TSequenceStates::csvFileNameState, tmpCSVFilenameState );
-
-  TextOutput output;
-  output.setWindowTimeUnits( true );
-  CSVOutputState *tmpOutputState = new CSVOutputState( mySequence );
-  tmpOutputState->setData( output );
-  mySequence->addState( TSequenceStates::csvOutputState, tmpOutputState );
-
-  // States for RunCarmAction
-  AcceptableAppsState *tmpAcceptableAppsState = new AcceptableAppsState( mySequence );
-  tmpAcceptableAppsState->setData( whichTimeline->GetMyWindow()->getTrace()->getSuitableApps() );
-  mySequence->addState( TSequenceStates::acceptableAppsState, tmpAcceptableAppsState );
 
   CSVLegendFileNameState *tmpCSVLegendFilenameState = new CSVLegendFileNameState( mySequence );
   tmpFileName = tmpFileBaseName + std::string( ".legend.csv" );
