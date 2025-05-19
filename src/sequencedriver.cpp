@@ -303,9 +303,6 @@ bool CreateTimelineCarmAction::execute( std::string whichTrace )
         sourceTimelineState->setData( it );
       }
     }
-
-    CreatedTimelinesState *createdTimelineState = ( CreatedTimelinesState * )tmpSequence->getState( TSequenceStates::createdTimelinesState );
-    createdTimelineState->setData( windows );      
   }
 
   tmpSequence->executeNextAction( whichTrace );
@@ -325,7 +322,7 @@ vector<TSequenceStates> RunCarmAction::getStateDependencies() const
 bool RunCarmAction::execute( std::string whichTrace )
 {
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
-  
+
   RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
   if( runAppDialog == nullptr )
   {
@@ -340,19 +337,13 @@ bool RunCarmAction::execute( std::string whichTrace )
   if ( !usingWholeTrace )
   {
     std::vector< Trace * > loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
-    std::vector< Timeline * > windows = ( ( CreatedTimelinesState * )tmpSequence->getState( TSequenceStates::createdTimelinesState ) )->getData();
+    Timeline *window = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
 
     wxTreeCtrl *allTracesPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( 0 );
     wxTreeCtrl *currentPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( wxparaverApp::mainWindow->getTracePosition( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ] ) + 1 );
-    for( auto& it : windows )
-    {
-      if ( it->getChild() == nullptr )
-      {
-        it->setPosX( it->getPosX() + paraverMain::defaultTitleBarSize.y );
-        it->setPosY( it->getPosY() + paraverMain::defaultTitleBarSize.y );
-        BuildTree( wxparaverApp::mainWindow, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), it );
-      }
-    }
+    window->setPosX( window->getPosX() + paraverMain::defaultTitleBarSize.y );
+    window->setPosY( window->getPosY() + paraverMain::defaultTitleBarSize.y );
+    BuildTree( wxparaverApp::mainWindow, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), window );
   }
 
   std::string tmpCSVFileName       = ( (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState ) )->getData();
@@ -730,10 +721,6 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
   tmpWindowState->setData( whichTimeline->GetMyWindow() );
   mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
-
-  CreatedTimelinesState *tmpCreatedWindowsState = new CreatedTimelinesState( mySequence );
-  tmpCreatedWindowsState->setData( { whichTimeline->GetMyWindow() } );
-  mySequence->addState( TSequenceStates::createdTimelinesState, tmpCreatedWindowsState );
 
   // States for TSequenceActions::csvOutputAction 
   TextOutput output;
