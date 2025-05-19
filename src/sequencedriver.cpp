@@ -225,7 +225,6 @@ bool SetCSVFileNameRunCarmDialogAction::execute( std::string whichTrace )
   std::string tmpOutputTraceFileName = ( ( OutputTraceFileNameState * )tmpSequence->getState( TSequenceStates::outputTraceFileNameState ) )->getData();
   wxFileName tmpTraceName( wxString::FromUTF8( tmpOutputTraceFileName.c_str() ) );
   tmpTraceName.ClearExt();
-  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameCarm.c_str() ) );
 
   std::string auxName = sourceWindow->getName() + "_";
   std::replace( auxName.begin(), auxName.end(), ',', '-' );
