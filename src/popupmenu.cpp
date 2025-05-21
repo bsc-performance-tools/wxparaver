@@ -858,8 +858,11 @@ void gPopUpMenu ::buildPopUpMenuSync ()
   for (vector<TGroupId>::const_iterator itGroup = tmpGroups.begin ();
        itGroup != tmpGroups.end (); ++itGroup)
   {
+    std::string strShortcut = "\tCtrl+" + std::to_string (i + 1);
+    wxString label = wxString::Format (_ ("%u"), *itGroup + 1) + wxString (strShortcut);
+
     bool checked = (windowsSyncronized && syncValue == *itGroup);
-    this->buildItem (popUpMenuSync, wxString::Format (_ ("%u"), *itGroup + 1),
+    this->buildItem (popUpMenuSync, label,
                      wxITEM_CHECK, &gPopUpMenu::OnPopUpSynchronize,
                      ID_MENU_SYNC_GROUP_BASE + i,
                      checked);
