@@ -942,6 +942,14 @@ void gHistogram::setSelectedRows( vector< TObjectOrder > &selected )
   myHistogram->setSelectedRows( selected );
 }
 
+void gHistogram::setEditMode (bool value)
+{
+  isEditMode = value;
+}
+bool gHistogram::getEditMode ()
+{
+  return isEditMode;
+}
 
 /*!
  * Should we show tooltips?

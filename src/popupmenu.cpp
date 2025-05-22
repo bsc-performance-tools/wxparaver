@@ -1575,7 +1575,7 @@ void gPopUpMenu ::transferDataSelectionToObjects (RowsSelectionDialog *myDialog,
         {
           tmpHistogram->GetHistogram ()->addZoom (myDialog->GetNewBeginZoom (), myDialog->GetNewEndZoom ());
         }
-        tmpHistogram->GetHistogram ()->getRowSelectionManagement ()->setSelected (whichSelected, whichLevel);
+        tmpHistogram->GetHistogram ()->setSelectedRows (whichLevel, whichSelected );
         tmpHistogram->GetHistogram ()->setRecalc (true);
       }
     }

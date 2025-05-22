@@ -86,4 +86,4 @@ void iconizeWindows( wxTreeCtrl *tree,
 
 int getIconNumber( Timeline *whichWindow );
 
-
+void getGroupColor (const int &windowGroup, int &r, int &g, int &b);

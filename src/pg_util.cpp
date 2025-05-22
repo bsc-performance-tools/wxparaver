@@ -818,8 +818,8 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
 
   wxPGId dummyPGId = (wxPGId)nullptr; // used to append always to windowProperties
 
-  AppendCFG4DProperty( (wxStringProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,
-                       dummyPGId, wxT("Name"), SINGLE_NAME, CFG4DPropertyCustomOptions(), whichWindow->getName() );
+  AppendCFG4DProperty ((wxStringProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,
+                       dummyPGId, wxT ("Name"), SINGLE_NAME, CFG4DPropertyCustomOptions (), whichWindow->getName ());
 
   AppendCFG4DProperty( (wxStringProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,
                        dummyPGId, wxT("Begin time"), SINGLE_BEGINTIME, CFG4DPropertyCustomOptions(),

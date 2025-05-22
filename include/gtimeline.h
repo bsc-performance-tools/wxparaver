@@ -645,6 +645,9 @@ public:
 
   void setEnableDestroyButton( bool value );
 
+  void setEditMode (bool value);
+  bool getEditMode ();
+
   static wxProgressDialog *dialogProgress;
   static int numberOfProgressDialogUsers;
   
@@ -696,6 +699,7 @@ public:
   wxBitmap eventImage;
   wxColour physicalColour;
 private:
+  bool isEditMode = false;
   wxColour backgroundColour;
   long beginRow;
   bool canRedraw;

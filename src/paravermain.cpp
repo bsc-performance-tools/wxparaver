@@ -218,51 +218,35 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   
   EVT_TIMER( ID_TIMER_MAIN, paraverMain::OnSessionTimer )
 
-  //Accelerator talbe functions
-  EVT_MENU(ID_CTRL_1, paraverMain::OnSyncWindows)
-  EVT_MENU(ID_CTRL_2, paraverMain::OnSyncWindows)
-  EVT_MENU(ID_CTRL_3, paraverMain::OnSyncWindows)
-  EVT_MENU(ID_CTRL_4, paraverMain::OnSyncWindows)
-  EVT_MENU(ID_CTRL_5, paraverMain::OnSyncWindows)
-  EVT_MENU(ID_CTRL_6, paraverMain::OnSyncWindows)
-  EVT_MENU(ID_CTRL_7, paraverMain::OnSyncWindows)
-  EVT_MENU(ID_CTRL_8, paraverMain::OnSyncWindows)
-  EVT_MENU(ID_CTRL_9, paraverMain::OnSyncWindows)
-  EVT_MENU(ID_CREATE_NEW_GROUP, paraverMain::OnSyncNewGroup)
 
 
-END_EVENT_TABLE()
+  paraverMain *paraverMain::myParaverMain = nullptr;
 
+  wxProgressDialog *paraverMain::dialogProgress = nullptr;
 
-paraverMain* paraverMain::myParaverMain = nullptr;
+  wxSize paraverMain::defaultTitleBarSize = wxSize (0, 0);
 
-wxProgressDialog *paraverMain::dialogProgress = nullptr;
+  Timeline *paraverMain::beginDragWindow = nullptr;
+  Timeline *paraverMain::endDragWindow = nullptr;
 
-wxSize paraverMain::defaultTitleBarSize = wxSize(0,0);
+  bool paraverMain::disableUserMessages = false;
+  bool paraverMain::validSessions = true;
+  bool paraverMain::stopOnIdle = false;
 
-Timeline *paraverMain::beginDragWindow = nullptr;
-Timeline *paraverMain::endDragWindow = nullptr;
+  extern volatile bool sig1;
+  extern volatile bool sig2;
+  extern struct sigaction act;
 
-bool paraverMain::disableUserMessages = false;
-bool paraverMain::validSessions = true;
-bool paraverMain::stopOnIdle = false;
-
-
-extern volatile bool sig1;
-extern volatile bool sig2;
-extern struct sigaction act;
-
-static bool userMessage( UserMessageID message )
-{
-  if( paraverMain::disableUserMessages )
-    return true;
-  wxMessageDialog tmpDialog( nullptr, wxString::FromUTF8( userMessages[ static_cast<size_t>( message ) ].c_str() ) +
-        _( " Continue loading CFG file?" ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
-  paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
-  int tmpResult = tmpDialog.ShowModal();
-  paraverMain::myParaverMain->SetRaiseCurrentWindow( true );
-  return tmpResult == wxID_YES;
-}
+  static bool userMessage (UserMessageID message)
+  {
+    if (paraverMain::disableUserMessages)
+      return true;
+    wxMessageDialog tmpDialog (nullptr, wxString::FromUTF8 (userMessages[static_cast<size_t> (message)].c_str ()) + _ (" Continue loading CFG file?"), _ ("Paraver question"), wxYES_NO | wxICON_QUESTION);
+    paraverMain::myParaverMain->SetRaiseCurrentWindow (false);
+    int tmpResult = tmpDialog.ShowModal ();
+    paraverMain::myParaverMain->SetRaiseCurrentWindow (true);
+    return tmpResult == wxID_YES;
+  }
 
 wxImageList *paraverMain::getImageList()
 {
@@ -303,7 +287,6 @@ paraverMain::paraverMain()
   myParaverMain = this;
 
   Init();
-  initAcceleratorEntryTable();
   ShowToolTips();
 }
 
@@ -316,31 +299,12 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
   myParaverMain = this;
 
   Init();
-  initAcceleratorEntryTable();
   Create( parent, id, caption, pos, size, style );
 
   defaultTitleBarSize = GetSize() - GetClientSize();
   ShowToolTips();
 }
 
-void paraverMain::initAcceleratorEntryTable()
-{
-  wxAcceleratorEntry entries[9];
-  entries[0].Set(wxACCEL_CTRL, (int)'1', ID_CTRL_1);
-  entries[1].Set(wxACCEL_CTRL, (int)'2', ID_CTRL_2);
-  entries[2].Set(wxACCEL_CTRL, (int)'3', ID_CTRL_3);
-  entries[3].Set(wxACCEL_CTRL, (int)'4', ID_CTRL_4);
-  entries[4].Set(wxACCEL_CTRL, (int)'5', ID_CTRL_5);
-  entries[5].Set(wxACCEL_CTRL, (int)'6', ID_CTRL_6);
-  entries[6].Set(wxACCEL_CTRL, (int)'7', ID_CTRL_7);
-  entries[7].Set(wxACCEL_CTRL, (int)'8', ID_CTRL_8);
-  entries[8].Set(wxACCEL_CTRL, (int)'9', ID_CTRL_9);
-  entries[8].Set(wxACCEL_CTRL, (int)'N', ID_CREATE_NEW_GROUP);
-
-  
-  wxAcceleratorTable accel(9, entries);
-  SetAcceleratorTable(accel);
-}
 
 
 bool paraverMain::isSessionFile( const string& filename )
@@ -2447,20 +2411,26 @@ void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
   {
 
     wxArrayTreeItemIds selectedItems;
-    currentTree->GetSelections(selectedItems); 
+    currentTree->GetSelections (selectedItems);
 
     TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( selectedItems[0] ) );
 
-    if( gHistogram *histo = itemData->getHistogram() )
+    auto newName = event.GetLabel ().mb_str ();
+
+    if (gHistogram *histo = itemData->getHistogram ())
     {
-      histo->GetHistogram()->setName( std::string( event.GetLabel().mb_str() ) );
-      histo->GetHistogram()->setChanged( true );
+      histo->GetHistogram ()->setName (std::string (newName));
+      histo->GetHistogram ()->setChanged (true);
+      histo->setEditMode (false);
     }
-    else if( gTimeline *timeline = itemData->getTimeline() )
+    else if (gTimeline *timeline = itemData->getTimeline ())
     {
-      timeline->GetMyWindow()->setName( std::string( event.GetLabel().mb_str() ) );
+      timeline->GetMyWindow ()->setName (std::string (newName));
       timeline->GetMyWindow()->setChanged( true );
+      timeline->setEditMode (false);
     }
+
+    event.Veto ();
   }
 }
 
@@ -2526,16 +2496,28 @@ void paraverMain::renameTreeItem( )
   wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
 
   wxArrayTreeItemIds selectedItems;
-  currentTree->GetSelections(selectedItems); 
+  currentTree->GetSelections (selectedItems);
 
-  if (currentTree->GetSelections(selectedItems) == 1){
-    currentTree->EditLabel( selectedItems[0] );
+  if (currentTree->GetSelections (selectedItems) == 1)
+  {
+    TreeBrowserItemData *item = static_cast<TreeBrowserItemData *> (currentTree->GetItemData (selectedItems[0]));
+    if (item->getHistogram () != nullptr)
+    {
+      item->getHistogram ()->setEditMode (true);
+
+      currentTree->SetItemText (selectedItems[0], item->getHistogram ()->GetHistogram ()->getName ());
+      currentTree->EditLabel (selectedItems[0]);
     }
-    
+    if (item->getTimeline () != nullptr)
+    {
+      item->getTimeline ()->setEditMode (true);
+
+      currentTree->GetItemText (selectedItems[0]);
+      currentTree->SetItemText (selectedItems[0], item->getTimeline ()->GetMyWindow ()->getName ());
+      currentTree->EditLabel (selectedItems[0]);
+    }
+  }
 }
-
-
-
 
 /*!
  * wxEVT_UPDATE_UI event handler for ID_CHOICEWINBROWSER
@@ -4705,15 +4687,15 @@ void paraverMain::OnFindDialog()
   }
 }
 
-void  paraverMain::OnSyncNewGroup(wxCommandEvent& event)
+void paraverMain::OnSyncNewGroup ()
 {
   SyncWindows::getInstance()->newGroup(); 
 }
 
-void paraverMain::OnSyncWindows(wxCommandEvent& event)
+void paraverMain::OnSyncWindows (int groupId)
 {
 
-  TGroupId wichGroup = (TGroupId)(event.GetId() - wxID_HIGHEST - 100 - 1);
+  TGroupId wichGroup = (TGroupId)(groupId);
   if(!SyncWindows::getInstance()-> isGroupCreated(wichGroup) )
   {
     wxMessageBox(wxString::Format("Group %d does not exist", wichGroup + 1), "Warning",wxOK | wxICON_INFORMATION);

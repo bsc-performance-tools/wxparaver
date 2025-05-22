@@ -1920,8 +1920,8 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     {
       myWindow->addZoom( beginTime, endTime, beginRow, endRow );
     }
-    myWindow->setWindowBeginTime( beginTime, true );
-    myWindow->setWindowEndTime( endTime, true );
+    myWindow->setWindowBeginTime (beginTime);
+    myWindow->setWindowEndTime (endTime);
 
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
@@ -2087,8 +2087,8 @@ void gTimeline::OnPopUpRename( wxCommandEvent& event )
 
 void gTimeline::OnPopUpFitTimeScale( wxCommandEvent& event )
 {
-  myWindow->setWindowBeginTime( 0, true );
-  myWindow->setWindowEndTime( myWindow->getTrace()->getEndTime(), true );
+  myWindow->setWindowBeginTime (0);
+  myWindow->setWindowEndTime (myWindow->getTrace ()->getEndTime ());
   myWindow->addZoom( 0, myWindow->getTrace()->getEndTime() );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
@@ -2763,8 +2763,8 @@ void gTimeline::OnPopUpUndoZoom( wxCommandEvent& event )
     {
       // as before
       myWindow->prevZoom();
-      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first, true );
-      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second, true );
+      myWindow->setWindowBeginTime (myWindow->getZoomFirstDimension ().first);
+      myWindow->setWindowEndTime (myWindow->getZoomFirstDimension ().second);
       myWindow->setRedraw( true );
       myWindow->setChanged( true );
     }
@@ -2795,8 +2795,8 @@ void gTimeline::OnPopUpRedoZoom( wxCommandEvent& event )
     {
       // as before
       myWindow->nextZoom();
-      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first, true );
-      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second, true );
+      myWindow->setWindowBeginTime (myWindow->getZoomFirstDimension ().first);
+      myWindow->setWindowEndTime (myWindow->getZoomFirstDimension ().second);
       myWindow->setRedraw( true );
       myWindow->setChanged( true );
     }
@@ -5140,6 +5140,14 @@ void gTimeline::setEnableDestroyButton( bool value )
   }
 }
 
+void gTimeline::setEditMode (bool value)
+{
+  isEditMode = value;
+}
+bool gTimeline::getEditMode ()
+{
+  return isEditMode;
+}
 
 void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
@@ -5361,8 +5369,8 @@ void gTimeline::OnTimerWheel( wxTimerEvent& event )
 #endif
   wheelZoomFactor = 1.0;
   myWindow->addZoom( wheelZoomBeginTime, wheelZoomEndTime, wheelZoomBeginObject, wheelZoomEndObject );
-  myWindow->setWindowBeginTime( wheelZoomBeginTime, true );
-  myWindow->setWindowEndTime( wheelZoomEndTime, true );
+  myWindow->setWindowBeginTime (wheelZoomBeginTime);
+  myWindow->setWindowEndTime (wheelZoomEndTime);
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
@@ -6381,8 +6389,8 @@ void gTimeline::MousePanLeftUp( wxMouseEvent& event )
       panBeginObject != myWindow->getZoomSecondDimension().first )
   {
     myWindow->addZoom( panBeginTime, panEndTime, panBeginObject, panEndObject );
-    myWindow->setWindowBeginTime( panBeginTime, true );
-    myWindow->setWindowEndTime( panEndTime, true );
+    myWindow->setWindowBeginTime (panBeginTime);
+    myWindow->setWindowEndTime (panEndTime);
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }

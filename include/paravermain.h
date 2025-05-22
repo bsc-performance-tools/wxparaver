@@ -266,8 +266,6 @@ public:
   /// Initialises member variables
   void Init();
 
-  void initAcceleratorEntryTable();
-
   /// Creates the controls and sizers
   void CreateControls();
   void initSessionInfo();
@@ -591,8 +589,9 @@ public:
   void OnKeyPaste();
 #endif // _WIN32
   void OnFindDialog();
-  void OnSyncWindows(wxCommandEvent& event);
-  void OnSyncNewGroup(wxCommandEvent& event);
+
+  void OnSyncWindows (int groupId);
+  void OnSyncNewGroup ();
 
   void DoLoadSession( const std::string &whichFileName );
   bool DoLoadTrace( const std::string &path );

@@ -305,8 +305,8 @@ void BuildTree( paraverMain *parent,
   currentData =  new TreeBrowserItemData( wxString::FromUTF8( window->getName().c_str() ), tmpTimeline );
 
   int iconNumber = getIconNumber( window );
-  currentWindowId1 = root1->AppendItem( idRoot1, wxString::FromUTF8( window->getName().c_str() ), iconNumber, -1, currentData );
-  currentWindowId2 = root2->AppendItem( idRoot2, wxString::FromUTF8( window->getName().c_str() ), iconNumber, -1, new TreeBrowserItemData( *currentData ) );
+  currentWindowId1 = root1->AppendItem (idRoot1, "", iconNumber, -1, currentData);
+  currentWindowId2 = root2->AppendItem (idRoot2, "", iconNumber, -1, new TreeBrowserItemData (*currentData));
 
   if ( window->getParent( 0 ) != nullptr )
   {
@@ -329,21 +329,41 @@ bool updateTreeItem( wxTreeCtrl *tree,
 
   // No matter timeline or histogram, get its name and delete from given vector 
   wxString tmpName;
+  wxString tmpWindowName;
+
+  bool isEditMode;
+
   if( gTimeline *tmpTimeline = itemData->getTimeline() )
   {
+    isEditMode = tmpTimeline->getEditMode ();
     Timeline *tmpWindow = tmpTimeline->GetMyWindow();
+    std::string groupName = "";
     if( tmpWindow->isSync() )
-      tree->SetItemBold( id, true );
+    {
+      tree->SetItemBold (id, true);
+
+      int windowGroup = tmpWindow->getSyncGroup () + 1;
+      int r = 0, g = 0, b = 0;
+
+      getGroupColor (windowGroup, r, g, b);
+
+      tree->SetItemTextColour (id, *wxColour (r, g, b));
+
+      groupName = "[#" + std::to_string (windowGroup) + "] ";
+    }
     else
-      tree->SetItemBold( id, false );
-      
+    {
+      tree->SetItemTextColour (id, *wxColour (0, 0, 0));
+      tree->SetItemBold (id, false);
+    }
     if( tmpTimeline->IsActive() && !tmpWindow->getDestroy() )
     {
       *currentWindow = tmpTimeline;
       tree->SelectItem( id );
     }
-    tmpName = wxString::FromUTF8( tmpWindow->getName().c_str() );
-    
+    tmpName = groupName + wxString::FromUTF8 (tmpWindow->getName ().c_str ());
+    tmpWindowName = wxString::FromUTF8 (tmpWindow->getName ().c_str ());
+
     for ( vector<Timeline *>::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
     {
       if ( *it == tmpWindow )
@@ -379,18 +399,36 @@ bool updateTreeItem( wxTreeCtrl *tree,
   }
   else if( gHistogram *tmpHistogram = itemData->getHistogram() )
   {
+    isEditMode = tmpHistogram->getEditMode ();
+    std::string groupName = "";
+
     Histogram *tmpHisto = tmpHistogram->GetHistogram();
     if( tmpHisto->isSync() )
-      tree->SetItemBold( id, true );
+    {
+      tree->SetItemBold (id, true);
+
+      int windowGroup = tmpHisto->getSyncGroup () + 1;
+      int r = 0, g = 0, b = 0;
+
+      getGroupColor (windowGroup, r, g, b);
+
+      tree->SetItemTextColour (id, *wxColour (r, g, b));
+
+      groupName = "[#" + std::to_string (windowGroup) + "] ";
+    }
     else
-      tree->SetItemBold( id, false );
+    {
+      tree->SetItemTextColour (id, *wxColour (0, 0, 0));
+      tree->SetItemBold (id, false);
+    }
 
     if( tmpHistogram->IsActive() && !tmpHisto->getDestroy() )
     {
       *currentWindow = tmpHistogram;
       tree->SelectItem( id );
     }
-    tmpName = wxString::FromUTF8( tmpHisto->getName().c_str() );
+    tmpName = groupName + wxString::FromUTF8 (tmpHisto->getName ().c_str ());
+
     for ( vector<Histogram *>::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
     {
       if ( *it == tmpHisto )
@@ -414,9 +452,11 @@ bool updateTreeItem( wxTreeCtrl *tree,
   }
   
   // Update its name
-  if( tmpName != tree->GetItemText( id ) )
-    tree->SetItemText( id, tmpName );
-    
+  if (!isEditMode && tmpName != tree->GetItemText (id))
+  {
+    tree->SetItemText (id, tmpName);
+  }
+
   // Recursive update
   if( tree->ItemHasChildren( id ) )
   {
@@ -491,6 +531,31 @@ void iconizeWindows( wxTreeCtrl *tree,
 
     currentChild = tree->GetNextChild( id, cookie );
     ++current;
+  }
+}
+
+void getGroupColor (const int &windowGroup, int &r, int &g, int &b)
+{
+
+  int intensity = 100 + 15 * windowGroup;
+
+  switch ((windowGroup) % 3)
+  {
+  case 0:
+    r = intensity;
+    g = intensity / 3;
+    b = intensity / 3;
+    break;
+  case 1:
+    r = intensity / 3;
+    g = intensity;
+    b = intensity / 3;
+    break;
+  case 2:
+    r = intensity / 3;
+    g = intensity / 3;
+    b = intensity;
+    break;
   }
 }
 

@@ -436,7 +436,10 @@ public:
   std::vector< TObjectOrder > getSelectedRows();
   virtual void setSelectedRows( std::vector< bool > &selected );
   virtual void setSelectedRows( std::vector< TObjectOrder > &selected );
-    
+
+  void setEditMode (bool value);
+  bool getEditMode ();
+
   void EnableCustomSortOption();
   void DisableCustomSortOption();
 
@@ -454,6 +457,7 @@ public:
   wxStaticBitmap* autoRedrawIcon;
   wxStatusBar* histoStatus;
 private:
+  bool isEditMode = false;
   wxBitmap drawImage;
   bool escapePressed;
   double lastPosZoomX;
