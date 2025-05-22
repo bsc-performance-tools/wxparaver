@@ -1007,23 +1007,23 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
   carmSection->Add(itemBoxSizer11, 1, wxGROW|wxALL, 0);
 
-  itemBoxSizer11->Add(5, 5, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer11->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer11->Add(itemBoxSizer13, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer11->Add(itemBoxSizer13, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   checkCarmUseWindowColors = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_WINDOW_COLORS, _("Use window colors"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCarmUseWindowColors->SetValue(false);
-  itemBoxSizer13->Add(checkCarmUseWindowColors, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 3);
+  itemBoxSizer13->Add(checkCarmUseWindowColors, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 3);
 
   checkCarmUseSemanticWindow = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, _("Use semantic window"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCarmUseSemanticWindow->SetValue(false);
-  itemBoxSizer13->Add(checkCarmUseSemanticWindow, 4, wxALIGN_CENTER_VERTICAL|wxALL, 3);
+  itemBoxSizer13->Add(checkCarmUseSemanticWindow, 0, wxALIGN_CENTER_VERTICAL|wxALL, 3);
 
   checkCarmAccumulateValues = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_ACCUMULATE_VALUES, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCarmAccumulateValues->SetValue(false);
   checkCarmAccumulateValues->Enable(false);
-  itemBoxSizer13->Add(checkCarmAccumulateValues, 4, wxALIGN_CENTER_VERTICAL|wxALL, 3);
+  itemBoxSizer13->Add(checkCarmAccumulateValues, 0, wxALIGN_CENTER_VERTICAL|wxALL, 3);
 
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
