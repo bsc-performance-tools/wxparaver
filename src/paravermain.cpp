@@ -218,7 +218,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   
   EVT_TIMER( ID_TIMER_MAIN, paraverMain::OnSessionTimer )
 
-
+  END_EVENT_TABLE ()
 
   paraverMain *paraverMain::myParaverMain = nullptr;
 
