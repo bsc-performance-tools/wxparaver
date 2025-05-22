@@ -272,8 +272,9 @@ bool CreateTimelineCarmAction::execute( std::string whichTrace )
     Timeline *sourceWindow = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
     std::vector<Trace *> loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
     SaveOptions saveOptions = SaveOptions();
-    saveOptions.windowBeginTimeRelative = false;
-    saveOptions.windowScaleRelative = false;
+    saveOptions.timelineBeginTimeRelative = true;
+    saveOptions.timelineScaleRelative = true;
+    saveOptions.timelineAllTrace = true;
     std::vector<Timeline *> windows = { sourceWindow };
     std::vector<Histogram *> dummyHistograms;
     std::vector<CFGS4DLinkedPropertiesManager> linkedProperties;
@@ -692,7 +693,7 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
     tmpOptions->set_break_states( false );
     tmpOptions->set_keep_boundary_events( true );
     tmpOptions->set_remFirstStates( false );
-    tmpOptions->set_remLastStates( false );
+    tmpOptions->set_remLastStates( true );
     tmpOptions->set_keep_all_events( true );
   }
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
