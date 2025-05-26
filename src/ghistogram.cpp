@@ -3014,7 +3014,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
   bool initWithDot = false;
   for ( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
-    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ), !initWithDot ).c_str() );
+    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ), initWithDot ).c_str() );
     tmpWildcard += currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
 
     extensions.push_back( currentFormat );
