@@ -233,13 +233,12 @@ bool SetCSVFileNameRunCarmDialogAction::execute( std::string whichTrace )
   std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() );
 
   // Rewrite .csv name in state
-  std::string tmpFileName = tmpFileBaseName + std::string( ".csv" );
+  std::string tmpFileName = tmpFileBaseName + LabelConstructor::getDataFileSuffix( TTextFormat::CSV );
   CSVFileNameState *tmpCSVFilenameState = (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState );
   tmpCSVFilenameState->setData( tmpFileName );
 
   // Rewrite new .legend.csv name
-  bool initWithDot = true;
-  tmpFileName = tmpFileBaseName + LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV, initWithDot );
+  tmpFileName = tmpFileBaseName + LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV );
   CSVLegendFileNameState *tmpCSVLegendFilenameState = (CSVLegendFileNameState *)tmpSequence->getState( TSequenceStates::csvLegendFileNameState );
   tmpCSVLegendFilenameState->setData( tmpFileName );
 
@@ -456,7 +455,10 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
     tmpTraceName.Mkdir();
   std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
   std::replace( auxName.begin(), auxName.end(), ',', '-' );
-  tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() ) + std::string( ".csv" );
+  tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) +
+                auxName.c_str() +
+                std::string( tmpTraceName.GetFullName().mb_str() ) +
+                LabelConstructor::getDataFileSuffix( TTextFormat::CSV );
 
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TSequenceStates::csvFileNameState, tmpCSVFilenameState );
@@ -594,7 +596,7 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
   std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
   tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) +
                 auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() ) +
-                std::string( ".csv" );
+                LabelConstructor::getDataFileSuffix( TTextFormat::CSV );
 
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TSequenceStates::csvFileNameState, tmpCSVFilenameState );
@@ -741,13 +743,12 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   std::replace( auxName.begin(), auxName.end(), ',', '-' );
   std::replace( auxName.begin(), auxName.end(), ' ', '_' );
   std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() );
-  std::string tmpFileName = tmpFileBaseName + std::string( ".csv" );
+  std::string tmpFileName = tmpFileBaseName + LabelConstructor::getDataFileSuffix( TTextFormat::CSV );
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TSequenceStates::csvFileNameState, tmpCSVFilenameState );
 
   CSVLegendFileNameState *tmpCSVLegendFilenameState = new CSVLegendFileNameState( mySequence );
-  bool initWithDot = true;
-  tmpFileName = tmpFileBaseName + LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV, initWithDot );
+  tmpFileName = tmpFileBaseName + LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV );
   tmpCSVLegendFilenameState->setData( tmpFileName );
   mySequence->addState( TSequenceStates::csvLegendFileNameState, tmpCSVLegendFilenameState );  
 

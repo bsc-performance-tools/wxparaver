@@ -381,8 +381,9 @@ void RunScript::Init()
   wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"),
                                    _(".cfg"),
                                    _(".xml"),
-                                   _(".csv"), _(".dat"),
-                                   _(".gnuplot"),
+                                   _( LabelConstructor::getDataFileSuffix( TTextFormat::CSV ).c_str() ),
+                                   _( LabelConstructor::getDataFileSuffix( TTextFormat::PLAIN ).c_str() ),
+                                   _( LabelConstructor::getDataFileSuffix( TTextFormat::GNUPLOT ).c_str() ),
                                    _(".pdf"),
                                    _("_time_mark"), _("_time_range_mark"),
                                    _("_link_to_clustered_trace")};
@@ -2145,8 +2146,7 @@ void RunScript::InitOutputLinks()
   {
     bool isCandidate = defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
 
-    bool initWithDot = true;
-    string legendCSVSuffix = LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV, initWithDot );
+    string legendCSVSuffix = LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV );
     // TODO: C++20: simplify with ends_with()
     bool isLegendCSV = ( candidateName.Len() > legendCSVSuffix.length() &&
                          candidateName.Right( legendCSVSuffix.length() ) == legendCSVSuffix );
@@ -2189,15 +2189,15 @@ void RunScript::InitOutputLinks()
   bool initWithDot = true;
   outputLinks =
   {
-    { "http",                                                                   TTagPosition::PREFIX, httpLink },
-    { ".prv",                                                                   TTagPosition::SUFFIX, skipLink },
-    { ".prv.gz",                                                                TTagPosition::SUFFIX, skipLink },
-    { ".cfg",                                                                   TTagPosition::SUFFIX, skipLink },
-    { ".xml",                                                                   TTagPosition::SUFFIX, skipLink },
-    { LabelConstructor::getDataFileSuffix( TTextFormat::CSV, initWithDot ),     TTagPosition::SUFFIX, skipLink },
-    { LabelConstructor::getDataFileSuffix( TTextFormat::PLAIN, initWithDot ),   TTagPosition::SUFFIX, skipLink },
-    { LabelConstructor::getDataFileSuffix( TTextFormat::GNUPLOT, initWithDot ), TTagPosition::SUFFIX, skipLink },
-    { ".pdf",                                                                   TTagPosition::SUFFIX, skipLink },
+    { "http",                                                      TTagPosition::PREFIX, httpLink },
+    { ".prv",                                                      TTagPosition::SUFFIX, skipLink },
+    { ".prv.gz",                                                   TTagPosition::SUFFIX, skipLink },
+    { ".cfg",                                                      TTagPosition::SUFFIX, skipLink },
+    { ".xml",                                                      TTagPosition::SUFFIX, skipLink },
+    { LabelConstructor::getDataFileSuffix( TTextFormat::CSV ),     TTagPosition::SUFFIX, skipLink },
+    { LabelConstructor::getDataFileSuffix( TTextFormat::PLAIN ),   TTagPosition::SUFFIX, skipLink },
+    { LabelConstructor::getDataFileSuffix( TTextFormat::GNUPLOT ), TTagPosition::SUFFIX, skipLink },
+    { ".pdf",                                                      TTagPosition::SUFFIX, skipLink },
   };
 }
 
@@ -2448,14 +2448,16 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
     if( currentWindow != nullptr ) currentWindow->setEnableDestroyButton( true );
   }
-  else if ( currentApp == TExternalAppID::CARM && matchHrefExtension( event, wxString( LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV, true ).c_str(), wxConvUTF8 ) ) )
+  else if ( currentApp == TExternalAppID::CARM &&
+            matchHrefExtension( event, wxString( LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV ).c_str(), wxConvUTF8 ) ) )
   {
     // Load as text
     event.Skip();
   }
   else if ( matchHrefExtension( event, wxT(".prv") ) || 
             matchHrefExtension( event, wxT(".prv.gz") ) || 
-            ( currentApp == TExternalAppID::CARM && matchHrefExtension( event, wxT(".csv") ) ) ) 
+            ( currentApp == TExternalAppID::CARM &&
+              matchHrefExtension( event, wxString( LabelConstructor::getDataFileSuffix( TTextFormat::CSV ).c_str(), wxConvUTF8 ) ) ) ) 
   {
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
