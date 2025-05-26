@@ -673,11 +673,11 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
 
   // Define sequence
+  mySequence->pushbackAction( TSequenceActions::traceCutterAction );
   bool usingWholeTrace = ( whichTimeline->GetMyWindow()->getWindowBeginTime() == 0 ) &&
                          ( whichTimeline->GetMyWindow()->getWindowEndTime() == whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
   if ( !usingWholeTrace )
   {
-    mySequence->pushbackAction( TSequenceActions::traceCutterAction );
     mySequence->pushbackAction( new SetCSVFileNameRunCarmDialogAction( mySequence ) );
   }
   mySequence->pushbackAction( new CreateTimelineCarmAction( mySequence ) );
