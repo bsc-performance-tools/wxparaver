@@ -2185,7 +2185,6 @@ void RunScript::InitOutputLinks()
     { ".cfg",        TTagPosition::SUFFIX, skipLink },
     { ".xml",        TTagPosition::SUFFIX, skipLink },
     { ".csv",        TTagPosition::SUFFIX, skipLink },
-    //{ ".legend.csv", TTagPosition::SUFFIX, skipLink },
     { ".dat",        TTagPosition::SUFFIX, skipLink },
     { ".gnuplot",    TTagPosition::SUFFIX, skipLink },
     { ".pdf",        TTagPosition::SUFFIX, skipLink },
