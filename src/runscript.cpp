@@ -2137,6 +2137,7 @@ void RunScript::InitOutputLinks()
     return defaultLinkMaker( candidateFile.GetFullPath(), selectedTracePath, linkURL, linkName );
   };
 
+  // Temporaly deactivated until set final behaviour.
   auto makeLinkComponentsCarm = [this]( const wxString& candidateName,
                                         const wxString& selectedTracePath,
                                         wxString& linkURL,
@@ -2161,7 +2162,9 @@ void RunScript::InitOutputLinks()
   applicationLinkMaker[ TExternalAppID::CLUSTERING ]   = makeLinkComponentsClustering;
   applicationLinkMaker[ TExternalAppID::FOLDING ]      = makeLinkComponentsFolding;
   applicationLinkMaker[ TExternalAppID::PROFET ]       = makeLinkComponents;
-  applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponentsCarm;
+  // Temporaly deactivated until set final behaviour.
+  // applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponentsCarm;
+  applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponents;
   applicationLinkMaker[ TExternalAppID::USER_COMMAND ] = makeLinkComponents;
   
   // These applications aren't executed by "Run" button, so will not generate links
@@ -2445,6 +2448,11 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
     if( currentWindow != nullptr ) currentWindow->setEnableDestroyButton( true );
   }
+  else if ( currentApp == TExternalAppID::CARM && matchHrefExtension( event, wxString( LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV, true ).c_str(), wxConvUTF8 ) ) )
+  {
+    // Load as text
+    event.Skip();
+  }
   else if ( matchHrefExtension( event, wxT(".prv") ) || 
             matchHrefExtension( event, wxT(".prv.gz") ) || 
             ( currentApp == TExternalAppID::CARM && matchHrefExtension( event, wxT(".csv") ) ) ) 
@@ -2594,6 +2602,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }  
   else
   {
+    // Load as text
     event.Skip();
   }
 }
