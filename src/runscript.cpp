@@ -60,8 +60,9 @@
 #include "runscript.h"
 #include "filter.h"
 #include "cfg.h"
-#include "windows_tree.h"
 #include "gtimeline.h"
+#include "labelconstructor.h"
+#include "windows_tree.h"
 
 #include "utils/traceparser/pcffileparser.h"
 
@@ -2142,7 +2143,12 @@ void RunScript::InitOutputLinks()
                                         wxString& linkName )
   {
     bool isCandidate = defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
-    bool isLegendCSV = ( candidateName.Len() > 11 && candidateName.Right( 11 ) == ".legend.csv" );
+
+    bool initWithDot = true;
+    string legendCSVSuffix = LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV, initWithDot );
+    // TODO: C++20: simplify with ends_with()
+    bool isLegendCSV = ( candidateName.Len() > legendCSVSuffix.length() &&
+                         candidateName.Right( legendCSVSuffix.length() ) == legendCSVSuffix );
 
     return ( isCandidate && !isLegendCSV );
   };
@@ -2177,17 +2183,18 @@ void RunScript::InitOutputLinks()
     return true;
   };
 
+  bool initWithDot = true;
   outputLinks =
   {
-    { "http",        TTagPosition::PREFIX, httpLink },
-    { ".prv",        TTagPosition::SUFFIX, skipLink },
-    { ".prv.gz",     TTagPosition::SUFFIX, skipLink },
-    { ".cfg",        TTagPosition::SUFFIX, skipLink },
-    { ".xml",        TTagPosition::SUFFIX, skipLink },
-    { ".csv",        TTagPosition::SUFFIX, skipLink },
-    { ".dat",        TTagPosition::SUFFIX, skipLink },
-    { ".gnuplot",    TTagPosition::SUFFIX, skipLink },
-    { ".pdf",        TTagPosition::SUFFIX, skipLink },
+    { "http",                                                                   TTagPosition::PREFIX, httpLink },
+    { ".prv",                                                                   TTagPosition::SUFFIX, skipLink },
+    { ".prv.gz",                                                                TTagPosition::SUFFIX, skipLink },
+    { ".cfg",                                                                   TTagPosition::SUFFIX, skipLink },
+    { ".xml",                                                                   TTagPosition::SUFFIX, skipLink },
+    { LabelConstructor::getDataFileSuffix( TTextFormat::CSV, initWithDot ),     TTagPosition::SUFFIX, skipLink },
+    { LabelConstructor::getDataFileSuffix( TTextFormat::PLAIN, initWithDot ),   TTagPosition::SUFFIX, skipLink },
+    { LabelConstructor::getDataFileSuffix( TTextFormat::GNUPLOT, initWithDot ), TTagPosition::SUFFIX, skipLink },
+    { ".pdf",                                                                   TTagPosition::SUFFIX, skipLink },
   };
 }
 

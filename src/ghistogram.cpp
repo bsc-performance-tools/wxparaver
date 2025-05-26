@@ -3006,20 +3006,16 @@ void gHistogram::saveText( bool onlySelectedPlane )
 #endif
 
   vector< wxString > extensions;
-  tmpSuffix = _(".") +
-        wxString::FromUTF8( LabelConstructor::getDataFileSuffix(
-                ParaverConfig::getInstance()->getHistogramSaveTextFormat() ).c_str() );
+  bool initWithDot = true;
+  tmpSuffix = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( ParaverConfig::getInstance()->getHistogramSaveTextFormat(), initWithDot ).c_str() );
 
   // Builds following wildcard: _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" )
   // Also fills extension
   wxString tmpWildcard;
   for ( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
-    wxString currentFormat =
-          wxString::FromUTF8( LabelConstructor::getDataFileSuffix(
-                  TTextFormat( i ) ).c_str() );
-    tmpWildcard +=
-            currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
+    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ) ).c_str() );
+    tmpWildcard += currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
 
     extensions.push_back( currentFormat );
   }

@@ -4947,10 +4947,9 @@ void gTimeline::saveText()
 #else
   defaultDir = _("./");
 #endif
-
-  tmpSuffix = _(".") +
-          wxString::FromUTF8( LabelConstructor::getDataFileSuffix(
-                  ParaverConfig::getInstance()->getTimelineSaveTextFormat() ).c_str() );
+  
+  bool initWithDot = true;
+  tmpSuffix = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( ParaverConfig::getInstance()->getTimelineSaveTextFormat(), initWithDot ).c_str() );
 
   // Builds following wildcard: _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" )
   // Also fills extension
@@ -4958,11 +4957,8 @@ void gTimeline::saveText()
   vector< wxString > extensions;
   for ( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
-    wxString currentFormat =
-          wxString::FromUTF8( LabelConstructor::getDataFileSuffix(
-                  TTextFormat( i ) ).c_str() );
-    tmpWildcard +=
-            currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
+    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ) ).c_str() );
+    tmpWildcard += currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
 
     extensions.push_back( currentFormat );
   }

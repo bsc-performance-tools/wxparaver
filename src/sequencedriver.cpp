@@ -41,6 +41,7 @@
 #include "sequencedriver.h"
 #include "kernelconnection.h"
 #include "gtimeline.h"
+#include "labelconstructor.h"
 #include "traceeditsequence.h"
 #include "traceeditstates.h"
 #include "traceoptions.h"
@@ -237,7 +238,8 @@ bool SetCSVFileNameRunCarmDialogAction::execute( std::string whichTrace )
   tmpCSVFilenameState->setData( tmpFileName );
 
   // Rewrite new .legend.csv name
-  tmpFileName = tmpFileBaseName + std::string( ".legend.csv" );
+  bool initWithDot = true;
+  tmpFileName = tmpFileBaseName + LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV, initWithDot );
   CSVLegendFileNameState *tmpCSVLegendFilenameState = (CSVLegendFileNameState *)tmpSequence->getState( TSequenceStates::csvLegendFileNameState );
   tmpCSVLegendFilenameState->setData( tmpFileName );
 
@@ -744,7 +746,8 @@ void SequenceDriver::sequenceCarm( gTimeline *whichTimeline )
   mySequence->addState( TSequenceStates::csvFileNameState, tmpCSVFilenameState );
 
   CSVLegendFileNameState *tmpCSVLegendFilenameState = new CSVLegendFileNameState( mySequence );
-  tmpFileName = tmpFileBaseName + std::string( ".legend.csv" );
+  bool initWithDot = true;
+  tmpFileName = tmpFileBaseName + LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV, initWithDot );
   tmpCSVLegendFilenameState->setData( tmpFileName );
   mySequence->addState( TSequenceStates::csvLegendFileNameState, tmpCSVLegendFilenameState );  
 
