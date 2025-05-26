@@ -1585,16 +1585,14 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
   if( !IsShown() )
     return;
-  else if( canRedraw &&
-           ( event.GetSize().GetWidth() != myWindow->getWidth() ||
-             event.GetSize().GetHeight() != myWindow->getHeight() ) )
+  else if (canRedraw && (this->GetClientSize ().GetWidth () != myWindow->getWidth () || this->GetClientSize ().GetHeight () != myWindow->getHeight ()))
   {
 #ifndef _WIN32
     if( !splitChanged )
     {
 #endif
-      myWindow->setWidth( event.GetSize().GetWidth() );
-      myWindow->setHeight( event.GetSize().GetHeight() );
+      // myWindow->setWidth (this->GetClientSize ().GetWidth ());
+      // myWindow->setHeight (this->GetClientSize ().GetHeight ());
 #ifndef _WIN32
     }
 #endif
@@ -2006,6 +2004,7 @@ gTimeline *gTimeline::clone( Timeline *clonedWindow,
 //  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
   gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), position );
   clonedTimeline->SetMyWindow( clonedWindow );
+  clonedTimeline->InitMyWindowCallbacks ();
   clonedTimeline->SetClientSize( size );
   clonedWindow->setPixelSize( myWindow->getPixelSize() );
 
@@ -5168,7 +5167,11 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
         wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
       }
       else
+      {
+        myWindow->setWidth (this->GetClientSize ().GetWidth ());
+        myWindow->setHeight (this->GetClientSize ().GetHeight ());
         myWindow->setRedraw( true );
+      }
 
       Refresh();
     }

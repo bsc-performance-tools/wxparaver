@@ -717,6 +717,8 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
                                                     wxID_ANY,
                                                     wxString::FromUTF8( composedName.c_str() ) );
             tmpGHisto->SetHistogram( histo );
+            tmpGHisto->InitHistogramCallbacks ();
+
             tmpGHisto->SetClientSize( histo->getWidth(), histo->getHeight() );
 
             histo->setZoom( true );
@@ -742,6 +744,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
                                                     wxString::FromUTF8( composedName.c_str() ),
                                                     tmpPos );
             tmpTimeline->SetMyWindow( window );
+            tmpTimeline->InitMyWindowCallbacks ();
             tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
             
             tmpTimeline->redraw();

@@ -285,6 +285,17 @@ public:
   Histogram* GetHistogram() const { return myHistogram ; }
   void SetHistogram(Histogram* value) { myHistogram = value ; }
 
+  void InitHistogramCallbacks ()
+  {
+    myHistogram->registerResizeFunctionCallback (
+        [this] (int w, int h)
+        {
+          this->SetClientSize (w, h);
+          this->myHistogram->setRedraw (true);
+          this->updateHistogram ();
+        });
+  }
+
   bool GetOpenControlActivated() const { return openControlActivated ; }
   void SetOpenControlActivated(bool value) { openControlActivated = value ; }
 
@@ -302,6 +313,9 @@ public:
 
   wxTimer * GetTimerZoom() const { return timerZoom ; }
   void SetTimerZoom(wxTimer * value) { timerZoom = value ; }
+
+  wxTimer *GetTimerSize () const { return timerSize; }
+  void SetTimerSize (wxTimer *value) { timerSize = value; }
 
   double GetZommCellHeight() const { return zoomCellHeight ; }
   void SetZommCellHeight(double value) { zoomCellHeight = value ; }
@@ -469,6 +483,7 @@ private:
   std::vector<TObjectOrder> selectedRows;
   HistoTableBase* tableBase;
   wxTimer * timerZoom;
+  wxTimer *timerSize;
   double zoomCellHeight;
   double zoomCellWidth;
   bool zoomDragging;
@@ -488,7 +503,9 @@ private:
 
   void updateHistogram();
 
-  void OnTimerZoom( wxTimerEvent& event );
+  void OnTimerSize (wxTimerEvent &event);
+  void OnTimerZoom (wxTimerEvent &event);
+
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const std::vector<THistogramColumn>& noVoidSemRanges ) const;
 
   THistogramColumn getSemanticSortedRealColumn( THistogramColumn whichCol, const std::vector<THistogramColumn>& noVoidSemRanges  ) const;

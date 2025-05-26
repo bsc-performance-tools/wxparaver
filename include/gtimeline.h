@@ -366,6 +366,15 @@ public:
   Timeline* GetMyWindow() const { return myWindow ; }
   void SetMyWindow(Timeline* value) { myWindow = value ; }
 
+  void InitMyWindowCallbacks ()
+  {
+    myWindow->registerResizeFunctionCallback (
+        [this] (int w, int h)
+        {
+          this->resizeDrawZone (w, h);
+        });
+  }
+
   PRV_INT32 GetObjectAxisPos() const { return objectAxisPos ; }
   void SetObjectAxisPos(PRV_INT32 value) { objectAxisPos = value ; }
 

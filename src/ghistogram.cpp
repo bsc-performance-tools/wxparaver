@@ -162,21 +162,21 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 #endif
   
   EVT_TIMER( wxID_ANY, gHistogram::OnTimerZoom )
-  
-END_EVENT_TABLE()
+  EVT_TIMER (ID_TIMER_SIZE, gHistogram::OnTimerSize)
 
-wxProgressDialog *gHistogram::dialogProgress = nullptr;
-int gHistogram::numberOfProgressDialogUsers = 0;
+  END_EVENT_TABLE ()
 
-/*!
- * gHistogram constructors
- */
+  wxProgressDialog *gHistogram::dialogProgress = nullptr;
+  int gHistogram::numberOfProgressDialogUsers = 0;
 
-gHistogram::gHistogram() :
-        gWindow()
-{
-  Init();
-}
+  /*!
+   * gHistogram constructors
+   */
+
+  gHistogram::gHistogram () : gWindow ()
+  {
+    Init ();
+  }
 
 gHistogram::gHistogram( wxWindow* parent,
                         wxWindowID id,
@@ -1126,9 +1126,9 @@ void gHistogram::OnIdle( wxIdleEvent& event )
     }
   }
 
-  myHistogram->setWidth( this->GetClientSize().GetWidth() );
-  myHistogram->setHeight( this->GetClientSize().GetHeight() );
-  
+  myHistogram->setWidth (this->GetClientSize ().GetWidth ());
+  myHistogram->setHeight (this->GetClientSize ().GetHeight ());
+
   controlWarning->Show( myHistogram->getControlOutOfLimits() );
   xtraWarning->Show( myHistogram->getExtraOutOfLimits() );
   Layout();
@@ -1164,23 +1164,24 @@ void gHistogram::updateHistogram()
   }
   else if( this->IsShown() )
   {
-    if( ready && myHistogram->getRedraw() )
+
+    if (ready && myHistogram->getRedraw ())
     {
-      wxString winTitle = GetTitle();
-      SetTitle( _("(Working...) ") + winTitle );
-      Update();
-      
-      myHistogram->setRedraw( false );
+      wxString winTitle = GetTitle ();
+      SetTitle (_ ("(Working...) ") + winTitle);
+      Update ();
 
-      initColumnSelection();
-      columnSelection.getSelected( noVoidSemRanges );
+      myHistogram->setRedraw (false);
 
-      if( myHistogram->getZoom() )
-        fillZoom();
+      initColumnSelection ();
+      columnSelection.getSelected (noVoidSemRanges);
+
+      if (myHistogram->getZoom ())
+        fillZoom ();
       else
-        fillGrid();
+        fillGrid ();
 
-      SetTitle( winTitle );
+      SetTitle (winTitle);
     }
   }
 }
@@ -2167,6 +2168,9 @@ void gHistogram::OnSize( wxSizeEvent& event )
   event.Skip();
 }
 
+void gHistogram::OnTimerSize (wxTimerEvent &event)
+{
+}
 
 /*!
  * wxEVT_CONTEXT_MENU event handler for ID_ZOOMHISTO

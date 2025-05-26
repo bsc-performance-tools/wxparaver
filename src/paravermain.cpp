@@ -1067,7 +1067,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
 #endif
         tmpHisto->SetHistogram( *it );
-
+        tmpHisto->InitHistogramCallbacks ();
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( (*it) );
 
@@ -2588,6 +2588,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
       continue;
     gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
     tmpHisto->SetHistogram( *it );
+    tmpHisto->InitHistogramCallbacks ();
 
     appendHistogram2Tree( tmpHisto );
   }
@@ -3556,6 +3557,7 @@ void paraverMain::ShowHistogramDialog()
                           newHistogram->getControlWindow()->getTrace()->getTraceName();
     gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
     tmpHisto->SetHistogram( newHistogram );
+    tmpHisto->InitHistogramCallbacks ();
 
     appendHistogram2Tree( tmpHisto );
     LoadedWindows::getInstance()->add( newHistogram );

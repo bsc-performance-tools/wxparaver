@@ -379,9 +379,12 @@ void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string pro
     }
     else if ( property == STR_SIZE )
     {
-      int width, height;
-      sourceHistogram->GetSize( &width, &height);
-      destinyTimeline->SetSize( width, height );
+      int width = sourceHistogram->GetClientSize ().GetWidth ();
+      int height = sourceHistogram->GetClientSize ().GetHeight ();
+      destinyTimeline->GetMyWindow ()->setWidth (width);
+      destinyTimeline->GetMyWindow ()->setHeight (height);
+
+      destinyTimeline->GetMyWindow ()->onResizeFunctionCallback (width, height);
     }
     else if ( property == STR_OBJECTS )
     {
@@ -428,9 +431,13 @@ void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string p
     }
     else if ( property == STR_SIZE )
     {
-      int width, height;
-      sourceTimeline->GetSize( &width, &height);
-      destinyHistogram->SetSize( width, height );
+      int width = sourceTimeline->GetClientSize ().GetWidth ();
+      int height = sourceTimeline->GetClientSize ().GetHeight ();
+
+      destinyHistogram->GetHistogram ()->setWidth (width);
+      destinyHistogram->GetHistogram ()->setHeight (height);
+
+      destinyHistogram->GetHistogram ()->onResizeFunctionCallback (width, height);
     }
     else if ( property == STR_OBJECTS )
     {
@@ -470,9 +477,12 @@ void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string p
     }
     else if ( property == STR_SIZE )
     {
-      int width, height;
-      sourceHistogram->GetSize( &width, &height);
-      destinyHistogram->SetSize( width, height );
+      int width = sourceHistogram->GetClientSize ().GetWidth ();
+      int height = sourceHistogram->GetClientSize ().GetHeight ();
+
+      destinyHistogram->GetHistogram ()->setWidth (width);
+      destinyHistogram->GetHistogram ()->setHeight (height);
+      destinyHistogram->GetHistogram ()->onResizeFunctionCallback (width, height);
     }
     else if ( property == STR_OBJECTS )
     {
