@@ -2136,6 +2136,18 @@ void RunScript::InitOutputLinks()
     return defaultLinkMaker( candidateFile.GetFullPath(), selectedTracePath, linkURL, linkName );
   };
 
+  auto makeLinkComponentsCarm = [this]( const wxString& candidateName,
+                                        const wxString& selectedTracePath,
+                                        wxString& linkURL,
+                                        wxString& linkName )
+  {
+    bool isCandidate = defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
+    bool isLegendCSV = ( candidateName.Len() > 11 && candidateName.Right( 11 ) == ".legend.csv" );
+
+    return ( isCandidate && !isLegendCSV );
+  };
+
+
   defaultLinkMaker = makeLinkComponents;
 
   applicationLinkMaker[ TExternalAppID::DIMEMAS ]      = makeLinkComponents;
@@ -2143,7 +2155,7 @@ void RunScript::InitOutputLinks()
   applicationLinkMaker[ TExternalAppID::CLUSTERING ]   = makeLinkComponentsClustering;
   applicationLinkMaker[ TExternalAppID::FOLDING ]      = makeLinkComponentsFolding;
   applicationLinkMaker[ TExternalAppID::PROFET ]       = makeLinkComponents;
-  applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponents; // TODO: probably different due to csv
+  applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponentsCarm;
   applicationLinkMaker[ TExternalAppID::USER_COMMAND ] = makeLinkComponents;
   
   // These applications aren't executed by "Run" button, so will not generate links
@@ -2167,15 +2179,16 @@ void RunScript::InitOutputLinks()
 
   outputLinks =
   {
-    { "http",     TTagPosition::PREFIX, httpLink },
-    { ".prv",     TTagPosition::SUFFIX, skipLink },
-    { ".prv.gz",  TTagPosition::SUFFIX, skipLink },
-    { ".cfg",     TTagPosition::SUFFIX, skipLink },
-    { ".xml",     TTagPosition::SUFFIX, skipLink },
-    { ".csv",     TTagPosition::SUFFIX, skipLink },
-    { ".dat",     TTagPosition::SUFFIX, skipLink },
-    { ".gnuplot", TTagPosition::SUFFIX, skipLink },
-    { ".pdf",     TTagPosition::SUFFIX, skipLink },
+    { "http",        TTagPosition::PREFIX, httpLink },
+    { ".prv",        TTagPosition::SUFFIX, skipLink },
+    { ".prv.gz",     TTagPosition::SUFFIX, skipLink },
+    { ".cfg",        TTagPosition::SUFFIX, skipLink },
+    { ".xml",        TTagPosition::SUFFIX, skipLink },
+    { ".csv",        TTagPosition::SUFFIX, skipLink },
+    //{ ".legend.csv", TTagPosition::SUFFIX, skipLink },
+    { ".dat",        TTagPosition::SUFFIX, skipLink },
+    { ".gnuplot",    TTagPosition::SUFFIX, skipLink },
+    { ".pdf",        TTagPosition::SUFFIX, skipLink },
   };
 }
 
