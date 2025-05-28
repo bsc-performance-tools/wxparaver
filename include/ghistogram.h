@@ -93,6 +93,9 @@ class gWindow;
 #define SYMBOL_GHISTOGRAM_POSITION wxDefaultPosition
 ////@end control identifiers
 
+#define ID_TIMER_SIZE_HISTOGRAM 10029
+#define ID_TIMER_ZOOM_HISTOGRAM 10030
+
 /*!
  * gHistogram class declaration
  */

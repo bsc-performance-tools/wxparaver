@@ -74,6 +74,12 @@
 #define wxUSE_GRAPHICS_CONTEXT 0
 #endif
 
+#ifdef __WXMAC__
+constexpr int TIMER_SIZE_DURATION = 750;
+#else
+constexpr int TIMER_SIZE_DURATION = 250;
+#endif
+
 using namespace std;
 
 constexpr char STR_SORT_CUSTOM[] = "Custom";
@@ -160,9 +166,9 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 #else
   EVT_GRID_CMD_RANGE_SELECT( ID_GRIDHISTO, gHistogram::OnRangeSelect )
 #endif
-  
-  EVT_TIMER( wxID_ANY, gHistogram::OnTimerZoom )
-  EVT_TIMER (ID_TIMER_SIZE, gHistogram::OnTimerSize)
+
+  EVT_TIMER (ID_TIMER_ZOOM_HISTOGRAM, gHistogram::OnTimerZoom)
+  EVT_TIMER (ID_TIMER_SIZE_HISTOGRAM, gHistogram::OnTimerSize)
 
   END_EVENT_TABLE ()
 
@@ -231,6 +237,7 @@ gHistogram::~gHistogram()
   
   delete redrawStopWatch;
   delete timerZoom;
+  delete timerSize;
 }
 
 
@@ -249,7 +256,8 @@ void gHistogram::Init()
   ready = false;
   redrawStopWatch = new wxStopWatch();
   tableBase = nullptr;
-  timerZoom = new wxTimer( this );
+  timerSize = new wxTimer (this, ID_TIMER_SIZE_HISTOGRAM);
+  timerZoom = new wxTimer (this, ID_TIMER_ZOOM_HISTOGRAM);
   zoomDragging = false;
   panelToolbar = NULL;
   tbarHisto = NULL;
@@ -1126,9 +1134,6 @@ void gHistogram::OnIdle( wxIdleEvent& event )
     }
   }
 
-  myHistogram->setWidth (this->GetClientSize ().GetWidth ());
-  myHistogram->setHeight (this->GetClientSize ().GetHeight ());
-
   controlWarning->Show( myHistogram->getControlOutOfLimits() );
   xtraWarning->Show( myHistogram->getExtraOutOfLimits() );
   Layout();
@@ -1406,16 +1411,15 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
   if ( titleBarSize.GetHeight() == 0 )
     titleBarSize = paraverMain::defaultTitleBarSize;
 
-  wxPoint position =  wxPoint( this->GetPosition().x + titleBarSize.GetHeight(),
-                               this->GetPosition().y + titleBarSize.GetHeight() );
-  wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight()/* + titleBarSize.GetHeight()*/ );
+  wxPoint position = wxPoint (this->GetPosition ().x + titleBarSize.GetHeight (),
+                              this->GetPosition ().y + titleBarSize.GetHeight ());
 
   string composedName = clonedName + " @ " +
                         clonedHistogram->getTrace()->getTraceNameNumbered();
 
   gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), position );
   clonedGHistogram->myHistogram = clonedHistogram;
-  clonedGHistogram->SetClientSize( size );
+  clonedGHistogram->SetClientSize (myHistogram->getWidth (), myHistogram->getHeight ());
 
   clonedGHistogram->ready = false;
 
@@ -2155,21 +2159,32 @@ void gHistogram::OnMotion( wxMouseEvent& event )
 
 void gHistogram::OnSize( wxSizeEvent& event )
 {
-  if( ready && myHistogram->getZoom() )
+
+  if (myHistogram->getZoom () && ready)
   {
-    wxString winTitle = GetTitle();
-    SetTitle( _("(Working...) ") + winTitle );
-    Update();
-    
-    fillZoom();
-    
-    SetTitle( winTitle );
+    wxString winTitle = GetTitle ();
+    SetTitle (_ ("(Working...) ") + winTitle);
+    Update ();
+
+    fillZoom ();
+
+    SetTitle (winTitle);
   }
-  event.Skip();
+
+  timerSize->StartOnce (TIMER_SIZE_DURATION);
+
+  event.Skip ();
 }
 
 void gHistogram::OnTimerSize (wxTimerEvent &event)
 {
+  timerSize->Stop ();
+
+  auto width = this->GetClientSize ().GetWidth ();
+  auto height = this->GetClientSize ().GetHeight ();
+
+  myHistogram->setWidth (width);
+  myHistogram->setHeight (height);
 }
 
 /*!

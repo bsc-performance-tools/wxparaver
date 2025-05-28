@@ -1071,7 +1071,8 @@ bool paraverMain::DoLoadCFG( const string &path )
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( (*it) );
 
-        tmpHisto->SetClientSize( wxSize( (*it)->getWidth(), (*it)->getHeight() ) );
+        tmpHisto->SetClientSize ((*it)->getWidth (), (*it)->getHeight ());
+
         if( (*it)->getShowWindow() )
         {
 #if __WXGTK__
@@ -2406,15 +2407,15 @@ void paraverMain::OnTreeKeyPress( wxKeyEvent& event )
  */
 void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
 {
-  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
-  if ( !event.IsEditCancelled() )
+  wxTreeCtrl *currentTree = (wxTreeCtrl *)choiceWindowBrowser->GetPage (choiceWindowBrowser->GetSelection ());
+
+  wxArrayTreeItemIds selectedItems;
+  currentTree->GetSelections (selectedItems);
+
+  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *> (currentTree->GetItemData (selectedItems[0]));
+
+  if (!event.IsEditCancelled ())
   {
-
-    wxArrayTreeItemIds selectedItems;
-    currentTree->GetSelections (selectedItems);
-
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( selectedItems[0] ) );
-
     auto newName = event.GetLabel ().mb_str ();
 
     if (gHistogram *histo = itemData->getHistogram ())
@@ -2431,6 +2432,17 @@ void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
     }
 
     event.Veto ();
+  }
+  else
+  {
+    if (gHistogram *histo = itemData->getHistogram ())
+    {
+      histo->setEditMode (false);
+    }
+    else if (gTimeline *timeline = itemData->getTimeline ())
+    {
+      timeline->setEditMode (false);
+    }
   }
 }
 
@@ -3576,8 +3588,8 @@ void paraverMain::ShowHistogramDialog()
       }
     }
 
-    tmpHisto->SetClientSize( wxRect( newHistogram->getPosX(), newHistogram->getPosY(),
-                                     newHistogram->getWidth(), newHistogram->getHeight() ) );
+    tmpHisto->SetSize (wxRect (newHistogram->getPosX (), newHistogram->getPosY (),
+                               newHistogram->getWidth (), newHistogram->getHeight ()));
     tmpHisto->Move( newHistogram->getPosX(), newHistogram->getPosY() );
     if( newHistogram->getShowWindow() )
     {

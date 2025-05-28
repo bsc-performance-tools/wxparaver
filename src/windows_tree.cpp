@@ -298,7 +298,7 @@ void BuildTree( paraverMain *parent,
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
   tmpTimeline->InitMyWindowCallbacks ();
-  tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
+  tmpTimeline->SetClientSize (window->getWidth (), window->getHeight ());
 #if __WXGTK__
   tmpTimeline->Move( tmpPos );
 #endif

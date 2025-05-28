@@ -1583,21 +1583,7 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
  */
 void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
-  if( !IsShown() )
-    return;
-  else if (canRedraw && (this->GetClientSize ().GetWidth () != myWindow->getWidth () || this->GetClientSize ().GetHeight () != myWindow->getHeight ()))
-  {
-#ifndef _WIN32
-    if( !splitChanged )
-    {
-#endif
-      // myWindow->setWidth (this->GetClientSize ().GetWidth ());
-      // myWindow->setHeight (this->GetClientSize ().GetHeight ());
-#ifndef _WIN32
-    }
-#endif
-    timerSize->StartOnce( TIMER_SIZE_DURATION );
-  }
+  timerSize->StartOnce (TIMER_SIZE_DURATION);
 
   event.Skip();
 }
@@ -1994,9 +1980,8 @@ gTimeline *gTimeline::clone( Timeline *clonedWindow,
   wxSize titleBarSize = GetSize() - GetClientSize();
   if ( titleBarSize.GetHeight() == 0 )
     titleBarSize = paraverMain::defaultTitleBarSize;
-  wxPoint position =  wxPoint( GetPosition().x + titleBarSize.GetHeight(),
-                               GetPosition().y + titleBarSize.GetHeight() );
-  wxSize size = wxSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
+  wxPoint position = wxPoint (GetPosition ().x + titleBarSize.GetHeight (),
+                              GetPosition ().y + titleBarSize.GetHeight ());
 
   string composedName = myWindow->getName() + " @ " +
                         myWindow->getTrace()->getTraceNameNumbered();
@@ -2005,7 +1990,7 @@ gTimeline *gTimeline::clone( Timeline *clonedWindow,
   gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), position );
   clonedTimeline->SetMyWindow( clonedWindow );
   clonedTimeline->InitMyWindowCallbacks ();
-  clonedTimeline->SetClientSize( size );
+  clonedTimeline->SetClientSize (clonedWindow->getWidth (), clonedWindow->getHeight ());
   clonedWindow->setPixelSize( myWindow->getPixelSize() );
 
   // add to loaded windows list
@@ -5150,11 +5135,21 @@ bool gTimeline::getEditMode ()
 
 void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
-  if( myWindow->getReady() )
+  if (!splitChanged)
   {
-    if ( !wxparaverApp::mainWindow->GetSomeWinIsRedraw() )
+    auto width = drawZone->GetClientSize ().GetWidth ();
+    auto height = drawZone->GetClientSize ().GetHeight ();
+
+    myWindow->setHeight (height);
+    myWindow->setWidth (width);
+  }
+
+  timerSize->Stop ();
+
+  if (myWindow->getReady ())
+  {
+    if (!wxparaverApp::mainWindow->GetSomeWinIsRedraw ())
     {
-      timerSize->Stop();
 #ifdef _WIN32
       wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
       redraw();
@@ -5168,9 +5163,7 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
       }
       else
       {
-        myWindow->setWidth (this->GetClientSize ().GetWidth ());
-        myWindow->setHeight (this->GetClientSize ().GetHeight ());
-        myWindow->setRedraw( true );
+        myWindow->setRedraw (true);
       }
 
       Refresh();

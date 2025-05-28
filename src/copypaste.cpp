@@ -291,6 +291,7 @@ void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string pro
       int width, height;
       width = sourceTimeline->GetMyWindow()->getWidth();
       height = sourceTimeline->GetMyWindow()->getHeight();
+      
       destinyTimeline->resizeDrawZone( width, height );
     }
     else if ( property == STR_OBJECTS )
@@ -379,12 +380,10 @@ void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string pro
     }
     else if ( property == STR_SIZE )
     {
-      int width = sourceHistogram->GetClientSize ().GetWidth ();
-      int height = sourceHistogram->GetClientSize ().GetHeight ();
-      destinyTimeline->GetMyWindow ()->setWidth (width);
-      destinyTimeline->GetMyWindow ()->setHeight (height);
+      int width = sourceHistogram->GetSize ().GetWidth ();
+      int height = sourceHistogram->GetSize ().GetHeight ();
 
-      destinyTimeline->GetMyWindow ()->onResizeFunctionCallback (width, height);
+      destinyTimeline->SetSize (width, height);
     }
     else if ( property == STR_OBJECTS )
     {
@@ -431,13 +430,10 @@ void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string p
     }
     else if ( property == STR_SIZE )
     {
-      int width = sourceTimeline->GetClientSize ().GetWidth ();
-      int height = sourceTimeline->GetClientSize ().GetHeight ();
+      int width = sourceTimeline->GetSize ().GetWidth ();
+      int height = sourceTimeline->GetSize ().GetHeight ();
 
-      destinyHistogram->GetHistogram ()->setWidth (width);
-      destinyHistogram->GetHistogram ()->setHeight (height);
-
-      destinyHistogram->GetHistogram ()->onResizeFunctionCallback (width, height);
+      destinyHistogram->SetSize (width, height);
     }
     else if ( property == STR_OBJECTS )
     {
@@ -477,12 +473,10 @@ void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string p
     }
     else if ( property == STR_SIZE )
     {
-      int width = sourceHistogram->GetClientSize ().GetWidth ();
-      int height = sourceHistogram->GetClientSize ().GetHeight ();
+      int width = sourceHistogram->GetSize ().GetWidth ();
+      int height = sourceHistogram->GetSize ().GetHeight ();
 
-      destinyHistogram->GetHistogram ()->setWidth (width);
-      destinyHistogram->GetHistogram ()->setHeight (height);
-      destinyHistogram->GetHistogram ()->onResizeFunctionCallback (width, height);
+      destinyHistogram->SetSize (width, height);
     }
     else if ( property == STR_OBJECTS )
     {

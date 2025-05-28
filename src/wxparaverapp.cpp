@@ -719,7 +719,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             tmpGHisto->SetHistogram( histo );
             tmpGHisto->InitHistogramCallbacks ();
 
-            tmpGHisto->SetClientSize( histo->getWidth(), histo->getHeight() );
+            tmpGHisto->SetClientSize (histo->getWidth (), histo->getHeight ());
 
             histo->setZoom( true );
             histo->setRecalc( false );
@@ -745,8 +745,8 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
                                                     tmpPos );
             tmpTimeline->SetMyWindow( window );
             tmpTimeline->InitMyWindowCallbacks ();
-            tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
-            
+            tmpTimeline->SetClientSize (window->getWidth (), window->getHeight ());
+
             tmpTimeline->redraw();
             
             tmpTimeline->saveImage( wxT( "" ) );
