@@ -443,6 +443,7 @@ void paraverMain::Init()
   traceLoadedBefore = false;
   tutorialsWindow = nullptr;
   workspacesManager = WorkspaceManager::getInstance( localKernel );
+  carmWindow = nullptr;
   menuFile = NULL;
   menuHints = NULL;
   menuHelp = NULL;

@@ -539,6 +539,9 @@ public:
   WorkspaceManager * GetWorkspacesManager() const { return workspacesManager ; }
   void SetWorkspacesManager(WorkspaceManager * value) { workspacesManager = value ; }
 
+  Timeline * GetCarmWindow() const { return carmWindow ; }
+  void SetCarmWindow(Timeline * value) { carmWindow = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -706,6 +709,7 @@ private:
   std::map< Trace*, std::vector< std::string > > traceWorkspaces;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
+  Timeline * carmWindow;
 ////@end paraverMain member variables
   SessionInfo sessionInfo;
   bool firstSave;

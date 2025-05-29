@@ -334,11 +334,13 @@ bool RunCarmAction::execute( std::string whichTrace )
 
   runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
 
+  Timeline *window = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
+  paraverMain::myParaverMain->SetCarmWindow( window );
+  
   bool usingWholeTrace = ( ( UsingWholeTraceState * )tmpSequence->getState( TSequenceStates::usingWholeTraceState ) )->getData();
   if ( !usingWholeTrace )
   {
     std::vector< Trace * > loadedTraces = wxparaverApp::mainWindow->GetLoadedTraces();
-    Timeline *window = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
 
     wxTreeCtrl *allTracesPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( 0 );
     wxTreeCtrl *currentPage = (wxTreeCtrl *)wxparaverApp::mainWindow->choiceWindowBrowser->GetPage( wxparaverApp::mainWindow->getTracePosition( loadedTraces[ wxparaverApp::mainWindow->GetCurrentTrace() ] ) + 1 );

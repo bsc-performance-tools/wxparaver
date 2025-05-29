@@ -189,6 +189,8 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
   EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
+  EVT_BUTTON( ID_BUTTON_CARM_SYNC, RunScript::OnButtonCarmSyncClick )
+  EVT_UPDATE_UI( ID_BUTTON_CARM_SYNC, RunScript::OnButtonCarmSyncUpdate )
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
   EVT_UPDATE_UI( ID_BUTTON_EXIT, RunScript::OnButtonExitUpdate )
@@ -372,6 +374,7 @@ void RunScript::Init()
   buttonRun = NULL;
   buttonKill = NULL;
   buttonClearLog = NULL;
+  buttonCarmSync = NULL;
   listboxRunLog = NULL;
   buttonExit = NULL;
 ////@end RunScript member initialisation
@@ -1044,7 +1047,9 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   itemBoxSizer128->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer131 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer131, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer2->Add(itemBoxSizer131, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+
+  itemBoxSizer131->Add(5, 5, 4, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
@@ -1064,6 +1069,12 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
   itemBoxSizer131->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+
+  itemBoxSizer131->Add(5, 5, 4, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  buttonCarmSync = new wxButton( itemDialog1, ID_BUTTON_CARM_SYNC, _("Sync"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonCarmSync->Show(false);
+  itemBoxSizer131->Add(buttonCarmSync, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
   if (RunScript::ShowToolTips())
@@ -1907,6 +1918,8 @@ void RunScript::adaptWindowToApplicationSelection()
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
 
     case TExternalAppID::PRVSTATS:
@@ -1924,11 +1937,14 @@ void RunScript::adaptWindowToApplicationSelection()
                                                   
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
 
     case TExternalAppID::CLUSTERING:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
+      buttonCarmSync->Hide();
 
       if ( textCtrlClusteringOutputTrace->IsEmpty() )
       {
@@ -1968,11 +1984,14 @@ void RunScript::adaptWindowToApplicationSelection()
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
 
     case TExternalAppID::PROFET:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
+      buttonCarmSync->Hide();
 
       if ( textCtrlProfetOutputTrace->IsEmpty() && !textCtrlTrace->IsEmpty() )
       {
@@ -1984,6 +2003,7 @@ void RunScript::adaptWindowToApplicationSelection()
     case TExternalAppID::CARM:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
+      buttonCarmSync->Show();
 
       // TODO: must be enabled?
       // checkCarmAccumulateValues->Enable( !checkCarmUseSemanticWindow->IsEnabled() || checkCarmUseSemanticWindow->IsChecked() );
@@ -2004,6 +2024,8 @@ void RunScript::adaptWindowToApplicationSelection()
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
   }
 
@@ -2186,7 +2208,6 @@ void RunScript::InitOutputLinks()
     return true;
   };
 
-  bool initWithDot = true;
   outputLinks =
   {
     { "http",                                                      TTagPosition::PREFIX, httpLink },
@@ -3062,5 +3083,64 @@ void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
 
 void RunScript::OnCheckboxCarmUseWindowColorsUpdate( wxUpdateUIEvent& event )
 {
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CARM_SYNC
+ */
+
+void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
+{
+  // Get window
+  Timeline *sourceWindow = paraverMain::myParaverMain->GetCarmWindow();
+  bool dummyfound;
+  gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
+  // TODO: currently only enabled and clickable when != nullptr
+  // if ( currentWindow != nullptr )
+  // {
+
+  // Publish data
+  string syncFilename;
+#ifdef _WIN32
+  syncFilename = getenv( "HOMEDRIVE" );
+  syncFilename.append( getenv( "HOMEPATH" ) );
+  syncFilename.append( "\\paraver_sync.csv" );
+#else
+  syncFilename = getenv( "HOME" );
+  syncFilename.append( "/paraver_sync.csv" );
+#endif
+
+  ofstream syncFile( syncFilename, ios::trunc );
+  if ( syncFile.good() )
+  {
+    syncFile << LABEL_TIMEUNIT[ currentWindow->GetMyWindow()->getTimeUnit() ] << std::endl;
+
+    syncFile << std::fixed;
+    syncFile.precision( 3 );
+    syncFile << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
+    syncFile << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() )   << std::endl;
+
+    AppendToLog( wxT( "Synchronization info copied to:" ) );
+    AppendToLog( wxString( syncFilename.c_str(), wxConvUTF8 ) );
+  }
+  else
+  {
+    ShowWarning( wxString( wxT( "Unable to write CARM synchronization file \n" ) ) + 
+                 wxString( syncFilename.c_str(), wxConvUTF8 ) );
+  }
+  syncFile.close();
+
+  // }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_CARM_SYNC
+ */
+
+void RunScript::OnButtonCarmSyncUpdate( wxUpdateUIEvent& event )
+{
+  buttonCarmSync->Enable( paraverMain::myParaverMain->GetCarmWindow() != nullptr );
 }
 

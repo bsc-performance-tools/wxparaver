@@ -165,6 +165,7 @@ class wxHtmlWindow;
 #define ID_BUTTON_RUN 10203
 #define ID_BUTTON_KILL 10232
 #define ID_BUTTON_CLEAR_LOG 10202
+#define ID_BUTTON_CARM_SYNC 10018
 #define ID_LISTBOX_RUN_LOG 10199
 #define ID_BUTTON_EXIT 10206
 #define SYMBOL_RUNSCRIPT_STYLE wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX|wxTAB_TRAVERSAL
@@ -322,6 +323,12 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLEAR_LOG
   void OnButtonClearLogClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CARM_SYNC
+  void OnButtonCarmSyncClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_CARM_SYNC
+  void OnButtonCarmSyncUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_HTML_LINK_CLICKED event handler for ID_LISTBOX_RUN_LOG
   void OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event );
 
@@ -454,6 +461,7 @@ public:
   wxButton* buttonRun;
   wxButton* buttonKill;
   wxButton* buttonClearLog;
+  wxButton* buttonCarmSync;
   wxHtmlWindow* listboxRunLog;
   wxButton* buttonExit;
 private:
