@@ -152,10 +152,10 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_FOLDING_REUSE_FILES 10006
 #define ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE 10153
 #define ID_COMBOBOX_FOLDING_MODEL 10284
-#define ID_TEXTCTRL_PROFET_OUTPUT_TRACE 10010
-#define ID_TEXTCTRL_PROFET_CONFIG_FILE 10011
-#define ID_BUTTON_PROFET_CONFIG_FILE 10012
-#define ID_PROFET_ADDITIONAL_PLOTS 10013
+#define ID_TEXTCTRL_MESS_OUTPUT_TRACE 10010
+#define ID_TEXTCTRL_MESS_CONFIG_FILE 10011
+#define ID_BUTTON_MESS_CONFIG_FILE 10012
+#define ID_MESS_ADDITIONAL_PLOTS 10013
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
@@ -291,8 +291,8 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE
   void OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_PROFET_ADDITIONAL_PLOTS
-  void OnProfetAdditionalPlotsUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_MESS_ADDITIONAL_PLOTS
+  void OnMessAdditionalPlotsUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
   void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
@@ -351,7 +351,7 @@ public:
   void setStats();
   void setClustering( wxString whichClusteringCSV );
   void setFolding( wxString whichFoldingCSV );
-  void setProfet();
+  void setMess();
   void setUserCommand();
 
   void closeWindow();
@@ -428,11 +428,11 @@ public:
   wxCheckBox* checkboxFoldingReuseFiles;
   wxCheckBox* checkboxFoldingUseSemanticValues;
   wxComboBox* comboboxFoldingModel;
-  wxBoxSizer* profetSection;
-  wxTextCtrl* textCtrlProfetOutputTrace;
-  wxTextCtrl* textCtrlProfetCFG;
-  FileBrowserButton* fileBrowserButtonProfetCFG;
-  wxCheckBox* checkProfetAdditionalPlots;
+  wxBoxSizer* messSection;
+  wxTextCtrl* textCtrlMessOutputTrace;
+  wxTextCtrl* textCtrlMessCFG;
+  FileBrowserButton* fileBrowserButtonMessCFG;
+  wxCheckBox* checkMessAdditionalPlots;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
@@ -478,7 +478,7 @@ private:
 
   std::map< TEnvironmentVar, wxString > environmentVariable;
 
-  // PROFET
+  // MESS
   wxString lastProcessedTrace;
 
   wxProgressDialog *progressBar;

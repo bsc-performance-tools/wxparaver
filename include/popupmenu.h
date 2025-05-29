@@ -141,7 +141,7 @@
 #define ID_MENU_USER_COMMAND                               30105
 #define ID_MENU_PASTE_CUSTOM_PALETTE                       30106
 #define ID_MENU_PASTE_SEMANTIC_SORT                        30107
-#define ID_MENU_PROFET                                     30108
+#define ID_MENU_MESS                                       30108
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR                 30109
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR_2D              30110
 

@@ -117,14 +117,14 @@ class RunAppFoldingAction: public TraceToTraceAction
 
 
 /****************************************************************************
- ********              RunProfetAction                             ********
+ ********              RunMessAction                             ********
  ****************************************************************************/
-class RunProfetAction: public TraceToTraceAction
+class RunMessAction: public TraceToTraceAction
 {
   public:
-    RunProfetAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    RunMessAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
     {}
-    ~RunProfetAction()
+    ~RunMessAction()
     {}
 
     virtual std::vector<TSequenceStates> getStateDependencies() const override;
@@ -192,7 +192,7 @@ class SequenceDriver
     static void sequenceCutter( gTimeline *whichTimeline );
     static void sequenceDimemas( gTimeline *whichTimeline );
     static void sequenceFolding( gTimeline *whichTimeline );
-    static void sequenceProfet( gTimeline *whichTimeline );
+    static void sequenceMess( gTimeline *whichTimeline );
     static void sequenceUserCommand( gTimeline *whichTimeline );
 
     //static void sequenceTraceShifter( std::string trace,

@@ -177,15 +177,15 @@ bool RunAppCutterAction::execute( std::string whichTrace )
 
 
 /****************************************************************************
- ********                 RunProfetAction                            ********
+ ********                 RunMessAction                            ********
  ****************************************************************************/
-vector<TSequenceStates> RunProfetAction::getStateDependencies() const
+vector<TSequenceStates> RunMessAction::getStateDependencies() const
 {
   vector<TSequenceStates> tmpStates;
   return tmpStates;
 }
 
-bool RunProfetAction::execute( std::string whichTrace )
+bool RunMessAction::execute( std::string whichTrace )
 {
   bool errorFound = false;
 
@@ -198,7 +198,7 @@ bool RunProfetAction::execute( std::string whichTrace )
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
   runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
-  runAppDialog->setProfet();
+  runAppDialog->setMess();
   
   runAppDialog->Show();
   runAppDialog->Raise();
@@ -460,7 +460,7 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
 }
 
 
-void SequenceDriver::sequenceProfet( gTimeline *whichTimeline )
+void SequenceDriver::sequenceMess( gTimeline *whichTimeline )
 {
   // Create sequence
   KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
@@ -468,7 +468,7 @@ void SequenceDriver::sequenceProfet( gTimeline *whichTimeline )
 
   // Define sequence
   mySequence->pushbackAction( TSequenceActions::traceCutterAction );
-  mySequence->pushbackAction( new RunProfetAction( mySequence ) );
+  mySequence->pushbackAction( new RunMessAction( mySequence ) );
 
   AcceptableAppsState *tmpAcceptableAppsState = new AcceptableAppsState( mySequence );
   tmpAcceptableAppsState->setData( whichTimeline->GetMyWindow()->getTrace()->getSuitableApps() );
@@ -493,17 +493,17 @@ void SequenceDriver::sequenceProfet( gTimeline *whichTimeline )
   tmpWindowState->setData( whichTimeline->GetMyWindow() );
   mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
 
-  // Output dir: subdir profet
+  // Output dir: subdir mess
   std::string tmpFileName;
   wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
   tmpTraceName.ClearExt();
-  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameProfet.c_str() ) );  
+  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameMess.c_str() ) );  
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
   
-  // Profet suffix
+  // Mess suffix
   OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
-  tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameProfet );
+  tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameMess );
   mySequence->addState( TSequenceStates::outputDirSuffixState, tmpOutputDirSuffixState );
 
   // Engage sequence

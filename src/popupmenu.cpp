@@ -898,8 +898,8 @@ void gPopUpMenu::buildPopUpRunApp ()
     if (suitableApps[(int)TExternalAppID::FOLDING])
       this->buildItem (popUpMenuRun, ExternalApps::getApplicationLabel (TExternalAppID::FOLDING), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_FOLDING);
 
-    if (suitableApps[(int)TExternalAppID::PROFET])
-      this->buildItem (popUpMenuRun, ExternalApps::getApplicationLabel (TExternalAppID::PROFET), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_PROFET);
+    if (suitableApps[(int)TExternalAppID::MESS])
+      this->buildItem (popUpMenuRun, ExternalApps::getApplicationLabel (TExternalAppID::MESS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_MESS);
 
     this->buildItem (popUpMenuRun, ExternalApps::getApplicationLabel (TExternalAppID::USER_COMMAND), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRunApp, ID_MENU_USER_COMMAND);
     AppendSubMenu (popUpMenuRun, _ ("Run"));

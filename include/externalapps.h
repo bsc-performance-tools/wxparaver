@@ -39,7 +39,7 @@ enum class TExternalAppID
   PRVSTATS,     // prvstats
   CLUSTERING,   // Clustering
   FOLDING,      // Folding
-  PROFET,       // Profet
+  MESS,       // Mess
     // <-- add new apps here at most
   USER_COMMAND, // User command
 

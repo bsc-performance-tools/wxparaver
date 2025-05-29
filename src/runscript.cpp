@@ -179,7 +179,7 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
-  EVT_UPDATE_UI( ID_PROFET_ADDITIONAL_PLOTS, RunScript::OnProfetAdditionalPlotsUpdate )
+  EVT_UPDATE_UI( ID_MESS_ADDITIONAL_PLOTS, RunScript::OnMessAdditionalPlotsUpdate )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
@@ -354,11 +354,11 @@ void RunScript::Init()
   checkboxFoldingReuseFiles = NULL;
   checkboxFoldingUseSemanticValues = NULL;
   comboboxFoldingModel = NULL;
-  profetSection = NULL;
-  textCtrlProfetOutputTrace = NULL;
-  textCtrlProfetCFG = NULL;
-  fileBrowserButtonProfetCFG = NULL;
-  checkProfetAdditionalPlots = NULL;
+  messSection = NULL;
+  textCtrlMessOutputTrace = NULL;
+  textCtrlMessCFG = NULL;
+  fileBrowserButtonMessCFG = NULL;
+  checkMessAdditionalPlots = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
@@ -947,38 +947,38 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
     comboboxFoldingModel->SetToolTip(_("Combine the trace-file hardware counters for the selected architecture"));
   itemBoxSizer124->Add(comboboxFoldingModel, 12, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
 
-  profetSection = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(profetSection, 0, wxGROW|wxALL, 2);
+  messSection = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(messSection, 0, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-  profetSection->Add(itemBoxSizer5, 0, wxGROW|wxALL, 2);
+  messSection->Add(itemBoxSizer5, 0, wxGROW|wxALL, 2);
 
   wxStaticText* itemStaticText6 = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Trace"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer5->Add(itemStaticText6, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textCtrlProfetOutputTrace = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_PROFET_OUTPUT_TRACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer5->Add(textCtrlProfetOutputTrace, 12, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  textCtrlMessOutputTrace = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_MESS_OUTPUT_TRACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer5->Add(textCtrlMessOutputTrace, 12, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
-  profetSection->Add(itemBoxSizer9, 0, wxGROW|wxALL, 2);
+  messSection->Add(itemBoxSizer9, 0, wxGROW|wxALL, 2);
 
   wxStaticText* itemStaticText10 = new wxStaticText( itemDialog1, wxID_STATIC, _("Config file"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer9->Add(itemStaticText10, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textCtrlProfetCFG = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_PROFET_CONFIG_FILE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer9->Add(textCtrlProfetCFG, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  textCtrlMessCFG = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_MESS_CONFIG_FILE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer9->Add(textCtrlMessCFG, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonProfetCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_PROFET_CONFIG_FILE, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer9->Add(fileBrowserButtonProfetCFG, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  fileBrowserButtonMessCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_MESS_CONFIG_FILE, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer9->Add(fileBrowserButtonMessCFG, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-  profetSection->Add(itemBoxSizer6, 0, wxGROW|wxALL, 2);
+  messSection->Add(itemBoxSizer6, 0, wxGROW|wxALL, 2);
 
   itemBoxSizer6->Add(5, 5, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  checkProfetAdditionalPlots = new wxCheckBox( itemDialog1, ID_PROFET_ADDITIONAL_PLOTS, _("Generate additional plots per socket (estimation: 0 plots)"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkProfetAdditionalPlots->SetValue(false);
-  itemBoxSizer6->Add(checkProfetAdditionalPlots, 12, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  checkMessAdditionalPlots = new wxCheckBox( itemDialog1, ID_MESS_ADDITIONAL_PLOTS, _("Generate additional plots per socket (estimation: 0 plots)"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkMessAdditionalPlots->SetValue(false);
+  itemBoxSizer6->Add(checkMessAdditionalPlots, 12, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
@@ -1074,11 +1074,11 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   fileBrowserButtonClusteringXML->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonClusteringXML->Enable();
 
-  fileBrowserButtonProfetCFG->SetTextBox( textCtrlProfetCFG );
-  fileBrowserButtonProfetCFG->SetDialogMessage( _( "Load PROFET Configuration" ) );
-  tmpWildCard = wxT( "PROFET configuration file (*.json)|*.json|All files (*.*)|*.*" );
-  fileBrowserButtonProfetCFG->SetFileDialogWildcard( tmpWildCard );
-  fileBrowserButtonProfetCFG->Enable();
+  fileBrowserButtonMessCFG->SetTextBox( textCtrlMessCFG );
+  fileBrowserButtonMessCFG->SetDialogMessage( _( "Load MESS Configuration" ) );
+  tmpWildCard = wxT( "MESS configuration file (*.json)|*.json|All files (*.*)|*.*" );
+  fileBrowserButtonMessCFG->SetFileDialogWildcard( tmpWildCard );
+  fileBrowserButtonMessCFG->Enable();
 
   // Filter forbidden chars
   wxArrayString forbidden;
@@ -1416,15 +1416,15 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case TExternalAppID::PROFET:
-      command = ExternalApps::getApplicationBin( TExternalAppID::PROFET );
+    case TExternalAppID::MESS:
+      command = ExternalApps::getApplicationBin( TExternalAppID::MESS );
 
       // Default flags:
       // -w: don't show warnings
       // -I/--plot-interactive: visualize interactive plot
       parameters = wxString( wxT( " -w --plot-interactive " ) );
 
-      if ( checkProfetAdditionalPlots ->GetValue() ) 
+      if ( checkMessAdditionalPlots ->GetValue() ) 
       {
         parameters += wxString( wxT( " -e " ) );
       }
@@ -1433,24 +1433,24 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       parameters += doubleQuote( fileBrowserButtonTrace->GetPath() );
 
       // Output trace
-      if ( !textCtrlProfetOutputTrace->IsEmpty() )
+      if ( !textCtrlMessOutputTrace->IsEmpty() )
       {
-        if ( textCtrlProfetOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
+        if ( textCtrlMessOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
         {
           // We assume that the presence of PATH_SEP means an absolute path
-          parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlProfetOutputTrace->GetValue());
+          parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlMessOutputTrace->GetValue());
         }
         else
         {
           // and its absence is a relative path to the trace
           tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
           tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
-          parameters += wxString( wxT( " " ) ) + doubleQuote( tmpPath + textCtrlProfetOutputTrace->GetValue());
+          parameters += wxString( wxT( " " ) ) + doubleQuote( tmpPath + textCtrlMessOutputTrace->GetValue());
         }
       }
 
-      // Profet CFG
-      parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonProfetCFG->GetPath() );
+      // Mess CFG
+      parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonMessCFG->GetPath() );
 
       break;
 
@@ -1696,10 +1696,10 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       break;
 
-    case TExternalAppID::PROFET:
+    case TExternalAppID::MESS:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
-      active &= !fileBrowserButtonProfetCFG->GetPath().IsEmpty();
-      active &= !textCtrlProfetOutputTrace->IsEmpty();
+      active &= !fileBrowserButtonMessCFG->GetPath().IsEmpty();
+      active &= !textCtrlMessOutputTrace->IsEmpty();
       break;
 
     case TExternalAppID::USER_COMMAND:
@@ -1883,14 +1883,14 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case TExternalAppID::PROFET:
+    case TExternalAppID::MESS:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
 
-      if ( textCtrlProfetOutputTrace->IsEmpty() && !textCtrlTrace->IsEmpty() )
+      if ( textCtrlMessOutputTrace->IsEmpty() && !textCtrlTrace->IsEmpty() )
       {
         wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
-        textCtrlProfetOutputTrace->SetValue( tmpFilename.GetName() + wxString( wxT( ".mess.prv" )));
+        textCtrlMessOutputTrace->SetValue( tmpFilename.GetName() + wxString( wxT( ".mess.prv" )));
       }
       break;
 
@@ -1915,7 +1915,7 @@ void RunScript::adaptWindowToApplicationSelection()
   clusteringSection->Show( currentApp == TExternalAppID::CLUSTERING );
   adaptClusteringAlgorithmParameters();
   foldingSection->Show( currentApp == TExternalAppID::FOLDING );
-  profetSection->Show( currentApp == TExternalAppID::PROFET );
+  messSection->Show( currentApp == TExternalAppID::MESS );
 
   Layout();
 }
@@ -2046,7 +2046,7 @@ void RunScript::InitOutputLinks()
   applicationLinkMaker[ TExternalAppID::PRVSTATS ] = makeLinkComponents;
   applicationLinkMaker[ TExternalAppID::CLUSTERING ]       = makeLinkComponentsClustering;
   applicationLinkMaker[ TExternalAppID::FOLDING ]          = makeLinkComponentsFolding;
-  applicationLinkMaker[ TExternalAppID::PROFET ]           = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::MESS ]           = makeLinkComponents;
   applicationLinkMaker[ TExternalAppID::USER_COMMAND ]     = makeLinkComponents;
   
   // These applications aren't executed by "Run" button, so will not generate links
@@ -2621,9 +2621,9 @@ void RunScript::setFolding( wxString whichFoldingCSV )
 }
 
 
-void RunScript::setProfet()
+void RunScript::setMess()
 {
-  setApp( TExternalAppID::PROFET );
+  setApp( TExternalAppID::MESS );
 }
 
 
@@ -2739,10 +2739,10 @@ void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
                                     std::string( "clustered" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
     }
   }
-  else if ( getSelectedApp() == TExternalAppID::PROFET )
+  else if ( getSelectedApp() == TExternalAppID::MESS )
   {
-    textCtrlProfetOutputTrace->SetValue(
-            wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), "profet" ) +
+    textCtrlMessOutputTrace->SetValue(
+            wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), "mess" ) +
                         PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
   }
 }
@@ -2861,10 +2861,10 @@ void RunScript::OnCloseWindow( wxCloseEvent& event )
 
 
 /*!
- * wxEVT_UPDATE_UI event handler for ID_PROFET_ADDITIONAL_PLOTS
+ * wxEVT_UPDATE_UI event handler for ID_MESS_ADDITIONAL_PLOTS
  */
 
-void RunScript::OnProfetAdditionalPlotsUpdate( wxUpdateUIEvent& event )
+void RunScript::OnMessAdditionalPlotsUpdate( wxUpdateUIEvent& event )
 {
   if( textCtrlTrace->GetValue() != lastProcessedTrace )
   {

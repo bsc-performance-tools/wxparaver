@@ -2663,8 +2663,8 @@ void gTimeline::OnPopUpRunApp( wxCommandEvent& event )
     case ID_MENU_FOLDING:
       SequenceDriver::sequenceFolding( this );
       break;
-    case ID_MENU_PROFET:
-      SequenceDriver::sequenceProfet( this );
+    case ID_MENU_MESS:
+      SequenceDriver::sequenceMess( this );
       break;
     case ID_MENU_USER_COMMAND:
       SequenceDriver::sequenceUserCommand( this );

@@ -388,9 +388,9 @@ AgAAALLegAI=
 			</second>
 		</item>
 		<item>
-			<first>PROFET</first>
+			<first>Mess</first>
 			<second>
-				<name>PROFET</name>
+				<name>Mess</name>
 				<type>2</type>
 				<autoTypes>
 					<count>7</count>
@@ -442,19 +442,19 @@ AgAAAIdTmgU=
 					<count>4</count>
 					<item_version>0</item_version>
 					<item>
-						<first>PROFET/profet_stress_score.cfg</first>
+						<first>Mess/mess_stress_score.cfg</first>
 						<second>Stress score</second>
 					</item>
 					<item>
-						<first>PROFET/profet_stress_histogram.cfg</first>
+						<first>Mess/mess_stress_histogram.cfg</first>
 						<second>Histogram of memory stress</second>
 					</item>
 					<item>
-						<first>PROFET/profet_bandwidth.cfg</first>
+						<first>Mess/mess_bandwidth.cfg</first>
 						<second>Bandwidth</second>
 					</item>
 					<item>
-						<first>PROFET/profet_latency.cfg</first>
+						<first>Mess/mess_latency.cfg</first>
 						<second>Latency</second>
 					</item>
 				</hintCFGs>
@@ -602,7 +602,7 @@ AgAAABOHkwM=
 		<item>Clustering</item>
 		<item>Sampling</item>
 		<item>Burst mode</item>
-		<item>PROFET</item>
+		<item>Mess</item>
 	</workspacesOrder>
 </workspace_manager>
 </boost_serialization>
