@@ -2472,12 +2472,6 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
     if( currentWindow != nullptr ) currentWindow->setEnableDestroyButton( true );
   }
-  else if ( currentApp == TExternalAppID::CARM &&
-            matchHrefExtension( event, wxString( LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV ).c_str(), wxConvUTF8 ) ) )
-  {
-    // Load as text
-    event.Skip();
-  }
   else if ( matchHrefExtension( event, wxT(".prv") ) || 
             matchHrefExtension( event, wxT(".prv.gz") ) || 
             ( currentApp == TExternalAppID::CARM &&
