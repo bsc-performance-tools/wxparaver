@@ -3102,7 +3102,6 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
     syncFile << std::endl;
 
     syncFile << std::fixed;
-    syncFile.precision( 3 );
     syncFile << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
     syncFile << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() )   << std::endl;
 
