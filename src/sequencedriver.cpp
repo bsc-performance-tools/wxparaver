@@ -332,10 +332,7 @@ bool RunCarmAction::execute( std::string whichTrace )
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
 
-  runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
-
   Timeline *window = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
-  runAppDialog->SetCarmWindow( window );
   bool usingWholeTrace = ( ( UsingWholeTraceState * )tmpSequence->getState( TSequenceStates::usingWholeTraceState ) )->getData();
   if ( !usingWholeTrace )
   {
@@ -350,6 +347,9 @@ bool RunCarmAction::execute( std::string whichTrace )
 
   std::string tmpCSVFileName       = ( (CSVFileNameState *)tmpSequence->getState( TSequenceStates::csvFileNameState ) )->getData();
   std::string tmpCSVLabelsFileName = ( (CSVLegendFileNameState *)tmpSequence->getState( TSequenceStates::csvLegendFileNameState ) )->getData();
+
+  runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
+  runAppDialog->SetCarmWindow( window );
   runAppDialog->setCarm( wxString::FromUTF8( tmpCSVFileName.c_str() ), wxString::FromUTF8( tmpCSVLabelsFileName.c_str() ) );
   
   runAppDialog->Show();
