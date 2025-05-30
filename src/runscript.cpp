@@ -288,9 +288,9 @@ RunScript::~RunScript()
 void RunScript::Init()
 {
 ////@begin RunScript member initialisation
+  carmWindow = nullptr;
   myProcess = nullptr;
   myProcessPid = 0;
-  carmWindow = nullptr;
   choiceApplication = NULL;
   buttonEditApplication = NULL;
   textCtrlTrace = NULL;
@@ -1073,7 +1073,9 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
 
   itemBoxSizer131->Add(5, 5, 4, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  buttonCarmSync = new wxButton( itemDialog1, ID_BUTTON_CARM_SYNC, _("Sync"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonCarmSync = new wxButton( itemDialog1, ID_BUTTON_CARM_SYNC, _("Time Sync"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    buttonCarmSync->SetToolTip(_("Writes file paraver_sync.csv containing window time unit and window begin/end times. This file is written in the carm subdir that is placed under source trace path."));
   buttonCarmSync->Show(false);
   itemBoxSizer131->Add(buttonCarmSync, 0, wxGROW|wxALL, 5);
 

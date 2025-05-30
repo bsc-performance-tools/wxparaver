@@ -342,14 +342,14 @@ public:
 
 ////@begin RunScript member function declarations
 
+  Timeline * GetCarmWindow() const { return carmWindow ; }
+  void SetCarmWindow(Timeline * value) { carmWindow = value ; }
+
   RunningProcess * GetMyProcess() const { return myProcess ; }
   void SetMyProcess(RunningProcess * value) { myProcess = value ; }
 
   long GetMyProcessPid() const { return myProcessPid ; }
   void SetMyProcessPid(long value) { myProcessPid = value ; }
-
-  Timeline * GetCarmWindow() const { return carmWindow ; }
-  void SetCarmWindow(Timeline * value) { carmWindow = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -468,9 +468,9 @@ public:
   wxHtmlWindow* listboxRunLog;
   wxButton* buttonExit;
 private:
+  Timeline * carmWindow;
   RunningProcess * myProcess;
   long myProcessPid;
-  Timeline * carmWindow;
 ////@end RunScript member variables
   int pidDimemasGUI;
 
