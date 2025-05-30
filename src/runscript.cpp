@@ -1102,7 +1102,7 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   {
     for ( long int i = static_cast<long int>( TExternalAppID::DIMEMAS ); i < static_cast<long int>( TExternalAppID::USER_COMMAND ); ++i )
     {
-      if ( appIsFound[ i ] = appFunc( i ) )
+      if ( ( appIsFound[ i ] = appFunc( i ) ) )
       {
         choiceApplication->Append( ExternalApps::getApplicationLabel( TExternalAppID( i ) ), (void *)i );
       }
@@ -2164,20 +2164,20 @@ void RunScript::InitOutputLinks()
   };
 
   // Temporaly deactivated until set final behaviour.
-  auto makeLinkComponentsCarm = [this]( const wxString& candidateName,
-                                        const wxString& selectedTracePath,
-                                        wxString& linkURL,
-                                        wxString& linkName )
-  {
-    bool isCandidate = defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
+  // auto makeLinkComponentsCarm = [this]( const wxString& candidateName,
+  //                                       const wxString& selectedTracePath,
+  //                                       wxString& linkURL,
+  //                                       wxString& linkName )
+  // {
+  //   bool isCandidate = defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
 
-    string legendCSVSuffix = LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV );
-    // TODO: C++20: simplify with ends_with()
-    bool isLegendCSV = ( candidateName.Len() > legendCSVSuffix.length() &&
-                         candidateName.Right( legendCSVSuffix.length() ) == legendCSVSuffix );
+  //   string legendCSVSuffix = LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV );
+  //   // TODO: C++20: simplify with ends_with()
+  //   bool isLegendCSV = ( candidateName.Len() > legendCSVSuffix.length() &&
+  //                        candidateName.Right( legendCSVSuffix.length() ) == legendCSVSuffix );
 
-    return ( isCandidate && !isLegendCSV );
-  };
+  //   return ( isCandidate && !isLegendCSV );
+  // };
 
 
   defaultLinkMaker = makeLinkComponents;
@@ -2727,8 +2727,8 @@ void RunScript::setTrace( wxString whichTrace )
 
 void RunScript::setApp( TExternalAppID whichApp )
 {
-  int tmpSelection = 0;
-  for( int i = 0; i < choiceApplication->GetCount(); ++i )
+  unsigned int tmpSelection = 0;
+  for( unsigned int i = 0; i < choiceApplication->GetCount(); ++i )
   {
     if( (long int)choiceApplication->GetClientData( i ) == static_cast< long int >( whichApp ) )
     {
