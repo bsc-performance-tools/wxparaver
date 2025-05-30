@@ -3068,8 +3068,6 @@ TExternalAppID RunScript::getSelectedApp() const
 
 void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
 {
-  // TODO: must be enabled?
-  //  checkCarmAccumulateValues->Enable( !checkCarmUseSemanticWindow->IsEnabled() || checkCarmUseSemanticWindow->IsChecked() );
   checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
 }
 
@@ -3093,9 +3091,6 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
   Timeline *sourceWindow = GetCarmWindow();
   bool dummyfound;
   gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
-  // TODO: currently only enabled and clickable when != nullptr
-  // if ( currentWindow != nullptr )
-  // {
 
   // Publish data
   string syncFilename = std::string( wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ).mb_str() ) + 
@@ -3116,12 +3111,10 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
   }
   else
   {
-    ShowWarning( wxString( wxT( "Unable to write CARM synchronization file \n" ) ) + 
+    ShowWarning( wxString( wxT( "Unable to write CARM synchronization file:\n" ) ) + 
                  wxString( syncFilename.c_str(), wxConvUTF8 ) );
   }
   syncFile.close();
-
-  // }
 }
 
 
