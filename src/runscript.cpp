@@ -3101,16 +3101,8 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
   // {
 
   // Publish data
-  string syncFilename;
-#ifdef _WIN32
-  syncFilename = getenv( "HOMEDRIVE" );
-  syncFilename.append( getenv( "HOMEPATH" ) );
-  syncFilename.append( "\\paraver_sync.csv" );
-#else
-  syncFilename = getenv( "HOME" );
-  syncFilename.append( "/paraver_sync.csv" );
-#endif
-
+  string syncFilename = std::string( wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ).mb_str() ) + 
+                        "paraver_sync.csv";
   ofstream syncFile( syncFilename, ios::trunc );
   if ( syncFile.good() )
   {
