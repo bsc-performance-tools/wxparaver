@@ -348,6 +348,9 @@ public:
   long GetMyProcessPid() const { return myProcessPid ; }
   void SetMyProcessPid(long value) { myProcessPid = value ; }
 
+  Timeline * GetCarmWindow() const { return carmWindow ; }
+  void SetCarmWindow(Timeline * value) { carmWindow = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -467,6 +470,7 @@ public:
 private:
   RunningProcess * myProcess;
   long myProcessPid;
+  Timeline * carmWindow;
 ////@end RunScript member variables
   int pidDimemasGUI;
 

@@ -290,6 +290,7 @@ void RunScript::Init()
 ////@begin RunScript member initialisation
   myProcess = nullptr;
   myProcessPid = 0;
+  carmWindow = nullptr;
   choiceApplication = NULL;
   buttonEditApplication = NULL;
   textCtrlTrace = NULL;
@@ -3093,7 +3094,7 @@ void RunScript::OnCheckboxCarmUseWindowColorsUpdate( wxUpdateUIEvent& event )
 void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
 {
   // Get window
-  Timeline *sourceWindow = paraverMain::myParaverMain->GetCarmWindow();
+  Timeline *sourceWindow = GetCarmWindow();
   bool dummyfound;
   gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
   // TODO: currently only enabled and clickable when != nullptr
@@ -3134,6 +3135,6 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
 
 void RunScript::OnButtonCarmSyncUpdate( wxUpdateUIEvent& event )
 {
-  buttonCarmSync->Enable( paraverMain::myParaverMain->GetCarmWindow() != nullptr );
+  buttonCarmSync->Enable( GetCarmWindow() != nullptr );
 }
 
