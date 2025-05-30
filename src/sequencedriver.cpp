@@ -336,7 +336,6 @@ bool RunCarmAction::execute( std::string whichTrace )
 
   Timeline *window = ( ( SourceTimelineState * )tmpSequence->getState( TSequenceStates::sourceTimelineState ) )->getData();
   paraverMain::myParaverMain->SetCarmWindow( window );
-  
   bool usingWholeTrace = ( ( UsingWholeTraceState * )tmpSequence->getState( TSequenceStates::usingWholeTraceState ) )->getData();
   if ( !usingWholeTrace )
   {

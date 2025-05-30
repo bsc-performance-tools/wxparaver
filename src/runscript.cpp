@@ -3114,7 +3114,8 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
   ofstream syncFile( syncFilename, ios::trunc );
   if ( syncFile.good() )
   {
-    syncFile << LABEL_TIMEUNIT[ currentWindow->GetMyWindow()->getTimeUnit() ] << std::endl;
+    CFGLoader::dumpTimeUnits( currentWindow->GetMyWindow()->getTimeUnit(), syncFile );
+    syncFile << std::endl;
 
     syncFile << std::fixed;
     syncFile.precision( 3 );
