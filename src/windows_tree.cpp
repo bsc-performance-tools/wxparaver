@@ -404,20 +404,6 @@ bool updateTreeItem( wxTreeCtrl *tree,
       if( !allTracesTree )
         tmpHistogram->Destroy();
 
-      if ( tmpHisto->isDerivedHistogram() )
-      {
-        Histogram *parent1 = tmpHisto->getParent( 0 );
-        if( parent1 != nullptr )
-        {
-          parent1->removeChild( tmpHisto );
-        }
-        Histogram *parent2 = tmpHisto->getParent( 1 );
-        if( parent2 != nullptr )
-        {
-          parent2->removeChild( tmpHisto );
-        }
-      }
-
       destroy = true;
     }
   }
