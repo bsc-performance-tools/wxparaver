@@ -720,15 +720,8 @@ private:
 
   wxVariant propertyPrevValue;
 
-//  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
-
   wxImageList *getImageList();
 
-/*
-  void BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
-                  wxTreeCtrl *root2, wxTreeItemId idRoot2,
-                  Timeline *window );
-*/
   void ShowDerivedDialog();
   void ShowHistogramDialog();
 
