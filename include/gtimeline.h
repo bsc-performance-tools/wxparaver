@@ -132,7 +132,7 @@ class ProgressController;
 #define ID_TIMER_SIZE 40000
 #define ID_TIMER_MOTION 40001
 #define ID_TIMER_WHEEL 40002
-
+#define ID_TIMER_POSITION 40003
 
 enum class TWhatWhereLine
 {
@@ -286,7 +286,9 @@ public:
   
   void OnBackgroundAsZeroCheckClick( wxCommandEvent& event );
 
-////@begin gTimeline member function declarations
+  void OnMove (wxMoveEvent &event);
+
+  ////@begin gTimeline member function declarations
 
   wxColour GetBackgroundColour() const { return backgroundColour ; }
   void SetBackgroundColour(wxColour value) { backgroundColour = value ; }
@@ -371,7 +373,18 @@ public:
     myWindow->registerResizeFunctionCallback (
         [this] (int w, int h)
         {
-          this->resizeDrawZone (w, h);
+          if (!this->IsMaximized ())
+            this->resizeDrawZone (w, h);
+        });
+    myWindow->registerPositionFunctionCallback (
+        [this] (int x, int y)
+        {
+          if (!this->IsMaximized ())
+          {
+            wxPoint tmpPos (myWindow->getPosX () - x, myWindow->getPosY () - y);
+            this->Move (tmpPos);
+            newPositionApplied = true;
+          }
         });
   }
 
@@ -464,6 +477,9 @@ public:
 
   bool GetZooming() const { return zooming ; }
   void SetZooming(bool value) { zooming = value ; }
+
+  wxTimer *GetTimerPosition () const { return timerPosition; }
+  void SetTimerPosition (wxTimer *value) { timerPosition = value; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -707,8 +723,10 @@ public:
   wxBitmap drawImage;
   wxBitmap eventImage;
   wxColour physicalColour;
+
 private:
   bool isEditMode = false;
+  bool newPositionApplied = false;
   wxColour backgroundColour;
   long beginRow;
   bool canRedraw;
@@ -759,7 +777,8 @@ private:
   long zoomEndY;
   bool zoomXY;
   bool zooming;
-////@end gTimeline member variables
+  wxTimer *timerPosition;
+  ////@end gTimeline member variables
 
   class CustomColorSemValue : public wxObject
   {
@@ -837,6 +856,7 @@ private:
   void OnTimerSize( wxTimerEvent& event );
   void OnTimerMotion( wxTimerEvent& event );
   void OnTimerWheel( wxTimerEvent& event );
+  void OnTimerPosition (wxTimerEvent &event);
 
   bool pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& onObject );
   

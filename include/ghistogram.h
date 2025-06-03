@@ -95,6 +95,7 @@ class gWindow;
 
 #define ID_TIMER_SIZE_HISTOGRAM 10029
 #define ID_TIMER_ZOOM_HISTOGRAM 10030
+#define ID_TIMER_POSITION_HISTOGRAM 10031
 
 /*!
  * gHistogram class declaration
@@ -271,7 +272,9 @@ public:
 
   void OnRangeSelect( wxGridRangeSelectEvent& event );
 
-////@begin gHistogram member function declarations
+  void OnMove (wxMoveEvent &event);
+
+  ////@begin gHistogram member function declarations
 
   wxBitmap GetDrawImage() const { return drawImage ; }
   void SetDrawImage(wxBitmap value) { drawImage = value ; }
@@ -293,50 +296,151 @@ public:
     myHistogram->registerResizeFunctionCallback (
         [this] (int w, int h)
         {
-          this->SetClientSize (w, h);
-          this->myHistogram->setRedraw (true);
-          this->updateHistogram ();
+          if (!this->IsMaximized ())
+          {
+            this->SetClientSize (w, h);
+            this->myHistogram->setRedraw (true);
+            this->updateHistogram ();
+          }
+        });
+
+    myHistogram->registerPositionFunctionCallback (
+        [this] (int x, int y)
+        {
+          if (!this->IsMaximized ())
+          {
+            wxPoint tmpPos (myHistogram->getPosX () - x, myHistogram->getPosY () - y);
+            this->Move (tmpPos);
+            newPositionApplied = true;
+          }
         });
   }
 
-  bool GetOpenControlActivated() const { return openControlActivated ; }
-  void SetOpenControlActivated(bool value) { openControlActivated = value ; }
+  bool GetOpenControlActivated () const
+  {
+    return openControlActivated;
+  }
+  void SetOpenControlActivated (bool value)
+  {
+    openControlActivated = value;
+  }
 
-  bool GetReady() const { return ready ; }
-  void SetReady(bool value) { ready = value ; }
+  bool GetReady () const
+  {
+    return ready;
+  }
+  void SetReady (bool value)
+  {
+    ready = value;
+  }
 
-  wxStopWatch * GetRedrawStopWatch() const { return redrawStopWatch ; }
-  void SetRedrawStopWatch(wxStopWatch * value) { redrawStopWatch = value ; }
+  wxStopWatch *GetRedrawStopWatch () const
+  {
+    return redrawStopWatch;
+  }
+  void SetRedrawStopWatch (wxStopWatch *value)
+  {
+    redrawStopWatch = value;
+  }
 
-  std::vector<TObjectOrder> GetSelectedRows() const { return selectedRows ; }
-  void SetSelectedRows(std::vector<TObjectOrder> value) { selectedRows = value ; }
+  std::vector<TObjectOrder> GetSelectedRows () const
+  {
+    return selectedRows;
+  }
+  void SetSelectedRows (std::vector<TObjectOrder> value)
+  {
+    selectedRows = value;
+  }
 
-  HistoTableBase* GetTableBase() const { return tableBase ; }
-  void SetTableBase(HistoTableBase* value) { tableBase = value ; }
+  HistoTableBase *GetTableBase () const
+  {
+    return tableBase;
+  }
+  void SetTableBase (HistoTableBase *value)
+  {
+    tableBase = value;
+  }
 
-  wxTimer * GetTimerZoom() const { return timerZoom ; }
-  void SetTimerZoom(wxTimer * value) { timerZoom = value ; }
+  wxTimer *GetTimerZoom () const
+  {
+    return timerZoom;
+  }
+  void SetTimerZoom (wxTimer *value)
+  {
+    timerZoom = value;
+  }
 
-  wxTimer *GetTimerSize () const { return timerSize; }
-  void SetTimerSize (wxTimer *value) { timerSize = value; }
+  wxTimer *GetTimerSize () const
+  {
+    return timerSize;
+  }
+  void SetTimerSize (wxTimer *value)
+  {
+    timerSize = value;
+  }
 
-  double GetZommCellHeight() const { return zoomCellHeight ; }
-  void SetZommCellHeight(double value) { zoomCellHeight = value ; }
+  wxTimer *GetTimerPosition () const
+  {
+    return timerPosition;
+  }
+  void SetTimerPosition (wxTimer *value)
+  {
+    timerPosition = value;
+  }
 
-  double GetZoomCellWidth() const { return zoomCellWidth ; }
-  void SetZoomCellWidth(double value) { zoomCellWidth = value ; }
+  double GetZommCellHeight () const
+  {
+    return zoomCellHeight;
+  }
+  void SetZommCellHeight (double value)
+  {
+    zoomCellHeight = value;
+  }
 
-  bool GetZoomDragging() const { return zoomDragging ; }
-  void SetZoomDragging(bool value) { zoomDragging = value ; }
+  double GetZoomCellWidth () const
+  {
+    return zoomCellWidth;
+  }
+  void SetZoomCellWidth (double value)
+  {
+    zoomCellWidth = value;
+  }
 
-  wxBitmap GetZoomImage() const { return zoomImage ; }
-  void SetZoomImage(wxBitmap value) { zoomImage = value ; }
+  bool GetZoomDragging () const
+  {
+    return zoomDragging;
+  }
+  void SetZoomDragging (bool value)
+  {
+    zoomDragging = value;
+  }
 
-  wxPoint GetZoomPointBegin() const { return zoomPointBegin ; }
-  void SetZoomPointBegin(wxPoint value) { zoomPointBegin = value ; }
+  wxBitmap GetZoomImage () const
+  {
+    return zoomImage;
+  }
+  void SetZoomImage (wxBitmap value)
+  {
+    zoomImage = value;
+  }
 
-  wxPoint GetZoomPointEnd() const { return zoomPointEnd ; }
-  void SetZoomPointEnd(wxPoint value) { zoomPointEnd = value ; }
+  wxPoint GetZoomPointBegin () const
+  {
+    return zoomPointBegin;
+  }
+  void SetZoomPointBegin (wxPoint value)
+  {
+    zoomPointBegin = value;
+  }
+
+  wxPoint GetZoomPointEnd () const
+  {
+    return zoomPointEnd;
+  }
+  void SetZoomPointEnd (wxPoint value)
+  {
+    zoomPointEnd = value;
+  }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -345,8 +449,14 @@ public:
   wxIcon GetIconResource( const wxString& name );
 ////@end gHistogram member function declarations
 
-  const SelectionManagement< THistogramColumn, int >& GetColumnSelection() const { return columnSelection; }
-  void SetColumnSelection( const SelectionManagement< THistogramColumn, int >& value ) { columnSelection = value; }
+  const SelectionManagement<THistogramColumn, int> &GetColumnSelection () const
+  {
+    return columnSelection;
+  }
+  void SetColumnSelection (const SelectionManagement<THistogramColumn, int> &value)
+  {
+    columnSelection = value;
+  }
 
   void execute();
 
@@ -475,6 +585,7 @@ public:
   wxStatusBar* histoStatus;
 private:
   bool isEditMode = false;
+  bool newPositionApplied = false;
   wxBitmap drawImage;
   bool escapePressed;
   double lastPosZoomX;
@@ -487,6 +598,8 @@ private:
   HistoTableBase* tableBase;
   wxTimer * timerZoom;
   wxTimer *timerSize;
+  wxTimer *timerPosition;
+
   double zoomCellHeight;
   double zoomCellWidth;
   bool zoomDragging;
@@ -508,6 +621,7 @@ private:
 
   void OnTimerSize (wxTimerEvent &event);
   void OnTimerZoom (wxTimerEvent &event);
+  void OnTimerPosition (wxTimerEvent &event);
 
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const std::vector<THistogramColumn>& noVoidSemRanges ) const;
 
@@ -523,7 +637,6 @@ private:
   void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
                           TObjectOrder objectBegin, TObjectOrder objectEnd );
 
-  void zoom( THistogramLimit newColumnBegin, THistogramLimit newColumnEnd,
-             TObjectOrder newObjectBegin, TObjectOrder newObjectEnd, THistogramLimit newDelta = -1.0 );
-
+  void zoom (THistogramLimit newColumnBegin, THistogramLimit newColumnEnd,
+             TObjectOrder newObjectBegin, TObjectOrder newObjectEnd, THistogramLimit newDelta = -1.0);
 };

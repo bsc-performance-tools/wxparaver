@@ -118,7 +118,7 @@ IMPLEMENT_CLASS( gHistogram, wxFrame )
  */
 
 BEGIN_EVENT_TABLE( gHistogram, wxFrame )
-
+EVT_MOVE (gHistogram::OnMove)
 ////@begin gHistogram event table entries
   EVT_CLOSE( gHistogram::OnCloseWindow )
   EVT_SIZE( gHistogram::OnSize )
@@ -169,6 +169,7 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 
   EVT_TIMER (ID_TIMER_ZOOM_HISTOGRAM, gHistogram::OnTimerZoom)
   EVT_TIMER (ID_TIMER_SIZE_HISTOGRAM, gHistogram::OnTimerSize)
+  EVT_TIMER (ID_TIMER_POSITION_HISTOGRAM, gHistogram::OnTimerPosition)
 
   END_EVENT_TABLE ()
 
@@ -238,6 +239,7 @@ gHistogram::~gHistogram()
   delete redrawStopWatch;
   delete timerZoom;
   delete timerSize;
+  delete timerPosition;
 }
 
 
@@ -258,6 +260,7 @@ void gHistogram::Init()
   tableBase = nullptr;
   timerSize = new wxTimer (this, ID_TIMER_SIZE_HISTOGRAM);
   timerZoom = new wxTimer (this, ID_TIMER_ZOOM_HISTOGRAM);
+  timerPosition = new wxTimer (this, ID_TIMER_POSITION_HISTOGRAM);
   zoomDragging = false;
   panelToolbar = NULL;
   tbarHisto = NULL;
@@ -1124,15 +1127,17 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   }
   else
 */
-  {
-    int currentDisplay = wxDisplay::GetFromWindow( this );
-    if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
-    {
-      wxDisplay tmpDisplay( currentDisplay );
-      myHistogram->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
-      myHistogram->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
-    }
-  }
+  // {
+  //   int currentDisplay = wxDisplay::GetFromWindow( this );
+  //   if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+  //   {
+  //     wxDisplay tmpDisplay( currentDisplay );
+  //     // myHistogram->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
+  //     // myHistogram->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
+  //     myHistogram->setPosX (this->GetPosition ().x);
+  //     myHistogram->setPosY (this->GetPosition ().y);
+  //   }
+  // }
 
   controlWarning->Show( myHistogram->getControlOutOfLimits() );
   xtraWarning->Show( myHistogram->getExtraOutOfLimits() );
@@ -2152,6 +2157,12 @@ void gHistogram::OnMotion( wxMouseEvent& event )
   }
 }
 
+void gHistogram::OnMove (wxMoveEvent &event)
+{
+  timerPosition->StartOnce (TIMER_SIZE_DURATION);
+
+  event.Skip ();
+}
 
 /*!
  * wxEVT_SIZE event handler for ID_GHISTOGRAM
@@ -2183,8 +2194,30 @@ void gHistogram::OnTimerSize (wxTimerEvent &event)
   auto width = this->GetClientSize ().GetWidth ();
   auto height = this->GetClientSize ().GetHeight ();
 
-  myHistogram->setWidth (width);
-  myHistogram->setHeight (height);
+  myHistogram->setWidth (width, !this->IsMaximized ());
+  myHistogram->setHeight (height, !this->IsMaximized ());
+}
+
+void gHistogram::OnTimerPosition (wxTimerEvent &event)
+{
+
+  int currentDisplay = wxDisplay::GetFromWindow (this);
+  if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+  {
+    wxDisplay tmpDisplay (currentDisplay);
+    auto posX = this->GetPosition ().x - tmpDisplay.GetGeometry ().x;
+    auto posY = this->GetPosition ().y - tmpDisplay.GetGeometry ().y;
+
+    int posXDiff = myHistogram->getPosX () - this->GetPosition ().x;
+    int posYDiff = myHistogram->getPosY () - this->GetPosition ().y;
+
+    if (!this->IsMaximized () && (posXDiff != 0 || posYDiff != 0) && !newPositionApplied)
+      myHistogram->addOffsetPosition (posXDiff, posYDiff);
+
+    newPositionApplied = false;
+    myHistogram->setPosX (posX);
+    myHistogram->setPosY (posY);
+  }
 }
 
 /*!

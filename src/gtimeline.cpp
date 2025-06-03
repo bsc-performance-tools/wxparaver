@@ -108,7 +108,7 @@ IMPLEMENT_CLASS( gTimeline, wxFrame )
  */
 
 BEGIN_EVENT_TABLE( gTimeline, wxFrame )
-
+EVT_MOVE (gTimeline::OnMove)
 ////@begin gTimeline event table entries
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
@@ -152,16 +152,17 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
   EVT_TIMER( ID_TIMER_MOTION, gTimeline::OnTimerMotion )
   EVT_TIMER( ID_TIMER_WHEEL, gTimeline::OnTimerWheel )
-  
-END_EVENT_TABLE()
+  EVT_TIMER (ID_TIMER_POSITION, gTimeline::OnTimerPosition)
 
-wxProgressDialog *gTimeline::dialogProgress = nullptr;
-int gTimeline::numberOfProgressDialogUsers = 0;
+  END_EVENT_TABLE ()
 
-/*!
- * gTimeline constructors
- */
-//class paraverMain;
+  wxProgressDialog *gTimeline::dialogProgress = nullptr;
+  int gTimeline::numberOfProgressDialogUsers = 0;
+
+  /*!
+   * gTimeline constructors
+   */
+  // class paraverMain;
 #include "paravermain.h"
 gTimeline::gTimeline() :
         gWindow()
@@ -254,6 +255,7 @@ void gTimeline::Init()
   wheelZoomEndTime = 0;
   wheelZoomFactor = 1;
   zooming = false;
+  timerPosition = new wxTimer (this, ID_TIMER_POSITION);
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -1659,8 +1661,8 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
   {
     wxDisplay tmpDisplay( currentDisplay );
-    myWindow->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
-    myWindow->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
+    // myWindow->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
+    // myWindow->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
   }
 
   bool state = false;
@@ -1957,6 +1959,12 @@ void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
 
 }
 
+void gTimeline::OnMove (wxMoveEvent &event)
+{
+  timerPosition->StartOnce (TIMER_SIZE_DURATION);
+
+  event.Skip ();
+}
 
 void gTimeline::OnPopUpCopy( wxCommandEvent& event )
 {
@@ -5140,8 +5148,8 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
     auto width = drawZone->GetClientSize ().GetWidth ();
     auto height = drawZone->GetClientSize ().GetHeight ();
 
-    myWindow->setHeight (height);
-    myWindow->setWidth (width);
+    myWindow->setHeight (height, !this->IsMaximized ());
+    myWindow->setWidth (width, !this->IsMaximized ());
   }
 
   timerSize->Stop ();
@@ -5371,6 +5379,28 @@ void gTimeline::OnTimerWheel( wxTimerEvent& event )
   myWindow->setChanged( true );
 }
 
+void gTimeline::OnTimerPosition (wxTimerEvent &event)
+{
+
+  int currentDisplay = wxDisplay::GetFromWindow (this);
+  if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+  {
+    wxDisplay tmpDisplay (currentDisplay);
+    auto posX = this->GetPosition ().x - tmpDisplay.GetGeometry ().x;
+    auto posY = this->GetPosition ().y - tmpDisplay.GetGeometry ().y;
+
+    int posXDiff = myWindow->getPosX () - this->GetPosition ().x;
+    int posYDiff = myWindow->getPosY () - this->GetPosition ().y;
+
+    if (!this->IsMaximized () && (posXDiff != 0 || posYDiff != 0) && !newPositionApplied)
+      myWindow->addOffsetPosition (posXDiff, posYDiff);
+
+    newPositionApplied = false;
+    myWindow->setPosX (posX);
+    myWindow->setPosY (posY);
+  }
+  timerPosition->Stop ();
+}
 /*!
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
  */
