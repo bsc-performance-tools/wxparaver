@@ -95,6 +95,7 @@ void gPopUpMenu::initializePopUpMenu ()
   INIT_WXMENU (popUpMenuPaste);
   INIT_WXMENU (popUpMenuPasteFilter);
   INIT_WXMENU (popUpMenuFitSemantic);
+  INIT_WXMENU (popUpMenuShowWindows);
   INIT_WXMENU (popUpMenuDrawMode);
   INIT_WXMENU (popUpMenuDrawModeTime);
   INIT_WXMENU (popUpMenuDrawModeObjects);
@@ -163,6 +164,8 @@ void gPopUpMenu::initializePopUpMenu ()
   this->AppendSeparator ();
 
   this->buildPopUpMenuSync ();
+
+  this->buildPopUpMenuShowWindows ();
 
   this->AppendSeparator ();
 
@@ -376,6 +379,18 @@ void gPopUpMenu ::buildPopUpMenuDimensionsConfiguration ()
 
     AppendSubMenu (popUpMenuColor2D, _ ("Color Mode"));
   }
+}
+
+void gPopUpMenu ::buildPopUpMenuShowWindows ()
+{
+  std::vector<BuildMenuItem> showWindowsOptions = {
+      {popUpMenuShowWindows, _ (STR_SHOW_SELECTED_WINDOWS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpShowSelectedWindows, ID_MENU_FIT_SEMANTIC_MIN},
+
+      {popUpMenuShowWindows, _ (STR_HIDE_SELECTED_WINDOWS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpHideSelectedWindows, ID_MENU_FIT_SEMANTIC_MAX}};
+
+  buildListOfItems (showWindowsOptions);
+
+  AppendSubMenu (popUpMenuShowWindows, _ (STR_SHOW_WINDOWS_STATE));
 }
 
 void gPopUpMenu ::buildPopUpMenuFitSemantic ()
@@ -1727,6 +1742,22 @@ void gPopUpMenu::OnPopUpFitObjects (wxCommandEvent &event)
 {
   onAllWindowsCall ([&event] (auto &item)
                     { item->OnPopUpFitObjects (event); });
+}
+
+void gPopUpMenu::OnPopUpShowSelectedWindows (wxCommandEvent &event)
+{
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->GetMyWindow ()->setShowWindow (true); },
+                    [&event] (gHistogram *item)
+                    { item->GetHistogram ()->setShowWindow (true); });
+}
+
+void gPopUpMenu::OnPopUpHideSelectedWindows (wxCommandEvent &event)
+{
+  onAllWindowsCall ([&event] (gTimeline *item)
+                    { item->GetMyWindow ()->setShowWindow (false); },
+                    [&event] (gHistogram *item)
+                    { item->GetHistogram ()->setShowWindow (false); });
 }
 
 // TIMELINE

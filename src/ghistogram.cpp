@@ -1110,9 +1110,12 @@ void gHistogram::OnIdle( wxIdleEvent& event )
 
   if(  !wxparaverApp::mainWindow->IsIconized() && myHistogram->getShowWindow() )
   {
-    this->Show();
-//    paraverMain::myParaverMain->addActiveWindow( this );
+    if (!this->IsShown ())
+    {
+      this->Show ();
+    }
   }
+  //    paraverMain::myParaverMain->addActiveWindow( this );
   else
   {
     this->Show( false );
@@ -2201,23 +2204,28 @@ void gHistogram::OnTimerSize (wxTimerEvent &event)
 void gHistogram::OnTimerPosition (wxTimerEvent &event)
 {
 
-  int currentDisplay = wxDisplay::GetFromWindow (this);
-  if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+  if (this->IsShown () && ready)
   {
-    wxDisplay tmpDisplay (currentDisplay);
-    auto posX = this->GetPosition ().x - tmpDisplay.GetGeometry ().x;
-    auto posY = this->GetPosition ().y - tmpDisplay.GetGeometry ().y;
 
-    int posXDiff = myHistogram->getPosX () - this->GetPosition ().x;
-    int posYDiff = myHistogram->getPosY () - this->GetPosition ().y;
+    int currentDisplay = wxDisplay::GetFromWindow (this);
+    if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+    {
+      wxDisplay tmpDisplay (currentDisplay);
+      auto posX = this->GetPosition ().x - tmpDisplay.GetGeometry ().x;
+      auto posY = this->GetPosition ().y - tmpDisplay.GetGeometry ().y;
 
-    if (!this->IsMaximized () && (posXDiff != 0 || posYDiff != 0) && !newPositionApplied)
-      myHistogram->addOffsetPosition (posXDiff, posYDiff);
+      int posXDiff = myHistogram->getPosX () - this->GetPosition ().x;
+      int posYDiff = myHistogram->getPosY () - this->GetPosition ().y;
 
-    newPositionApplied = false;
-    myHistogram->setPosX (posX);
-    myHistogram->setPosY (posY);
+      if (!this->IsMaximized () && (posXDiff != 0 || posYDiff != 0) && !newPositionApplied)
+        myHistogram->addOffsetPosition (posXDiff, posYDiff);
+
+      newPositionApplied = false;
+      myHistogram->setPosX (posX);
+      myHistogram->setPosY (posY);
+    }
   }
+  timerPosition->Stop ();
 }
 
 /*!

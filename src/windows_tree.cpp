@@ -286,7 +286,8 @@ void BuildTree( paraverMain *parent,
       tmpPos.x += tmpDisplay.GetGeometry().x;
       tmpPos.y += tmpDisplay.GetGeometry().y;
       if( tmpPos.x != window->getPosX() ) window->setPosX( tmpPos.x );
-      if( tmpPos.x != window->getPosY() ) window->setPosX( tmpPos.y );
+      if (tmpPos.y != window->getPosY ())
+        window->setPosY (tmpPos.y);
     }
   }
   

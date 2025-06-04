@@ -383,8 +383,8 @@ public:
           {
             wxPoint tmpPos (myWindow->getPosX () - x, myWindow->getPosY () - y);
             this->Move (tmpPos);
-            newPositionApplied = true;
           }
+          newPositionApplied = true;
         });
   }
 

@@ -5382,22 +5382,25 @@ void gTimeline::OnTimerWheel( wxTimerEvent& event )
 void gTimeline::OnTimerPosition (wxTimerEvent &event)
 {
 
-  int currentDisplay = wxDisplay::GetFromWindow (this);
-  if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+  if (this->IsShown () && myWindow->getReady ())
   {
-    wxDisplay tmpDisplay (currentDisplay);
-    auto posX = this->GetPosition ().x - tmpDisplay.GetGeometry ().x;
-    auto posY = this->GetPosition ().y - tmpDisplay.GetGeometry ().y;
+    int currentDisplay = wxDisplay::GetFromWindow (this);
+    if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+    {
+      wxDisplay tmpDisplay (currentDisplay);
+      auto posX = this->GetPosition ().x - tmpDisplay.GetGeometry ().x;
+      auto posY = this->GetPosition ().y - tmpDisplay.GetGeometry ().y;
 
-    int posXDiff = myWindow->getPosX () - this->GetPosition ().x;
-    int posYDiff = myWindow->getPosY () - this->GetPosition ().y;
+      int posXDiff = myWindow->getPosX () - this->GetPosition ().x;
+      int posYDiff = myWindow->getPosY () - this->GetPosition ().y;
 
-    if (!this->IsMaximized () && (posXDiff != 0 || posYDiff != 0) && !newPositionApplied)
-      myWindow->addOffsetPosition (posXDiff, posYDiff);
+      if (!this->IsMaximized () && (posXDiff != 0 || posYDiff != 0) && !newPositionApplied)
+        myWindow->addOffsetPosition (posXDiff, posYDiff);
 
-    newPositionApplied = false;
-    myWindow->setPosX (posX);
-    myWindow->setPosY (posY);
+      newPositionApplied = false;
+      myWindow->setPosX (posX);
+      myWindow->setPosY (posY);
+    }
   }
   timerPosition->Stop ();
 }

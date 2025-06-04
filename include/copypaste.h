@@ -57,6 +57,10 @@ constexpr char STR_CONTROL_SCALE[] =          "Control Scale";
 constexpr char STR_CONTROL_DIMENSIONS[] =     "Control Dimensions";
 constexpr char STR_3D_SCALE[] =               "3D scale";
 constexpr char STR_SYNCHRONIZE[] =            "Synchronize";
+constexpr char STR_SHOW_WINDOWS_STATE[] = "Window Visibility";
+constexpr char STR_HIDE_SELECTED_WINDOWS[] = "Hide Selected Windows";
+constexpr char STR_SHOW_SELECTED_WINDOWS[] = "Show Selected Windows";
+
 constexpr char STR_SYNC_REMOVE_GROUP[] =      "Remove group";
 constexpr char STR_SYNC_REMOVE_ALL_GROUPS[] = "Remove all groups";
 constexpr char STR_SYNC_NEW_GROUP[] =         "New group\tCtrl+N";

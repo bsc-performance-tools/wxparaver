@@ -1058,7 +1058,8 @@ bool paraverMain::DoLoadCFG( const string &path )
             tmpPos.x += tmpDisplay.GetGeometry().x;
             tmpPos.y += tmpDisplay.GetGeometry().y;
             if( tmpPos.x != (*it)->getPosX() ) (*it)->setPosX( tmpPos.x );
-            if( tmpPos.x != (*it)->getPosY() ) (*it)->setPosX( tmpPos.y );
+            if (tmpPos.y != (*it)->getPosY ())
+              (*it)->setPosY (tmpPos.y);
           }
         }
 #if !__WXGTK__

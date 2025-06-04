@@ -29,9 +29,10 @@
 
 ////@begin includes
 #include "wx/frame.h"
-#include "wx/toolbar.h"
 #include "wx/grid.h"
 #include "wx/statusbr.h"
+#include "wx/toolbar.h"
+#include <wx/display.h>
 ////@end includes
 #include <wx/statbmp.h>
 #include <wx/choice.h>
@@ -312,6 +313,20 @@ public:
             wxPoint tmpPos (myHistogram->getPosX () - x, myHistogram->getPosY () - y);
             this->Move (tmpPos);
             newPositionApplied = true;
+            // if (!this->IsShown ())
+            // {
+            //   int currentDisplay = wxDisplay::GetFromWindow (this);
+            //   if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+            //   {
+            //     wxDisplay tmpDisplay (currentDisplay);
+            //     auto posX = myHistogram->getPosX () - x - tmpDisplay.GetGeometry ().x;
+            //     auto posY = myHistogram->getPosY () - y - tmpDisplay.GetGeometry ().y;
+            //     myHistogram->setPosX (posX);
+            //     myHistogram->setPosY (posY);
+            //     std::cout << "POS SET X " << posX << std::endl;
+            //     std::cout << "POS SET Y " << posY << std::endl;
+            //   }
+            // }
           }
         });
   }
@@ -568,9 +583,8 @@ public:
   bool getEditMode ();
 
   void EnableCustomSortOption();
-  void DisableCustomSortOption();
-
-////@begin gHistogram member variables
+  void DisableCustomSortOption ();
+  ////@begin gHistogram member variables
   wxPanel* panelToolbar;
   wxToolBar* tbarHisto;
   wxChoice* choiceSortBy;

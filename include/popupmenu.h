@@ -223,6 +223,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuPaste;
     wxMenu *popUpMenuPasteFilter;
     wxMenu *popUpMenuFitSemantic;
+    wxMenu *popUpMenuShowWindows;
     wxMenu *popUpMenuDrawMode;
     wxMenu *popUpMenuDrawModeTime;
     wxMenu *popUpMenuDrawModeObjects;
@@ -265,6 +266,7 @@ class gPopUpMenu : public wxMenu
     void buildPopUpMenuColor ();
     void buildPopUpMenuDimensionsConfiguration ();
     void buildPopUpMenuFitSemantic ();
+    void buildPopUpMenuShowWindows ();
     void buildPopUpMenuFitObjects ();
     void buildPopUpMenuDrawMode ();
     void buildPopUpMenuPixelSize ();
@@ -392,8 +394,12 @@ class gPopUpMenu : public wxMenu
     void OnPopUpRemoveGroup (wxCommandEvent &event);
     void OnPopUpRemoveAllGroups (wxCommandEvent &event);
 
+    void OnPopUpShowSelectedWindows (wxCommandEvent &event);
+    void OnPopUpHideSelectedWindows (wxCommandEvent &event);
+
     // Timeline
-    void OnPopUpLabels (wxCommandEvent &event);
+    void
+    OnPopUpLabels (wxCommandEvent &event);
     void OnPopUpObjectAxis (wxCommandEvent &event);
     void OnPopUpRunApp (wxCommandEvent &event);
 
