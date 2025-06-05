@@ -1019,11 +1019,11 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   itemBoxSizer11->Add(itemBoxSizer13, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   checkCarmUseWindowColors = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_WINDOW_COLORS, _("Use window colors"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkCarmUseWindowColors->SetValue(false);
+  checkCarmUseWindowColors->SetValue(true);
   itemBoxSizer13->Add(checkCarmUseWindowColors, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 3);
 
   checkCarmUseSemanticWindow = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, _("Use semantic window"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkCarmUseSemanticWindow->SetValue(false);
+  checkCarmUseSemanticWindow->SetValue(true);
   itemBoxSizer13->Add(checkCarmUseSemanticWindow, 0, wxALIGN_CENTER_VERTICAL|wxALL, 3);
 
   checkCarmAccumulateValues = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_ACCUMULATE_VALUES, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
