@@ -1533,11 +1533,11 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         parameters += wxString( wxT( " --min_dur " ) ) + tmpValue;
 
       if ( checkCarmUseWindowColors->IsChecked() && !carmLabelsCSV.IsEmpty() )
-        parameters += wxString( wxT( " --color_csv " ) ) + doubleQuote( carmLabelsCSV );
+        parameters += wxString( wxT( " --color_csv " ) );
 
       if ( checkCarmUseSemanticWindow->IsChecked() && !carmSemanticCSV.IsEmpty() )
       {
-        parameters += wxString( wxT( " --mask_csv " ) ) + doubleQuote( carmSemanticCSV );
+        parameters += wxString( wxT( " --mask_csv " ) );
 
         if ( checkCarmAccumulateValues->IsChecked() )
           parameters += wxString( wxT( " -ac" ) );
