@@ -1543,6 +1543,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
           parameters += wxString( wxT( " -ac" ) );
       }
 
+      parameters += wxString( wxT( " --csv " ) ) + doubleQuote( carmSemanticCSV );
       parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
 
       break;
@@ -2163,23 +2164,6 @@ void RunScript::InitOutputLinks()
     return defaultLinkMaker( candidateFile.GetFullPath(), selectedTracePath, linkURL, linkName );
   };
 
-  // Temporaly deactivated until set final behaviour.
-  // auto makeLinkComponentsCarm = [this]( const wxString& candidateName,
-  //                                       const wxString& selectedTracePath,
-  //                                       wxString& linkURL,
-  //                                       wxString& linkName )
-  // {
-  //   bool isCandidate = defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
-
-  //   string legendCSVSuffix = LabelConstructor::getDataFileSuffix( TTextFormat::LEGEND_CSV );
-  //   // TODO: C++20: simplify with ends_with()
-  //   bool isLegendCSV = ( candidateName.Len() > legendCSVSuffix.length() &&
-  //                        candidateName.Right( legendCSVSuffix.length() ) == legendCSVSuffix );
-
-  //   return ( isCandidate && !isLegendCSV );
-  // };
-
-
   defaultLinkMaker = makeLinkComponents;
 
   applicationLinkMaker[ TExternalAppID::DIMEMAS ]      = makeLinkComponents;
@@ -2187,8 +2171,6 @@ void RunScript::InitOutputLinks()
   applicationLinkMaker[ TExternalAppID::CLUSTERING ]   = makeLinkComponentsClustering;
   applicationLinkMaker[ TExternalAppID::FOLDING ]      = makeLinkComponentsFolding;
   applicationLinkMaker[ TExternalAppID::PROFET ]       = makeLinkComponents;
-  // Temporaly deactivated until set final behaviour.
-  // applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponentsCarm;
   applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponents;
   applicationLinkMaker[ TExternalAppID::USER_COMMAND ] = makeLinkComponents;
   
