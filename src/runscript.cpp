@@ -2010,9 +2010,8 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Hide();
       buttonCarmSync->Show();
 
-      // TODO: must be enabled?
-      checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() && checkCarmUseSemanticWindow->IsChecked() );
-      // checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
+      checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
+                                         checkCarmUseSemanticWindow->IsChecked() );
 
       break;
 
@@ -3051,7 +3050,8 @@ TExternalAppID RunScript::getSelectedApp() const
 
 void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
 {
-  checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
+  checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
+                                     checkCarmUseSemanticWindow->IsChecked() );
 }
 
 
