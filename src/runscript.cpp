@@ -1145,6 +1145,7 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   {
     checkCarmUseWindowColors->Disable();
     checkCarmUseSemanticWindow->Disable();
+    checkCarmAccumulateValues->Disable();
   }
 
   // Filter forbidden chars
@@ -2010,8 +2011,8 @@ void RunScript::adaptWindowToApplicationSelection()
       buttonCarmSync->Show();
 
       // TODO: must be enabled?
-      // checkCarmAccumulateValues->Enable( !checkCarmUseSemanticWindow->IsEnabled() || checkCarmUseSemanticWindow->IsChecked() );
-      checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
+      checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() && checkCarmUseSemanticWindow->IsChecked() );
+      // checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsChecked() );
 
       break;
 
