@@ -310,24 +310,30 @@ public:
         {
           if (!this->IsMaximized ())
           {
-            wxPoint tmpPos (myHistogram->getPosX () - x, myHistogram->getPosY () - y);
+            auto newPosX = myHistogram->getPosX () - x;
+            auto newPosY = myHistogram->getPosY () - y;
+            if (!this->IsShown ())
+            {
+              int currentDisplay = wxDisplay::GetFromWindow (this);
+              if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+              {
+                wxDisplay tmpDisplay (currentDisplay);
+                auto posX = myHistogram->getPosX () - x - tmpDisplay.GetGeometry ().x;
+                auto posY = myHistogram->getPosY () - y - tmpDisplay.GetGeometry ().y;
+                if (posX < 0)
+                  posX = 0;
+                if (posY < 0)
+                  posY = 0;
+                myHistogram->setPosX (posX);
+                myHistogram->setPosY (posY);
+              }
+            }
+            this->Show ();
+            wxPoint tmpPos (newPosX, newPosY);
             this->Move (tmpPos);
-            newPositionApplied = true;
-            // if (!this->IsShown ())
-            // {
-            //   int currentDisplay = wxDisplay::GetFromWindow (this);
-            //   if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
-            //   {
-            //     wxDisplay tmpDisplay (currentDisplay);
-            //     auto posX = myHistogram->getPosX () - x - tmpDisplay.GetGeometry ().x;
-            //     auto posY = myHistogram->getPosY () - y - tmpDisplay.GetGeometry ().y;
-            //     myHistogram->setPosX (posX);
-            //     myHistogram->setPosY (posY);
-            //     std::cout << "POS SET X " << posX << std::endl;
-            //     std::cout << "POS SET Y " << posY << std::endl;
-            //   }
-            // }
           }
+          newPositionApplied = true;
+
         });
   }
 

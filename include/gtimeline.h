@@ -51,6 +51,7 @@ using boost::posix_time::ptime;
 #include "wx/notebook.h"
 #include "wx/richtext/richtextctrl.h"
 ////@end includes
+#include <wx/display.h>
 #include <wx/treebase.h>
 
 #include "wx/checkbox.h"
@@ -381,7 +382,26 @@ public:
         {
           if (!this->IsMaximized ())
           {
-            wxPoint tmpPos (myWindow->getPosX () - x, myWindow->getPosY () - y);
+            auto newPosX = myWindow->getPosX () - x;
+            auto newPosY = myWindow->getPosY () - y;
+            if (!this->IsShown ())
+            {
+              int currentDisplay = wxDisplay::GetFromWindow (this);
+              if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+              {
+                wxDisplay tmpDisplay (currentDisplay);
+                auto posX = myWindow->getPosX () - x - tmpDisplay.GetGeometry ().x;
+                auto posY = myWindow->getPosY () - y - tmpDisplay.GetGeometry ().y;
+                if (posX < 0)
+                  posX = 0;
+                if (posY < 0)
+                  posY = 0;
+                myWindow->setPosX (posX);
+                myWindow->setPosY (posY);
+              }
+            }
+            this->Show ();
+            wxPoint tmpPos (newPosX, newPosY);
             this->Move (tmpPos);
           }
           newPositionApplied = true;
