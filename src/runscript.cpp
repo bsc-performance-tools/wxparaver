@@ -3081,13 +3081,16 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
   ofstream syncFile( syncFilename, ios::trunc );
   if ( syncFile.good() )
   {
+
     CFGLoader::dumpTimeUnits( currentWindow->GetMyWindow()->getTimeUnit(), syncFile );
     syncFile << std::endl;
 
-    syncFile.precision( 0 );
-    syncFile << std::fixed;
-    syncFile << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
-    syncFile << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() )   << std::endl;
+    std::stringstream tmpTime( "" );
+    bool useLocale = false;
+    LabelConstructor::presetBaseTimeFormat( tmpTime, currentWindow->GetMyWindow()->getTimeUnit(), ParaverConfig::getInstance()->getTimelinePrecision(), useLocale );
+    tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
+    tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() )   << std::endl;
+    syncFile << tmpTime.str();
   }
   else
   {
