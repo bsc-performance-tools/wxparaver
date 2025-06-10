@@ -3084,12 +3084,10 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
     CFGLoader::dumpTimeUnits( currentWindow->GetMyWindow()->getTimeUnit(), syncFile );
     syncFile << std::endl;
 
+    syncFile.precision( 0 );
     syncFile << std::fixed;
     syncFile << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
     syncFile << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() )   << std::endl;
-
-    AppendToLog( wxT( "Synchronization info copied to:" ) );
-    AppendToLog( wxString( syncFilename.c_str(), wxConvUTF8 ) );
   }
   else
   {
