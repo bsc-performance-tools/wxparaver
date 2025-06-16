@@ -3133,14 +3133,8 @@ Timeline *paraverMain::createBaseWindow( wxString whichName )
     if( tmpCurrentTrace->getMetadata().getMetadata< MetadataManager::TAppID::CSV >( tmpCSVMetadata ) )
     {
       newWindow->getSemanticColor().setColorMode( tmpCSVMetadata->getColorMode() );
-    }
-
-    auto& tmpLabels = newWindow->getTrace()->getEventLabels();
-    map<TEventValue, string> tmpValues;
-    if( tmpLabels.getValues( 1, tmpValues ) )
-    {
-      newWindow->setMinimumY( tmpValues.begin()->first );
-      newWindow->setMaximumY( ( --tmpValues.end() )->first );
+      newWindow->setMinimumY( tmpCSVMetadata->getSemanticMin() );
+      newWindow->setMaximumY( tmpCSVMetadata->getSemanticMax() );
     }
   }
   else
