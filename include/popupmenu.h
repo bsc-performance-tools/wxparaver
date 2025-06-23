@@ -147,6 +147,11 @@
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR                 30109
 #define ID_MENU_ALTERNATIVE_GRADIENT_COLOR_2D              30110
 #define ID_MENU_SYNC_PROP                                  30111
+#define ID_SHOW_SELECTED_WINDOWS                           30112
+#define ID_SHOW_ONLY_SELECTED_WINDOWS                      30113
+#define ID_HIDE_SELECTED_WINDOWS                           30114
+#define ID_SHOW_SELECTED_WINDOWS_TRACE                     30115
+#define ID_HIDE_SELECTED_WINDOWS_TRACE                     30116
 
 #define ID_MENU_SYNC_GROUP_BASE        31000
 #define ID_MENU_SYNC_REMOVE_GROUP_BASE 32000
@@ -194,7 +199,9 @@ class gPopUpMenu : public wxMenu
     void disableItemByTag (const std::string tag);
 
     bool isSelectObjectsAvailable ();
-    
+
+    bool isShowTraceWindowsAvailable ();
+
     void createRowSelectionDialog ();
 
     void openSyncSelection(const TGroupId& groupId);
@@ -395,7 +402,12 @@ class gPopUpMenu : public wxMenu
     void OnPopUpRemoveAllGroups (wxCommandEvent &event);
 
     void OnPopUpShowSelectedWindows (wxCommandEvent &event);
+    void OnPopUpShowOnlySelectedWindows (wxCommandEvent &event);
+
     void OnPopUpHideSelectedWindows (wxCommandEvent &event);
+
+    void OnPopUpShowSelectedWindowsTrace (wxCommandEvent &event);
+    void OnPopUpHideSelectedWindowsTrace (wxCommandEvent &event);
 
     // Timeline
     void

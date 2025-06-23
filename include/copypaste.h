@@ -60,6 +60,11 @@ constexpr char STR_SYNCHRONIZE[] =            "Synchronize";
 constexpr char STR_SHOW_WINDOWS_STATE[] = "Window Visibility";
 constexpr char STR_HIDE_SELECTED_WINDOWS[] = "Hide Selected Windows";
 constexpr char STR_SHOW_SELECTED_WINDOWS[] = "Show Selected Windows";
+constexpr char STR_SHOW_ONLY_SELECTED_WINDOWS[] = "Show Only Selected Windows";
+constexpr char STR_SHOW_SELECTED_WINDOWS_TRACE[] = "Show Only Windows From Selected Trace";
+constexpr char STR_HIDE_SELECTED_WINDOWS_TRACE[] = "Hide All Windows From Selected Trace";
+constexpr char STR_SHOW_SELECTED_WINDOWS_GROUP[] = "Show Only Windows From Selected Group";
+constexpr char STR_HIDE_SELECTED_WINDOWS_GROUP[] = "Hide All Windows From Selected Group";
 
 constexpr char STR_SYNC_REMOVE_GROUP[] =      "Remove group";
 constexpr char STR_SYNC_REMOVE_ALL_GROUPS[] = "Remove all groups";

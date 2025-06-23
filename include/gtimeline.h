@@ -384,6 +384,10 @@ public:
           {
             auto newPosX = myWindow->getPosX () - x;
             auto newPosY = myWindow->getPosY () - y;
+            if (newPosX < 0)
+              newPosX = 0;
+            if (newPosY < 0)
+              newPosY = 0;
             if (!this->IsShown ())
             {
               int currentDisplay = wxDisplay::GetFromWindow (this);
@@ -854,15 +858,16 @@ private:
   TSemanticValue whatWhereSemantic;
 
   wxString formatTime( TRecordTime whichTime, bool showDate );
-  void computeWhatWhere( TRecordTime whichTime,
+  void computeWhatWhere (std::vector<std::pair<TWhatWhereLine, wxString>> &tmpWhatWhereLines,
+                         TRecordTime whichTime,
                          TObjectOrder whichRow,
                          TSemanticValue whichSemantic,
                          bool textMode,
                          bool showDate,
-                         bool hexMode );
-  void printWhatWhere( );
-  void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode, bool hexMode );
-  void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate );
+                         bool hexMode);
+  void printWhatWhere ();
+  void printWWSemantic (Timeline *temporalWindow, std::vector<std::pair<TWhatWhereLine, wxString>> &tmpWhatWhereLines, TObjectOrder whichRow, bool clickedValue, bool textMode, bool hexMode);
+  void printWWRecords (Timeline *temporalWindow, std::vector<std::pair<TWhatWhereLine, wxString>> &tmpWhatWhereLines, TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate);
 
   TSemanticValue getSemanticValueFromFusedLines( int whichY );
   bool getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder whichObject, int& whichPixelPos );

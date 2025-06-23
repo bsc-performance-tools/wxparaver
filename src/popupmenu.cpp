@@ -27,8 +27,8 @@
 #include <wx/event.h>
 #include <wx/msgdlg.h>
 
+#include "loadedwindows.h"
 #include "popupmenu.h"
-#include "propertiesselectiondialog.h"
 
 #include "externalapps.h"
 #include "labelconstructor.h"
@@ -384,9 +384,11 @@ void gPopUpMenu ::buildPopUpMenuDimensionsConfiguration ()
 void gPopUpMenu ::buildPopUpMenuShowWindows ()
 {
   std::vector<BuildMenuItem> showWindowsOptions = {
-      {popUpMenuShowWindows, _ (STR_SHOW_SELECTED_WINDOWS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpShowSelectedWindows, ID_MENU_FIT_SEMANTIC_MIN},
-
-      {popUpMenuShowWindows, _ (STR_HIDE_SELECTED_WINDOWS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpHideSelectedWindows, ID_MENU_FIT_SEMANTIC_MAX}};
+      {popUpMenuShowWindows, _ (STR_SHOW_SELECTED_WINDOWS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpShowSelectedWindows, ID_SHOW_SELECTED_WINDOWS},
+      {popUpMenuShowWindows, _ (STR_SHOW_ONLY_SELECTED_WINDOWS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpShowOnlySelectedWindows, ID_SHOW_ONLY_SELECTED_WINDOWS},
+      {popUpMenuShowWindows, _ (STR_HIDE_SELECTED_WINDOWS), wxITEM_NORMAL, &gPopUpMenu::OnPopUpHideSelectedWindows, ID_HIDE_SELECTED_WINDOWS},
+      {popUpMenuShowWindows, _ (STR_SHOW_SELECTED_WINDOWS_TRACE), wxITEM_NORMAL, &gPopUpMenu::OnPopUpShowSelectedWindowsTrace, ID_SHOW_SELECTED_WINDOWS_TRACE},
+      {popUpMenuShowWindows, _ (STR_HIDE_SELECTED_WINDOWS_TRACE), wxITEM_NORMAL, &gPopUpMenu::OnPopUpHideSelectedWindowsTrace, ID_HIDE_SELECTED_WINDOWS_TRACE}};
 
   buildListOfItems (showWindowsOptions);
 
@@ -1203,6 +1205,12 @@ void gPopUpMenu::enablePopUpMenu ()
         checkAllowedProperties (STR_FILTER_EVENTS));
   }
 
+  auto sameTrace = isShowTraceWindowsAvailable ();
+  popUpMenuShowWindows->Enable (
+      popUpMenuShowWindows->FindItem (_ (STR_SHOW_SELECTED_WINDOWS_TRACE)), sameTrace);
+  popUpMenuShowWindows->Enable (
+      popUpMenuShowWindows->FindItem (_ (STR_HIDE_SELECTED_WINDOWS_TRACE)), sameTrace);
+
   bool tmpEnableRemoveGroup =
       SyncWindows::getInstance ()->getNumGroups () > 1 || SyncWindows::getInstance ()->getNumWindows (0) > 0;
   popUpMenuSync->Enable (popUpMenuSync->FindItem (_ (STR_SYNC_REMOVE_GROUP)),
@@ -1390,6 +1398,36 @@ bool gPopUpMenu ::isSelectObjectsAvailable ()
   }
 
   return (sameTraceParameters && sameTraceLevelMode);
+}
+
+bool gPopUpMenu ::isShowTraceWindowsAvailable ()
+{
+  bool sameTrace = true;
+
+  Trace *trace = nullptr;
+
+  auto visitor = overloads{
+      [] (gHistogram *histogram)
+      { return histogram->GetHistogram ()->getDataWindow (); },
+      [] (gTimeline *timeline)
+      { return timeline->GetMyWindow (); }
+
+  };
+
+  auto dataWindow = std::visit (visitor, (windowGenericList[0]));
+  trace = dataWindow->getTrace ();
+
+  for (auto &window : windowGenericList)
+  {
+    dataWindow = std::visit (visitor, window);
+    if (trace != dataWindow->getTrace ())
+    {
+      sameTrace = false;
+      break;
+    }
+  }
+
+  return sameTrace;
 }
 
 void gPopUpMenu ::createRowSelectionDialog ()
@@ -1759,6 +1797,137 @@ void gPopUpMenu::OnPopUpHideSelectedWindows (wxCommandEvent &event)
                     [&event] (gHistogram *item)
                     { item->GetHistogram ()->setShowWindow (false); });
 }
+void gPopUpMenu::OnPopUpShowOnlySelectedWindows (wxCommandEvent &event)
+{
+  std::vector<Timeline *> timelines;
+  std::vector<Histogram *> histograms;
+
+  LoadedWindows::getInstance ()->getAll (timelines);
+  LoadedWindows::getInstance ()->getAll (histograms);
+
+  std::unordered_set<Timeline *> selectedTimelines;
+  std::unordered_set<Histogram *> selectedHistograms;
+
+  for (const auto &window : windowGenericList)
+  {
+    if (auto gt = std::get_if<gTimeline *> (&window))
+    {
+      selectedTimelines.insert ((*gt)->GetMyWindow ());
+    }
+    else if (auto gh = std::get_if<gHistogram *> (&window))
+    {
+      selectedHistograms.insert ((*gh)->GetHistogram ());
+    }
+  }
+
+  // Mostrar solo los Timeline seleccionados
+  for (auto *tl : timelines)
+  {
+    tl->setShowWindow (selectedTimelines.count (tl) > 0);
+  }
+
+  // Mostrar solo los Histogram seleccionados
+  for (auto *hg : histograms)
+  {
+    hg->setShowWindow (selectedHistograms.count (hg) > 0);
+  }
+}
+
+void gPopUpMenu::OnPopUpShowSelectedWindowsTrace (wxCommandEvent &event)
+{
+  std::vector<Timeline *> list1;
+  std::vector<Timeline *> list2;
+
+  auto visitor = overloads{
+      [] (gHistogram *histogram)
+      { return histogram->GetHistogram ()->getDataWindow (); },
+      [] (gTimeline *timeline)
+      { return timeline->GetMyWindow (); }
+
+  };
+
+  auto dataWindow = std::visit (visitor, *windowGenericList.begin ());
+  auto trace = dataWindow->getTrace ();
+
+  LoadedWindows::getInstance ()->getAll (list1);
+  LoadedWindows::getInstance ()->getAll (trace, list2);
+
+  // Crea un set de punteros de la segunda lista para búsqueda rápida
+  std::unordered_set<Timeline *> set2 (list2.begin (), list2.end ());
+
+  // Recorre la primera lista
+  for (Timeline *tl : list1)
+  {
+    if (!set2.count (tl))
+    {
+      tl->setShowWindow (false);
+    }
+  }
+
+  std::vector<Histogram *> list3;
+  std::vector<Histogram *> list4;
+
+  LoadedWindows::getInstance ()->getAll (list3);
+  LoadedWindows::getInstance ()->getAll (trace, list4);
+
+  std::unordered_set<Histogram *> set_histo (list4.begin (), list4.end ());
+
+  for (Histogram *histo : list3)
+  {
+    if (!set_histo.count (histo))
+    {
+      histo->setShowWindow (false);
+    }
+  }
+}
+
+void gPopUpMenu::OnPopUpHideSelectedWindowsTrace (wxCommandEvent &event)
+{
+  std::vector<Timeline *> list1;
+  std::vector<Timeline *> list2;
+
+  auto visitor = overloads{
+      [] (gHistogram *histogram)
+      { return histogram->GetHistogram ()->getDataWindow (); },
+      [] (gTimeline *timeline)
+      { return timeline->GetMyWindow (); }
+
+  };
+
+  auto dataWindow = std::visit (visitor, *windowGenericList.begin ());
+  auto trace = dataWindow->getTrace ();
+
+  LoadedWindows::getInstance ()->getAll (list1);
+  LoadedWindows::getInstance ()->getAll (trace, list2);
+
+  // Crea un set de punteros de la segunda lista para búsqueda rápida
+  std::unordered_set<Timeline *> set2 (list2.begin (), list2.end ());
+
+  // Recorre la primera lista
+  for (Timeline *tl : list1)
+  {
+    if (set2.count (tl))
+    {
+      tl->setShowWindow (false);
+    }
+  }
+
+  std::vector<Histogram *> list3;
+  std::vector<Histogram *> list4;
+
+  LoadedWindows::getInstance ()->getAll (list3);
+  LoadedWindows::getInstance ()->getAll (trace, list4);
+
+  std::unordered_set<Histogram *> set_histo (list4.begin (), list4.end ());
+
+  for (Histogram *histo : list3)
+  {
+    if (set_histo.count (histo))
+    {
+      histo->setShowWindow (false);
+    }
+  }
+}
 
 // TIMELINE
 void gPopUpMenu::OnPopUpFitSemanticScaleMin (wxCommandEvent &event)
@@ -2093,29 +2262,28 @@ void gPopUpMenu::OnPopUpSynchronize (wxCommandEvent &event)
 {
   TGroupId group;
   bool isChecked;
-  if( event.GetId() == ID_MENU_NEWGROUP )
+  if (event.GetId () == ID_MENU_NEWGROUP)
   {
-    group = SyncWindows::getInstance()->newGroup();  
+    group = SyncWindows::getInstance ()->newGroup ();
     isChecked = true;
   }
   else
   {
-    isChecked = popUpMenuSync->IsChecked (event.GetId());
+    isChecked = popUpMenuSync->IsChecked (event.GetId ());
     vector<TGroupId> tmpGroups;
-    SyncWindows::getInstance()->getGroups( tmpGroups );
-    group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
+    SyncWindows::getInstance ()->getGroups (tmpGroups);
+    group = tmpGroups[event.GetId () - ID_MENU_SYNC_GROUP_BASE];
   }
-    
-  onAllWindowsCall ([&group,isChecked] (auto *item)
-  { item->OnPopUpSynchronizeById (group, isChecked); });
+
+  onAllWindowsCall ([&group, isChecked] (auto *item)
+                    { item->OnPopUpSynchronizeById (group, isChecked); });
 }
 
 void gPopUpMenu::OnPopUpSynchronizeProperties (wxCommandEvent &event)
 {
-  TGroupId tmpGroup = event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE;
-  openSyncSelection(tmpGroup);
+  TGroupId tmpGroup = event.GetId () - ID_MENU_SYNC_REMOVE_GROUP_BASE;
+  openSyncSelection (tmpGroup);
 }
-
 
 void gPopUpMenu::OnPopUpRemoveGroup (wxCommandEvent &event)
 {
@@ -2175,22 +2343,22 @@ void gPopUpMenu::OnPopUpSaveImageDialog (wxCommandEvent &event)
                     { item->OnPopUpSaveImageDialog (event); });
 }
 
-// Timeline
-void gPopUpMenu::OnPopUpSaveText (wxCommandEvent &event)
-{
-  onAllWindowsCall ([&event] (gTimeline *item)
-                    { item->OnPopUpSaveText (event); },
-                    [] (gHistogram *item) {});
-}
-
-template <typename... Funcs>
-void gPopUpMenu::onAllWindowsCall (Funcs &&...funcs)
-{
-  auto visitor = overloads{std::forward<Funcs> (funcs)...};
-
-  for (auto &window : windowGenericList)
+  // Timeline
+  void gPopUpMenu::OnPopUpSaveText (wxCommandEvent &event)
   {
-    std::visit (visitor,
-                window);
+    onAllWindowsCall ([&event] (gTimeline *item)
+                      { item->OnPopUpSaveText (event); },
+                      [] (gHistogram *item) {});
   }
-}
+
+  template <typename... Funcs>
+  void gPopUpMenu::onAllWindowsCall (Funcs &&...funcs)
+  {
+    auto visitor = overloads{std::forward<Funcs> (funcs)...};
+
+    for (auto &window : windowGenericList)
+    {
+      std::visit (visitor,
+                  window);
+    }
+  }

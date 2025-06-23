@@ -312,6 +312,10 @@ public:
           {
             auto newPosX = myHistogram->getPosX () - x;
             auto newPosY = myHistogram->getPosY () - y;
+            if (newPosX < 0)
+              newPosX = 0;
+            if (newPosY < 0)
+              newPosY = 0;
             if (!this->IsShown ())
             {
               int currentDisplay = wxDisplay::GetFromWindow (this);
@@ -333,7 +337,6 @@ public:
             this->Move (tmpPos);
           }
           newPositionApplied = true;
-
         });
   }
 

@@ -215,6 +215,7 @@ gTimeline::~gTimeline()
   delete timerMotion;
   delete timerSize;
   delete timerWheel;
+  delete timerPosition;
   delete myWindow;
   delete redrawStopWatch;
 }
@@ -3071,98 +3072,122 @@ wxString gTimeline::formatTime( TRecordTime whichTime, bool showDate )
 
 
 // Computes What/Where, filling whatWhereLines vector. Doesn't show it --> printWhatWhere.
-void gTimeline::computeWhatWhere( TRecordTime whichTime,
-                                  TObjectOrder whichRow,
-                                  TSemanticValue whichSemantic,
-                                  bool textMode,
-                                  bool showDate,
-                                  bool hexMode )
+void gTimeline::computeWhatWhere (
+    std::vector<std::pair<TWhatWhereLine, wxString>> &tmpWhatWhereLines,
+    TRecordTime whichTime,
+    TObjectOrder whichRow,
+    TSemanticValue whichSemantic,
+    bool textMode,
+    bool showDate,
+    bool hexMode)
 {
+
   whatWhereTime = whichTime;
   whatWhereRow = whichRow;
   whatWhereSemantic = whichSemantic;
-  
-  whatWhereLines.clear();
+
+  tmpWhatWhereLines.clear ();
   whatWhereSelectedTimeEventLines = 0;
   whatWhereSelectedTimeCommunicationLines = 0;
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_OBJECT_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::BEGIN_OBJECT_SECTION, _ ("")));
 
   wxString txt;
 
-  if( myWindow->isFusedLinesColorSet() )
+  if (myWindow->isFusedLinesColorSet ())
   {
-    txt << _( "Semantic: " ) << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                                      whichSemantic,
-                                                                                      false,
-                                                                                      ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                                      false ).c_str() );
+    txt << _ ("\nSemantic: ") << wxString::FromUTF8 (LabelConstructor::semanticLabel (myWindow, whichSemantic, false, ParaverConfig::getInstance ()->getTimelinePrecision (), false).c_str ());
   }
   else
   {
-    if( myWindow->getLevel() == TTraceLevel::CPU )
-      txt << _( "Object: " ) << wxString::FromUTF8( LabelConstructor::objectLabel( whichRow + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+    if (myWindow->getLevel () == TTraceLevel::CPU)
+      txt << _ ("Object: ") << wxString::FromUTF8 (LabelConstructor::objectLabel (whichRow + 1, myWindow->getLevel (), myWindow->getTrace ()).c_str ());
     else
-      txt << _( "Object: " ) << wxString::FromUTF8( LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+      txt << _ ("Object: ") << wxString::FromUTF8 (LabelConstructor::objectLabel (whichRow, myWindow->getLevel (), myWindow->getTrace ()).c_str ());
   }
   txt << _( "\t  Click time: " ) << formatTime( whichTime, showDate );
   txt << _( "\n" );
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, txt ) );
+  tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::RAW_LINE, txt));
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_OBJECT_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::END_OBJECT_SECTION, _ ("")));
 
   if( myWindow->isFusedLinesColorSet() )
     return;
-
-  myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS, false );
-  myWindow->initRow( whichRow, whichTime, CREATEEVENTS + CREATECOMMS, false );
-  
-  TRecordTime tmpBeginTime = myWindow->getBeginTime( whichRow );
-
-  if ( tmpBeginTime > 0.0 )
+  std::vector<Timeline *> groupWindows;
+  if (myWindow->isSync () && SyncWindows::getInstance ()->isPropertySelected (myWindow->getSyncGroup (), SyncPropertiesType::SYNC_INFO_PANEL))
   {
-    myWindow->getRecordList( whichRow )->erase( myWindow->getRecordList( whichRow )->begin(),
-                                                myWindow->getRecordList( whichRow )->end() );
+    groupWindows = SyncWindows::getInstance ()->getGroupTimelineWindows (myWindow->getSyncGroup ());
 
-    --tmpBeginTime;
-    myWindow->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
-    myWindow->initRow( whichRow, tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
-    
-    if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
+    auto it = std::find (groupWindows.begin (), groupWindows.end (), myWindow);
+    if (it != groupWindows.end ())
     {
-      printWWSemantic( whichRow, false, textMode, hexMode );
-      printWWRecords( whichRow, false, textMode, showDate );
-      myWindow->calcNext( whichRow, false );
-      while( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() &&
-             myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
-      {
-        printWWSemantic( whichRow, false, textMode, hexMode );
-        printWWRecords( whichRow, false, textMode, showDate );
-        myWindow->calcNext( whichRow, false );
-      }
+      // Rotate the range so that `it` becomes the first element
+      std::rotate (groupWindows.begin (), it, it + 1);
     }
   }
-
-  printWWSemantic( whichRow, true, textMode, hexMode );
-  printWWRecords( whichRow, true, textMode, showDate );
-
-  if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
+  else
   {
-    myWindow->calcNext( whichRow, false );
-    while( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() &&
-           myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
+    groupWindows.push_back (myWindow);
+  }
+
+  for (auto &itWindowsGroup : groupWindows)
+  {
+    if (groupWindows.size () > 1)
     {
-      printWWSemantic( whichRow, false, textMode, hexMode );
-      printWWRecords( whichRow, false, textMode, showDate );
-      myWindow->calcNext( whichRow, false );
+      wxString name;
+      name << _ ("---------------------- Window Name: ") << wxString::FromUTF8 (itWindowsGroup->getName ().c_str ()) << _ ("---------------------- ");
+
+      tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::BEGIN_OBJECT_SECTION, _ ("")));
+      tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::RAW_LINE, name));
+      tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::END_OBJECT_SECTION, _ ("")));
     }
-    printWWSemantic( whichRow, false, textMode, hexMode );
-    printWWRecords( whichRow, false, textMode, showDate );
+    itWindowsGroup->init (whichTime, CREATEEVENTS + CREATECOMMS, false);
+    itWindowsGroup->initRow (whichRow, whichTime, CREATEEVENTS + CREATECOMMS, false);
+
+    TRecordTime tmpBeginTime = myWindow->getBeginTime (whichRow);
+
+    if (tmpBeginTime > 0.0)
+    {
+      itWindowsGroup->getRecordList (whichRow)->erase (itWindowsGroup->getRecordList (whichRow)->begin (),
+                                                       itWindowsGroup->getRecordList (whichRow)->end ());
+
+      --tmpBeginTime;
+      itWindowsGroup->init (tmpBeginTime, CREATEEVENTS + CREATECOMMS, false);
+      itWindowsGroup->initRow (whichRow, tmpBeginTime, CREATEEVENTS + CREATECOMMS, false);
+
+      if (myWindow->getEndTime (whichRow) < myWindow->getTrace ()->getEndTime ())
+      {
+        printWWSemantic (itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, hexMode);
+        printWWRecords (itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, showDate);
+        itWindowsGroup->calcNext (whichRow, false);
+        while (itWindowsGroup->getEndTime (whichRow) < itWindowsGroup->getTrace ()->getEndTime () && itWindowsGroup->getBeginTime (whichRow) == itWindowsGroup->getEndTime (whichRow))
+        {
+          printWWSemantic (itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, hexMode);
+          printWWRecords (itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, showDate);
+          itWindowsGroup->calcNext (whichRow, false);
+        }
+      }
+    }
+
+    printWWSemantic (itWindowsGroup, tmpWhatWhereLines, whichRow, true, textMode, hexMode);
+    printWWRecords (itWindowsGroup, tmpWhatWhereLines, whichRow, true, textMode, showDate);
+
+    if (myWindow->getEndTime (whichRow) < myWindow->getTrace ()->getEndTime ())
+    {
+      myWindow->calcNext (whichRow, false);
+      while (myWindow->getEndTime (whichRow) < myWindow->getTrace ()->getEndTime () && myWindow->getBeginTime (whichRow) == myWindow->getEndTime (whichRow))
+      {
+        printWWSemantic (itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, hexMode);
+        printWWRecords (itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, showDate);
+        itWindowsGroup->calcNext (whichRow, false);
+      }
+      printWWSemantic (itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, hexMode);
+      printWWRecords (itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, showDate);
+    }
   }
 }
 
-
-void gTimeline::printWhatWhere( )
+void gTimeline::printWhatWhere ()
 {
   int fontSize = 10;
   bool allowedLine, allowedSection = false, tooMuchMessage = true;
@@ -3310,62 +3335,56 @@ void gTimeline::printWhatWhere( )
 
 
 // If some tags changes here, please read printWhatWhere function.
-void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode, bool hexMode )
+void gTimeline::printWWSemantic (Timeline *temporalWindow, std::vector<std::pair<TWhatWhereLine, wxString>> &tmpWhatWhereLines, TObjectOrder whichRow, bool clickedValue, bool textMode, bool hexMode)
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_SEMANTIC_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::BEGIN_SEMANTIC_SECTION, _ ("")));
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::BEGIN_CURRENT_SECTION, _ ("")));
   else
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _ ("")));
 
   if ( !textMode )
     onString << _("Semantic value: ");
-  onString << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( whichRow ), textMode, 
-                                                                    ParaverConfig::getInstance()->getTimelinePrecision(), hexMode ).c_str() );
-  onString << wxT( "\t  Duration: " ) << wxString::FromUTF8( LabelConstructor::timeLabel(
-                                                                myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( whichRow )
-                                                                                                   - myWindow->getBeginTime( whichRow ) ),
-                                                                myWindow->getTimeUnit(), 
-                                                                ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+  onString << wxString::FromUTF8 (LabelConstructor::semanticLabel (myWindow, temporalWindow->getValue (whichRow), textMode,
+                                                                   ParaverConfig::getInstance ()->getTimelinePrecision (), hexMode)
+                                      .c_str ());
+  onString << wxT ("\t  Duration: ") << wxString::FromUTF8 (LabelConstructor::timeLabel (temporalWindow->traceUnitsToWindowUnits (temporalWindow->getEndTime (whichRow) - temporalWindow->getBeginTime (whichRow)), temporalWindow->getTimeUnit (), ParaverConfig::getInstance ()->getTimelinePrecision ()).c_str ());
   onString << _( "\n" );
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::SEMANTIC_LINE, onString ));
+  tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::SEMANTIC_LINE, onString));
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::END_CURRENT_SECTION, _ ("")));
   else
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::END_PREVNEXT_SECTION, _ ("")));
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_SEMANTIC_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::END_SEMANTIC_SECTION, _ ("")));
 }
 
 
 // If some tags changes here, please read printWhatWhere function.
-void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate )
+void gTimeline::printWWRecords (Timeline *temporalWindow, std::vector<std::pair<TWhatWhereLine, wxString>> &tmpWhatWhereLines, TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate)
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_RECORDS_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::BEGIN_RECORDS_SECTION, _ ("")));
 
-  RecordList *rl = myWindow->getRecordList( whichRow );
+  RecordList *rl = temporalWindow->getRecordList (whichRow);
   RecordList::iterator it = rl->begin();
 
-  while( it != rl->end() &&
-         ( (*it).getTime() < myWindow->getWindowBeginTime() ||
-           (*it).getTime() < myWindow->getBeginTime( whichRow ) ) )
+  while (it != rl->end () && ((*it).getTime () < temporalWindow->getWindowBeginTime () || (*it).getTime () < temporalWindow->getBeginTime (whichRow)))
   {
     ++it;
   }
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::BEGIN_CURRENT_SECTION, _ ("")));
   else
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _ ("")));
 
-  TRecordTime timePerPixel = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                             ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
+  TRecordTime timePerPixel = (temporalWindow->getWindowEndTime () - temporalWindow->getWindowBeginTime ()) / (bufferImage.GetWidth () - objectAxisPos - drawBorder);
   TRecordTime stepTime = timePerPixel * ParaverConfig::getInstance()->getTimelineWhatWhereEventPixels();
   TRecordTime fromTime = whatWhereTime - stepTime;
   if( fromTime < 0.0 ) fromTime = 0.0;
@@ -3383,13 +3402,14 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
     {
       onString << wxT( "User Event at " ) << formatTime( (*it).getTime(), showDate );
       onString << wxT( "    " );
-      onString << wxString::FromUTF8( LabelConstructor::eventLabel( myWindow,
-                                                                     (*it).getEventType(),
-                                                                     (*it).getEventValue(),
-                                                                     textMode ).c_str() );
+      onString << wxString::FromUTF8 (LabelConstructor::eventLabel (temporalWindow,
+                                                                    (*it).getEventType (),
+                                                                    (*it).getEventValue (),
+                                                                    textMode)
+                                          .c_str ());
       onString << wxT( "\n" );
 
-      whatWhereLines.push_back( make_pair( TWhatWhereLine::EVENT_LINE, onString ));
+      tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::EVENT_LINE, onString));
       onString.clear();
       
       if ( clickedValue )
@@ -3413,35 +3433,29 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
         onString << wxT( " to " );
       else if( (*it).getRecordType() & RECV )
         onString << wxT( " from " );
-      if ( myWindow->getLevel() >= TTraceLevel::WORKLOAD && myWindow->getLevel() <= TTraceLevel::THREAD )
-        onString << wxString::FromUTF8( LabelConstructor::objectLabel( myWindow->threadObjectToWindowObject( (*it).getCommPartnerObject() ),
-                                                                        myWindow->getLevel(),
-                                                                        myWindow->getTrace() ).c_str() );
+      if (temporalWindow->getLevel () >= TTraceLevel::WORKLOAD && temporalWindow->getLevel () <= TTraceLevel::THREAD)
+        onString << wxString::FromUTF8 (LabelConstructor::objectLabel (temporalWindow->threadObjectToWindowObject ((*it).getCommPartnerObject ()),
+                                                                       temporalWindow->getLevel (),
+                                                                       temporalWindow->getTrace ())
+                                            .c_str ());
       else
-        onString << wxString::FromUTF8( LabelConstructor::objectLabel( myWindow->cpuObjectToWindowObject( (*it).getCommPartnerObject() ),
-                                                                        myWindow->getLevel(),
-                                                                        myWindow->getTrace() ).c_str() );
+        onString << wxString::FromUTF8 (LabelConstructor::objectLabel (temporalWindow->cpuObjectToWindowObject ((*it).getCommPartnerObject ()),
+                                                                       temporalWindow->getLevel (),
+                                                                       temporalWindow->getTrace ())
+                                            .c_str ());
 
       onString << wxT( " at " ) << formatTime( (*it).getCommPartnerTime(), showDate );
       
       if( (*it).getRecordType() & SEND )
-        onString << wxT( ", Duration: " ) << wxString::FromUTF8( LabelConstructor::timeLabel(
-                                                                    myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() 
-                                                                                                       - (*it).getTime() ),
-                                                                    myWindow->getTimeUnit(),
-                                                                    0 ).c_str() );
+        onString << wxT (", Duration: ") << wxString::FromUTF8 (LabelConstructor::timeLabel (temporalWindow->traceUnitsToWindowUnits ((*it).getCommPartnerTime () - (*it).getTime ()), temporalWindow->getTimeUnit (), 0).c_str ());
       else if( (*it).getRecordType() & RECV )
-        onString << wxT( ", Duration: " ) << wxString::FromUTF8( LabelConstructor::timeLabel(
-                                                                    myWindow->traceUnitsToWindowUnits( (*it).getTime()
-                                                                                                       - (*it).getCommPartnerTime() ),
-                                                                    myWindow->getTimeUnit(), 
-                                                                    0 ).c_str() );
+        onString << wxT (", Duration: ") << wxString::FromUTF8 (LabelConstructor::timeLabel (temporalWindow->traceUnitsToWindowUnits ((*it).getTime () - (*it).getCommPartnerTime ()), temporalWindow->getTimeUnit (), 0).c_str ());
 
       onString << wxT( " (size: " ) << (*it).getCommSize() << 
                   wxT( ", tag: " ) << (*it).getCommTag() << wxT( ")" );
       onString << wxT( "\n" );
 
-      whatWhereLines.push_back( make_pair( TWhatWhereLine::COMMUNICATION_LINE, onString ));
+      tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::COMMUNICATION_LINE, onString));
       onString.clear();
 
       if ( clickedValue )
@@ -3453,12 +3467,12 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   rl->erase( rl->begin(), it );
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::END_CURRENT_SECTION, _ ("")));
   else
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::END_PREVNEXT_SECTION, _ ("")));
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_RECORDS_SECTION, _( "" )));
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, _( "\n" )));
+  tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::END_RECORDS_SECTION, _ ("")));
+  tmpWhatWhereLines.push_back (make_pair (TWhatWhereLine::RAW_LINE, _ ("\n")));
 }
 
 
@@ -5417,20 +5431,26 @@ void gTimeline::OnCheckWhatWhereText( wxCommandEvent& event )
   checkWWText->Enable( false );
   checkWWShowDate->Enable( false );
   checkWWHex->Enable( false );
+  std::vector<std::pair<TWhatWhereLine, wxString>> tmpWhatWhereLines;
 
-  computeWhatWhere( whatWhereTime, whatWhereRow, whatWhereSemantic,
-                    checkWWText->IsChecked(),
-                    checkWWShowDate->IsChecked(),
-                    checkWWHex->IsChecked() );
-  printWhatWhere();
+  std::vector<Timeline *> groupTimelines;
 
-  checkWWSemantic->Enable( true );
-  checkWWEvents->Enable( true );
-  checkWWCommunications->Enable( true );
-  checkWWPreviousNext->Enable( true );
-  checkWWText->Enable( true );
-  checkWWShowDate->Enable( true );
-  checkWWHex->Enable( true );
+  computeWhatWhere (tmpWhatWhereLines, whatWhereTime, whatWhereRow, whatWhereSemantic,
+                    checkWWText->IsChecked (),
+                    checkWWShowDate->IsChecked (),
+                    checkWWHex->IsChecked ());
+
+  whatWhereLines = tmpWhatWhereLines;
+
+  printWhatWhere ();
+
+  checkWWSemantic->Enable (true);
+  checkWWEvents->Enable (true);
+  checkWWCommunications->Enable (true);
+  checkWWPreviousNext->Enable (true);
+  checkWWText->Enable (true);
+  checkWWShowDate->Enable (true);
+  checkWWHex->Enable (true);
 }
 
 void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
@@ -5784,8 +5804,15 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   whatWhereText->Clear();
   whatWhereText->AppendText( _( "Working..." ) );
   Update();
-  computeWhatWhere( time, object, tmpSemantic, checkWWText->IsChecked(), checkWWShowDate->IsChecked(), checkWWHex->IsChecked() );
-  printWhatWhere();
+
+  std::vector<std::pair<TWhatWhereLine, wxString>> tmpWhatWhereLines;
+
+  computeWhatWhere (tmpWhatWhereLines, time, object, tmpSemantic, checkWWText->IsChecked (), checkWWShowDate->IsChecked (), checkWWHex->IsChecked ());
+
+  whatWhereLines.clear ();
+  whatWhereLines = tmpWhatWhereLines;
+
+  printWhatWhere ();
 }
 
 
@@ -6584,8 +6611,9 @@ void gTimeline::OnCheckboxCustomPaletteClick( wxCommandEvent& event )
 void gTimeline::OnButtonCustomPaletteApplyClick( wxCommandEvent& event )
 {
   enableApplyButton = false;
+  myWindow->setCustomPalette (myWindow->getSemanticColor ().getCustomPalette ());
 
-  myWindow->setForceRedraw( true );
+  myWindow->setForceRedraw (true);
 }
 
 
