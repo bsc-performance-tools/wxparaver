@@ -361,7 +361,8 @@ bool updateTreeItem( wxTreeCtrl *tree,
     if( tmpTimeline->IsActive() && !tmpWindow->getDestroy() )
     {
       *currentWindow = tmpTimeline;
-      tree->SelectItem( id );
+
+      tree->SelectItem (id);
     }
     tmpName = groupName + wxString::FromUTF8 (tmpWindow->getName ().c_str ());
     tmpWindowName = wxString::FromUTF8 (tmpWindow->getName ().c_str ());

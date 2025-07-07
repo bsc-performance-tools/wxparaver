@@ -2200,11 +2200,29 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
  */
 void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
 {
+  static bool isSelectionChanging = false;
+
+  if (isSelectionChanging)
+  {
+    event.Skip ();
+    return;
+  }
+
   wxTreeCtrl *tmpTree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
+
   if(tmpTree == nullptr)
   {
      return;
   }
+  if (!wxGetKeyState (WXK_CONTROL) && !wxGetKeyState (WXK_SHIFT))
+  {
+    tmpTree->UnselectAll ();
+  }
+
+  isSelectionChanging = true;
+  tmpTree->SelectItem (event.GetItem ());
+  isSelectionChanging = false;
+
   wxArrayTreeItemIds selectedItems;
   
   tmpTree->GetSelections(selectedItems); 
