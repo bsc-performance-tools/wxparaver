@@ -110,8 +110,7 @@ void gPopUpMenu::initializePopUpMenu ()
   INIT_WXMENU (popUpMenuColor2D);
   INIT_WXMENU (popUpMenuSyncRemove);
   INIT_WXMENU (popUpMenuSyncPropertiesType);
-
-
+  INIT_WXMENU (popUpMenuSaveAsText);
 
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE)
   {
@@ -228,6 +227,7 @@ void gPopUpMenu ::buildPopUpMenuView ()
                        { return true; })}};
 
     buildListOfItems (viewItems);
+    AppendSubMenu (popUpMenuView, _ ("View"));
   }
 }
 
@@ -485,7 +485,7 @@ void gPopUpMenu ::buildPopUpMenuDrawMode ()
         { return timeline->GetMyWindow ()->getDrawModeObject (); }};
 
     drawModeTime = std::visit (visitorDrawModeTime, *windowGenericList.begin ());
-    drawModeObject = std::visit (visitorDrawModeTime, *windowGenericList.begin ());
+    drawModeObject = std::visit (visitorDrawModeObjects, *windowGenericList.begin ());
 
     for (auto &window : windowGenericList)
     {
@@ -542,28 +542,28 @@ void gPopUpMenu ::buildPopUpMenuDrawMode ()
 
     std::vector<BuildMenuItem> drawModeBothItems = {
         {popUpMenuDrawModeBoth, _ (GUI_DRAWMODE_LAST), wxITEM_CHECK, &gPopUpMenu::OnPopUpDrawModeBothLast, ID_MENU_DRAWMODE_BOTH_LAST,
-         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_LAST) || (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_LAST)},
+         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_LAST) && (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_LAST)},
 
         {popUpMenuDrawModeBoth, _ (GUI_DRAWMODE_MAXIMUM), wxITEM_CHECK, &gPopUpMenu::OnPopUpDrawModeBothMaximum, ID_MENU_DRAWMODE_BOTH_MAXIMUM,
-         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_LAST) || (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_MAXIMUM)},
+         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_MAXIMUM) && (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_MAXIMUM)},
 
         {popUpMenuDrawModeBoth, _ (GUI_DRAWMODE_ABSOLUTE_MAXIMUM), wxITEM_CHECK, &gPopUpMenu::OnPopUpDrawModeBothAbsoluteMaximum, ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MAXIMUM,
-         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_LAST) || (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM)},
+         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM) && (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM)},
 
         {popUpMenuDrawModeBoth, _ (GUI_DRAWMODE_MINIMUM_NOT_ZERO), wxITEM_CHECK, &gPopUpMenu::OnPopUpDrawModeBothMinimumNotZero, ID_MENU_DRAWMODE_BOTH_MINIMUM_NOT_ZERO,
-         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_LAST) || (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_MINNOTZERO)},
+         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_MINNOTZERO) && (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_MINNOTZERO)},
 
         {popUpMenuDrawModeBoth, _ (GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO), wxITEM_CHECK, &gPopUpMenu::OnPopUpDrawModeBothRandomNotZero, ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO,
-         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_LAST) || (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_RANDNOTZERO)},
+         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_RANDNOTZERO) && (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_RANDNOTZERO)},
 
         {popUpMenuDrawModeBoth, _ (GUI_DRAWMODE_AVERAGE), wxITEM_CHECK, &gPopUpMenu::OnPopUpDrawModeBothAverage, ID_MENU_DRAWMODE_BOTH_AVERAGE,
-         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_LAST) || (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_AVERAGE)},
+         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_AVERAGE) && (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_AVERAGE)},
 
         {popUpMenuDrawModeBoth, _ (GUI_DRAWMODE_AVERAGE_NOT_ZERO), wxITEM_CHECK, &gPopUpMenu::OnPopUpDrawModeBothAverageNotZero, ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO,
-         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_LAST) || (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_AVERAGENOTZERO)},
+         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_AVERAGENOTZERO) && (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_AVERAGENOTZERO)},
 
         {popUpMenuDrawModeBoth, _ (GUI_DRAWMODE_MODE), wxITEM_CHECK, &gPopUpMenu::OnPopUpDrawModeBothMode, ID_MENU_DRAWMODE_BOTH_MODE,
-         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_LAST) || (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_MODE)}};
+         (drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_MODE) && (drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_MODE)}};
 
     buildListOfItems (drawModeTimeItems);
 
@@ -772,19 +772,34 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis ()
 
 void gPopUpMenu ::buildPopUpMenuSave ()
 {
+  std::vector<BuildMenuItem> saveMenuItems = {
+      {popUpMenuSave, _ ("Configuration..."), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveCFG, ID_MENU_SAVE_TIMELINE_AS_CFG},
+  };
   if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE)
   {
-    std::vector<BuildMenuItem> saveMenuItems = {
-        {popUpMenuSave, _ ("Configuration..."), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveCFG, ID_MENU_SAVE_TIMELINE_AS_CFG},
 
-        {popUpMenuSave, _ ("Image..."), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveImageDialog, ID_MENU_SAVE_IMAGE},
+    saveMenuItems.push_back ({popUpMenuSave, _ ("Image..."), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveImageDialog, ID_MENU_SAVE_IMAGE});
 
-        {popUpMenuSave, _ ("Text..."), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveText, ID_MENU_SAVE_TIMELINE_AS_TEXT}};
+    if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE)
+      saveMenuItems.push_back ({popUpMenuSave, _ ("Text..."), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveText, ID_MENU_SAVE_TIMELINE_AS_TEXT});
 
-    buildListOfItems (saveMenuItems);
+    else if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE)
+    {
+      if (std::get<gHistogram *> (*windowGenericList.begin ())->GetHistogram ()->getThreeDimensions ())
+      {
+        saveMenuItems.push_back ({popUpMenuSaveAsText, _ ("Current Plane..."), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveText, ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT});
 
-    AppendSubMenu (popUpMenuSave, _ ("Save"));
-  }
+        saveMenuItems.push_back ({popUpMenuSaveAsText, _ ("All Planes..."), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveText, ID_MENU_SAVE_ALL_PLANES_AS_TEXT});
+
+        popUpMenuSave->AppendSubMenu (popUpMenuSaveAsText, _ ("Text..."));
+      }
+      else
+        saveMenuItems.push_back ({popUpMenuSave, _ ("Text..."), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveText, ID_MENU_SAVE_ALL_PLANES_AS_TEXT});
+    }
+  };
+  buildListOfItems (saveMenuItems);
+
+  AppendSubMenu (popUpMenuSave, _ ("Save"));
 }
 
 void gPopUpMenu ::buildPopUpMenuRun ()
@@ -2334,9 +2349,46 @@ void gPopUpMenu::OnPopUpInfoPanel (wxCommandEvent &event)
 
 void gPopUpMenu::OnPopUpSaveCFG (wxCommandEvent &event)
 {
-  onAllWindowsCall ([&event] (auto *item)
-                    { item->OnPopUpSaveCFG (event); });
+  if (typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE)
+  {
+    onAllWindowsCall ([&event] (auto *item)
+                      { item->OnPopUpSaveCFG (event); });
+  }
+  else
+  {
+    vector<Histogram *> histograms;
+    vector<Timeline *> windows;
+
+    for (auto &window : windowGenericList)
+    {
+      if (auto windowItem = std::get_if<gTimeline *> (&(window)))
+      {
+
+        windows.push_back ((*windowItem)->GetMyWindow ());
+      }
+
+      if (auto windowItem = std::get_if<gHistogram *> (&(window)))
+      {
+
+        histograms.push_back ((*windowItem)->GetHistogram ());
+      }
+    }
+
+    // TODO: use the histogram linked properties manager if any
+    CFGS4DLinkedPropertiesManager dummyManager;
+    vector<CFGS4DLinkedPropertiesManager> dummyList;
+    dummyList.push_back (dummyManager);
+
+    SaveOptions options;
+
+    paraverMain::myParaverMain->SaveConfigurationFile (nullptr,
+                                                       options,
+                                                       windows,
+                                                       histograms,
+                                                       dummyList);
+  }
 }
+
 void gPopUpMenu::OnPopUpSaveImageDialog (wxCommandEvent &event)
 {
   onAllWindowsCall ([&event] (auto *item)
@@ -2348,7 +2400,10 @@ void gPopUpMenu::OnPopUpSaveImageDialog (wxCommandEvent &event)
   {
     onAllWindowsCall ([&event] (gTimeline *item)
                       { item->OnPopUpSaveText (event); },
-                      [] (gHistogram *item) {});
+                      [&event] (gHistogram *item)
+                      {
+                        item->OnPopUpSavePlaneAsText (event);
+                      });
   }
 
   template <typename... Funcs>

@@ -2200,9 +2200,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
  */
 void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
 {
-  static bool isSelectionChanging = false;
-
-  if (isSelectionChanging)
+  if (selectionChanging)
   {
     event.Skip ();
     return;
@@ -2219,9 +2217,9 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
     tmpTree->UnselectAll ();
   }
 
-  isSelectionChanging = true;
+  selectionChanging = true;
   tmpTree->SelectItem (event.GetItem ());
-  isSelectionChanging = false;
+  selectionChanging = false;
 
   wxArrayTreeItemIds selectedItems;
   
@@ -3147,16 +3145,20 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
   vector< wxString > extensions;
   extensions.push_back( wxT( "cfg" ) );
 
-  FileDialogExtension dialog( parent,
-                              _( "Save Configuration" ),
+  if (parent == nullptr)
+  {
+    parent = this;
+  }
+  FileDialogExtension dialog (parent,
+                              _ ("Save Configuration"),
                               CFGPath,
-                              _( "" ),
-                              _( "Paraver configuration file (*.cfg)|*.cfg" ),
+                              _ (""),
+                              _ ("Paraver configuration file (*.cfg)|*.cfg"),
                               wxFD_SAVE | wxFD_CHANGE_DIR,
                               wxDefaultPosition,
                               wxDefaultSize,
-                              _( "filedlg" ),
-                              extensions );
+                              _ ("filedlg"),
+                              extensions);
   if( dialog.ShowModal() == wxID_OK )
   {
     CFGPath = dialog.GetPath();

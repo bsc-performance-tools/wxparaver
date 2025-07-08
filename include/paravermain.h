@@ -682,6 +682,7 @@ public:
   wxBitmapButton* btnActiveWorkspaces;
   PreviousFiles * previousSessions;
 private:
+  bool selectionChanging = false;
   bool CFGLoadedBefore;
   wxString CFGPath;
   bool XMLLoadedBefore;
