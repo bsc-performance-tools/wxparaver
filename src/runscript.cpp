@@ -3092,9 +3092,9 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
     // Set precision.
     std::stringstream tmpTime( "" );
     bool useLocale = false;
-    TTimeUnit origUnit = currentWindow->GetMyWindow()->getTrace()->getTimeUnit();
-    TTimeUnit destUnit = currentWindow->GetMyWindow()->getTimeUnit();
-    LabelConstructor::presetBaseFormat( tmpTime, LabelConstructor::timePrecisionsConversionTable[ origUnit ][ destUnit ], useLocale );
+    TTimeUnit traceOrigUnit  = currentWindow->GetMyWindow()->getTrace()->getTimeUnit();
+    TTimeUnit windowDestUnit = currentWindow->GetMyWindow()->getTimeUnit();
+    LabelConstructor::presetBaseFormat( tmpTime, LabelConstructor::timePrecisionsConversionTable[ traceOrigUnit ][ windowDestUnit ], useLocale );
 
     // Write window times.
     tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
