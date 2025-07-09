@@ -3085,9 +3085,14 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
     CFGLoader::dumpTimeUnits( currentWindow->GetMyWindow()->getTimeUnit(), syncFile );
     syncFile << std::endl;
 
+    // Set precision.
     std::stringstream tmpTime( "" );
     bool useLocale = false;
-    LabelConstructor::presetBaseTimeFormat( tmpTime, currentWindow->GetMyWindow()->getTimeUnit(), ParaverConfig::getInstance()->getTimelinePrecision(), useLocale );
+    TTimeUnit origUnit = currentWindow->GetMyWindow()->getTrace()->getTimeUnit();
+    TTimeUnit destUnit = currentWindow->GetMyWindow()->getTimeUnit();
+    LabelConstructor::presetBaseFormat( tmpTime, LabelConstructor::timePrecisionsConversionTable[ origUnit ][ destUnit ], useLocale );
+
+    // Write window times.
     tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
     tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() )   << std::endl;
     syncFile << tmpTime.str();

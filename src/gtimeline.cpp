@@ -3030,7 +3030,7 @@ wxString gTimeline::formatTime( TRecordTime whichTime, bool showDate )
   {
     ptime headerTime = myWindow->getTrace()->getTraceTime();
     ptime clickTime = headerTime + boost::posix_time::nanoseconds( (long)myWindow->traceUnitsToCustomUnits( whichTime, NS ) );
-    formattedTime = wxString::FromUTF8( LabelConstructor::timeLabel( clickTime, 0 ).c_str() );
+    formattedTime = wxString::FromUTF8( LabelConstructor::timeLabel( clickTime ).c_str() );
   }
   
   return formattedTime;

@@ -302,7 +302,7 @@ void TraceInformationDialog::DisplayTraceInformation()
   ptime headerTime = myTrace->getTraceTime();
   ptime clickTime = headerTime ;// + boost::posix_time::nanoseconds( (long) myTrace->traceUnitsToCustomUnits( whichTime, myTrace->getTimeUnit() ) );
 
-  wxString formattedCreationTime = wxString::FromUTF8( LabelConstructor::timeLabel( clickTime, 0 ).c_str() ).BeforeFirst( ',' );
+  wxString formattedCreationTime = wxString::FromUTF8( LabelConstructor::timeLabel( clickTime ).c_str() ).BeforeFirst( ',' );
   wxString formattedDurationTime = wxString::FromUTF8( LabelConstructor::timeLabel( myTrace->getEndTime(), myTrace->getTimeUnit(), 0 ).c_str() );
 
   wxString traceSize = FormatTraceSize( myTrace->getTraceSize() );
