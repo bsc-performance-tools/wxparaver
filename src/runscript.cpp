@@ -1675,9 +1675,6 @@ wxString RunScript::GetReachableCommand( TExternalAppID selectedApp )
         break;
 
       case TExternalAppID::CARM:
-        // python3
-        //break;
-
       case TExternalAppID::CLUSTERING:
       case TExternalAppID::FOLDING:
       case TExternalAppID::USER_COMMAND:
@@ -3081,7 +3078,6 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
   ofstream syncFile( syncFilename, ios::trunc );
   if ( syncFile.good() )
   {
-
     CFGLoader::dumpTimeUnits( currentWindow->GetMyWindow()->getTimeUnit(), syncFile );
     syncFile << std::endl;
 
