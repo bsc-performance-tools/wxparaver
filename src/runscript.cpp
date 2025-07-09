@@ -3073,8 +3073,16 @@ void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
   gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
 
   // Publish data
-  string syncFilename = std::string( wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ).mb_str() ) + 
-                        "paraver_sync.csv";
+  wxFileName tmpTraceName( fileBrowserButtonTrace->GetPath() );  // contains carm subdir due to chop in sequenceCarm.
+  tmpTraceName.ClearExt();
+  std::string auxName = sourceWindow->getName() + "_";
+  std::replace( auxName.begin(), auxName.end(), ',', '-' );
+  std::replace( auxName.begin(), auxName.end(), ' ', '_' );
+  std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ).mb_str() ) +
+                                auxName.c_str() +
+                                std::string( tmpTraceName.GetFullName().mb_str() );
+  std::string syncFilename = tmpFileBaseName + ".paraver_sync.csv";
+
   ofstream syncFile( syncFilename, ios::trunc );
   if ( syncFile.good() )
   {
