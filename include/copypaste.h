@@ -24,11 +24,12 @@
 
 #pragma once
 
-
-#include "ghistogram.h"
-#include "gtimeline.h"
-#include "histogram.h"
+// clang-format off
 #include "window.h"
+#include "histogram.h"
+#include "gtimeline.h"
+#include "ghistogram.h"
+// clang-format on
 
 #include <map>
 
