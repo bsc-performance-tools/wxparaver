@@ -22,25 +22,27 @@
 \*****************************************************************************/
 
 #include "windows_tree.h"
-#include "loadedwindows.h"
-#include "gtimeline.h"
+
 #include "ghistogram.h"
+#include "gtimeline.h"
+#include "loadedwindows.h"
 #include "paravermain.h"
+
 #include <wx/display.h>
 
 using namespace std;
 
-wxTreeCtrl * createTree( wxImageList *imageList )
+wxTreeCtrl *createTree( wxImageList *imageList )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
-  wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxTR_HIDE_ROOT|wxTR_DEFAULT_STYLE|wxTR_MULTIPLE );
+  wxTreeCtrl *newTree =
+    new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HIDE_ROOT | wxTR_DEFAULT_STYLE | wxTR_MULTIPLE );
 #ifndef _WIN32
-  newTree->SetWindowStyle( wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_MULTIPLE );
+  newTree->SetWindowStyle( wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT | wxTR_MULTIPLE );
 #endif
   newTree->SetImageList( imageList );
   newTree->AddRoot( wxT( "Root" ), -1, -1, new TreeBrowserItemData( _( "Root" ), (gTimeline *)nullptr ) );
-  
+
   return newTree;
 }
 
@@ -48,8 +50,8 @@ wxTreeCtrl * createTree( wxImageList *imageList )
 wxTreeCtrl *getAllTracesTree()
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
-  
-  return (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+
+  return (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
 }
 
 
@@ -59,7 +61,7 @@ wxTreeCtrl *getSelectedTraceTree( Trace *trace )
 
   PRV_INT16 currentTrace = paraverMain::myParaverMain->getTracePosition( trace );
 
-  return (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+  return (wxTreeCtrl *)choiceWindowBrowser->GetPage( currentTrace + 1 );
 }
 
 
@@ -67,19 +69,23 @@ void appendHistogram2Tree( gHistogram *ghistogram )
 {
   // Refresh tree in current page and always in global page
   wxTreeCtrl *allTracesPage = getAllTracesTree();
-  wxTreeCtrl *currentPage = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
+  wxTreeCtrl *currentPage   = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
 
   currentPage->UnselectAll();
-  
-  TreeBrowserItemData *currentData =  new TreeBrowserItemData( wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), ghistogram );
+
+  TreeBrowserItemData *currentData = new TreeBrowserItemData( wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), ghistogram );
 
   wxTreeItemId tmpCurrentWindowId;
   tmpCurrentWindowId = allTracesPage->AppendItem( allTracesPage->GetRootItem(),
-                                                   wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
-                                                   currentData );
+                                                  wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
+                                                  0,
+                                                  -1,
+                                                  currentData );
   tmpCurrentWindowId = currentPage->AppendItem( currentPage->GetRootItem(),
-                                                 wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
-                                                 new TreeBrowserItemData( *currentData ) );
+                                                wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
+                                                0,
+                                                -1,
+                                                new TreeBrowserItemData( *currentData ) );
 }
 
 
@@ -90,29 +96,29 @@ wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool 
   found = false;
 
   wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( root, cookie );
-  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( root );
-  
-  while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  wxTreeItemId itemLast    = getAllTracesTree()->GetLastChild( root );
+
+  while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
-    gTimeline *tmpTimeline = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline();
-    if ( tmpTimeline != nullptr && tmpTimeline == wanted )
+    gTimeline *tmpTimeline = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemCurrent ) ) )->getTimeline();
+    if( tmpTimeline != nullptr && tmpTimeline == wanted )
     {
-      root = itemCurrent;
+      root  = itemCurrent;
       found = true;
     }
-    else if ( tmpTimeline != nullptr )
+    else if( tmpTimeline != nullptr )
     {
       root = getItemIdFromGTimeline( itemCurrent, wanted, found );
     }
     if( !found )
       itemCurrent = getAllTracesTree()->GetNextChild( root, cookie );
   }
-  
+
   if( !found && itemLast.IsOk() )
   {
-    if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline() == wanted )
+    if( ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemLast ) ) )->getTimeline() == wanted )
     {
-      root = itemLast;
+      root  = itemLast;
       found = true;
     }
     else
@@ -120,7 +126,7 @@ wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool 
       root = getItemIdFromGTimeline( itemLast, wanted, found );
     }
   }
-  
+
   return root;
 }
 
@@ -134,29 +140,29 @@ gTimeline *getGTimelineFromWindow( wxTreeItemId root, Timeline *wanted, bool &fo
   found = false;
 
   wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( root, cookie );
-  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( root );
-  
-  while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  wxTreeItemId itemLast    = getAllTracesTree()->GetLastChild( root );
+
+  while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
-    gTimeline *tmpTimeline = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline();
-    if ( tmpTimeline != nullptr && tmpTimeline->GetMyWindow() == wanted )
+    gTimeline *tmpTimeline = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemCurrent ) ) )->getTimeline();
+    if( tmpTimeline != nullptr && tmpTimeline->GetMyWindow() == wanted )
     {
       retgt = tmpTimeline;
       found = true;
     }
-    else if ( tmpTimeline != nullptr )
+    else if( tmpTimeline != nullptr )
     {
       retgt = getGTimelineFromWindow( itemCurrent, wanted, found );
     }
     if( !found )
       itemCurrent = getAllTracesTree()->GetNextChild( root, cookie );
   }
-  
+
   if( !found && itemLast.IsOk() )
   {
-    if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline()->GetMyWindow() == wanted )
+    if( ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemLast ) ) )->getTimeline()->GetMyWindow() == wanted )
     {
-      retgt = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline();
+      retgt = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemLast ) ) )->getTimeline();
       found = true;
     }
     else
@@ -164,7 +170,7 @@ gTimeline *getGTimelineFromWindow( wxTreeItemId root, Timeline *wanted, bool &fo
       retgt = getGTimelineFromWindow( itemLast, wanted, found );
     }
   }
-  
+
   return retgt;
 }
 
@@ -177,8 +183,8 @@ gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted )
   bool found = false;
 
   wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( root, cookie );
-  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( root );
-  
+  wxTreeItemId itemLast    = getAllTracesTree()->GetLastChild( root );
+
   while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
     gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemCurrent ) ) )->getHistogram();
@@ -190,16 +196,16 @@ gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted )
     if( !found )
       itemCurrent = getAllTracesTree()->GetNextChild( root, cookie );
   }
-  
+
   if( !found && itemLast.IsOk() )
   {
     if( ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemLast ) ) )->getHistogram()->GetHistogram() == wanted )
     {
-      retgh = ( (TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getHistogram();
+      retgh = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemLast ) ) )->getHistogram();
       found = true;
     }
   }
-  
+
   return retgh;
 }
 
@@ -212,43 +218,43 @@ wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Timeline *wanted, bool &fou
   found = false;
 
   wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( root, cookie );
-  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( root );
-  
-  while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  wxTreeItemId itemLast    = getAllTracesTree()->GetLastChild( root );
+
+  while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
-    gTimeline *tmpTimeline = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline();
-    if ( tmpTimeline != nullptr && tmpTimeline->GetMyWindow() == wanted )
+    gTimeline *tmpTimeline = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemCurrent ) ) )->getTimeline();
+    if( tmpTimeline != nullptr && tmpTimeline->GetMyWindow() == wanted )
     {
       retItemId = itemCurrent;
-      found = true;
+      found     = true;
     }
-    else if ( tmpTimeline != nullptr )
+    else if( tmpTimeline != nullptr )
     {
       retItemId = getItemIdFromWindow( itemCurrent, wanted, found );
     }
     if( !found )
       itemCurrent = getAllTracesTree()->GetNextChild( root, cookie );
   }
-  
+
   if( !found && itemLast.IsOk() )
   {
-    if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline()->GetMyWindow() == wanted )
+    if( ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemLast ) ) )->getTimeline()->GetMyWindow() == wanted )
     {
       retItemId = itemLast;
-      found = true;
+      found     = true;
     }
     else
     {
       retItemId = getItemIdFromWindow( itemLast, wanted, found );
     }
   }
-  
+
   return retItemId;
 }
 
 
 // precond : current is a derived gTimeline
-void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )
+void getParentGTimeline( gTimeline *current, vector<gTimeline *> &parents )
 {
   // find item for given current gTimeline.
   bool found;
@@ -256,14 +262,18 @@ void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )
 
   // fill vector with parents
   wxTreeItemIdValue cookie;
-  parents.push_back(((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( getAllTracesTree()->GetFirstChild( item, cookie ))))->getTimeline());
-  parents.push_back(((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( getAllTracesTree()->GetNextChild( item, cookie ) )))->getTimeline());
+  parents.push_back(
+    ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( getAllTracesTree()->GetFirstChild( item, cookie ) ) ) )->getTimeline() );
+  parents.push_back(
+    ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( getAllTracesTree()->GetNextChild( item, cookie ) ) ) )->getTimeline() );
 }
 
 
 void BuildTree( paraverMain *parent,
-                wxTreeCtrl *root1, wxTreeItemId idRoot1,
-                wxTreeCtrl *root2, wxTreeItemId idRoot2,
+                wxTreeCtrl *root1,
+                wxTreeItemId idRoot1,
+                wxTreeCtrl *root2,
+                wxTreeItemId idRoot2,
                 Timeline *window,
                 string nameSuffix )
 {
@@ -273,44 +283,44 @@ void BuildTree( paraverMain *parent,
   wxTreeItemId currentWindowId1, currentWindowId2;
   TreeBrowserItemData *currentData;
 
-  string composedName = window->getName() + " @ " +
-                        window->getTrace()->getTraceName();
+  string composedName = window->getName() + " @ " + window->getTrace()->getTraceName();
 
   wxPoint tmpPos( window->getPosX(), window->getPosY() );
   if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
   {
     int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
-    if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+    if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
     {
       wxDisplay tmpDisplay( currentDisplay );
       tmpPos.x += tmpDisplay.GetGeometry().x;
       tmpPos.y += tmpDisplay.GetGeometry().y;
-      if( tmpPos.x != window->getPosX() ) window->setPosX( tmpPos.x );
-      if (tmpPos.y != window->getPosY ())
-        window->setPosY (tmpPos.y);
+      if( tmpPos.x != window->getPosX() )
+        window->setPosX( tmpPos.x );
+      if( tmpPos.y != window->getPosY() )
+        window->setPosY( tmpPos.y );
     }
   }
-  
+
 #if !__WXGTK__
-  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), tmpPos );
+  gTimeline *tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), tmpPos );
 #else
-  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
+  gTimeline *tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
 #endif
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
-  tmpTimeline->InitMyWindowCallbacks ();
-  tmpTimeline->SetClientSize (window->getWidth (), window->getHeight ());
+  tmpTimeline->InitMyWindowCallbacks();
+  tmpTimeline->SetClientSize( window->getWidth(), window->getHeight() );
 #if __WXGTK__
   tmpTimeline->Move( tmpPos );
 #endif
 
-  currentData =  new TreeBrowserItemData( wxString::FromUTF8( window->getName().c_str() ), tmpTimeline );
+  currentData = new TreeBrowserItemData( wxString::FromUTF8( window->getName().c_str() ), tmpTimeline );
 
-  int iconNumber = getIconNumber( window );
-  currentWindowId1 = root1->AppendItem (idRoot1, "", iconNumber, -1, currentData);
-  currentWindowId2 = root2->AppendItem (idRoot2, "", iconNumber, -1, new TreeBrowserItemData (*currentData));
+  int iconNumber   = getIconNumber( window );
+  currentWindowId1 = root1->AppendItem( idRoot1, "", iconNumber, -1, currentData );
+  currentWindowId2 = root2->AppendItem( idRoot2, "", iconNumber, -1, new TreeBrowserItemData( *currentData ) );
 
-  if ( window->getParent( 0 ) != nullptr )
+  if( window->getParent( 0 ) != nullptr )
   {
     BuildTree( parent, root1, currentWindowId1, root2, currentWindowId2, window->getParent( 0 ) );
     BuildTree( parent, root1, currentWindowId1, root2, currentWindowId2, window->getParent( 1 ) );
@@ -320,16 +330,16 @@ void BuildTree( paraverMain *parent,
 
 
 bool updateTreeItem( wxTreeCtrl *tree,
-                     wxTreeItemId& id,
-                     vector< Timeline * > &allWindows,
-                     vector< Histogram * > &allHistograms,
+                     wxTreeItemId &id,
+                     vector<Timeline *> &allWindows,
+                     vector<Histogram *> &allHistograms,
                      wxWindow **currentWindow,
                      bool allTracesTree )
 {
-  bool destroy = false;
+  bool destroy                  = false;
   TreeBrowserItemData *itemData = (TreeBrowserItemData *)tree->GetItemData( id );
 
-  // No matter timeline or histogram, get its name and delete from given vector 
+  // No matter timeline or histogram, get its name and delete from given vector
   wxString tmpName;
   wxString tmpWindowName;
 
@@ -337,45 +347,45 @@ bool updateTreeItem( wxTreeCtrl *tree,
 
   if( gTimeline *tmpTimeline = itemData->getTimeline() )
   {
-    isEditMode = tmpTimeline->getEditMode ();
-    Timeline *tmpWindow = tmpTimeline->GetMyWindow();
+    isEditMode            = tmpTimeline->getEditMode();
+    Timeline *tmpWindow   = tmpTimeline->GetMyWindow();
     std::string groupName = "";
     if( tmpWindow->isSync() )
     {
-      tree->SetItemBold (id, true);
+      tree->SetItemBold( id, true );
 
-      int windowGroup = tmpWindow->getSyncGroup () + 1;
+      int windowGroup = tmpWindow->getSyncGroup() + 1;
       int r = 0, g = 0, b = 0;
 
-      getGroupColor (windowGroup, r, g, b);
+      getGroupColor( windowGroup, r, g, b );
 
-      tree->SetItemTextColour (id, *wxColour (r, g, b));
+      tree->SetItemTextColour( id, *wxColour( r, g, b ) );
 
-      groupName = "[#" + std::to_string (windowGroup) + "] ";
+      groupName = "[#" + std::to_string( windowGroup ) + "] ";
     }
     else
     {
-      tree->SetItemTextColour (id, *wxColour (0, 0, 0));
-      tree->SetItemBold (id, false);
+      tree->SetItemTextColour( id, *wxColour( 0, 0, 0 ) );
+      tree->SetItemBold( id, false );
     }
     if( tmpTimeline->IsActive() && !tmpWindow->getDestroy() )
     {
       *currentWindow = tmpTimeline;
 
-      tree->SelectItem (id);
+      tree->SelectItem( id );
     }
-    tmpName = groupName + wxString::FromUTF8 (tmpWindow->getName ().c_str ());
-    tmpWindowName = wxString::FromUTF8 (tmpWindow->getName ().c_str ());
+    tmpName       = groupName + wxString::FromUTF8( tmpWindow->getName().c_str() );
+    tmpWindowName = wxString::FromUTF8( tmpWindow->getName().c_str() );
 
-    for ( vector<Timeline *>::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
+    for( vector<Timeline *>::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
     {
-      if ( *it == tmpWindow )
+      if( *it == tmpWindow )
       {
         allWindows.erase( it );
         break;
       }
     }
-    
+
     if( tmpWindow->getDestroy() )
     {
       if( paraverMain::myParaverMain->GetCurrentTimeline() == tmpWindow )
@@ -402,27 +412,27 @@ bool updateTreeItem( wxTreeCtrl *tree,
   }
   else if( gHistogram *tmpHistogram = itemData->getHistogram() )
   {
-    isEditMode = tmpHistogram->getEditMode ();
+    isEditMode            = tmpHistogram->getEditMode();
     std::string groupName = "";
 
     Histogram *tmpHisto = tmpHistogram->GetHistogram();
     if( tmpHisto->isSync() )
     {
-      tree->SetItemBold (id, true);
+      tree->SetItemBold( id, true );
 
-      int windowGroup = tmpHisto->getSyncGroup () + 1;
+      int windowGroup = tmpHisto->getSyncGroup() + 1;
       int r = 0, g = 0, b = 0;
 
-      getGroupColor (windowGroup, r, g, b);
+      getGroupColor( windowGroup, r, g, b );
 
-      tree->SetItemTextColour (id, *wxColour (r, g, b));
+      tree->SetItemTextColour( id, *wxColour( r, g, b ) );
 
-      groupName = "[#" + std::to_string (windowGroup) + "] ";
+      groupName = "[#" + std::to_string( windowGroup ) + "] ";
     }
     else
     {
-      tree->SetItemTextColour (id, *wxColour (0, 0, 0));
-      tree->SetItemBold (id, false);
+      tree->SetItemTextColour( id, *wxColour( 0, 0, 0 ) );
+      tree->SetItemBold( id, false );
     }
 
     if( tmpHistogram->IsActive() && !tmpHisto->getDestroy() )
@@ -430,11 +440,11 @@ bool updateTreeItem( wxTreeCtrl *tree,
       *currentWindow = tmpHistogram;
       tree->SelectItem( id );
     }
-    tmpName = groupName + wxString::FromUTF8 (tmpHisto->getName ().c_str ());
+    tmpName = groupName + wxString::FromUTF8( tmpHisto->getName().c_str() );
 
-    for ( vector<Histogram *>::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
+    for( vector<Histogram *>::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
     {
-      if ( *it == tmpHisto )
+      if( *it == tmpHisto )
       {
         allHistograms.erase( it );
         break;
@@ -453,11 +463,11 @@ bool updateTreeItem( wxTreeCtrl *tree,
       destroy = true;
     }
   }
-  
+
   // Update its name
-  if (!isEditMode && tmpName != tree->GetItemText (id))
+  if( !isEditMode && tmpName != tree->GetItemText( id ) )
   {
-    tree->SetItemText (id, tmpName);
+    tree->SetItemText( id, tmpName );
   }
 
   // Recursive update
@@ -480,12 +490,12 @@ bool updateTreeItem( wxTreeCtrl *tree,
     // Properly select previous window if no further timeline or histogram in the tree exists
     // The next sibling is properly selected by recursion if it exists
     wxTreeItemId candidate = tree->GetNextSibling( id );
-    if ( !candidate.IsOk() )
+    if( !candidate.IsOk() )
       candidate = tree->GetPrevSibling( id );
 
-    if ( candidate.IsOk() )
+    if( candidate.IsOk() )
     {
-      if ( gTimeline *tmpTimeline = itemData->getTimeline() )
+      if( gTimeline *tmpTimeline = itemData->getTimeline() )
       {
         *currentWindow = tmpTimeline;
       }
@@ -498,22 +508,20 @@ bool updateTreeItem( wxTreeCtrl *tree,
 
     tree->Delete( id );
   }
-    
+
   return destroy;
 }
 
 
-void iconizeWindows( wxTreeCtrl *tree,
-                     wxTreeItemId& id,
-                     bool iconize )
+void iconizeWindows( wxTreeCtrl *tree, wxTreeItemId &id, bool iconize )
 {
   wxTreeItemIdValue cookie;
   wxTreeItemId currentChild = tree->GetFirstChild( id, cookie );
-  unsigned int numberChild = tree->GetChildrenCount( id, false );
-  unsigned int current = 0;
+  unsigned int numberChild  = tree->GetChildrenCount( id, false );
+  unsigned int current      = 0;
   while( current < numberChild )
   {
-    if ( currentChild.IsOk() )
+    if( currentChild.IsOk() )
     {
       TreeBrowserItemData *itemData = (TreeBrowserItemData *)tree->GetItemData( currentChild );
 
@@ -527,7 +535,7 @@ void iconizeWindows( wxTreeCtrl *tree,
         if( tmpHistogram->GetHistogram()->getShowWindow() )
           tmpHistogram->Show( iconize );
       }
-      
+
       if( tree->ItemHasChildren( currentChild ) )
         iconizeWindows( tree, currentChild, iconize );
     }
@@ -537,64 +545,63 @@ void iconizeWindows( wxTreeCtrl *tree,
   }
 }
 
-void getGroupColor (const int &windowGroup, int &r, int &g, int &b)
+void getGroupColor( const int &windowGroup, int &r, int &g, int &b )
 {
-
   int intensity = 100 + 15 * windowGroup;
 
-  switch ((windowGroup) % 3)
+  switch( ( windowGroup ) % 3 )
   {
-  case 0:
-    r = intensity;
-    g = intensity / 3;
-    b = intensity / 3;
-    break;
-  case 1:
-    r = intensity / 3;
-    g = intensity;
-    b = intensity / 3;
-    break;
-  case 2:
-    r = intensity / 3;
-    g = intensity / 3;
-    b = intensity;
-    break;
+    case 0:
+      r = intensity;
+      g = intensity / 3;
+      b = intensity / 3;
+      break;
+    case 1:
+      r = intensity / 3;
+      g = intensity;
+      b = intensity / 3;
+      break;
+    case 2:
+      r = intensity / 3;
+      g = intensity / 3;
+      b = intensity;
+      break;
   }
 }
 
 int getIconNumber( Timeline *whichWindow )
 {
   int iconNumber = 1; // number of timeline icon
-  if ( whichWindow->isDerivedWindow() )
+  if( whichWindow->isDerivedWindow() )
   {
     string derivedFunctionName = whichWindow->getLevelFunction( DERIVED );
 
     // GUI should'nt know these tags -> add operation to kernel
-    if ( derivedFunctionName == "add" )
+    if( derivedFunctionName == "add" )
       iconNumber = 2;
-    else if ( derivedFunctionName == "product" )
+    else if( derivedFunctionName == "product" )
       iconNumber = 3;
-    else if ( derivedFunctionName == "substract" )
+    else if( derivedFunctionName == "substract" )
       iconNumber = 4;
-    else if ( derivedFunctionName == "divide" )
+    else if( derivedFunctionName == "divide" )
       iconNumber = 5;
-    else if ( derivedFunctionName == "maximum" )
+    else if( derivedFunctionName == "maximum" )
       iconNumber = 6;
-    else if ( derivedFunctionName == "minimum" )
+    else if( derivedFunctionName == "minimum" )
       iconNumber = 7;
-    else if ( derivedFunctionName == "different" )
+    else if( derivedFunctionName == "different" )
       iconNumber = 8;
-    else if ( derivedFunctionName == "controlled: clear by" )
+    else if( derivedFunctionName == "controlled: clear by" )
       iconNumber = 9;
-    else if ( derivedFunctionName == "controlled: maximum" )
+    else if( derivedFunctionName == "controlled: maximum" )
       iconNumber = 10;
-    else if ( derivedFunctionName == "controlled: add" )
+    else if( derivedFunctionName == "controlled: add" )
       iconNumber = 11;
-    else if ( derivedFunctionName == "controlled: enumerate" )
+    else if( derivedFunctionName == "controlled: enumerate" )
       iconNumber = 12;
-    else if ( derivedFunctionName == "controlled: average" )
+    else if( derivedFunctionName == "controlled: average" )
       iconNumber = 13;
   }
-  
+
   return iconNumber;
 }
