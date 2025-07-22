@@ -1051,7 +1051,7 @@ bool paraverMain::DoLoadCFG( const string &path )
       {
         if ( (*it)->isDerivedHistogram() )
         {
-          for ( PRV_UINT16 i = 0; i < 2; ++i  )
+          for ( PRV_UINT16 i = 0; i < (*it)->getNumParents(); ++i  )
           {
             if ( !(*it)->getParent( i )->isDerivedHistogram() )
               parentHistograms.insert( (*it)->getParent( i ) );
