@@ -14,12 +14,11 @@ AllowShortBlocksOnASingleLine: 'false'
 AllowShortCaseLabelsOnASingleLine: 'false'
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
-AllowShortLambdasOnASingleLine: Inline
 AllowShortLoopsOnASingleLine: 'false'
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: 'false'
-AlwaysBreakTemplateDeclarations: 'Yes'
+BreakTemplateDeclarations: 'Yes'
 BinPackArguments: 'false'
 BinPackParameters: 'false'
 BreakBeforeBraces: Allman
@@ -53,7 +52,7 @@ SpaceBeforeInheritanceColon: 'true'
 SpaceBeforeParens: Never
 SpaceBeforeRangeBasedForLoopColon: 'true'
 SpaceInEmptyParentheses: 'false'
-SpacesInAngles: 'false'
+SpacesInAngles: 'Always'
 SpacesInCStyleCastParentheses: 'false'
 SpacesInContainerLiterals: 'true'
 SpacesInParentheses: 'true'
@@ -61,3 +60,4 @@ SpacesInSquareBrackets: 'true'
 Standard: Latest
 AllowShortLambdasOnASingleLine: None
 UseTab: Never
+IndentAccessModifiers: 'true'
