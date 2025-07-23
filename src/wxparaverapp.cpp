@@ -717,7 +717,9 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
                                                     wxID_ANY,
                                                     wxString::FromUTF8( composedName.c_str() ) );
             tmpGHisto->SetHistogram( histo );
-            tmpGHisto->SetClientSize( histo->getWidth(), histo->getHeight() );
+            tmpGHisto->InitHistogramCallbacks ();
+
+            tmpGHisto->SetClientSize (histo->getWidth (), histo->getHeight ());
 
             histo->setZoom( true );
             histo->setRecalc( false );
@@ -742,8 +744,9 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
                                                     wxString::FromUTF8( composedName.c_str() ),
                                                     tmpPos );
             tmpTimeline->SetMyWindow( window );
-            tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
-            
+            tmpTimeline->InitMyWindowCallbacks ();
+            tmpTimeline->SetClientSize (window->getWidth (), window->getHeight ());
+
             tmpTimeline->redraw();
             
             tmpTimeline->saveImage( wxT( "" ) );
@@ -873,6 +876,13 @@ int wxparaverApp::FilterEvent(wxEvent& event)
           SessionSaver::LoadSession( dialog.GetPath() );
         }
       }
+      else if (keyCode >= '1' && keyCode <= '9')
+      {
+        TGroupId number = keyCode - '0' - 1;
+        mainWindow->OnSyncWindows (number);
+      }
+      else if (keyCode == (long)'N')
+        mainWindow->OnSyncNewGroup ();
       else if ( keyCode == (long) 'F' )
         mainWindow->OnFindDialog();
       else if ( keyCode == (long) 'Q' )

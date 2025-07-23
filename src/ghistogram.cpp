@@ -74,6 +74,12 @@
 #define wxUSE_GRAPHICS_CONTEXT 0
 #endif
 
+#ifdef __WXMAC__
+constexpr int TIMER_SIZE_DURATION = 750;
+#else
+constexpr int TIMER_SIZE_DURATION = 250;
+#endif
+
 using namespace std;
 
 constexpr char STR_SORT_CUSTOM[] = "Custom";
@@ -112,7 +118,7 @@ IMPLEMENT_CLASS( gHistogram, wxFrame )
  */
 
 BEGIN_EVENT_TABLE( gHistogram, wxFrame )
-
+EVT_MOVE (gHistogram::OnMove)
 ////@begin gHistogram event table entries
   EVT_CLOSE( gHistogram::OnCloseWindow )
   EVT_SIZE( gHistogram::OnSize )
@@ -160,23 +166,24 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 #else
   EVT_GRID_CMD_RANGE_SELECT( ID_GRIDHISTO, gHistogram::OnRangeSelect )
 #endif
-  
-  EVT_TIMER( wxID_ANY, gHistogram::OnTimerZoom )
-  
-END_EVENT_TABLE()
 
-wxProgressDialog *gHistogram::dialogProgress = nullptr;
-int gHistogram::numberOfProgressDialogUsers = 0;
+  EVT_TIMER (ID_TIMER_ZOOM_HISTOGRAM, gHistogram::OnTimerZoom)
+  EVT_TIMER (ID_TIMER_SIZE_HISTOGRAM, gHistogram::OnTimerSize)
+  EVT_TIMER (ID_TIMER_POSITION_HISTOGRAM, gHistogram::OnTimerPosition)
 
-/*!
- * gHistogram constructors
- */
+  END_EVENT_TABLE ()
 
-gHistogram::gHistogram() :
-        gWindow()
-{
-  Init();
-}
+  wxProgressDialog *gHistogram::dialogProgress = nullptr;
+  int gHistogram::numberOfProgressDialogUsers = 0;
+
+  /*!
+   * gHistogram constructors
+   */
+
+  gHistogram::gHistogram () : gWindow ()
+  {
+    Init ();
+  }
 
 gHistogram::gHistogram( wxWindow* parent,
                         wxWindowID id,
@@ -231,6 +238,8 @@ gHistogram::~gHistogram()
   
   delete redrawStopWatch;
   delete timerZoom;
+  delete timerSize;
+  delete timerPosition;
 }
 
 
@@ -249,7 +258,9 @@ void gHistogram::Init()
   ready = false;
   redrawStopWatch = new wxStopWatch();
   tableBase = nullptr;
-  timerZoom = new wxTimer( this );
+  timerSize = new wxTimer (this, ID_TIMER_SIZE_HISTOGRAM);
+  timerZoom = new wxTimer (this, ID_TIMER_ZOOM_HISTOGRAM);
+  timerPosition = new wxTimer (this, ID_TIMER_POSITION_HISTOGRAM);
   zoomDragging = false;
   panelToolbar = NULL;
   tbarHisto = NULL;
@@ -942,6 +953,14 @@ void gHistogram::setSelectedRows( vector< TObjectOrder > &selected )
   myHistogram->setSelectedRows( selected );
 }
 
+void gHistogram::setEditMode (bool value)
+{
+  isEditMode = value;
+}
+bool gHistogram::getEditMode ()
+{
+  return isEditMode;
+}
 
 /*!
  * Should we show tooltips?
@@ -1091,9 +1110,12 @@ void gHistogram::OnIdle( wxIdleEvent& event )
 
   if(  !wxparaverApp::mainWindow->IsIconized() && myHistogram->getShowWindow() )
   {
-    this->Show();
-//    paraverMain::myParaverMain->addActiveWindow( this );
+    if (!this->IsShown ())
+    {
+      this->Show ();
+    }
   }
+  //    paraverMain::myParaverMain->addActiveWindow( this );
   else
   {
     this->Show( false );
@@ -1108,19 +1130,18 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   }
   else
 */
-  {
-    int currentDisplay = wxDisplay::GetFromWindow( this );
-    if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
-    {
-      wxDisplay tmpDisplay( currentDisplay );
-      myHistogram->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
-      myHistogram->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
-    }
-  }
+  // {
+  //   int currentDisplay = wxDisplay::GetFromWindow( this );
+  //   if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+  //   {
+  //     wxDisplay tmpDisplay( currentDisplay );
+  //     // myHistogram->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
+  //     // myHistogram->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
+  //     myHistogram->setPosX (this->GetPosition ().x);
+  //     myHistogram->setPosY (this->GetPosition ().y);
+  //   }
+  // }
 
-  myHistogram->setWidth( this->GetClientSize().GetWidth() );
-  myHistogram->setHeight( this->GetClientSize().GetHeight() );
-  
   controlWarning->Show( myHistogram->getControlOutOfLimits() );
   xtraWarning->Show( myHistogram->getExtraOutOfLimits() );
   Layout();
@@ -1156,23 +1177,24 @@ void gHistogram::updateHistogram()
   }
   else if( this->IsShown() )
   {
-    if( ready && myHistogram->getRedraw() )
+
+    if (ready && myHistogram->getRedraw ())
     {
-      wxString winTitle = GetTitle();
-      SetTitle( _("(Working...) ") + winTitle );
-      Update();
-      
-      myHistogram->setRedraw( false );
+      wxString winTitle = GetTitle ();
+      SetTitle (_ ("(Working...) ") + winTitle);
+      Update ();
 
-      initColumnSelection();
-      columnSelection.getSelected( noVoidSemRanges );
+      myHistogram->setRedraw (false);
 
-      if( myHistogram->getZoom() )
-        fillZoom();
+      initColumnSelection ();
+      columnSelection.getSelected (noVoidSemRanges);
+
+      if (myHistogram->getZoom ())
+        fillZoom ();
       else
-        fillGrid();
+        fillGrid ();
 
-      SetTitle( winTitle );
+      SetTitle (winTitle);
     }
   }
 }
@@ -1397,16 +1419,15 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
   if ( titleBarSize.GetHeight() == 0 )
     titleBarSize = paraverMain::defaultTitleBarSize;
 
-  wxPoint position =  wxPoint( this->GetPosition().x + titleBarSize.GetHeight(),
-                               this->GetPosition().y + titleBarSize.GetHeight() );
-  wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight()/* + titleBarSize.GetHeight()*/ );
+  wxPoint position = wxPoint (this->GetPosition ().x + titleBarSize.GetHeight (),
+                              this->GetPosition ().y + titleBarSize.GetHeight ());
 
   string composedName = clonedName + " @ " +
                         clonedHistogram->getTrace()->getTraceNameNumbered();
 
   gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), position );
   clonedGHistogram->myHistogram = clonedHistogram;
-  clonedGHistogram->SetClientSize( size );
+  clonedGHistogram->SetClientSize (myHistogram->getWidth (), myHistogram->getHeight ());
 
   clonedGHistogram->ready = false;
 
@@ -1860,6 +1881,21 @@ void gHistogram::OnPopUpSynchronizeById( TGroupId& wichGroup )
   }
 }
 
+void gHistogram::OnPopUpSynchronizeById( TGroupId& wichGroup, bool setSynchronized )
+{
+  if(SyncWindows::getInstance()-> isGroupCreated(wichGroup) )
+  {
+    if(setSynchronized){
+      if( myHistogram->isSync()) myHistogram->removeFromSync();
+      myHistogram->addToSyncGroup( wichGroup );
+    }
+    else
+    {
+      if( myHistogram->isSync()) myHistogram->removeFromSync();
+    }
+  }
+}
+
 
 void gHistogram::OnPopUpRemoveGroup( wxCommandEvent& event )
 {
@@ -1936,10 +1972,8 @@ void gHistogram::OnPopUpRedoZoom( wxCommandEvent& event )
 
 void gHistogram::rightDownManager()
 {
-  vector<gHistogram*> histogram;
-  histogram.push_back(this);
 
-  gPopUpMenu popUpMenu( histogram );
+  gPopUpMenu popUpMenu( this );
 
   popUpMenu.initializePopUpMenu();
   popUpMenu.enablePopUpMenu( );
@@ -2126,6 +2160,12 @@ void gHistogram::OnMotion( wxMouseEvent& event )
   }
 }
 
+void gHistogram::OnMove (wxMoveEvent &event)
+{
+  timerPosition->StartOnce (TIMER_SIZE_DURATION);
+
+  event.Skip ();
+}
 
 /*!
  * wxEVT_SIZE event handler for ID_GHISTOGRAM
@@ -2133,19 +2173,60 @@ void gHistogram::OnMotion( wxMouseEvent& event )
 
 void gHistogram::OnSize( wxSizeEvent& event )
 {
-  if( ready && myHistogram->getZoom() )
+
+  if (myHistogram->getZoom () && ready)
   {
-    wxString winTitle = GetTitle();
-    SetTitle( _("(Working...) ") + winTitle );
-    Update();
-    
-    fillZoom();
-    
-    SetTitle( winTitle );
+    wxString winTitle = GetTitle ();
+    SetTitle (_ ("(Working...) ") + winTitle);
+    Update ();
+
+    fillZoom ();
+
+    SetTitle (winTitle);
   }
-  event.Skip();
+
+  timerSize->StartOnce (TIMER_SIZE_DURATION);
+
+  event.Skip ();
 }
 
+void gHistogram::OnTimerSize (wxTimerEvent &event)
+{
+  timerSize->Stop ();
+
+  auto width = this->GetClientSize ().GetWidth ();
+  auto height = this->GetClientSize ().GetHeight ();
+
+  myHistogram->setWidth (width, !this->IsMaximized ());
+  myHistogram->setHeight (height, !this->IsMaximized ());
+}
+
+void gHistogram::OnTimerPosition (wxTimerEvent &event)
+{
+
+  if (this->IsShown () && ready)
+  {
+
+    int currentDisplay = wxDisplay::GetFromWindow (this);
+    if (currentDisplay != wxNOT_FOUND && currentDisplay >= 0)
+    {
+      wxDisplay tmpDisplay (currentDisplay);
+      auto posX = this->GetPosition ().x - tmpDisplay.GetGeometry ().x;
+      auto posY = this->GetPosition ().y - tmpDisplay.GetGeometry ().y;
+
+      int posXDiff = myHistogram->getPosX () - this->GetPosition ().x;
+      int posYDiff = myHistogram->getPosY () - this->GetPosition ().y;
+
+      if (!this->IsMaximized () && (posXDiff != 0 || posYDiff != 0) && !newPositionApplied)
+        myHistogram->addOffsetPosition (posXDiff, posYDiff);
+
+      newPositionApplied = false;
+      myHistogram->setPosX (posX);
+      myHistogram->setPosY (posY);
+    }
+  }
+  timerPosition->Stop ();
+}
 
 /*!
  * wxEVT_CONTEXT_MENU event handler for ID_ZOOMHISTO

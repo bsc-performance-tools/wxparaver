@@ -24,19 +24,18 @@
 #pragma once
 
 
-
 /*!
  * Includes
  */
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#include <wx/progdlg.h>
 #include "prvtypes.h"
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <wx/progdlg.h>
+
 #ifdef _MSC_VER
-#include <hash_set>
+#  include <hash_set>
 #else
-#include  <unordered_set>
+#  include <unordered_set>
 #endif
 
 #ifdef _MSC_VER
@@ -47,24 +46,24 @@ using boost::posix_time::ptime;
 
 ////@begin includes
 #include "wx/frame.h"
-#include "wx/splitter.h"
 #include "wx/notebook.h"
 #include "wx/richtext/richtextctrl.h"
+#include "wx/splitter.h"
 ////@end includes
-#include <wx/treebase.h>
-
+#include "copypaste.h"
+#include "paraverkerneltypes.h"
+#include "recordlist.h"
+#include "windows_tree.h"
 #include "wx/checkbox.h"
 #include "wx/choicdlg.h"
 #include "wx/dcmemory.h"
-#include "wx/scrolwin.h"
-#include "wx/timer.h"
 #include "wx/icon.h"
+#include "wx/scrolwin.h"
 #include "wx/slider.h"
+#include "wx/timer.h"
 
-#include "paraverkerneltypes.h"
-#include "recordlist.h"
-#include "copypaste.h"
-#include "windows_tree.h"
+#include <wx/display.h>
+#include <wx/treebase.h>
 
 /*!
  * Forward declarations
@@ -85,54 +84,55 @@ class ProgressController;
  */
 
 ////@begin control identifiers
-#define ID_GTIMELINE 10001
-#define ID_SPLITTER_TIMELINE 10048
-#define ID_SCROLLED_DRAW 10007
-#define ID_NOTEBOOK_INFO 10042
-#define ID_SCROLLED_WHATWHERE 10076
-#define ID_CHECKBOX 10077
-#define ID_CHECKBOX1 10079
-#define ID_CHECKBOX2 10080
-#define ID_CHECKBOX3 10083
-#define ID_CHECKBOX4 10084
-#define ID_CHECKBOX5 10004
-#define ID_CHECKBOX6 10005
-#define ID_RICHTEXTCTRL 10043
-#define ID_SCROLLED_TIMING 10044
-#define ID_TEXTCTRL_INITIALTIME 10045
-#define wxID_STATIC_INITIALSEMANTIC 10288
-#define ID_TEXTCTRL_INITIALSEMANTIC 10000
-#define ID_TEXTCTRL_FINALTIME 10046
-#define wxID_STATIC_FINALSEMANTIC 10289
-#define ID_TEXTCTRL_FINALSEMANTIC 10002
-#define ID_TEXTCTRL_DURATION 10047
-#define wxID_STATIC_SLOPE 10290
-#define ID_TEXTCTRL_SLOPE 10003
-#define ID_SCROLLEDWINDOW 10008
-#define ID_CHECKBOX_CUSTOM_PALETTE 10606
+#define ID_GTIMELINE                   10001
+#define ID_SPLITTER_TIMELINE           10048
+#define ID_SCROLLED_DRAW               10007
+#define ID_NOTEBOOK_INFO               10042
+#define ID_SCROLLED_WHATWHERE          10076
+#define ID_CHECKBOX                    10077
+#define ID_CHECKBOX1                   10079
+#define ID_CHECKBOX2                   10080
+#define ID_CHECKBOX3                   10083
+#define ID_CHECKBOX4                   10084
+#define ID_CHECKBOX5                   10004
+#define ID_CHECKBOX6                   10005
+#define ID_RICHTEXTCTRL                10043
+#define ID_SCROLLED_TIMING             10044
+#define ID_TEXTCTRL_INITIALTIME        10045
+#define wxID_STATIC_INITIALSEMANTIC    10288
+#define ID_TEXTCTRL_INITIALSEMANTIC    10000
+#define ID_TEXTCTRL_FINALTIME          10046
+#define wxID_STATIC_FINALSEMANTIC      10289
+#define ID_TEXTCTRL_FINALSEMANTIC      10002
+#define ID_TEXTCTRL_DURATION           10047
+#define wxID_STATIC_SLOPE              10290
+#define ID_TEXTCTRL_SLOPE              10003
+#define ID_SCROLLEDWINDOW              10008
+#define ID_CHECKBOX_CUSTOM_PALETTE     10606
 #define ID_BUTTON_CUSTOM_PALETTE_APPLY 10006
-#define ID_SCROLLED_COLORS 10049
-#define ID_PANEL 10009
-#define wxID_STATIC_RED 10295
-#define ID_SLIDER_RED 10010
-#define ID_TEXT_RED 10015
-#define wxID_STATIC_GREEN 10293
-#define ID_SLIDER_GREEN 10011
-#define ID_TEXT_GREEN 10014
-#define wxID_STATIC_BLUE 10294
-#define ID_SLIDER_BLUE 10012
-#define ID_TEXT_BLUE 10013
-#define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE
-#define SYMBOL_GTIMELINE_TITLE _("gTimeline")
-#define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
-#define SYMBOL_GTIMELINE_SIZE wxSize(400, 300)
+#define ID_SCROLLED_COLORS             10049
+#define ID_PANEL                       10009
+#define wxID_STATIC_RED                10295
+#define ID_SLIDER_RED                  10010
+#define ID_TEXT_RED                    10015
+#define wxID_STATIC_GREEN              10293
+#define ID_SLIDER_GREEN                10011
+#define ID_TEXT_GREEN                  10014
+#define wxID_STATIC_BLUE               10294
+#define ID_SLIDER_BLUE                 10012
+#define ID_TEXT_BLUE                   10013
+#define SYMBOL_GTIMELINE_STYLE \
+  wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxMAXIMIZE_BOX | wxCLOSE_BOX | wxFRAME_NO_TASKBAR | wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE
+#define SYMBOL_GTIMELINE_TITLE    _( "gTimeline" )
+#define SYMBOL_GTIMELINE_IDNAME   ID_GTIMELINE
+#define SYMBOL_GTIMELINE_SIZE     wxSize( 400, 300 )
 #define SYMBOL_GTIMELINE_POSITION wxDefaultPosition
 ////@end control identifiers
 
-#define ID_TIMER_SIZE 40000
-#define ID_TIMER_MOTION 40001
-#define ID_TIMER_WHEEL 40002
-
+#define ID_TIMER_SIZE     40000
+#define ID_TIMER_MOTION   40001
+#define ID_TIMER_WHEEL    40002
+#define ID_TIMER_POSITION 40003
 
 enum class TWhatWhereLine
 {
@@ -157,17 +157,29 @@ enum class TWhatWhereLine
 /*!
  * gTimeline class declaration
  */
-class gTimeline: public wxFrame, public gWindow
+class gTimeline
+  : public wxFrame
+  , public gWindow
 {
   DECLARE_CLASS( gTimeline )
   DECLARE_EVENT_TABLE()
 
-public:
+ public:
   /// Constructors
   gTimeline();
-  gTimeline( wxWindow* parent, wxWindowID id = SYMBOL_GTIMELINE_IDNAME, const wxString& caption = SYMBOL_GTIMELINE_TITLE, const wxPoint& pos = SYMBOL_GTIMELINE_POSITION, const wxSize& size = SYMBOL_GTIMELINE_SIZE, long style = SYMBOL_GTIMELINE_STYLE );
+  gTimeline( wxWindow* parent,
+             wxWindowID id           = SYMBOL_GTIMELINE_IDNAME,
+             const wxString& caption = SYMBOL_GTIMELINE_TITLE,
+             const wxPoint& pos      = SYMBOL_GTIMELINE_POSITION,
+             const wxSize& size      = SYMBOL_GTIMELINE_SIZE,
+             long style              = SYMBOL_GTIMELINE_STYLE );
 
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_GTIMELINE_IDNAME, const wxString& caption = SYMBOL_GTIMELINE_TITLE, const wxPoint& pos = SYMBOL_GTIMELINE_POSITION, const wxSize& size = SYMBOL_GTIMELINE_SIZE, long style = SYMBOL_GTIMELINE_STYLE );
+  bool Create( wxWindow* parent,
+               wxWindowID id           = SYMBOL_GTIMELINE_IDNAME,
+               const wxString& caption = SYMBOL_GTIMELINE_TITLE,
+               const wxPoint& pos      = SYMBOL_GTIMELINE_POSITION,
+               const wxSize& size      = SYMBOL_GTIMELINE_SIZE,
+               long style              = SYMBOL_GTIMELINE_STYLE );
 
   /// Destructor
   ~gTimeline();
@@ -178,7 +190,7 @@ public:
   /// Creates the controls and sizers
   void CreateControls();
 
-////@begin gTimeline event handler declarations
+  ////@begin gTimeline event handler declarations
 
   /// wxEVT_CLOSE_WINDOW event handler for ID_GTIMELINE
   void OnCloseWindow( wxCloseEvent& event );
@@ -276,192 +288,582 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TEXT_RED
   void OnTextSelectedColorUpdate( wxUpdateUIEvent& event );
 
-  void OnActivateWindow(wxActivateEvent& event);
+  void OnActivateWindow( wxActivateEvent& event );
 
 
-////@end gTimeline event handler declarations
+  ////@end gTimeline event handler declarations
 
   void MousePanMotion();
   void MousePanLeftUp( wxMouseEvent& event );
-  
+
   void OnBackgroundAsZeroCheckClick( wxCommandEvent& event );
 
-////@begin gTimeline member function declarations
+  void OnMove( wxMoveEvent& event );
 
-  wxColour GetBackgroundColour() const { return backgroundColour ; }
-  void SetBackgroundColour(wxColour value) { backgroundColour = value ; }
+  ////@begin gTimeline member function declarations
 
-  long GetBeginRow() const { return beginRow ; }
-  void SetBeginRow(long value) { beginRow = value ; }
+  wxColour GetBackgroundColour() const
+  {
+    return backgroundColour;
+  }
+  void SetBackgroundColour( wxColour value )
+  {
+    backgroundColour = value;
+  }
 
-  wxBitmap GetBufferImage() const { return bufferImage ; }
-  void SetBufferImage(wxBitmap value) { bufferImage = value ; }
+  long GetBeginRow() const
+  {
+    return beginRow;
+  }
+  void SetBeginRow( long value )
+  {
+    beginRow = value;
+  }
 
-  bool GetCanRedraw() const { return canRedraw ; }
-  void SetCanRedraw(bool value) { canRedraw = value ; }
+  wxBitmap GetBufferImage() const
+  {
+    return bufferImage;
+  }
+  void SetBufferImage( wxBitmap value )
+  {
+    bufferImage = value;
+  }
 
-  wxBitmap GetCommImage() const { return commImage ; }
-  void SetCommImage(wxBitmap value) { commImage = value ; }
+  bool GetCanRedraw() const
+  {
+    return canRedraw;
+  }
+  void SetCanRedraw( bool value )
+  {
+    canRedraw = value;
+  }
 
-  bool GetDrawCaution() const { return drawCaution ; }
-  void SetDrawCaution(bool value) { drawCaution = value ; }
+  wxBitmap GetCommImage() const
+  {
+    return commImage;
+  }
+  void SetCommImage( wxBitmap value )
+  {
+    commImage = value;
+  }
 
-  bool GetDrawCautionNegatives() const { return drawCautionNegatives ; }
-  void SetDrawCautionNegatives(bool value) { drawCautionNegatives = value ; }
+  bool GetDrawCaution() const
+  {
+    return drawCaution;
+  }
+  void SetDrawCaution( bool value )
+  {
+    drawCaution = value;
+  }
 
-  wxBitmap GetDrawImage() const { return drawImage ; }
-  void SetDrawImage(wxBitmap value) { drawImage = value ; }
+  bool GetDrawCautionNegatives() const
+  {
+    return drawCautionNegatives;
+  }
+  void SetDrawCautionNegatives( bool value )
+  {
+    drawCautionNegatives = value;
+  }
 
-  long GetEndRow() const { return endRow ; }
-  void SetEndRow(long value) { endRow = value ; }
+  wxBitmap GetDrawImage() const
+  {
+    return drawImage;
+  }
+  void SetDrawImage( wxBitmap value )
+  {
+    drawImage = value;
+  }
 
-  bool GetEscapePressed() const { return escapePressed ; }
-  void SetEscapePressed(bool value) { escapePressed = value ; }
+  long GetEndRow() const
+  {
+    return endRow;
+  }
+  void SetEndRow( long value )
+  {
+    endRow = value;
+  }
 
-  wxBitmap GetEventImage() const { return eventImage ; }
-  void SetEventImage(wxBitmap value) { eventImage = value ; }
+  bool GetEscapePressed() const
+  {
+    return escapePressed;
+  }
+  void SetEscapePressed( bool value )
+  {
+    escapePressed = value;
+  }
 
-  TRecordTime GetFindBeginTime() const { return findBeginTime ; }
-  void SetFindBeginTime(TRecordTime value) { findBeginTime = value ; }
+  wxBitmap GetEventImage() const
+  {
+    return eventImage;
+  }
+  void SetEventImage( wxBitmap value )
+  {
+    eventImage = value;
+  }
 
-  TRecordTime GetFindEndTime() const { return findEndTime ; }
-  void SetFindEndTime(TRecordTime value) { findEndTime = value ; }
+  TRecordTime GetFindBeginTime() const
+  {
+    return findBeginTime;
+  }
+  void SetFindBeginTime( TRecordTime value )
+  {
+    findBeginTime = value;
+  }
 
-  TObjectOrder GetFindFirstObject() const { return findFirstObject ; }
-  void SetFindFirstObject(TObjectOrder value) { findFirstObject = value ; }
+  TRecordTime GetFindEndTime() const
+  {
+    return findEndTime;
+  }
+  void SetFindEndTime( TRecordTime value )
+  {
+    findEndTime = value;
+  }
 
-  TObjectOrder GetFindLastObject() const { return findLastObject ; }
-  void SetFindLastObject(TObjectOrder value) { findLastObject = value ; }
+  TObjectOrder GetFindFirstObject() const
+  {
+    return findFirstObject;
+  }
+  void SetFindFirstObject( TObjectOrder value )
+  {
+    findFirstObject = value;
+  }
 
-  wxMouseEvent GetFirstMotionEvent() const { return firstMotionEvent ; }
-  void SetFirstMotionEvent(wxMouseEvent value) { firstMotionEvent = value ; }
+  TObjectOrder GetFindLastObject() const
+  {
+    return findLastObject;
+  }
+  void SetFindLastObject( TObjectOrder value )
+  {
+    findLastObject = value;
+  }
 
-  bool GetFirstUnsplit() const { return firstUnsplit ; }
-  void SetFirstUnsplit(bool value) { firstUnsplit = value ; }
+  wxMouseEvent GetFirstMotionEvent() const
+  {
+    return firstMotionEvent;
+  }
+  void SetFirstMotionEvent( wxMouseEvent value )
+  {
+    firstMotionEvent = value;
+  }
 
-  wxColour GetForegroundColour() const { return foregroundColour ; }
-  void SetForegroundColour(wxColour value) { foregroundColour = value ; }
+  bool GetFirstUnsplit() const
+  {
+    return firstUnsplit;
+  }
+  void SetFirstUnsplit( bool value )
+  {
+    firstUnsplit = value;
+  }
 
-  int GetInfoZoneLastSize() const { return infoZoneLastSize ; }
-  void SetInfoZoneLastSize(int value) { infoZoneLastSize = value ; }
+  wxColour GetForegroundColour() const
+  {
+    return foregroundColour;
+  }
+  void SetForegroundColour( wxColour value )
+  {
+    foregroundColour = value;
+  }
 
-  TRecordTime GetLastEventFoundTime() const { return lastEventFoundTime ; }
-  void SetLastEventFoundTime(TRecordTime value) { lastEventFoundTime = value ; }
+  int GetInfoZoneLastSize() const
+  {
+    return infoZoneLastSize;
+  }
+  void SetInfoZoneLastSize( int value )
+  {
+    infoZoneLastSize = value;
+  }
 
-  TObjectOrder GetLastFoundObject() const { return lastFoundObject ; }
-  void SetLastFoundObject(TObjectOrder value) { lastFoundObject = value ; }
+  TRecordTime GetLastEventFoundTime() const
+  {
+    return lastEventFoundTime;
+  }
+  void SetLastEventFoundTime( TRecordTime value )
+  {
+    lastEventFoundTime = value;
+  }
 
-  TRecordTime GetLastSemanticFoundTime() const { return lastSemanticFoundTime ; }
-  void SetLastSemanticFoundTime(TRecordTime value) { lastSemanticFoundTime = value ; }
+  TObjectOrder GetLastFoundObject() const
+  {
+    return lastFoundObject;
+  }
+  void SetLastFoundObject( TObjectOrder value )
+  {
+    lastFoundObject = value;
+  }
 
-  wxColour GetLogicalColour() const { return logicalColour ; }
-  void SetLogicalColour(wxColour value) { logicalColour = value ; }
+  TRecordTime GetLastSemanticFoundTime() const
+  {
+    return lastSemanticFoundTime;
+  }
+  void SetLastSemanticFoundTime( TRecordTime value )
+  {
+    lastSemanticFoundTime = value;
+  }
 
-  wxPen GetLogicalPen() const { return logicalPen ; }
-  void SetLogicalPen(wxPen value) { logicalPen = value ; }
+  wxColour GetLogicalColour() const
+  {
+    return logicalColour;
+  }
+  void SetLogicalColour( wxColour value )
+  {
+    logicalColour = value;
+  }
 
-  wxMouseEvent GetMotionEvent() const { return motionEvent ; }
-  void SetMotionEvent(wxMouseEvent value) { motionEvent = value ; }
+  wxPen GetLogicalPen() const
+  {
+    return logicalPen;
+  }
+  void SetLogicalPen( wxPen value )
+  {
+    logicalPen = value;
+  }
 
-  Timeline* GetMyWindow() const { return myWindow ; }
-  void SetMyWindow(Timeline* value) { myWindow = value ; }
+  wxMouseEvent GetMotionEvent() const
+  {
+    return motionEvent;
+  }
+  void SetMotionEvent( wxMouseEvent value )
+  {
+    motionEvent = value;
+  }
 
-  PRV_INT32 GetObjectAxisPos() const { return objectAxisPos ; }
-  void SetObjectAxisPos(PRV_INT32 value) { objectAxisPos = value ; }
+  Timeline* GetMyWindow() const
+  {
+    return myWindow;
+  }
+  void SetMyWindow( Timeline* value )
+  {
+    myWindow = value;
+  }
 
-  wxFont GetObjectFont() const { return objectFont ; }
-  void SetObjectFont(wxFont value) { objectFont = value ; }
+  void InitMyWindowCallbacks()
+  {
+    myWindow->registerResizeFunctionCallback(
+      [ this ]( int w, int h )
+      {
+        if( !this->IsMaximized() )
+          this->resizeDrawZone( w, h );
+      } );
+    myWindow->registerPositionFunctionCallback(
+      [ this ]( int x, int y )
+      {
+        if( !this->IsMaximized() )
+        {
+          auto newPosX = myWindow->getPosX() - x;
+          auto newPosY = myWindow->getPosY() - y;
+          if( newPosX < 0 )
+            newPosX = 0;
+          if( newPosY < 0 )
+            newPosY = 0;
+          if( !this->IsShown() )
+          {
+            int currentDisplay = wxDisplay::GetFromWindow( this );
+            if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+            {
+              wxDisplay tmpDisplay( currentDisplay );
+              auto posX = myWindow->getPosX() - x - tmpDisplay.GetGeometry().x;
+              auto posY = myWindow->getPosY() - y - tmpDisplay.GetGeometry().y;
+              if( posX < 0 )
+                posX = 0;
+              if( posY < 0 )
+                posY = 0;
+              myWindow->setPosX( posX );
+              myWindow->setPosY( posY );
+            }
+          }
+          this->Show();
+          wxPoint tmpPos( newPosX, newPosY );
+          this->Move( tmpPos );
+        }
+        newPositionApplied = true;
+      } );
+  }
 
-  int GetObjectHeight() const { return objectHeight ; }
-  void SetObjectHeight(int value) { objectHeight = value ; }
+  PRV_INT32 GetObjectAxisPos() const
+  {
+    return objectAxisPos;
+  }
+  void SetObjectAxisPos( PRV_INT32 value )
+  {
+    objectAxisPos = value;
+  }
 
-  std::vector<PRV_INT32> GetObjectPosList() const { return objectPosList ; }
-  void SetObjectPosList(std::vector<PRV_INT32> value) { objectPosList = value ; }
+  wxFont GetObjectFont() const
+  {
+    return objectFont;
+  }
+  void SetObjectFont( wxFont value )
+  {
+    objectFont = value;
+  }
 
-  wxColour GetPhysicalColour() const { return physicalColour ; }
-  void SetPhysicalColour(wxColour value) { physicalColour = value ; }
+  int GetObjectHeight() const
+  {
+    return objectHeight;
+  }
+  void SetObjectHeight( int value )
+  {
+    objectHeight = value;
+  }
 
-  wxPen GetPhysicalPen() const { return physicalPen ; }
-  void SetPhysicalPen(wxPen value) { physicalPen = value ; }
+  std::vector<PRV_INT32> GetObjectPosList() const
+  {
+    return objectPosList;
+  }
+  void SetObjectPosList( std::vector<PRV_INT32> value )
+  {
+    objectPosList = value;
+  }
 
-  bool GetRedoColors() const { return redoColorsPanel ; }
-  void SetRedoColors(bool value) { redoColorsPanel = value ; }
+  wxColour GetPhysicalColour() const
+  {
+    return physicalColour;
+  }
+  void SetPhysicalColour( wxColour value )
+  {
+    physicalColour = value;
+  }
 
-  wxStopWatch * GetRedrawStopWatch() const { return redrawStopWatch ; }
-  void SetRedrawStopWatch(wxStopWatch * value) { redrawStopWatch = value ; }
+  wxPen GetPhysicalPen() const
+  {
+    return physicalPen;
+  }
+  void SetPhysicalPen( wxPen value )
+  {
+    physicalPen = value;
+  }
 
-  std::map< rgb, std::set<TSemanticValue> > GetSemanticColorsToValue() const { return semanticColorsToValue ; }
-  void SetSemanticColorsToValue(std::map< rgb, std::set<TSemanticValue> > value) { semanticColorsToValue = value ; }
+  bool GetRedoColors() const
+  {
+    return redoColorsPanel;
+  }
+  void SetRedoColors( bool value )
+  {
+    redoColorsPanel = value;
+  }
 
-  wxFont GetSemanticFont() const { return semanticFont ; }
-  void SetSemanticFont(wxFont value) { semanticFont = value ; }
+  wxStopWatch* GetRedrawStopWatch() const
+  {
+    return redrawStopWatch;
+  }
+  void SetRedrawStopWatch( wxStopWatch* value )
+  {
+    redrawStopWatch = value;
+  }
 
-  std::map< int, std::set<TSemanticValue> >  GetSemanticPixelsToValue() const { return semanticPixelsToValue ; }
-  void SetSemanticPixelsToValue(std::map< int, std::set<TSemanticValue> >  value) { semanticPixelsToValue = value ; }
+  std::map<rgb, std::set<TSemanticValue>> GetSemanticColorsToValue() const
+  {
+    return semanticColorsToValue;
+  }
+  void SetSemanticColorsToValue( std::map<rgb, std::set<TSemanticValue>> value )
+  {
+    semanticColorsToValue = value;
+  }
 
-  std::map< TSemanticValue, rgb > GetSemanticValuesToColor() const { return semanticValuesToColor ; }
-  void SetSemanticValuesToColor(std::map< TSemanticValue, rgb > value) { semanticValuesToColor = value ; }
+  wxFont GetSemanticFont() const
+  {
+    return semanticFont;
+  }
+  void SetSemanticFont( wxFont value )
+  {
+    semanticFont = value;
+  }
 
-  bool GetSplitChanged() const { return splitChanged ; }
-  void SetSplitChanged(bool value) { splitChanged = value ; }
+  std::map<int, std::set<TSemanticValue>> GetSemanticPixelsToValue() const
+  {
+    return semanticPixelsToValue;
+  }
+  void SetSemanticPixelsToValue( std::map<int, std::set<TSemanticValue>> value )
+  {
+    semanticPixelsToValue = value;
+  }
 
-  PRV_INT32 GetTimeAxisPos() const { return timeAxisPos ; }
-  void SetTimeAxisPos(PRV_INT32 value) { timeAxisPos = value ; }
+  std::map<TSemanticValue, rgb> GetSemanticValuesToColor() const
+  {
+    return semanticValuesToColor;
+  }
+  void SetSemanticValuesToColor( std::map<TSemanticValue, rgb> value )
+  {
+    semanticValuesToColor = value;
+  }
 
-  wxFont GetTimeFont() const { return timeFont ; }
-  void SetTimeFont(wxFont value) { timeFont = value ; }
+  bool GetSplitChanged() const
+  {
+    return splitChanged;
+  }
+  void SetSplitChanged( bool value )
+  {
+    splitChanged = value;
+  }
 
-  wxTimer * GetTimerMotion() const { return timerMotion ; }
-  void SetTimerMotion(wxTimer * value) { timerMotion = value ; }
+  PRV_INT32 GetTimeAxisPos() const
+  {
+    return timeAxisPos;
+  }
+  void SetTimeAxisPos( PRV_INT32 value )
+  {
+    timeAxisPos = value;
+  }
 
-  wxTimer * GetTimerSize() const { return timerSize ; }
-  void SetTimerSize(wxTimer * value) { timerSize = value ; }
+  wxFont GetTimeFont() const
+  {
+    return timeFont;
+  }
+  void SetTimeFont( wxFont value )
+  {
+    timeFont = value;
+  }
 
-  wxTimer * GetTimerWheel() const { return timerWheel ; }
-  void SetTimerWheel(wxTimer * value) { timerWheel = value ; }
+  wxTimer* GetTimerMotion() const
+  {
+    return timerMotion;
+  }
+  void SetTimerMotion( wxTimer* value )
+  {
+    timerMotion = value;
+  }
 
-  bool GetTiming() const { return timing ; }
-  void SetTiming(bool value) { timing = value ; }
+  wxTimer* GetTimerSize() const
+  {
+    return timerSize;
+  }
+  void SetTimerSize( wxTimer* value )
+  {
+    timerSize = value;
+  }
 
-  TObjectOrder GetWheelZoomBeginObject() const { return wheelZoomBeginObject ; }
-  void SetWheelZoomBeginObject(TObjectOrder value) { wheelZoomBeginObject = value ; }
+  wxTimer* GetTimerWheel() const
+  {
+    return timerWheel;
+  }
+  void SetTimerWheel( wxTimer* value )
+  {
+    timerWheel = value;
+  }
 
-  TRecordTime GetWheelZoomBeginTime() const { return wheelZoomBeginTime ; }
-  void SetWheelZoomBeginTime(TRecordTime value) { wheelZoomBeginTime = value ; }
+  bool GetTiming() const
+  {
+    return timing;
+  }
+  void SetTiming( bool value )
+  {
+    timing = value;
+  }
 
-  TObjectOrder GetWheelZoomEndObject() const { return wheelZoomEndObject ; }
-  void SetWheelZoomEndObject(TObjectOrder value) { wheelZoomEndObject = value ; }
+  TObjectOrder GetWheelZoomBeginObject() const
+  {
+    return wheelZoomBeginObject;
+  }
+  void SetWheelZoomBeginObject( TObjectOrder value )
+  {
+    wheelZoomBeginObject = value;
+  }
 
-  TRecordTime GetWheelZoomEndTime() const { return wheelZoomEndTime ; }
-  void SetWheelZoomEndTime(TRecordTime value) { wheelZoomEndTime = value ; }
+  TRecordTime GetWheelZoomBeginTime() const
+  {
+    return wheelZoomBeginTime;
+  }
+  void SetWheelZoomBeginTime( TRecordTime value )
+  {
+    wheelZoomBeginTime = value;
+  }
 
-  double GetWheelZoomFactor() const { return wheelZoomFactor ; }
-  void SetWheelZoomFactor(double value) { wheelZoomFactor = value ; }
+  TObjectOrder GetWheelZoomEndObject() const
+  {
+    return wheelZoomEndObject;
+  }
+  void SetWheelZoomEndObject( TObjectOrder value )
+  {
+    wheelZoomEndObject = value;
+  }
 
-  long GetZoomBegin() const { return zoomBeginX ; }
-  void SetZoomBegin(long value) { zoomBeginX = value ; }
+  TRecordTime GetWheelZoomEndTime() const
+  {
+    return wheelZoomEndTime;
+  }
+  void SetWheelZoomEndTime( TRecordTime value )
+  {
+    wheelZoomEndTime = value;
+  }
 
-  long GetZoomBeginY() const { return zoomBeginY ; }
-  void SetZoomBeginY(long value) { zoomBeginY = value ; }
+  double GetWheelZoomFactor() const
+  {
+    return wheelZoomFactor;
+  }
+  void SetWheelZoomFactor( double value )
+  {
+    wheelZoomFactor = value;
+  }
 
-  long GetZoomEnd() const { return zoomEndX ; }
-  void SetZoomEnd(long value) { zoomEndX = value ; }
+  long GetZoomBegin() const
+  {
+    return zoomBeginX;
+  }
+  void SetZoomBegin( long value )
+  {
+    zoomBeginX = value;
+  }
 
-  long GetZoomEndY() const { return zoomEndY ; }
-  void SetZoomEndY(long value) { zoomEndY = value ; }
+  long GetZoomBeginY() const
+  {
+    return zoomBeginY;
+  }
+  void SetZoomBeginY( long value )
+  {
+    zoomBeginY = value;
+  }
 
-  bool GetZoomXY() const { return zoomXY ; }
-  void SetZoomXY(bool value) { zoomXY = value ; }
+  long GetZoomEnd() const
+  {
+    return zoomEndX;
+  }
+  void SetZoomEnd( long value )
+  {
+    zoomEndX = value;
+  }
 
-  bool GetZooming() const { return zooming ; }
-  void SetZooming(bool value) { zooming = value ; }
+  long GetZoomEndY() const
+  {
+    return zoomEndY;
+  }
+  void SetZoomEndY( long value )
+  {
+    zoomEndY = value;
+  }
+
+  bool GetZoomXY() const
+  {
+    return zoomXY;
+  }
+  void SetZoomXY( bool value )
+  {
+    zoomXY = value;
+  }
+
+  bool GetZooming() const
+  {
+    return zooming;
+  }
+  void SetZooming( bool value )
+  {
+    zooming = value;
+  }
+
+  wxTimer* GetTimerPosition() const
+  {
+    return timerPosition;
+  }
+  void SetTimerPosition( wxTimer* value )
+  {
+    timerPosition = value;
+  }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end gTimeline member function declarations
+  ////@end gTimeline member function declarations
 
   /// Should we show tooltips?
   static bool ShowToolTips();
@@ -472,25 +874,29 @@ public:
   void redraw();
   bool drawAxis( wxDC& dc, std::vector<TObjectOrder>& selected );
   void drawZeroAxis( wxDC& dc, std::vector<TObjectOrder>& selected );
-  
+
 #ifdef _MSC_VER
   template<typename ValuesType>
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
-                vector< ValuesType >& valuesToDraw,
-                std::unordered_set< PRV_INT32 >& eventsToDraw,
-                std::unordered_set< commCoord >& commsToDraw,
-                wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
-                wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
+                vector<ValuesType>& valuesToDraw,
+                std::unordered_set<PRV_INT32>& eventsToDraw,
+                std::unordered_set<commCoord>& commsToDraw,
+                wxMemoryDC& eventdc,
+                wxMemoryDC& eventmaskdc,
+                wxMemoryDC& commdc,
+                wxMemoryDC& commmaskdc );
 #else
   template<typename ValuesType>
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
-                std::vector< ValuesType >& valuesToDraw,
-                std::unordered_set< PRV_INT32 >& eventsToDraw,
-                std::unordered_set< commCoord, hashCommCoord >& commsToDraw,
-                wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
-                wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
+                std::vector<ValuesType>& valuesToDraw,
+                std::unordered_set<PRV_INT32>& eventsToDraw,
+                std::unordered_set<commCoord, hashCommCoord>& commsToDraw,
+                wxMemoryDC& eventdc,
+                wxMemoryDC& eventmaskdc,
+                wxMemoryDC& commdc,
+                wxMemoryDC& commmaskdc );
 #endif
 
   template<typename ValuesType>
@@ -503,15 +909,21 @@ public:
   void drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify );
 
   template<typename ValuesType>
-  void drawRowFusedLines( wxDC& dc, ValuesType valueToDraw, int& semanticLastPos, wxCoord& timeLastPos, TObjectOrder whichObject, wxCoord timePos, bool isLastValue );
+  void drawRowFusedLines( wxDC& dc,
+                          ValuesType valueToDraw,
+                          int& semanticLastPos,
+                          wxCoord& timeLastPos,
+                          TObjectOrder whichObject,
+                          wxCoord timePos,
+                          bool isLastValue );
 
-  void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, std::unordered_set< PRV_INT32 >& eventsToDraw );
+  void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, std::unordered_set<PRV_INT32>& eventsToDraw );
 #ifdef _MSC_VER
-  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set< commCoord >& commsToDraw );
+  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set<commCoord>& commsToDraw );
 #else
-  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set< commCoord, hashCommCoord >& commsToDraw );
+  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set<commCoord, hashCommCoord>& commsToDraw );
 #endif
-  
+
   void drawCommunicationLines( bool draw );
   void drawEventFlags( bool draw );
   void drawFunctionLineColor();
@@ -553,7 +965,7 @@ public:
   void OnPopUpSemanticScaleMinAtZero( wxCommandEvent& event );
   void OnPopUpUndoZoom( wxCommandEvent& event );
   void OnPopUpRedoZoom( wxCommandEvent& event );
-  
+
   void OnPopUpDrawModeTimeLast( wxCommandEvent& event );
   void OnPopUpDrawModeTimeRandom( wxCommandEvent& event );
   void OnPopUpDrawModeTimeRandomNotZero( wxCommandEvent& event );
@@ -597,6 +1009,7 @@ public:
 
   void OnPopUpSynchronize( wxCommandEvent& event );
   void OnPopUpSynchronizeById( TGroupId wichGroup );
+  void OnPopUpSynchronizeById( TGroupId& wichGroup, bool isSynchronized );
 
   void OnPopUpRemoveGroup( wxCommandEvent& event );
   void OnPopUpRemoveAllGroups( wxCommandEvent& event );
@@ -604,39 +1017,33 @@ public:
   void OnPopUpRowSelection( wxCommandEvent& event );
 
   void OnPopUpInfoPanel( wxCommandEvent& event );
-  
+
   void OnPopUpSaveCFG( wxCommandEvent& event );
   void OnPopUpSaveImageDialog( wxCommandEvent& event );
   void OnPopUpSaveText( wxCommandEvent& event );
 
   void OnMenuGradientFunction( TGradientFunction function );
 
-  void drawTimeMarks( std::vector< TRecordTime> times,
-                      std::vector<TObjectOrder> &selectedObjects,
-                      bool drawXCross = false,
-                      bool allObjects = true,
-                      TObjectOrder lastFoundObject = TObjectOrder(0) );
+  void drawTimeMarks( std::vector<TRecordTime> times,
+                      std::vector<TObjectOrder>& selectedObjects,
+                      bool drawXCross              = false,
+                      bool allObjects              = true,
+                      TObjectOrder lastFoundObject = TObjectOrder( 0 ) );
   void OnFindDialog();
 
-  gTimeline *clone( Timeline *clonedWindow,
-                    wxWindow *parent,
-                    wxTreeItemId idRoot1,
-                    wxTreeItemId idRoot2,
-                    bool mustRedraw = true );
+  gTimeline* clone( Timeline* clonedWindow, wxWindow* parent, wxTreeItemId idRoot1, wxTreeItemId idRoot2, bool mustRedraw = true );
 
   void rightDownManager();
 
   void resizeDrawZone( int width, int height );
-  
+
   bool IsSplit() const;
   void OnPopUpTiming( wxCommandEvent& event );
   void EnableTiming( bool state );
   void OnItemColorLeftUp( wxMouseEvent& event );
 
-  void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
-  void saveImageLegend( wxString whichFileName = _( "" ),
-                        TImageFormat filterIndex =  TImageFormat::PNG,
-                        bool appendLegendSuffix = true );
+  void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG );
+  void saveImageLegend( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool appendLegendSuffix = true );
   void saveImageDialog( wxString whichFileName = _( "" ) );
 
   void saveText();
@@ -644,12 +1051,15 @@ public:
 
   void setEnableDestroyButton( bool value );
 
-  static wxProgressDialog *dialogProgress;
+  void setEditMode( bool value );
+  bool getEditMode();
+
+  static wxProgressDialog* dialogProgress;
   static int numberOfProgressDialogUsers;
-  
-  
-//  void OnRightClick(wxMouseEvent& event);
-////@begin gTimeline member variables
+
+
+  //  void OnRightClick(wxMouseEvent& event);
+  ////@begin gTimeline member variables
   wxSplitterWindow* splitter;
   wxScrolledWindow* drawZone;
   wxNotebook* infoZone;
@@ -694,7 +1104,10 @@ public:
   wxBitmap drawImage;
   wxBitmap eventImage;
   wxColour physicalColour;
-private:
+
+ private:
+  bool isEditMode         = false;
+  bool newPositionApplied = false;
   wxColour backgroundColour;
   long beginRow;
   bool canRedraw;
@@ -722,17 +1135,17 @@ private:
   std::vector<PRV_INT32> objectPosList;
   wxPen physicalPen;
   bool redoColorsPanel;
-  wxStopWatch * redrawStopWatch;
-  std::map< rgb, std::set<TSemanticValue> > semanticColorsToValue;
+  wxStopWatch* redrawStopWatch;
+  std::map<rgb, std::set<TSemanticValue>> semanticColorsToValue;
   wxFont semanticFont;
-  std::map< int, std::set<TSemanticValue> >  semanticPixelsToValue; // // Used by function line drawings
-  std::map< TSemanticValue, rgb > semanticValuesToColor; // Stored for SaveImage legend
+  std::map<int, std::set<TSemanticValue>> semanticPixelsToValue; // // Used by function line drawings
+  std::map<TSemanticValue, rgb> semanticValuesToColor;           // Stored for SaveImage legend
   bool splitChanged;
   PRV_INT32 timeAxisPos;
   wxFont timeFont;
-  wxTimer * timerMotion;
-  wxTimer * timerSize;
-  wxTimer * timerWheel;
+  wxTimer* timerMotion;
+  wxTimer* timerSize;
+  wxTimer* timerWheel;
   bool timing;
   TObjectOrder wheelZoomBeginObject;
   TRecordTime wheelZoomBeginTime;
@@ -745,24 +1158,25 @@ private:
   long zoomEndY;
   bool zoomXY;
   bool zooming;
-////@end gTimeline member variables
+  wxTimer* timerPosition;
+  ////@end gTimeline member variables
 
   class CustomColorSemValue : public wxObject
   {
-    public:
-      enum class ColorType
-      {
-        BACKGROUND,
-        AXIS,
-        PUNCTUAL,
-        SEMANTIC_VALUE
-      };
+   public:
+    enum class ColorType
+    {
+      BACKGROUND,
+      AXIS,
+      PUNCTUAL,
+      SEMANTIC_VALUE
+    };
 
-      ColorType myColorType;
-      TSemanticValue myValue;
-      wxPanel *myPanel;
-      wxStaticText *myText;
-      wxFont originalFont;
+    ColorType myColorType;
+    TSemanticValue myValue;
+    wxPanel* myPanel;
+    wxStaticText* myText;
+    wxFont originalFont;
   };
 
   // colorsPanel update info
@@ -775,10 +1189,10 @@ private:
   bool codeColorSet;
   TGradientFunction gradientFunc;
   CustomColorSemValue* selectedCustomColor;
-  wxStaticText *lastSelectedItemText = nullptr;
+  wxStaticText* lastSelectedItemText = nullptr;
   wxFont originalUnselectectItemTextFont;
-  wxPanel *backgroundColorPanel = nullptr;
-  wxPanel *zeroColorPanel = nullptr;
+  wxPanel* backgroundColorPanel = nullptr;
+  wxPanel* zeroColorPanel       = nullptr;
 
   bool enabledAutoRedrawIcon;
 
@@ -789,27 +1203,38 @@ private:
   bool wheelZoomObjects;
 #endif
 
-  wxWindow *parent;
-  
+  wxWindow* parent;
+
   static const wxCoord drawBorder = 5;
 
-  std::vector< std::pair< TWhatWhereLine, wxString > > whatWhereLines;
+  std::vector<std::pair<TWhatWhereLine, wxString>> whatWhereLines;
   int whatWhereSelectedTimeEventLines;
   int whatWhereSelectedTimeCommunicationLines;
-  TRecordTime    whatWhereTime;
-  TObjectOrder   whatWhereRow;
+  TRecordTime whatWhereTime;
+  TObjectOrder whatWhereRow;
   TSemanticValue whatWhereSemantic;
 
   wxString formatTime( TRecordTime whichTime, bool showDate );
-  void computeWhatWhere( TRecordTime whichTime,
+  void computeWhatWhere( std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
+                         TRecordTime whichTime,
                          TObjectOrder whichRow,
                          TSemanticValue whichSemantic,
                          bool textMode,
                          bool showDate,
                          bool hexMode );
-  void printWhatWhere( );
-  void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode, bool hexMode );
-  void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate );
+  void printWhatWhere();
+  void printWWSemantic( Timeline* temporalWindow,
+                        std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
+                        TObjectOrder whichRow,
+                        bool clickedValue,
+                        bool textMode,
+                        bool hexMode );
+  void printWWRecords( Timeline* temporalWindow,
+                       std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
+                       TObjectOrder whichRow,
+                       bool clickedValue,
+                       bool textMode,
+                       bool showDate );
 
   TSemanticValue getSemanticValueFromFusedLines( int whichY );
   bool getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder whichObject, int& whichPixelPos );
@@ -823,210 +1248,225 @@ private:
   void OnTimerSize( wxTimerEvent& event );
   void OnTimerMotion( wxTimerEvent& event );
   void OnTimerWheel( wxTimerEvent& event );
+  void OnTimerPosition( wxTimerEvent& event );
 
   bool pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& onObject );
-  
+
   void doDrawCaution( wxDC& whichDC );
-  
+
   // Called by saveLabelsImage
   void drawRectangle( wxMemoryDC& labelDC,
-                       wxMemoryDC& scaleDC,
-                       wxColour foregroundColour,
-                       wxColour backgroundColour,
-                       rgb semanticColour,
-                       wxString semanticValueLabel,
-                       int titleMargin,
-                       int widthRect,
-                       int heightRect,
-                       bool tryHorizontal,
-                       int& xdst,
-                       int& ydst,
-                       int xsrc,
-                       int ysrc,
-                       int imageWidth,
-                       int imageHeight,
-                       int imageStepY,
-                       int imageStepXRectangle,
-                       bool drawLabel );
+                      wxMemoryDC& scaleDC,
+                      wxColour foregroundColour,
+                      wxColour backgroundColour,
+                      rgb semanticColour,
+                      wxString semanticValueLabel,
+                      int titleMargin,
+                      int widthRect,
+                      int heightRect,
+                      bool tryHorizontal,
+                      int& xdst,
+                      int& ydst,
+                      int xsrc,
+                      int ysrc,
+                      int imageWidth,
+                      int imageHeight,
+                      int imageStepY,
+                      int imageStepXRectangle,
+                      bool drawLabel );
 
   void setEnableDestroyParents( bool value );
 
   class ScaleImageVertical
   {
-    public:
-      ScaleImageVertical(
-              Timeline* whichMyWindow,
-              const std::map< TSemanticValue, rgb >& whichSemanticValues,
-              wxColour whichBackground,
-              wxColour whichForeground,
-              int whichBackgroundMode, // wxSOLID or wxTRANSPARENT; wxTRANSPARENT overrides fore and back
-              wxFont whichTextFont,
-              wxString& whichImagePath,
-              const wxString& whichImageInfix,
-              wxBitmapType& whichImageType );
+   public:
+    ScaleImageVertical( Timeline* whichMyWindow,
+                        const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                        wxColour whichBackground,
+                        wxColour whichForeground,
+                        int whichBackgroundMode, // wxSOLID or wxTRANSPARENT; wxTRANSPARENT overrides fore and back
+                        wxFont whichTextFont,
+                        wxString& whichImagePath,
+                        const wxString& whichImageInfix,
+                        wxBitmapType& whichImageType );
 
-      virtual ~ScaleImageVertical();
+    virtual ~ScaleImageVertical();
 
-      void process();
-      void save();
-      wxImage *getImage() { return scaleImage; }
-      wxBitmap *getBitmap() { return scaleBitmap; }
+    void process();
+    void save();
+    wxImage* getImage()
+    {
+      return scaleImage;
+    }
+    wxBitmap* getBitmap()
+    {
+      return scaleBitmap;
+    }
 
-    protected:
-      virtual void init();
-      virtual void sortSemanticValues();
-      virtual void computeMaxLabelSize();
-      virtual void computeImageSize();
-      virtual void createDC();
-      virtual void draw();
-      virtual void bitmapToImage();
-      virtual wxString buildScaleImagePath();
-      virtual void drawLabeledRectangle( rgb semanticColour,
-                                         wxString semanticValueLabel,
-                                         bool drawIt = true );
-      void destroyDC();
+   protected:
+    virtual void init();
+    virtual void sortSemanticValues();
+    virtual void computeMaxLabelSize();
+    virtual void computeImageSize();
+    virtual void createDC();
+    virtual void draw();
+    virtual void bitmapToImage();
+    virtual wxString buildScaleImagePath();
+    virtual void drawLabeledRectangle( rgb semanticColour, wxString semanticValueLabel, bool drawIt = true );
+    void destroyDC();
 
-      Timeline *myWindow;
-      std::map< TSemanticValue, rgb > semValues;
-      wxColour background;
-      wxColour foreground;
-      int backgroundMode;
-      wxFont textFont;
-      wxString& imagePath;
-      wxString imageInfix;
-      wxBitmapType& imageType;
-      TImageFormat filterIndex;
-      wxString tmpSuffix;
-      TSemanticValue currentMin;
-      TSemanticValue currentMax;
-      PRV_UINT32 precision;
-      wxString extraPrefixOutlier;
-      std::map< TSemanticValue, wxString > semanticValueLabel;
-      TSemanticValue semanticValueWithLongestLabel;
-      int titleMargin;
-      int widthRect;
-      int heightRect;
-      int imageStepY;
-      int imageStepXRectangle;
-      bool drawOutliers;
-      bool symbolicDesc;
-      int imageWidth;
-      int imageHeight;
-      int xsrc;
-      int ysrc;
-      int xdst;
-      int ydst;
-      wxBitmap *scaleBitmap;
-      wxMemoryDC *scaleDC;
-      wxBitmap *scaleMaskBitmap;
-      wxMemoryDC *scaleMaskDC;
-      wxSize maxLabelSize;
-      wxImage *scaleImage;
+    Timeline* myWindow;
+    std::map<TSemanticValue, rgb> semValues;
+    wxColour background;
+    wxColour foreground;
+    int backgroundMode;
+    wxFont textFont;
+    wxString& imagePath;
+    wxString imageInfix;
+    wxBitmapType& imageType;
+    TImageFormat filterIndex;
+    wxString tmpSuffix;
+    TSemanticValue currentMin;
+    TSemanticValue currentMax;
+    PRV_UINT32 precision;
+    wxString extraPrefixOutlier;
+    std::map<TSemanticValue, wxString> semanticValueLabel;
+    TSemanticValue semanticValueWithLongestLabel;
+    int titleMargin;
+    int widthRect;
+    int heightRect;
+    int imageStepY;
+    int imageStepXRectangle;
+    bool drawOutliers;
+    bool symbolicDesc;
+    int imageWidth;
+    int imageHeight;
+    int xsrc;
+    int ysrc;
+    int xdst;
+    int ydst;
+    wxBitmap* scaleBitmap;
+    wxMemoryDC* scaleDC;
+    wxBitmap* scaleMaskBitmap;
+    wxMemoryDC* scaleMaskDC;
+    wxSize maxLabelSize;
+    wxImage* scaleImage;
   };
 
   class ScaleImageVerticalCodeColor : public ScaleImageVertical
   {
-    public:
-      ScaleImageVerticalCodeColor(
-              Timeline* whichMyWindow,
-              const std::map< TSemanticValue, rgb >& whichSemanticValues,
-              wxColour whichBackground,
-              wxColour whichForeground,
-              int whichBackgroundMode,
-              wxFont whichTextFont,
-              wxString& whichImagePath,
-              const wxString& whichImageInfix,
-              wxBitmapType& whichImageType );
+   public:
+    ScaleImageVerticalCodeColor( Timeline* whichMyWindow,
+                                 const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                                 wxColour whichBackground,
+                                 wxColour whichForeground,
+                                 int whichBackgroundMode,
+                                 wxFont whichTextFont,
+                                 wxString& whichImagePath,
+                                 const wxString& whichImageInfix,
+                                 wxBitmapType& whichImageType );
 
-      ~ScaleImageVerticalCodeColor()
-      {}
+    ~ScaleImageVerticalCodeColor()
+    {
+    }
 
-    protected:
-      virtual void init();
+   protected:
+    virtual void init();
   };
 
   class ScaleImageVerticalGradientColor : public ScaleImageVertical
   {
-    public:
-      ScaleImageVerticalGradientColor(
-              Timeline* whichMyWindow,
-              const std::map< TSemanticValue, rgb >& whichSemanticValues,
-              wxColour whichBackground,
-              wxColour whichForeground,
-              int whichBackgroundMode,
-              wxFont whichTextFont,
-              wxString& whichImagePath,
-              const wxString& whichImageInfix,
-              wxBitmapType& whichImageType );
+   public:
+    ScaleImageVerticalGradientColor( Timeline* whichMyWindow,
+                                     const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                                     wxColour whichBackground,
+                                     wxColour whichForeground,
+                                     int whichBackgroundMode,
+                                     wxFont whichTextFont,
+                                     wxString& whichImagePath,
+                                     const wxString& whichImageInfix,
+                                     wxBitmapType& whichImageType );
 
-      ~ScaleImageVerticalGradientColor()
-      {}
+    ~ScaleImageVerticalGradientColor()
+    {
+    }
 
-    protected:
-      int numSquaresWithoutOutliers;
-      int totalSquares;
+   protected:
+    int numSquaresWithoutOutliers;
+    int totalSquares;
 
-      virtual void init();
-      virtual void sortSemanticValues();
-      virtual void draw();
+    virtual void init();
+    virtual void sortSemanticValues();
+    virtual void draw();
   };
 
   class ScaleImageVerticalFusedLines : public ScaleImageVertical
   {
-    public:
-      ScaleImageVerticalFusedLines(
-              Timeline* whichMyWindow,
-              const std::map< TSemanticValue, rgb >& whichSemanticValues,
-              wxColour whichBackground,
-              wxColour whichForeground,
-              int whichBackgroundMode,
-              wxFont whichTextFont,
-              wxString& whichImagePath,
-              const wxString& whichImageInfix,
-              wxBitmapType& whichImageType );
+   public:
+    ScaleImageVerticalFusedLines( Timeline* whichMyWindow,
+                                  const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                                  wxColour whichBackground,
+                                  wxColour whichForeground,
+                                  int whichBackgroundMode,
+                                  wxFont whichTextFont,
+                                  wxString& whichImagePath,
+                                  const wxString& whichImageInfix,
+                                  wxBitmapType& whichImageType );
 
-      ~ScaleImageVerticalFusedLines()
-      {}
+    ~ScaleImageVerticalFusedLines()
+    {
+    }
 
-    protected:
-      virtual void init();
-      virtual void computeMaxLabelSize();
+   protected:
+    virtual void init();
+    virtual void computeMaxLabelSize();
   };
 
 
   class ScaleImageHorizontalGradientColor : public ScaleImageVerticalGradientColor
   {
-    public:
-      ScaleImageHorizontalGradientColor(
-              Timeline* whichMyWindow,
-              const std::map< TSemanticValue, rgb >& whichSemanticValues,
-              wxColour whichBackground,
-              wxColour whichForeground,
-              int whichBackgroundMode,
-              wxFont whichTextFont,
-              wxString& whichImagePath,
-              const wxString& whichImageInfix,
-              wxBitmapType& whichImageType,
-              int whichWantedWidth = 0 );
+   public:
+    ScaleImageHorizontalGradientColor( Timeline* whichMyWindow,
+                                       const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                                       wxColour whichBackground,
+                                       wxColour whichForeground,
+                                       int whichBackgroundMode,
+                                       wxFont whichTextFont,
+                                       wxString& whichImagePath,
+                                       const wxString& whichImageInfix,
+                                       wxBitmapType& whichImageType,
+                                       int whichWantedWidth = 0 );
 
 
-      ~ScaleImageHorizontalGradientColor()
-      {}
+    ~ScaleImageHorizontalGradientColor()
+    {
+    }
 
-    protected:
-      virtual void init();
-      virtual void computeImageSize();
-      virtual void draw();
+   protected:
+    virtual void init();
+    virtual void computeImageSize();
+    virtual void draw();
 
-    private:
-      typedef enum { LEFT = 0, CENTER, RIGHT } TAlign;
-      typedef enum { FIRST = 0, MIDDLE, LAST, ANY } TPosition;
+   private:
+    typedef enum
+    {
+      LEFT = 0,
+      CENTER,
+      RIGHT
+    } TAlign;
+    typedef enum
+    {
+      FIRST = 0,
+      MIDDLE,
+      LAST,
+      ANY
+    } TPosition;
 
-      int SIZE_OF_TINY_MARK;
-      int outlierMargin; // Inner margin between outlier and whole scale
-      int wantedWidth;
+    int SIZE_OF_TINY_MARK;
+    int outlierMargin; // Inner margin between outlier and whole scale
+    int wantedWidth;
 
-      void drawRectangle( rgb semanticColour, TPosition position = ANY );
-      void drawLabel( wxString semanticValueLabel, bool drawIt = true, TAlign align = LEFT );
+    void drawRectangle( rgb semanticColour, TPosition position = ANY );
+    void drawLabel( wxString semanticValueLabel, bool drawIt = true, TAlign align = LEFT );
   };
 };
