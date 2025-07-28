@@ -3683,6 +3683,18 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
           tmpDerivedHistogram->setWindowBeginTime( beginDragHistogram->getBeginTime() );
           tmpDerivedHistogram->setWindowEndTime( beginDragHistogram->getEndTime() );
 
+          // Recompute scale
+          tmpDerivedHistogram->setUseFixedDelta( beginDragHistogram->getUseFixedDelta() );
+          tmpDerivedHistogram->setCompute2DScale( false );
+          tmpDerivedHistogram->setCompute2DScaleZero( false );
+          tmpDerivedHistogram->setCompute3DScale( false );
+
+          // Color mode
+          tmpDerivedHistogram->setColorMode( beginDragHistogram->getColorMode() );
+
+          // Gradient? : unclear
+          tmpDerivedHistogram->setComputeGradient( beginDragHistogram->getComputeGradient() );
+
           // Display properties
           tmpDerivedHistogram->setZoom( beginDragHistogram->getZoom() );
           tmpDerivedHistogram->setShowColor( beginDragHistogram->getShowColor() );
