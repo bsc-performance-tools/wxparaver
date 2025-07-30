@@ -24,7 +24,7 @@
 #pragma once
 
 
-
+#include "windowimage.h"
 /*!
  * Includes
  */
@@ -35,6 +35,7 @@
 #include <wx/dir.h>
 
 ////@begin includes
+#include "wx/notebook.h"
 ////@end includes
 
 /*!
@@ -58,6 +59,12 @@ class wxFileCtrl;
 #define ID_SAVEIMAGETEXTCTRL 10505
 #define ID_SAVELEGENDCHECKBOX 10506
 #define ID_SAVELEGENDTEXTCTRL 10507
+#define ID_NOTEBOOK                     10004
+#define ID_SCROLLEDWINDOW1              10003
+#define ID_SCROLLEDWINDOW_IMAGE         10005
+#define ID_CHECKBOX_SCALEDSIZE          10007
+#define ID_SCROLLEDWINDOW               10001
+#define ID_SCROLLEDWINDOW_SCALE         10006
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVEIMAGEDIALOG_TITLE _("Save Image Dialog")
 #define SYMBOL_SAVEIMAGEDIALOG_IDNAME ID_SAVEIMAGEDIALOG
@@ -78,7 +85,17 @@ class SaveImageDialog: public wxDialog
 public:
   /// Constructors
   SaveImageDialog();
-  SaveImageDialog( wxWindow* parent, wxString& directoryStartingPath, wxString defaultFileName, bool isHistogram = false, wxString legendSuffix = _( "_legend" ), wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
+  SaveImageDialog( wxWindow* parent,
+                   wxString& directoryStartingPath,
+                   wxString defaultFileName,
+                   WindowImageGenerator* imageGeneration,
+                   bool isHistogram        = false,
+                   wxString legendSuffix   = _( "_legend" ),
+                   wxWindowID id           = SYMBOL_SAVEIMAGEDIALOG_IDNAME,
+                   const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE,
+                   const wxPoint& pos      = SYMBOL_SAVEIMAGEDIALOG_POSITION,
+                   const wxSize& size      = SYMBOL_SAVEIMAGEDIALOG_SIZE,
+                   long style              = SYMBOL_SAVEIMAGEDIALOG_STYLE );
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
@@ -123,14 +140,29 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
   void OnCancelClick( wxCommandEvent& event );
 
-////@end SaveImageDialog event handler declarations
+  /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE
+  void OnPaintWindow( wxPaintEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SCALEDSIZE
+  void OnCheckboxScaledsizeClick( wxCommandEvent& event );
+
+  /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_SCALE
+  void onPaintScale( wxPaintEvent& event );
+
+  ////@end SaveImageDialog event handler declarations
 
   void OnFileNavigatorChanged( wxFileCtrlEvent& event );
 
   void updateFileNamesAndPaths();
   void setImageFileName();
+  void calculateScaledSize( int originalWidth,
+                            int originalHeight,
+                            int scrollContainerWidth,
+                            int scrollContainerHeight,
+                            int& newWidth,
+                            int& newHeight );
 
-////@begin SaveImageDialog member function declarations
+  ////@begin SaveImageDialog member function declarations
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -156,7 +188,12 @@ public:
   wxTextCtrl* legendFileName;
   wxButton* buttonSave;
   wxButton* buttonCancel;
-////@end SaveImageDialog member variables
+  wxScrolledWindow* drawWindowSingle;
+  wxScrolledWindow* drawScaleSingle;
+  ////@end SaveImageDialog member variables
+
+  WindowImageGenerator* imageGeneration;
+
   static wxString directoryStartingPath;
   wxString defaultFileName;
   wxString selectedImageFilePath;
@@ -165,4 +202,5 @@ public:
   wxString fileTypeText;
   bool isHistogram;
   wxString legendSuffix;
+  bool resize_window = true;
 };

@@ -34,6 +34,7 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.cpp \
                     traceinformationdialog.cpp \
                     tutorialsdownload.cpp \
                     windows_tree.cpp \
+                    windowimage.cpp \
                     wxparaverapp.cpp 
 
 

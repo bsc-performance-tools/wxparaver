@@ -25,19 +25,20 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
 ////@begin includes
+#include "wx/imaglist.h"
 ////@end includes
 
-#include "wxparaverapp.h"
-#include "saveimagedialog.h"
 #include "labelconstructor.h"
+#include "saveimagedialog.h"
+#include "wxparaverapp.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -64,35 +65,52 @@ BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
   EVT_BUTTON( wxID_OK, SaveImageDialog::OnOkClick )
   EVT_UPDATE_UI( wxID_OK, SaveImageDialog::OnOkUpdate )
   EVT_BUTTON( wxID_CANCEL, SaveImageDialog::OnCancelClick )
-////@end SaveImageDialog event table entries
+  EVT_CHECKBOX( ID_CHECKBOX_SCALEDSIZE, SaveImageDialog::OnCheckboxScaledsizeClick )
+  ////@end SaveImageDialog event table entries
 
   EVT_FILECTRL_SELECTIONCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
   EVT_FILECTRL_FOLDERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
   EVT_FILECTRL_FILTERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
 
-END_EVENT_TABLE()
+  END_EVENT_TABLE()
 
-wxString SaveImageDialog::directoryStartingPath = _( "" );
+  wxString SaveImageDialog::directoryStartingPath = _( "" );
 
-/*!
- * SaveImageDialog constructors
- */
+  /*!
+   * SaveImageDialog constructors
+   */
 
-SaveImageDialog::SaveImageDialog()
-{
-  Init();
-}
-
-SaveImageDialog::SaveImageDialog( wxWindow* parent, wxString& whichStartingPath, wxString whichFileName, bool isItHistogram, wxString whichLegendSuffix, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
-  : defaultFileName( whichFileName ), isHistogram( isItHistogram ), legendSuffix( whichLegendSuffix )
-{
-  if ( directoryStartingPath.IsEmpty() )
+  SaveImageDialog::SaveImageDialog()
   {
-    directoryStartingPath = whichStartingPath;
+    Init();
   }
-  Init();
-  Create(parent, id, caption, pos, size, style);
-}
+
+  SaveImageDialog::SaveImageDialog( wxWindow* parent,
+                                    wxString& whichStartingPath,
+                                    wxString whichFileName,
+                                    WindowImageGenerator* whichImageGeneration,
+                                    bool isItHistogram,
+                                    wxString whichLegendSuffix,
+                                    wxWindowID id,
+                                    const wxString& caption,
+                                    const wxPoint& pos,
+                                    const wxSize& size,
+                                    long style )
+    : defaultFileName( whichFileName ), isHistogram( isItHistogram ), legendSuffix( whichLegendSuffix )
+  {
+    if( directoryStartingPath.IsEmpty() )
+    {
+      directoryStartingPath = whichStartingPath;
+    }
+    Init();
+    Create( parent, id, caption, pos, size, style );
+
+    imageGeneration = whichImageGeneration;
+    // int originalWidth  = imageGeneration->getTimelineImage()->GetWidth();
+    // int originalHeight = imageGeneration->getTimelineImage()->GetHeight();
+    // drawWindowSingle->SetVirtualSize( originalWidth, originalHeight ); // 👈 Important!
+    // drawWindowSingle->SetScrollRate( 10, 10 );                         // Optional: smooth scrolling
+  }
 
 
 /*!
@@ -101,7 +119,7 @@ SaveImageDialog::SaveImageDialog( wxWindow* parent, wxString& whichStartingPath,
 
 bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
-////@begin SaveImageDialog creation
+  ////@begin SaveImageDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
 
@@ -111,7 +129,7 @@ bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
     GetSizer()->SetSizeHints(this);
   }
   Centre();
-////@end SaveImageDialog creation
+  ////@end SaveImageDialog creation
   return true;
 }
 
@@ -122,8 +140,8 @@ bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
 
 SaveImageDialog::~SaveImageDialog()
 {
-////@begin SaveImageDialog destruction
-////@end SaveImageDialog destruction
+  ////@begin SaveImageDialog destruction
+  ////@end SaveImageDialog destruction
 }
 
 
@@ -133,7 +151,7 @@ SaveImageDialog::~SaveImageDialog()
 
 void SaveImageDialog::Init()
 {
-////@begin SaveImageDialog member initialisation
+  ////@begin SaveImageDialog member initialisation
   sizerMain = NULL;
   sizerPath = NULL;
   textPath = NULL;
@@ -147,7 +165,9 @@ void SaveImageDialog::Init()
   legendFileName = NULL;
   buttonSave = NULL;
   buttonCancel = NULL;
-////@end SaveImageDialog member initialisation
+  drawWindowSingle = NULL;
+  drawScaleSingle  = NULL;
+  ////@end SaveImageDialog member initialisation
 }
 
 
@@ -156,18 +176,21 @@ void SaveImageDialog::Init()
  */
 
 void SaveImageDialog::CreateControls()
-{    
-////@begin SaveImageDialog content construction
+{
+  ////@begin SaveImageDialog content construction
   SaveImageDialog* itemDialog1 = this;
 
+  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer( wxHORIZONTAL );
+  itemDialog1->SetSizer( itemBoxSizer1 );
+
   sizerMain = new wxBoxSizer(wxVERTICAL);
-  itemDialog1->SetSizer(sizerMain);
+  itemBoxSizer1->Add( sizerMain, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5 );
 
   sizerPath = new wxBoxSizer(wxHORIZONTAL);
   sizerMain->Add(sizerPath, 0, wxGROW|wxALL, 5);
 
-  wxStaticText* itemStaticText2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Path:"), wxDefaultPosition, wxDefaultSize, 0 );
-  sizerPath->Add(itemStaticText2, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  wxStaticText* itemStaticText4 = new wxStaticText( itemDialog1, wxID_STATIC, _( "Path:" ), wxDefaultPosition, wxDefaultSize, 0 );
+  sizerPath->Add( itemStaticText4, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP, 5 );
 
   textPath = new wxTextCtrl( itemDialog1, ID_TEXTPATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
   sizerPath->Add(textPath, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
@@ -175,8 +198,8 @@ void SaveImageDialog::CreateControls()
   fileNavigator = new wxFileCtrl( itemDialog1,ID_FILENAVIGATOR,wxEmptyString,wxEmptyString,"BMP (*.bmp)|*.bmp|JPG (*.jpg;*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|XPM (*.xpm)|*.xpm",wxSIMPLE_BORDER|wxFC_SAVE,wxDefaultPosition,wxSize(600, 400) );
   sizerMain->Add(fileNavigator, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
-  wxStaticBox* itemStaticBoxSizer4Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Image to save "));
-  imageToSaveSizer = new wxStaticBoxSizer(itemStaticBoxSizer4Static, wxVERTICAL);
+  wxStaticBox* itemStaticBoxSizer7Static = new wxStaticBox( itemDialog1, wxID_ANY, _( " Image to save " ) );
+  imageToSaveSizer                       = new wxStaticBoxSizer( itemStaticBoxSizer7Static, wxVERTICAL );
   sizerMain->Add(imageToSaveSizer, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   imageSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -199,29 +222,79 @@ void SaveImageDialog::CreateControls()
   legendFileName = new wxTextCtrl( itemDialog1, ID_SAVELEGENDTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   legendSizer->Add(legendFileName, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer1 = new wxStdDialogButtonSizer;
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer14 = new wxStdDialogButtonSizer;
 
-  sizerMain->Add(itemStdDialogButtonSizer1, 0, wxGROW|wxALL, 5);
+  sizerMain->Add( itemStdDialogButtonSizer14, 0, wxGROW | wxALL, 5 );
   buttonSave = new wxButton( itemDialog1, wxID_OK, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
   buttonSave->Enable(false);
-  itemStdDialogButtonSizer1->AddButton(buttonSave);
+  itemStdDialogButtonSizer14->AddButton( buttonSave );
 
   buttonCancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer1->AddButton(buttonCancel);
+  itemStdDialogButtonSizer14->AddButton( buttonCancel );
 
-  itemStdDialogButtonSizer1->Realize();
+  itemStdDialogButtonSizer14->Realize();
 
-////@end SaveImageDialog content construction
+  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer1->Add( itemBoxSizer4, 0, wxGROW | wxTOP | wxBOTTOM, 5 );
+
+  wxNotebook* itemNotebook1 = new wxNotebook( itemDialog1, ID_NOTEBOOK, wxDefaultPosition, wxSize( 600, 300 ), wxBK_DEFAULT );
+
+  wxScrolledWindow* itemScrolledWindow2 =
+    new wxScrolledWindow( itemNotebook1, ID_SCROLLEDWINDOW1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  itemScrolledWindow2->SetScrollbars( 1, 1, 0, 0 );
+  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer( wxVERTICAL );
+  itemScrolledWindow2->SetSizer( itemBoxSizer5 );
+
+  drawWindowSingle = new wxScrolledWindow( itemScrolledWindow2,
+                                           ID_SCROLLEDWINDOW_IMAGE,
+                                           wxDefaultPosition,
+                                           wxSize( -1, 250 ),
+                                           wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  itemBoxSizer5->Add( drawWindowSingle, 0, wxGROW | wxALL, 5 );
+  drawWindowSingle->SetScrollbars( 1, 1, 0, 0 );
+  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer5->Add( itemBoxSizer7, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5 );
+  wxCheckBox* itemCheckBox8 =
+    new wxCheckBox( itemScrolledWindow2, ID_CHECKBOX_SCALEDSIZE, _( "Scale real size" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemCheckBox8->SetValue( true );
+  itemBoxSizer7->Add( itemCheckBox8, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5 );
+
+  itemScrolledWindow2->FitInside();
+  itemNotebook1->AddPage( itemScrolledWindow2, _( "Window Preview" ) );
+
+  wxScrolledWindow* itemScrolledWindow3 =
+    new wxScrolledWindow( itemNotebook1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  itemScrolledWindow3->SetScrollbars( 1, 1, 0, 0 );
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer( wxVERTICAL );
+  itemScrolledWindow3->SetSizer( itemBoxSizer6 );
+
+  drawScaleSingle = new wxScrolledWindow( itemScrolledWindow3,
+                                          ID_SCROLLEDWINDOW_SCALE,
+                                          wxDefaultPosition,
+                                          wxSize( -1, 250 ),
+                                          wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  itemBoxSizer6->Add( drawScaleSingle, 0, wxGROW | wxALL, 5 );
+  drawScaleSingle->SetScrollbars( 1, 1, 0, 0 );
+
+  itemScrolledWindow3->FitInside();
+  itemNotebook1->AddPage( itemScrolledWindow3, _( "Legend Preview" ) );
+
+  itemBoxSizer4->Add( itemNotebook1, 0, wxGROW | wxALL, 5 );
+
+  // Connect events and objects
+  drawWindowSingle->Connect( ID_SCROLLEDWINDOW_IMAGE, wxEVT_PAINT, wxPaintEventHandler( SaveImageDialog::OnPaintWindow ), NULL, this );
+  drawScaleSingle->Connect( ID_SCROLLEDWINDOW_SCALE, wxEVT_PAINT, wxPaintEventHandler( SaveImageDialog::onPaintScale ), NULL, this );
+  ////@end SaveImageDialog content construction
   fileTypeText = _( ".png" );
 
 #if !defined( __WXGTK3__ ) && !defined( __WXOSX__ ) && !defined( __WXMSW__ )
   sizerMain->Hide( sizerPath, true );
 #endif
 
-  if ( isHistogram )
+  if( isHistogram )
   {
-    imageCheckbox->Hide(); 
-    imageToSaveSizer->Hide( (wxSizer*) legendSizer, true );
+    imageCheckbox->Hide();
+    imageToSaveSizer->Hide( (wxSizer*)legendSizer, true );
   }
 
   Layout();
@@ -231,11 +304,12 @@ void SaveImageDialog::CreateControls()
   fileNavigator->SetFilterIndex( 2 );
   fileNavigator->SetFilename( defaultFileName );
 
+
   updateFileNamesAndPaths();
 }
 
 
-void SaveImageDialog::updateFileNamesAndPaths() 
+void SaveImageDialog::updateFileNamesAndPaths()
 {
   wxFileName myPath = fileNavigator->GetPath();
 
@@ -257,8 +331,8 @@ void SaveImageDialog::updateFileNamesAndPaths()
 
 void SaveImageDialog::OnTextpathEnter( wxCommandEvent& event )
 {
-  wxString myPath = textPath->GetValue(); 
-  if ( wxDirExists( myPath ) ) 
+  wxString myPath = textPath->GetValue();
+  if( wxDirExists( myPath ) )
   {
     fileNavigator->SetDirectory( myPath );
     directoryStartingPath = myPath;
@@ -269,19 +343,19 @@ void SaveImageDialog::OnTextpathEnter( wxCommandEvent& event )
 void SaveImageDialog::setImageFileName()
 {
   wxString fileName = fileNavigator->GetFilename();
-  if ( fileName.Find( "." ) != wxNOT_FOUND )
+  if( fileName.Find( "." ) != wxNOT_FOUND )
   {
     // Change file if matched current selected image extension
     wxString selectedFileSuffix = wxString( LabelConstructor::getImageFileSuffix( static_cast< TImageFormat >( fileNavigator->GetFilterIndex() ) ) );
-    if ( fileNavigator->GetFilename().AfterLast( '.' ) == selectedFileSuffix )
+    if( fileNavigator->GetFilename().AfterLast( '.' ) == selectedFileSuffix )
       fileName = fileNavigator->GetFilename().BeforeLast( '.' );
     else
     {
       // Change filename and selector if matched some available image extensions
-      for( int tif = (int)TImageFormat::BMP; tif <= (int)TImageFormat::XPM ; ++tif )
+      for( int tif = (int)TImageFormat::BMP; tif <= (int)TImageFormat::XPM; ++tif )
       {
         wxString ext = wxString( LabelConstructor::getImageFileSuffix( static_cast< TImageFormat >( tif ) ) );
-        if ( fileNavigator->GetFilename().AfterLast( '.' ) == ext )
+        if( fileNavigator->GetFilename().AfterLast( '.' ) == ext )
         {
           fileName = fileNavigator->GetFilename().BeforeLast( '.' );
           fileNavigator->SetFilterIndex( tif );
@@ -290,15 +364,15 @@ void SaveImageDialog::setImageFileName()
       }
     }
   }
-  
+
   selectedImageFilePath = fileName + fileTypeText;
-  if ( imageCheckbox->IsChecked() && imageFileName->GetValue() != selectedImageFilePath )
+  if( imageCheckbox->IsChecked() && imageFileName->GetValue() != selectedImageFilePath )
     imageFileName->ChangeValue( selectedImageFilePath );
   else if( !imageCheckbox->IsChecked() && !imageFileName->IsEmpty() )
     imageFileName->Clear();
 
   selectedLegendFilePath = fileName + legendSuffix + fileTypeText;
-  if ( legendCheckbox->IsChecked() && legendFileName->GetValue() != selectedLegendFilePath ) 
+  if( legendCheckbox->IsChecked() && legendFileName->GetValue() != selectedLegendFilePath )
     legendFileName->ChangeValue( selectedLegendFilePath );
   else if( !legendCheckbox->IsChecked() && !legendFileName->IsEmpty() )
     legendFileName->Clear();
@@ -352,7 +426,7 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
     }
   }
 
-  if ( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !textPath->IsEmpty() )
+  if( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !textPath->IsEmpty() )
   {
     directoryStartingPath = textPath->GetValue();
     EndModal( wxID_OK );
@@ -366,10 +440,12 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
 
 void SaveImageDialog::OnCancelClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
+  // wxImage tmpImage = imageGeneration->getTimelineImage()->ConvertToImage();
+  // tmpImage.SaveFile( "/tmp/imageTest.png", wxBITMAP_TYPE_PNG );
+  ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
   // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog. 
+  ////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
 }
 
 
@@ -389,10 +465,10 @@ bool SaveImageDialog::ShowToolTips()
 wxBitmap SaveImageDialog::GetBitmapResource( const wxString& name )
 {
   // Bitmap retrieval
-////@begin SaveImageDialog bitmap retrieval
+  ////@begin SaveImageDialog bitmap retrieval
   wxUnusedVar(name);
   return wxNullBitmap;
-////@end SaveImageDialog bitmap retrieval
+  ////@end SaveImageDialog bitmap retrieval
 }
 
 /*!
@@ -402,10 +478,10 @@ wxBitmap SaveImageDialog::GetBitmapResource( const wxString& name )
 wxIcon SaveImageDialog::GetIconResource( const wxString& name )
 {
   // Icon retrieval
-////@begin SaveImageDialog icon retrieval
+  ////@begin SaveImageDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
-////@end SaveImageDialog icon retrieval
+  ////@end SaveImageDialog icon retrieval
 }
 
 wxString SaveImageDialog::GetImageFilePath()
@@ -442,8 +518,7 @@ int SaveImageDialog::GetFilterIndex()
 
 void SaveImageDialog::OnOkUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) &&
-                wxDir::Exists( textPath->GetValue() ) &&
+  event.Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && wxDir::Exists( textPath->GetValue() ) &&
                 !fileNavigator->GetFilename().IsEmpty() );
 }
 
@@ -467,3 +542,203 @@ void SaveImageDialog::OnFilenavigatorUpdate( wxUpdateUIEvent& event )
   setImageFileName();
 }
 
+
+void SaveImageDialog::onPaintScale( wxPaintEvent& event )
+{
+  ////@begin wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
+  // Before editing this code, remove the block markers.
+  wxPaintDC dc( wxDynamicCast( event.GetEventObject(), wxWindow ) );
+  ////@end wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
+  wxPaintDC dcImage( drawScaleSingle );
+  // wxPaintDC dcscale( drawScaleSingle );
+
+  wxBitmap* originalBmp = imageGeneration->getScaleImage();
+  if( originalBmp && originalBmp->IsOk() )
+  {
+    wxImage img = originalBmp->ConvertToImage();
+
+    int originalWidth  = originalBmp->GetWidth();
+    int originalHeight = originalBmp->GetHeight();
+
+    int scrollContainerHeight = drawScaleSingle->GetClientSize().GetHeight();
+    int scrollContainerWidth  = drawScaleSingle->GetClientSize().GetWidth();
+
+    int newWidth;
+    int newHeight;
+    calculateScaledSize( originalWidth, originalHeight, scrollContainerWidth, scrollContainerHeight, newWidth, newHeight );
+
+    // Resize the image
+    wxImage scaledImg = img.Scale( newWidth, newHeight, wxIMAGE_QUALITY_HIGH );
+
+    // Convert back to wxBitmap
+    wxBitmap scaledBmp( scaledImg );
+
+    dcImage.SetPen( *wxBLACK_PEN );
+    dcImage.SetBrush( *wxBLACK_BRUSH );
+
+    int posY = ( scrollContainerHeight - newHeight ) / 2;
+    int posX = ( scrollContainerWidth - newWidth ) / 2;
+
+    dcImage.DrawBitmap( scaledBmp, posX, posY, true );
+    drawScaleSingle->Refresh();
+    drawScaleSingle->Update();
+  }
+}
+
+
+/*!
+ * wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE
+ */
+
+void SaveImageDialog::OnPaintWindow( wxPaintEvent& event )
+{
+  ////@begin wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
+  // Before editing this code, remove the block markers.
+  // wxPaintDC dc( wxDynamicCast( event.GetEventObject(), wxWindow ) );
+  ////@end wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
+  wxPaintDC dcScale( drawWindowSingle );
+  drawWindowSingle->PrepareDC( dcScale ); // <--- This line is critical!
+
+  wxBitmap* originalBmp = imageGeneration->getTimelineImage();
+  if( originalBmp && originalBmp->IsOk() )
+  {
+    // Convert to wxImage
+    wxImage img = originalBmp->ConvertToImage();
+
+    int originalWidth  = originalBmp->GetWidth();
+    int originalHeight = originalBmp->GetHeight();
+
+    int scrollContainerHeight = drawWindowSingle->GetClientSize().GetHeight();
+    int scrollContainerWidth  = drawWindowSingle->GetClientSize().GetWidth();
+
+    int posY = 0;
+    int posX = 0;
+
+    if( resize_window )
+    {
+      int newWidth;
+      int newHeight;
+
+      calculateScaledSize( originalWidth, originalHeight, scrollContainerWidth, scrollContainerHeight, newWidth, newHeight );
+
+      // Resize the image
+      wxImage scaledImg = img.Scale( newWidth, newHeight, wxIMAGE_QUALITY_HIGH );
+
+      // Convert back to wxBitmap
+      wxBitmap scaledBmp( scaledImg );
+
+      if( ( scrollContainerHeight - newHeight ) > 0 )
+        posY = ( scrollContainerHeight - newHeight ) / 2;
+      if( ( scrollContainerWidth - newWidth ) > 0 )
+        posX = ( scrollContainerWidth - newWidth ) / 2;
+
+
+      dcScale.DrawBitmap( scaledBmp, posX, posY, true );
+
+      drawWindowSingle->Refresh();
+      drawWindowSingle->Update();
+    }
+
+    else
+    {
+      if( ( scrollContainerHeight - originalHeight ) > 0 )
+        posY = ( scrollContainerHeight - originalHeight ) / 2;
+      if( ( scrollContainerWidth - originalWidth ) > 0 )
+        posX = ( scrollContainerWidth - originalWidth ) / 2;
+      dcScale.DrawBitmap( *originalBmp, posX, posY, true );
+
+      drawWindowSingle->Refresh();
+      drawWindowSingle->Update();
+    }
+  }
+}
+
+
+void SaveImageDialog::calculateScaledSize( int originalWidth,
+                                           int originalHeight,
+                                           int scrollContainerWidth,
+                                           int scrollContainerHeight,
+                                           int& newWidth,
+                                           int& newHeight )
+{
+  if( scrollContainerWidth < originalWidth && scrollContainerHeight < originalHeight )
+  {
+    double differenceWidth  = (double)originalWidth / (double)scrollContainerWidth;
+    double differenceHeight = (double)originalHeight / (double)scrollContainerHeight;
+    if( differenceWidth > differenceHeight )
+    {
+      newWidth  = scrollContainerWidth;
+      newHeight = ( originalHeight * newWidth ) / originalWidth;
+    }
+    else
+    {
+      newHeight = scrollContainerHeight;
+      newWidth  = ( originalWidth * newHeight ) / originalHeight;
+    }
+  }
+  else if( scrollContainerWidth < originalWidth )
+  {
+    newWidth  = scrollContainerWidth;
+    newHeight = ( originalHeight * newWidth ) / originalWidth;
+  }
+  else if( scrollContainerHeight < originalHeight )
+  {
+    // Desired new width (anchura)
+    newHeight = scrollContainerHeight;
+    newWidth  = ( originalWidth * newHeight ) / originalHeight;
+  }
+  else
+  {
+    double differenceWidth  = (double)scrollContainerWidth / (double)originalWidth;
+    double differenceHeight = (double)scrollContainerHeight / (double)originalHeight;
+    if( differenceWidth < differenceHeight )
+    {
+      newWidth  = scrollContainerWidth;
+      newHeight = ( originalHeight * newWidth ) / originalWidth;
+    }
+    else
+    {
+      newHeight = scrollContainerHeight;
+      newWidth  = ( originalWidth * newHeight ) / originalHeight;
+    }
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
+ */
+
+void SaveImageDialog::OnCheckboxScaledsizeClick( wxCommandEvent& event )
+{
+  wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX_SCALEDSIZE ), wxCheckBox );
+  if( checkbox )
+  {
+    bool isChecked = checkbox->IsChecked();
+    if( isChecked )
+    {
+      wxSize clientSize = drawWindowSingle->GetClientSize();
+      drawWindowSingle->SetVirtualSize( clientSize ); // virtual size = client size → no scroll
+      drawWindowSingle->SetScrollRate( 0, 0 );        // disable scroll increments
+      drawWindowSingle->ShowScrollbars( wxSHOW_SB_NEVER, wxSHOW_SB_NEVER );
+      resize_window = true;
+      // Checkbox is checked
+    }
+    else
+    {
+      int originalWidth  = imageGeneration->getTimelineImage()->GetWidth();
+      int originalHeight = imageGeneration->getTimelineImage()->GetHeight();
+
+      drawWindowSingle->SetVirtualSize( originalWidth, originalHeight );
+      drawWindowSingle->SetScrollRate( 10, 10 );
+      drawWindowSingle->ShowScrollbars( wxSHOW_SB_DEFAULT, wxSHOW_SB_DEFAULT );
+      resize_window = false;
+      // Checkbox is unchecked
+    }
+  }
+
+  ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+  ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
+}

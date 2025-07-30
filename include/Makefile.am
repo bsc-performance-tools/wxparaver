@@ -32,4 +32,5 @@ noinst_HEADERS =    advancedsaveconfiguration.h \
                     traceinformationdialog.h \
                     tutorialsdownload.h \
                     windows_tree.h \
+                    windowimage.h \
                     wxparaverapp.h
