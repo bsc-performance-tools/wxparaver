@@ -173,9 +173,9 @@ gPasteWindowProperties::gPasteWindowProperties()
   sourceTimeline  = nullptr;
   sourceHistogram = nullptr;
 
-  vector<bool> destiny( 2, false );
-  vector<vector<bool>> source( 2, destiny );
-  vector<vector<vector<bool>>> option( 2, source );
+  vector< bool > destiny( 2, false );
+  vector< vector< bool > > source( 2, destiny );
+  vector< vector< vector< bool > > > option( 2, source );
 
   // Policy : Allow paste option between different kind of windows and different traces
   for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
@@ -294,7 +294,7 @@ void gPasteWindowProperties::paste( gTimeline *destinyTimeline, const string pro
     }
     else if( property == STR_OBJECTS )
     {
-      vector<TObjectOrder> auxRows;
+      vector< TObjectOrder > auxRows;
       TTraceLevel firstLevel;
       TTraceLevel lastLevel;
 
@@ -389,7 +389,8 @@ void gPasteWindowProperties::paste( gTimeline *destinyTimeline, const string pro
     }
     else if( property == STR_OBJECTS )
     {
-      vector<TObjectOrder> auxRows = sourceHistogram->GetHistogram()->getSelectedRows();
+      vector< TObjectOrder > auxRows;
+      sourceHistogram->GetHistogram()->getSelectedRows( auxRows );
       destinyTimeline->GetMyWindow()->setSelectedRows( destinyTimeline->GetMyWindow()->getLevel(), auxRows );
     }
     else if( property == STR_DURATION )
@@ -443,8 +444,8 @@ void gPasteWindowProperties::paste( gHistogram *destinyHistogram, const string p
       destinyHistogram->GetHistogram()->addZoom( sourceTimeline->GetMyWindow()->getZoomSecondDimension().first,
                                                  sourceTimeline->GetMyWindow()->getZoomSecondDimension().second );
 
-      SelectionManagement<TObjectOrder, TTraceLevel> *tSel = sourceTimeline->GetMyWindow()->getSelectedRows();
-      vector<TObjectOrder> auxRows;
+      SelectionManagement< TObjectOrder, TTraceLevel > *tSel = sourceTimeline->GetMyWindow()->getSelectedRows();
+      vector< TObjectOrder > auxRows;
       tSel->getSelected( auxRows, sourceTimeline->GetMyWindow()->getLevel() );
       destinyHistogram->GetHistogram()->setSelectedRows( auxRows );
     }
@@ -486,7 +487,8 @@ void gPasteWindowProperties::paste( gHistogram *destinyHistogram, const string p
       destinyHistogram->GetHistogram()->addZoom( sourceHistogram->GetHistogram()->getZoomSecondDimension().first,
                                                  sourceHistogram->GetHistogram()->getZoomSecondDimension().second );
 
-      vector<TObjectOrder> auxRows = sourceHistogram->GetHistogram()->getSelectedRows();
+      vector< TObjectOrder > auxRows;
+      sourceHistogram->GetHistogram()->getSelectedRows( auxRows );
       destinyHistogram->GetHistogram()->setSelectedRows( auxRows );
     }
     else if( property == STR_DURATION )
