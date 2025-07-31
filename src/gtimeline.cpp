@@ -578,7 +578,7 @@ void gTimeline::CreateControls()
   checkWWText->SetValue( paraverConfig->getTimelineWhatWhereText() );
   // checkWWShowDate->SetValue( paraverConfig->getTimelineWhatWhereShowDate() );
 
-  wxIntegerValidator<unsigned short> tmpVal;
+  wxIntegerValidator< unsigned short > tmpVal;
   tmpVal.SetRange( 0, 255 );
   textSelectedRed->SetValidator( tmpVal );
   textSelectedGreen->SetValidator( tmpVal );
@@ -711,8 +711,8 @@ void gTimeline::redraw()
 #endif // _WIN32
   }
   // Get selected rows
-  vector<bool> selected;
-  vector<TObjectOrder> selectedSet;
+  vector< bool > selected;
+  vector< TObjectOrder > selectedSet;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, true );
@@ -801,15 +801,15 @@ void gTimeline::redraw()
                    ( drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder - magnify );
   PRV_INT32 timePos = objectAxisPos + 1;
 
-  vector<vector<TSemanticValue>> valuesToDraw;
-  vector<unordered_set<PRV_INT32>> eventsToDraw;
+  vector< vector< TSemanticValue > > valuesToDraw;
+  vector< unordered_set< PRV_INT32 > > eventsToDraw;
 #ifdef _MSC_VER
-  vector<unordered_set<commCoord>> commsToDraw;
+  vector< unordered_set< commCoord > > commsToDraw;
 #else
-  vector<unordered_set<commCoord, hashCommCoord>> commsToDraw;
+  vector< unordered_set< commCoord, hashCommCoord > > commsToDraw;
 #endif
 
-  vector<vector<vector<pair<TSemanticValue, TSemanticValue>>>> valuesToDrawPunctual;
+  vector< vector< vector< pair< TSemanticValue, TSemanticValue > > > > valuesToDrawPunctual;
   if( myWindow->isPunctualColorSet() )
   {
     if( myWindow->getPunctualColorWindow() != nullptr )
@@ -851,7 +851,7 @@ void gTimeline::redraw()
   PRV_UINT32 rowToDraw = 0;
   if( myWindow->getWindowBeginTime() != myWindow->getWindowEndTime() )
   {
-    for( vector<TObjectOrder>::iterator obj = selectedSet.begin(); obj != selectedSet.end(); ++obj )
+    for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != selectedSet.end(); ++obj )
     {
       TObjectOrder firstObj = *obj;
       TObjectOrder lastObj  = firstObj;
@@ -964,7 +964,7 @@ void gTimeline::redraw()
 }
 
 
-bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
+bool gTimeline::drawAxis( wxDC& dc, vector< TObjectOrder >& selected )
 {
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   PRV_UINT32 precision = 0;
@@ -1121,8 +1121,8 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 
     objectPosList.clear();
     objectPosList.insert( objectPosList.begin(), myWindow->getWindowLevelObjects(), 0 );
-    objectHeight                      = 1;
-    vector<TObjectOrder>::iterator it = selected.begin();
+    objectHeight                        = 1;
+    vector< TObjectOrder >::iterator it = selected.begin();
 
     wxCoord accumHeight = 0;
     wxCoord stepHeight  = objectExt.GetHeight();
@@ -1215,7 +1215,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     {
       if( ( inc * 0.25 ) < 1.0 && magnify > objectHeight )
       {
-        for( vector<wxCoord>::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
+        for( vector< wxCoord >::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
           *it = ( floor( ( *it - drawBorder ) / magnify ) * magnify ) + drawBorder;
         objectHeight = magnify;
       }
@@ -1248,7 +1248,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   return true;
 }
 
-void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
+void gTimeline::drawZeroAxis( wxDC& dc, vector< TObjectOrder >& selected )
 {
   if( myWindow->getMaximumY() > 0.0 && myWindow->getMinimumY() < 0.0 )
   {
@@ -1272,7 +1272,7 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
     {
       wxCoord lastPos     = 0;
       wxCoord relativePos = ( 1.0 - relativeZero ) * objectHeight;
-      for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+      for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
       {
         wxCoord tmpObjPos = objectPosList[ *it ];
         if( tmpObjPos != lastPos )
@@ -1286,23 +1286,23 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
 }
 
 #ifdef _MSC_VER
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
-                         vector<ValuesType>& valuesToDraw,
-                         unordered_set<PRV_INT32>& eventsToDraw,
-                         unordered_set<commCoord>& commsToDraw,
+                         vector< ValuesType >& valuesToDraw,
+                         unordered_set< PRV_INT32 >& eventsToDraw,
+                         unordered_set< commCoord >& commsToDraw,
                          wxMemoryDC& eventdc,
                          wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc,
                          wxMemoryDC& commmaskdc )
 #else
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
-                         vector<ValuesType>& valuesToDraw,
-                         unordered_set<PRV_INT32>& eventsToDraw,
-                         unordered_set<commCoord, hashCommCoord>& commsToDraw,
+                         vector< ValuesType >& valuesToDraw,
+                         unordered_set< PRV_INT32 >& eventsToDraw,
+                         unordered_set< commCoord, hashCommCoord >& commsToDraw,
                          wxMemoryDC& eventdc,
                          wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc,
@@ -1328,7 +1328,7 @@ void gTimeline::drawRow( wxDC& dc,
   int semanticLastPos = 0;
 
   auto itLast = --valuesToDraw.end();
-  for( typename vector<ValuesType>::iterator it = valuesToDraw.begin(); it != valuesToDraw.end(); ++it )
+  for( typename vector< ValuesType >::iterator it = valuesToDraw.begin(); it != valuesToDraw.end(); ++it )
   {
     if( myWindow->isPunctualColorSet() )
     {
@@ -1359,7 +1359,7 @@ void gTimeline::drawRow( wxDC& dc,
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowColor( wxDC& dc, ValuesType valueToDraw, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
@@ -1396,7 +1396,7 @@ void gTimeline::drawRowColor( wxDC& dc, TSemanticValue valueToDraw, wxCoord obje
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowFunction( wxDC& dc, ValuesType valueToDraw, int& semanticLastPos, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
@@ -1445,7 +1445,7 @@ void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& sema
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowFusedLines( wxDC& dc,
                                    ValuesType valueToDraw,
                                    int& semanticLastPos,
@@ -1511,7 +1511,7 @@ void gTimeline::drawRowFusedLines( wxDC& dc,
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
@@ -1520,7 +1520,7 @@ void gTimeline::drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord
 
 template<>
 void gTimeline::drawRowPunctual( wxDC& dc,
-                                 vector<pair<TSemanticValue, TSemanticValue>>& valuesToDrawList,
+                                 vector< pair< TSemanticValue, TSemanticValue > >& valuesToDrawList,
                                  wxCoord objectPos,
                                  wxCoord timePos,
                                  float magnify )
@@ -1531,7 +1531,8 @@ void gTimeline::drawRowPunctual( wxDC& dc,
     realMin = 0.0;
 
   TSemanticValue valueToDraw;
-  for( vector<pair<TSemanticValue, TSemanticValue>>::iterator itValues = valuesToDrawList.begin(); itValues != valuesToDrawList.end(); ++itValues )
+  for( vector< pair< TSemanticValue, TSemanticValue > >::iterator itValues = valuesToDrawList.begin(); itValues != valuesToDrawList.end();
+       ++itValues )
   {
     valueToDraw = ( *itValues ).first;
 
@@ -1565,9 +1566,9 @@ void gTimeline::drawRowPunctual( wxDC& dc,
 }
 
 
-void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, unordered_set<PRV_INT32>& eventsToDraw )
+void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, unordered_set< PRV_INT32 >& eventsToDraw )
 {
-  for( unordered_set<PRV_INT32>::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
+  for( unordered_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
   {
     eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
     eventdc.DrawLine( *it + 1, rowPos - 6, *it + 1, rowPos - 3 );
@@ -1585,15 +1586,15 @@ void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder ro
 
 
 #ifdef _MSC_VER
-void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set<commCoord>& commsToDraw )
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set< commCoord >& commsToDraw )
 #else
-void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set<commCoord, hashCommCoord>& commsToDraw )
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set< commCoord, hashCommCoord >& commsToDraw )
 #endif
 {
 #ifdef _MSC_VER
-  for( unordered_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set< commCoord >::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
-  for( unordered_set<commCoord, hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set< commCoord, hashCommCoord >::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #endif
   {
     if( it->recType & LOG )
@@ -1911,7 +1912,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     outOfDraw = true;
   }
 
-  vector<TObjectOrder> selected;
+  vector< TObjectOrder > selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
 
   if( selected.empty() )
@@ -2203,7 +2204,7 @@ void gTimeline::OnPopUpPunctualColor( wxCommandEvent& event )
 
 void gTimeline::OnPopUpPunctualColorWindow( wxCommandEvent& event )
 {
-  vector<Timeline*> compatWindows;
+  vector< Timeline* > compatWindows;
   int selIndex = 0;
 
   setEnableDestroyButton( false );
@@ -2214,7 +2215,7 @@ void gTimeline::OnPopUpPunctualColorWindow( wxCommandEvent& event )
   wxArrayString choices;
   choices.Add( _( "None" ) );
   int tmpIndex = 1;
-  for( vector<Timeline*>::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
+  for( vector< Timeline* >::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
   {
     choices.Add( wxString::FromUTF8( ( *it )->getName().c_str() ) );
     if( ( *it ) == myWindow->getPunctualColorWindow() )
@@ -2750,7 +2751,7 @@ void gTimeline::OnPopUpSynchronize( wxCommandEvent& event )
   }
   else
   {
-    vector<TGroupId> tmpGroups;
+    vector< TGroupId > tmpGroups;
     SyncWindows::getInstance()->getGroups( tmpGroups );
 
     TGroupId group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
@@ -2803,7 +2804,7 @@ void gTimeline::OnPopUpSynchronizeById( TGroupId& wichGroup, bool setSynchronize
 
 void gTimeline::OnPopUpRemoveGroup( wxCommandEvent& event )
 {
-  vector<TGroupId> tmpGroups;
+  vector< TGroupId > tmpGroups;
   SyncWindows::getInstance()->getGroups( tmpGroups );
   SyncWindows::getInstance()->removeAllWindows( tmpGroups[ event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE ] );
 }
@@ -2821,7 +2822,7 @@ void gTimeline::OnPopUpUndoZoom( wxCommandEvent& event )
   {
     TObjectOrder prevZoomBegin = myWindow->getPrevZoomSecondDimension().first;
     TObjectOrder prevZoomEnd   = myWindow->getPrevZoomSecondDimension().second;
-    vector<TObjectOrder> selectedSet;
+    vector< TObjectOrder > selectedSet;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, prevZoomBegin, prevZoomEnd, true );
 
     if( selectedSet.size() > 0 )
@@ -2853,7 +2854,7 @@ void gTimeline::OnPopUpRedoZoom( wxCommandEvent& event )
   {
     TObjectOrder nextZoomBegin = myWindow->getNextZoomSecondDimension().first;
     TObjectOrder nextZoomEnd   = myWindow->getNextZoomSecondDimension().second;
-    vector<TObjectOrder> selectedSet;
+    vector< TObjectOrder > selectedSet;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, nextZoomBegin, nextZoomEnd, true );
 
     if( selectedSet.size() > 0 )
@@ -3017,7 +3018,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
       wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime ), myWindow->getTimeUnit(), precision ).c_str() ) );
     durationText->SetValue( wxString::FromUTF8(
       LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime - beginTime ), myWindow->getTimeUnit(), precision ).c_str() ) );
-    vector<TObjectOrder> selectedSet;
+    vector< TObjectOrder > selectedSet;
     TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
     TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
@@ -3143,7 +3144,7 @@ wxString gTimeline::formatTime( TRecordTime whichTime, bool showDate )
 
 
 // Computes What/Where, filling whatWhereLines vector. Doesn't show it --> printWhatWhere.
-void gTimeline::computeWhatWhere( std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
+void gTimeline::computeWhatWhere( std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
                                   TRecordTime whichTime,
                                   TObjectOrder whichRow,
                                   TSemanticValue whichSemantic,
@@ -3185,7 +3186,7 @@ void gTimeline::computeWhatWhere( std::vector<std::pair<TWhatWhereLine, wxString
 
   if( myWindow->isFusedLinesColorSet() )
     return;
-  std::vector<Timeline*> groupWindows;
+  std::vector< Timeline* > groupWindows;
   if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_INFO_PANEL ) )
   {
     groupWindows = SyncWindows::getInstance()->getGroupTimelineWindows( myWindow->getSyncGroup() );
@@ -3279,7 +3280,7 @@ void gTimeline::printWhatWhere()
   whatWhereText->BeginFontSize( fontSize );
   fontSizeOpen = true;
 
-  for( vector<pair<TWhatWhereLine, wxString>>::iterator it = whatWhereLines.begin(); it != whatWhereLines.end(); ++it )
+  for( vector< pair< TWhatWhereLine, wxString > >::iterator it = whatWhereLines.begin(); it != whatWhereLines.end(); ++it )
   {
     // Is that section allowed?
     switch( it->first )
@@ -3412,7 +3413,7 @@ void gTimeline::printWhatWhere()
 
 // If some tags changes here, please read printWhatWhere function.
 void gTimeline::printWWSemantic( Timeline* temporalWindow,
-                                 std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
+                                 std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
                                  TObjectOrder whichRow,
                                  bool clickedValue,
                                  bool textMode,
@@ -3455,7 +3456,7 @@ void gTimeline::printWWSemantic( Timeline* temporalWindow,
 
 // If some tags changes here, please read printWhatWhere function.
 void gTimeline::printWWRecords( Timeline* temporalWindow,
-                                std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
+                                std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
                                 TObjectOrder whichRow,
                                 bool clickedValue,
                                 bool textMode,
@@ -3625,7 +3626,7 @@ void gTimeline::OnPopUpSaveCFG( wxCommandEvent& event )
 
 void gTimeline::OnPopUpSaveImageDialog( wxCommandEvent& event )
 {
-  saveImageDialog();
+  openSaveImageDialog();
 }
 
 void gTimeline::OnPopUpSaveText( wxCommandEvent& event )
@@ -3692,7 +3693,7 @@ void gTimeline::OnItemColorLeftUp( wxMouseEvent& event )
   textSelectedGreen->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Green() ) );
   textSelectedBlue->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Blue() ) );
 
-  selectedCustomColor = static_cast<CustomColorSemValue*>( event.m_callbackUserData );
+  selectedCustomColor = static_cast< CustomColorSemValue* >( event.m_callbackUserData );
 
   if( lastSelectedItemText != nullptr )
     lastSelectedItemText->SetFont( originalUnselectectItemTextFont );
@@ -3816,11 +3817,11 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
     {
       TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
       TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
-      vector<TObjectOrder> selected;
+      vector< TObjectOrder > selected;
       myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
 
       size_t i = 0;
-      for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+      for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
       {
         if( i > MAX_LEGEND_COLORS )
           break;
@@ -3990,29 +3991,51 @@ wxString gTimeline::buildFormattedFileName() const
 }
 
 
-void gTimeline::saveImageDialog( wxString whichFileName )
+void gTimeline::openSaveImageDialog( wxString whichFileName )
 {
-  wxString imageName;
-  wxString tmpSuffix;
-
   setEnableDestroyButton( false );
-  imageName = buildFormattedFileName();
-
 
   wxFileName startingDir( wxString::FromUTF8( myWindow->getTrace()->getFileName().c_str() ) );
   wxString defaultDir = startingDir.GetPath();
 
+  wxString imageName = buildFormattedFileName();
+
   TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
 
-  wxString legendSuffix = _( ".code_legend" );
-  if( myWindow->isGradientColorSet() )
-    legendSuffix = _( ".gradient_legend" );
-  else if( myWindow->isNotNullGradientColorSet() )
-    legendSuffix = _( ".nn_gradient_legend" );
-  else if( myWindow->isAlternativeGradientColorSet() )
-    legendSuffix = _( ".alt_gradient_legend" );
+  WindowImageGenerator* newWindowImage =
+    new WindowImageGenerator( &drawImage, myWindow, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
-  SaveImageDialog saveDialog( this, defaultDir, imageName, false, legendSuffix );
+  newWindowImage->generateTimelineImage();
+
+  if( myWindow->isFusedLinesColorSet() )
+  {
+    std::map< TSemanticValue, rgb > tmpObjects;
+
+    TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+    TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
+    vector< TObjectOrder > selected;
+    myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
+
+    for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
+    {
+      rgb tmprgb = myWindow->getSemanticColor().calcColor( ( *it ) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) );
+      tmpObjects[ (TSemanticValue)( *it ) ] = tmprgb;
+    }
+
+    newWindowImage->generateScaleImage( tmpObjects );
+  }
+  else
+  {
+    newWindowImage->generateScaleImage( semanticValuesToColor );
+
+    if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
+    {
+      newWindowImage->generateScaleTimelineImage( semanticValuesToColor );
+    }
+  }
+
+  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, false, newWindowImage->getLegendSuffix() );
+
   if( saveDialog.ShowModal() != wxID_OK )
   {
     setEnableDestroyButton( true );
@@ -4020,125 +4043,51 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   }
 
   filterIndex = TImageFormat( saveDialog.GetFilterIndex() ); // TImageFormat::PNG; //TImageFormat( saveDialog.GetFilterIndex() );
-
+  ParaverConfig::getInstance()->setTimelineSaveImageFormat( filterIndex );
 
   if( saveDialog.DialogSavesImage() )
   {
-    imageName = saveDialog.GetImageFilePath(); // .GetPath();
-    saveImage( imageName, filterIndex );
+    imageName = saveDialog.GetImageFilePath();
+    newWindowImage->saveImageTimeline( imageName );
+
+    if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
+    {
+      newWindowImage->saveImageTimelineScale( imageName );
+    }
   }
 
   if( saveDialog.DialogSavesLegend() )
   {
-    imageName               = saveDialog.GetLegendFilePath(); // .GetPath();
-    bool appendLegendSuffix = false;
-    saveImageLegend( imageName, filterIndex, appendLegendSuffix );
+    imageName = saveDialog.GetLegendFilePath(); // .GetPath();
+    newWindowImage->saveImageScale( imageName, false );
   }
 }
 
-void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
+
+void gTimeline::saveImageTimeline( wxString whichFileName )
 {
   wxString imagePath;
   /* TImageFormat filterIndex;*/
 
   setEnableDestroyButton( false );
 
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    // filterIndex =  TImageFormat::PNG;
   }
   else
   {
-    wxString imageName;
-    wxString tmpSuffix;
+    wxString imageName = buildFormattedFileName();
+    wxString tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     wxString defaultDir;
-
-    imageName = buildFormattedFileName();
-
 #ifdef _WIN32
     defaultDir = _( ".\\" );
 #else
     defaultDir = _( "./" );
 #endif
-
-    filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
-    tmpSuffix   = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-    imagePath   = imageName + tmpSuffix;
+    imagePath = imageName + tmpSuffix;
   }
-
-  // Get title
-  wxString longTitle    = wxString::FromUTF8( ( myWindow->getName() + " @ " + myWindow->getTrace()->getTraceNameNumbered() ).c_str() );
-  wxString shortTitle   = wxString::FromUTF8( ( myWindow->getName() ).c_str() );
-  wxString writtenTitle = longTitle;
-
-  // Get colors
-  wxColour foregroundColour = GetForegroundColour();
-  wxColour backgroundColour = GetBackgroundColour();
-
-  // Get font
-  wxFont titleFont = semanticFont;
-
-  // Get dimensions
-  wxImage img        = drawImage.ConvertToImage();
-  int timelineWidth  = img.GetWidth();
-  int timelineHeight = img.GetHeight();
-
-  int titleMargin        = 5;                                              // used in 4 sides
-  int titleHeigth        = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
-  int titleWidth         = timelineWidth;
-  int titleWritableWidth = titleWidth - ( 2 * titleMargin );
-
-  int imageHeigth = titleHeigth + timelineHeight;
-  int imageWidth  = timelineWidth;
-
-  // Build DC for title
-  wxBitmap titleBitmap( titleWidth, titleHeigth );
-  wxMemoryDC titleDC( titleBitmap );
-
-  // Set font and check if using it the title will fit
-  titleDC.SetFont( titleFont );
-  wxSize titleSize = titleDC.GetTextExtent( writtenTitle );
-
-  if( titleSize.GetWidth() > titleWritableWidth )
-  {
-    titleSize    = titleDC.GetTextExtent( shortTitle );
-    writtenTitle = shortTitle;
-  }
-
-  // Set colors
-  titleDC.SetBackground( wxBrush( backgroundColour ) );
-  titleDC.Clear();
-
-  titleDC.SetPen( wxPen( backgroundColour, 1 ) );
-  titleDC.SetTextBackground( backgroundColour );
-  titleDC.SetTextForeground( foregroundColour );
-
-  // Compute title image size
-  titleDC.DrawText( writtenTitle, titleMargin, titleMargin );
-
-  wxBitmap imageBitmap( imageWidth, imageHeigth );
-  wxMemoryDC imageDC( imageBitmap );
-  wxCoord xsrc = 0;
-  wxCoord ysrc = 0;
-  wxCoord xdst = 0;
-  wxCoord ydst = 0;
-  imageDC.Blit( xdst, ydst, titleWidth, titleHeigth, &titleDC, xsrc, ysrc );
-
-#ifdef __WXMAC__
-  wxBitmap tmpDrawImage( drawImage.GetWidth(), drawImage.GetHeight() );
-  wxMemoryDC timelineDC( tmpDrawImage );
-  drawStackedImages( timelineDC );
-#else
-  wxMemoryDC timelineDC( drawImage );
-#endif
-  xsrc = 0;
-  ysrc = 0;
-  xdst = 0;
-  ydst = titleHeigth;
-  imageDC.Blit( xdst, ydst, timelineWidth, timelineHeight, &timelineDC, xsrc, ysrc );
-
-  // Get image type and save
   wxBitmapType imageType;
 
   switch( filterIndex )
@@ -4160,133 +4109,46 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
       break;
   }
 
-  imageDC.SelectObject( wxNullBitmap );
-  wxImage baseLayer = imageBitmap.ConvertToImage();
-
-  // Save timeline with gradient scale
-  if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
-  {
-    ScaleImageVertical* tmpImage;
-
-    // Create DC for timeline image
-    wxMemoryDC tmpTimelineDC( imageBitmap ); // reuse imageDC?
-
-    // Create DC for scale
-    int wantedWidth    = baseLayer.GetWidth();
-    int backgroundMode = wxSOLID;
-    tmpImage           = new ScaleImageHorizontalGradientColor( myWindow,
-                                                      semanticValuesToColor,
-                                                      backgroundColour,
-                                                      foregroundColour,
-                                                      backgroundMode,
-                                                      titleFont,
-                                                      imagePath,
-                                                      wxString( _( "horiz.labels" ) ),
-                                                      imageType,
-                                                      wantedWidth );
-    tmpImage->process();
-    // tmpImage->save();
-
-    wxBitmap* tmpScale = tmpImage->getBitmap();
-    wxMemoryDC tmpScaleDC( *tmpScale );
-
-    // Create DC for destiny image
-    int totalHeigth = baseLayer.GetHeight() + tmpScale->GetHeight();
-    int totalWidth  = baseLayer.GetWidth() > tmpScale->GetWidth() ? baseLayer.GetWidth() : tmpScale->GetWidth();
-    wxBitmap tmpScaledTimelineBitmap( totalWidth, totalHeigth );
-    wxMemoryDC tmpScaledTimelineDC( tmpScaledTimelineBitmap );
-    tmpScaledTimelineDC.SetBackground( backgroundColour );
-    tmpScaledTimelineDC.Clear();
-
-    // Copy to destiny
-    int xsrc = 0;
-    int ysrc = 0;
-    int xdst = 0;
-    int ydst = 0;
-
-    tmpScaledTimelineDC.Blit( xdst, ydst, imageBitmap.GetWidth(), imageBitmap.GetHeight(), &tmpTimelineDC, xsrc, ysrc );
-
-    xdst = totalWidth - tmpScale->GetWidth();
-    if( xdst < 0 )
-    {
-      xdst = 0;
-    }
-    ydst = imageBitmap.GetHeight();
-    tmpScaledTimelineDC.Blit( xdst, ydst, tmpScale->GetWidth(), tmpScale->GetHeight(), &tmpScaleDC, xsrc, ysrc );
-
-    // tmpScaledTimelineDC->SelectObject( wxNullBitmap );
-
-    wxImage tmpScaledTimeline( tmpScaledTimelineBitmap.ConvertToImage() );
-    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getImageFileSuffix( TImageFormat( filterIndex ) ).c_str() );
-    wxString tmpScaledTimelinePath =
-      wxFileName( imagePath ).GetPathWithSep() + wxFileName( imagePath ).GetName() + wxString( _( ".w_legend." ) ) + currentFormat;
-    tmpScaledTimeline.SaveFile( tmpScaledTimelinePath, imageType );
-  }
-
-  // Save timeline image without scale
-  baseLayer.SaveFile( imagePath, imageType );
-
-  setEnableDestroyButton( true );
+  WindowImageGenerator newWindowImage( &drawImage, myWindow, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  newWindowImage.generateTimelineImage();
+  newWindowImage.saveImageTimeline( imagePath );
 }
 
 
 void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterIndex, bool appendLegendSuffix )
 {
-  wxString imageName;
-  wxString tmpSuffix;
-  wxString defaultDir;
+  wxString imagePath;
+  /* TImageFormat filterIndex;*/
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
-    imageName = whichFileName;
-  else
-    imageName = buildFormattedFileName();
-
-#ifdef _WIN32
-  defaultDir = _( ".\\" );
-#else
-  defaultDir = _( "./" );
-#endif
-
-  tmpSuffix = _( "" );
-  if( appendLegendSuffix )
   {
-    tmpSuffix += _( "." );
-    if( myWindow->isGradientColorSet() )
-      tmpSuffix += wxString( _( "gradient_legend" ) ) + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-    else if( myWindow->isNotNullGradientColorSet() )
-      tmpSuffix +=
-        wxString( _( "nn_gradient_legend" ) ) + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-    else if( myWindow->isAlternativeGradientColorSet() )
-      tmpSuffix +=
-        wxString( _( "alt_gradient_legend" ) ) + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-    else
-      tmpSuffix += wxString( _( "code_legend" ) ) + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    imagePath = whichFileName;
   }
+  else
+  {
+    filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
 
-  wxString imagePath = imageName + tmpSuffix;
-
-  // Get colors
-  wxColour foregroundColour = GetForegroundColour();
-  wxColour backgroundColour = GetBackgroundColour();
-
-  // Get font
-  wxFont titleFont = semanticFont;
-
-  // Get image type and save
+    wxString imageName = buildFormattedFileName();
+    wxString tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    wxString defaultDir;
+#ifdef _WIN32
+    defaultDir = _( ".\\" );
+#else
+    defaultDir = _( "./" );
+#endif
+    imagePath = imageName + tmpSuffix;
+  }
   wxBitmapType imageType;
 
-  int backgroundMode = wxTRANSPARENT; // default
   switch( filterIndex )
   {
     case TImageFormat::BMP:
-      imageType      = wxBITMAP_TYPE_BMP;
-      backgroundMode = wxSOLID;
+      imageType = wxBITMAP_TYPE_BMP;
       break;
     case TImageFormat::JPG:
-      imageType      = wxBITMAP_TYPE_JPEG;
-      backgroundMode = wxSOLID;
+      imageType = wxBITMAP_TYPE_JPEG;
       break;
     case TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
@@ -4299,755 +4161,35 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
       break;
   }
 
-  ScaleImageVertical* tmpImage;
-  if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
+  WindowImageGenerator newWindowImage( &drawImage, myWindow, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+
+  if( myWindow->isFusedLinesColorSet() )
   {
-    tmpImage = new ScaleImageHorizontalGradientColor( myWindow,
-                                                      semanticValuesToColor,
-                                                      // backgroundColour, foregroundColour, backgroundMode,
-                                                      *wxWHITE,
-                                                      *wxBLACK,
-                                                      backgroundMode,
-                                                      titleFont,
-                                                      // imagePath, wxString( _( "horiz.labels.transp" ) ),
-                                                      imagePath,
-                                                      wxString( _( "" ) ),
-                                                      imageType );
-    tmpImage->process();
-    tmpImage->save();
-    delete tmpImage;
-  }
-  else if( myWindow->isCodeColorSet() )
-  {
-    tmpImage = new ScaleImageVerticalCodeColor( myWindow,
-                                                semanticValuesToColor,
-                                                // backgroundColour, foregroundColour, backgroundMode,
-                                                *wxWHITE,
-                                                *wxBLACK,
-                                                backgroundMode,
-                                                titleFont,
-                                                // imagePath, wxString( _( "vert.labels.transp" ) ),
-                                                imagePath,
-                                                wxString( _( "" ) ),
-                                                imageType );
-    tmpImage->process();
-    tmpImage->save();
-    delete tmpImage;
-  }
-  else if( myWindow->isFusedLinesColorSet() )
-  {
-    std::map<TSemanticValue, rgb> tmpObjects;
+    std::map< TSemanticValue, rgb > tmpObjects;
 
     TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
     TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
-    vector<TObjectOrder> selected;
+    vector< TObjectOrder > selected;
     myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
 
-    for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+    for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
     {
-      rgb tmprgb = myWindow->getSemanticColor().calcColor( ( *it ) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1 );
+      rgb tmprgb = myWindow->getSemanticColor().calcColor( ( *it ) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) );
       tmpObjects[ (TSemanticValue)( *it ) ] = tmprgb;
     }
-    tmpImage = new ScaleImageVerticalFusedLines( myWindow,
-                                                 tmpObjects,
-                                                 // backgroundColour, foregroundColour, backgroundMode,
-                                                 *wxWHITE,
-                                                 *wxBLACK,
-                                                 backgroundMode,
-                                                 titleFont,
-                                                 // imagePath, wxString( _( "vert.labels.transp" ) ),
-                                                 imagePath,
-                                                 wxString( _( "" ) ),
-                                                 imageType );
-    tmpImage->process();
-    tmpImage->save();
-    delete tmpImage;
+
+    newWindowImage.generateScaleImage( tmpObjects );
   }
+  else
+  {
+    newWindowImage.generateScaleImage( semanticValuesToColor );
+  }
+
+  newWindowImage.saveImageScale( imagePath, true );
 
   setEnableDestroyButton( true );
 }
 
-
-//---------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------
-//
-// ScaleImage
-//
-gTimeline::ScaleImageVertical::ScaleImageVertical( Timeline* whichMyWindow,
-                                                   const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                                                   wxColour whichBackground,
-                                                   wxColour whichForeground,
-                                                   int whichBackgroundMode,
-                                                   wxFont whichTextFont,
-                                                   wxString& whichImagePath,
-                                                   const wxString& whichImageInfix,
-                                                   wxBitmapType& whichImageType )
-  : myWindow( whichMyWindow )
-  , semValues( whichSemanticValues )
-  , background( whichBackground )
-  , foreground( whichForeground )
-  , backgroundMode( whichBackgroundMode )
-  , textFont( whichTextFont )
-  , imagePath( whichImagePath )
-  , imageInfix( whichImageInfix )
-  , imageType( whichImageType )
-{
-}
-
-
-gTimeline::ScaleImageVertical::~ScaleImageVertical()
-{
-  destroyDC();
-}
-
-
-wxString gTimeline::ScaleImageVertical::buildScaleImagePath()
-{
-  wxString scaleImagePath;
-
-  if( imageInfix.IsEmpty() )
-    scaleImagePath = imagePath;
-  else
-    scaleImagePath = wxFileName( imagePath ).GetPathWithSep() + wxFileName( imagePath ).GetName() + _( "." ) + imageInfix + _( "." ) + tmpSuffix;
-
-  return scaleImagePath;
-}
-
-
-void gTimeline::ScaleImageVertical::bitmapToImage()
-{
-  scaleDC->SelectObject( wxNullBitmap );
-
-#ifndef __WXMAC__
-  // TODO: avoid to create/handle scaleMaskDC in all the other methods if wxTRANSPARENT
-  if( backgroundMode == wxTRANSPARENT )
-  {
-    scaleMaskDC->SelectObject( wxNullBitmap );
-    wxMask* mask = new wxMask( *scaleMaskBitmap, *wxWHITE );
-    scaleBitmap->SetMask( mask );
-  }
-#endif
-
-  scaleImage = new wxImage( scaleBitmap->ConvertToImage() );
-}
-
-
-void gTimeline::ScaleImageVertical::process()
-{
-  init();
-  sortSemanticValues();
-  computeMaxLabelSize();
-  computeImageSize();
-  createDC();
-  draw();
-  bitmapToImage();
-}
-
-
-void gTimeline::ScaleImageVertical::save()
-{
-  wxString scaleImagePath = buildScaleImagePath();
-  scaleImage->SaveFile( scaleImagePath, imageType );
-
-// Test code for transparency
-#if 0
-  ::wxInitAllImageHandlers();
-  wxBitmap bmp( 64, 64, 32 );
-  //bmp.UseAlpha();
-  wxBitmap maskbmp( 64, 64, 32 );
-
-  wxMemoryDC dc( bmp );
-  //dc.SetBackgroundMode( wxTRANSPARENT );
-  dc.SetBackground( *wxWHITE_BRUSH/**wxTRANSPARENT_BRUSH*/ );
-  dc.SetBrush( *wxWHITE_BRUSH/**wxTRANSPARENT_BRUSH*/ );
-  dc.Clear();
-  
-  //wxGCDC dc( memDC );
-//  wxMemoryDC dc( bmp );
-  wxMemoryDC maskDC( maskbmp );
-
-  /*dc.SetBackground( *wxTRANSPARENT_BRUSH );
-  dc.Clear();*/
-  dc.SetFont( textFont );
-  maskDC.SetBackground( *wxBLACK_BRUSH );
-  maskDC.Clear();
-  maskDC.SetBrush( *wxWHITE_BRUSH );
-  maskDC.SetPen( *wxWHITE_PEN );
-  maskDC.SetTextForeground( *wxWHITE );
-  maskDC.SetFont( textFont );
-
-  dc.SetBrush( *wxRED_BRUSH );
-  dc.SetPen( *wxBLACK_PEN );
-  dc.DrawRectangle( 10, 30, 10, 10 );
-  maskDC.DrawRectangle( 10, 30, 10, 10 );
-  dc.SetTextForeground( *wxBLACK );
-  dc.DrawText( wxT( "HELLO" ), 10, 10 );
-  maskDC.DrawText( wxT( "HELLO" ), 10, 10 );
-  dc.SelectObject( wxNullBitmap );
-  maskDC.SelectObject( wxNullBitmap );
-  maskbmp.SaveFile( wxT( "./mask.png" ), wxBITMAP_TYPE_PNG );
-  wxMask *tmpMask = new wxMask( maskbmp, *wxBLACK );
-  bmp.SetMask( tmpMask );
-  bmp.SaveFile( wxT( "./test.png" ), wxBITMAP_TYPE_PNG );
-#endif
-}
-
-
-void gTimeline::ScaleImageVertical::init()
-{
-  filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
-  // tmpSuffix = _("as_list.");
-  tmpSuffix = _( "labels." );
-  tmpSuffix += wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-
-  currentMin = myWindow->getMinimumY();
-  currentMax = myWindow->getMaximumY();
-
-  precision    = ParaverConfig::getInstance()->getTimelinePrecision();
-  symbolicDesc = true;
-
-  // numSquares = 20;
-  extraPrefixOutlier = wxT( "" );
-
-  // n labels * label height + top + bottom
-  titleMargin = 5; // used in 4 sides
-
-  // Colored rectangle size
-  widthRect  = 10;
-  heightRect = textFont.GetPointSize() + 3;
-
-  imageStepY          = textFont.GetPointSize() + 2 * titleMargin;
-  imageStepXRectangle = widthRect;
-
-  // Loop through labels
-  xdst = titleMargin;
-  ydst = titleMargin;
-}
-
-
-void gTimeline::ScaleImageVertical::computeMaxLabelSize()
-{
-  // Dimensions: loop for every value to build labels and measure the maximum
-  wxString curLabel;
-  wxString maxLabel;
-  size_t maxLengthLabel = 0;
-  size_t curLengthLabel;
-  for( auto it = semValues.begin(); it != semValues.end(); ++it )
-  {
-    // Get Labels
-    curLabel = wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, it->first, symbolicDesc, precision, false ).c_str() );
-    semanticValueLabel[ it->first ] = curLabel;
-
-    // Get Longest label
-    curLengthLabel = curLabel.Len();
-    if( maxLengthLabel < curLengthLabel )
-    {
-      maxLengthLabel                = curLengthLabel;
-      semanticValueWithLongestLabel = it->first;
-    }
-  }
-
-  // Guess height and width of longest label
-  wxBitmap maxLabelBitmap( 1920, 64 );
-  wxMemoryDC maxLabelDC( maxLabelBitmap );
-  maxLabelDC.SetFont( textFont );
-  maxLabelSize = maxLabelDC.GetTextExtent( extraPrefixOutlier + semanticValueLabel[ semanticValueWithLongestLabel ] );
-}
-
-
-void gTimeline::ScaleImageVertical::sortSemanticValues()
-{
-}
-
-
-void gTimeline::ScaleImageVertical::computeImageSize()
-{
-  // Guess height
-  imageHeight = semanticValueLabel.size() * imageStepY + ( 2 * titleMargin );
-
-  if( drawOutliers )
-    imageHeight += ( imageStepY + titleMargin ) * 2;
-
-  imageWidth = maxLabelSize.GetWidth() + ( 2 * titleMargin ) + ( widthRect + titleMargin );
-}
-
-
-void gTimeline::ScaleImageVertical::createDC()
-{
-  // Legend
-  scaleBitmap = new wxBitmap( imageWidth, imageHeight );
-  scaleDC     = new wxMemoryDC( *scaleBitmap );
-
-  scaleDC->SetFont( textFont );
-  if( backgroundMode == wxSOLID )
-  {
-    scaleDC->SetBackground( background );
-    scaleDC->SetTextBackground( background );
-    scaleDC->SetTextForeground( foreground );
-    scaleDC->SetPen( foreground );
-  }
-  else
-  {
-    scaleDC->SetBackground( *wxWHITE_BRUSH );
-    scaleDC->SetTextForeground( *wxBLACK );
-  }
-
-  scaleDC->Clear();
-
-  // Mask for legend
-  scaleMaskBitmap = new wxBitmap( imageWidth, imageHeight );
-  scaleMaskDC     = new wxMemoryDC( *scaleMaskBitmap );
-  scaleMaskDC->SetBackground( *wxWHITE_BRUSH );
-  scaleMaskDC->SetBrush( *wxBLACK_BRUSH );
-  scaleMaskDC->SetPen( *wxBLACK_PEN );
-  scaleMaskDC->SetTextForeground( *wxBLACK );
-  scaleMaskDC->SetFont( textFont );
-  scaleMaskDC->Clear();
-}
-
-
-void gTimeline::ScaleImageVertical::draw()
-{
-  for( auto it = semValues.begin(); it != semValues.end(); ++it )
-  {
-    drawLabeledRectangle( it->second, semanticValueLabel[ it->first ] );
-    ydst += imageStepY;
-  }
-}
-
-
-void gTimeline::ScaleImageVertical::drawLabeledRectangle( rgb semanticColour, wxString semanticValueLabel, bool drawIt )
-{
-  scaleDC->SetBrush( wxColour( semanticColour.red, semanticColour.green, semanticColour.blue ) );
-  scaleDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
-  scaleMaskDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
-
-  if( drawIt )
-  {
-    // Write text
-    scaleDC->DrawText( semanticValueLabel, xdst + widthRect + titleMargin, ydst );
-    scaleMaskDC->DrawText( semanticValueLabel, xdst + widthRect + titleMargin, ydst );
-  }
-}
-
-
-void gTimeline::ScaleImageVertical::destroyDC()
-{
-  delete scaleDC;
-  delete scaleMaskDC;
-  delete scaleBitmap;
-  delete scaleMaskBitmap;
-  delete scaleImage;
-}
-
-
-//---------------------------------------------------------------------------------------------------
-//
-// ScaleImageVerticalCodeColor
-//
-gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor( Timeline* whichMyWindow,
-                                                                     const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                                                                     wxColour whichBackground,
-                                                                     wxColour whichForeground,
-                                                                     int whichBackgroundMode,
-                                                                     wxFont whichTextFont,
-                                                                     wxString& whichImagePath,
-                                                                     const wxString& whichImageInfix,
-                                                                     wxBitmapType& whichImageType )
-  : ScaleImageVertical( whichMyWindow,
-                        whichSemanticValues,
-                        whichBackground,
-                        whichForeground,
-                        whichBackgroundMode,
-                        whichTextFont,
-                        whichImagePath,
-                        whichImageInfix,
-                        whichImageType )
-{
-}
-
-
-void gTimeline::ScaleImageVerticalCodeColor::init()
-{
-  gTimeline::ScaleImageVertical::init();
-
-  drawOutliers = false;
-  symbolicDesc = true;
-}
-
-
-//---------------------------------------------------------------------------------------------------
-//
-// ScaleImageVerticalGradientColor
-//
-gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor( Timeline* whichMyWindow,
-                                                                             const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                                                                             wxColour whichBackground,
-                                                                             wxColour whichForeground,
-                                                                             int whichBackgroundMode,
-                                                                             wxFont whichTextFont,
-                                                                             wxString& whichImagePath,
-                                                                             const wxString& whichImageInfix,
-                                                                             wxBitmapType& whichImageType )
-  : ScaleImageVertical( whichMyWindow,
-                        whichSemanticValues,
-                        whichBackground,
-                        whichForeground,
-                        whichBackgroundMode,
-                        whichTextFont,
-                        whichImagePath,
-                        whichImageInfix,
-                        whichImageType )
-{
-}
-
-
-void gTimeline::ScaleImageVerticalGradientColor::init()
-{
-  gTimeline::ScaleImageVertical::init();
-
-  drawOutliers = true;
-  symbolicDesc = false;
-
-  numSquaresWithoutOutliers = 20;
-  if( myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
-    ++numSquaresWithoutOutliers;                // 0 black
-  totalSquares = numSquaresWithoutOutliers + 2; // gradient and outliers
-
-  extraPrefixOutlier = wxT( "< " );
-}
-
-
-void gTimeline::ScaleImageVerticalGradientColor::sortSemanticValues()
-{
-  semValues.clear();
-  TSemanticValue step = ( currentMax - currentMin ) / double( numSquaresWithoutOutliers - 1 ); //?
-  for( int i = 0; i < numSquaresWithoutOutliers; ++i )
-  {
-    TSemanticValue current = ( i * step ) + currentMin;
-    if( current > currentMax )
-      current = currentMax;
-
-    semValues[ current ] = myWindow->getSemanticColor().calcColor( current, currentMin, currentMax );
-  }
-}
-
-
-void gTimeline::ScaleImageVerticalGradientColor::draw()
-{
-  // Bottom Outlier
-  rgb tmprgb = myWindow->getSemanticColor().getBelowOutlierColor();
-  wxString tmpSemanticValueLabel =
-    wxT( "< " ) + wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, semValues.begin()->first, symbolicDesc, precision, false ).c_str() );
-  drawLabeledRectangle( tmprgb, tmpSemanticValueLabel );
-  ydst += imageStepY;
-
-  // Values
-  for( auto it = semValues.begin(); it != semValues.end(); ++it )
-  {
-    drawLabeledRectangle( it->second, semanticValueLabel[ it->first ] );
-    ydst += imageStepY;
-  }
-
-  // Top outlier
-  tmprgb = myWindow->getSemanticColor().getAboveOutlierColor();
-  tmpSemanticValueLabel =
-    wxT( "> " ) +
-    wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, ( --semValues.end() )->first, symbolicDesc, precision, false ).c_str() );
-  drawLabeledRectangle( tmprgb, tmpSemanticValueLabel );
-  ydst += imageStepY;
-}
-
-
-//---------------------------------------------------------------------------------------------------
-//
-// ScaleImageVerticalFusedLines
-//
-gTimeline::ScaleImageVerticalFusedLines::ScaleImageVerticalFusedLines( Timeline* whichMyWindow,
-                                                                       const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                                                                       wxColour whichBackground,
-                                                                       wxColour whichForeground,
-                                                                       int whichBackgroundMode,
-                                                                       wxFont whichTextFont,
-                                                                       wxString& whichImagePath,
-                                                                       const wxString& whichImageInfix,
-                                                                       wxBitmapType& whichImageType )
-  : ScaleImageVertical( whichMyWindow,
-                        whichSemanticValues,
-                        whichBackground,
-                        whichForeground,
-                        whichBackgroundMode,
-                        whichTextFont,
-                        whichImagePath,
-                        whichImageInfix,
-                        whichImageType )
-{
-}
-
-
-void gTimeline::ScaleImageVerticalFusedLines::init()
-{
-  gTimeline::ScaleImageVertical::init();
-
-  currentMin = 0;
-  currentMax = myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1;
-}
-
-void gTimeline::ScaleImageVerticalFusedLines::computeMaxLabelSize()
-{
-  // Dimensions: loop for every value to build labels and measure the maximum
-  wxString curLabel;
-  wxString maxLabel;
-  size_t maxLengthLabel = 0;
-  size_t curLengthLabel;
-  for( auto it = semValues.begin(); it != semValues.end(); ++it )
-  {
-    // Get Labels
-    curLabel = wxString::FromUTF8( LabelConstructor::objectLabel( it->first, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
-    semanticValueLabel[ it->first ] = curLabel;
-
-    // Get Longest label
-    curLengthLabel = curLabel.Len();
-    if( maxLengthLabel < curLengthLabel )
-    {
-      maxLengthLabel                = curLengthLabel;
-      semanticValueWithLongestLabel = it->first;
-    }
-  }
-
-  // Guess height and width of longest label
-  wxBitmap maxLabelBitmap( 1920, 64 );
-  wxMemoryDC maxLabelDC( maxLabelBitmap );
-  maxLabelDC.SetFont( textFont );
-  maxLabelSize = maxLabelDC.GetTextExtent( extraPrefixOutlier + semanticValueLabel[ semanticValueWithLongestLabel ] );
-}
-
-//---------------------------------------------------------------------------------------------------
-//
-// ScaleImageHorizontalGradientColor
-//
-gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor( Timeline* whichMyWindow,
-                                                                                 const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                                                                                 wxColour whichBackground,
-                                                                                 wxColour whichForeground,
-                                                                                 int whichBackgroundMode,
-                                                                                 wxFont whichTextFont,
-                                                                                 wxString& whichImagePath,
-                                                                                 const wxString& whichImageInfix,
-                                                                                 wxBitmapType& whichImageType,
-                                                                                 int whichWantedWidth )
-  : ScaleImageVerticalGradientColor( whichMyWindow,
-                                     whichSemanticValues,
-                                     whichBackground,
-                                     whichForeground,
-                                     whichBackgroundMode,
-                                     whichTextFont,
-                                     whichImagePath,
-                                     whichImageInfix,
-                                     whichImageType )
-{
-  wantedWidth = whichWantedWidth;
-}
-
-
-void gTimeline::ScaleImageHorizontalGradientColor::init()
-{
-  gTimeline::ScaleImageVerticalGradientColor::init();
-
-  widthRect           = 20;
-  imageStepXRectangle = widthRect;
-  outlierMargin       = 2 * titleMargin;
-  SIZE_OF_TINY_MARK   = 4;
-}
-
-
-void gTimeline::ScaleImageHorizontalGradientColor::computeImageSize()
-{
-  // Heigth
-  imageHeight = heightRect + maxLabelSize.GetHeight() + 3 * titleMargin;
-
-  // Width
-  if( wantedWidth > 0 )
-  {
-    imageWidth = totalSquares * widthRect + 2 * outlierMargin + 2 * titleMargin;
-    if( imageWidth > wantedWidth )
-    {
-      float MINIMUM_WIDTH_RECT = 10.0;
-      float variableWidthRect  = (float)( ( wantedWidth - 2 * outlierMargin - 2 * titleMargin ) / totalSquares );
-      while( ( totalSquares > 0 ) && ( variableWidthRect < MINIMUM_WIDTH_RECT ) && ( variableWidthRect > 0.0 ) )
-      {
-        --totalSquares;
-        variableWidthRect = (float)( ( wantedWidth - 2 * outlierMargin - 2 * titleMargin ) / totalSquares );
-      }
-
-      widthRect           = rint( variableWidthRect );
-      imageStepXRectangle = widthRect;
-    }
-    else if( imageWidth < wantedWidth )
-    {
-      int extraSquares = rint( floorf( float( ( wantedWidth - imageWidth ) / widthRect ) ) );
-      totalSquares += extraSquares;
-
-      if( myWindow->isNotNullGradientColorSet() )
-        numSquaresWithoutOutliers = totalSquares - 3;
-      else
-        numSquaresWithoutOutliers = totalSquares - 2;
-    }
-
-    sortSemanticValues();
-    computeMaxLabelSize();
-  }
-
-  imageWidth = totalSquares * widthRect + 2 * outlierMargin + 2 * titleMargin;
-}
-
-
-// Both rows are drawn from left to right
-// First row is for colors, second row is for labels
-void gTimeline::ScaleImageHorizontalGradientColor::draw()
-{
-  // *** 1. Draw color scale ****************************************************************
-
-  int initialXdst = xdst;
-
-  // Bottom Outlier
-  rgb tmprgb = myWindow->getSemanticColor().getBelowOutlierColor();
-  drawRectangle( tmprgb );
-  xdst += imageStepXRectangle + outlierMargin;
-
-  // Colors
-  int elem       = 0;
-  int MIDDLE_POS = rint( numSquaresWithoutOutliers / 2 ) + 1; // 11
-  for( auto it = semValues.begin(); it != semValues.end(); ++it )
-  {
-    ++elem;
-    if( it == semValues.begin() )
-      drawRectangle( it->second, FIRST );
-    else if( it == --semValues.end() )
-      drawRectangle( it->second, LAST );
-    else if( elem == MIDDLE_POS )
-      drawRectangle( it->second, MIDDLE );
-    else
-      drawRectangle( it->second, ANY );
-
-    xdst += imageStepXRectangle;
-  }
-
-  // Top outlier
-  xdst += outlierMargin;
-  tmprgb = myWindow->getSemanticColor().getAboveOutlierColor();
-  drawRectangle( tmprgb );
-
-  // *** 2. Draw labels **********************************************************************
-
-  xdst = initialXdst;
-  ydst += imageStepY - titleMargin + 2;
-
-  // Bottom Outlier
-  wxString tmpSemanticValueLabel = wxT( "<" );
-  drawLabel( tmpSemanticValueLabel );
-  xdst += imageStepXRectangle + outlierMargin;
-
-  // Labels
-  bool drawIt;
-  elem = 0;
-  for( auto it = semValues.begin(); it != semValues.end(); ++it )
-  {
-    ++elem;
-    drawIt = it == semValues.begin() || elem == MIDDLE_POS || it == --semValues.end();
-
-    if( it == semValues.begin() )
-      drawLabel( semanticValueLabel[ it->first ], drawIt, LEFT );
-    else if( it == --semValues.end() )
-    {
-      drawLabel( semanticValueLabel[ it->first ], drawIt, RIGHT );
-    }
-    else if( elem == MIDDLE_POS )
-      drawLabel( semanticValueLabel[ it->first ], drawIt, CENTER );
-    else
-      drawLabel( semanticValueLabel[ it->first ], drawIt, LEFT );
-
-    xdst += imageStepXRectangle;
-  }
-
-  // Top outlier
-  xdst += outlierMargin;
-  tmpSemanticValueLabel = wxT( ">" );
-  drawIt                = true;
-  drawLabel( tmpSemanticValueLabel, drawIt, RIGHT );
-}
-
-
-void gTimeline::ScaleImageHorizontalGradientColor::drawRectangle( rgb semanticColour, TPosition position )
-{
-  scaleDC->SetBrush( wxColour( semanticColour.red, semanticColour.green, semanticColour.blue ) );
-  scaleDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
-
-  scaleMaskDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
-
-  switch( position )
-  {
-    case FIRST:
-      scaleDC->DrawLine( xdst, ydst + heightRect, xdst, ydst + heightRect + SIZE_OF_TINY_MARK );
-      scaleMaskDC->DrawLine( xdst, ydst + heightRect, xdst, ydst + heightRect + SIZE_OF_TINY_MARK );
-      break;
-    case MIDDLE:
-      scaleDC->DrawLine( xdst + ceil( (double)widthRect / 2 ),
-                         ydst + heightRect,
-                         xdst + ceil( (double)widthRect / 2 ),
-                         ydst + heightRect + SIZE_OF_TINY_MARK );
-      scaleMaskDC->DrawLine( xdst + ceil( (double)widthRect / 2 ),
-                             ydst + heightRect,
-                             xdst + ceil( (double)widthRect / 2 ),
-                             ydst + heightRect + SIZE_OF_TINY_MARK );
-      break;
-    case LAST:
-      scaleDC->DrawLine( xdst + widthRect - 1, ydst + heightRect, xdst + widthRect - 1, ydst + heightRect + SIZE_OF_TINY_MARK );
-      scaleMaskDC->DrawLine( xdst + widthRect - 1, ydst + heightRect, xdst + widthRect - 1, ydst + heightRect + SIZE_OF_TINY_MARK );
-      break;
-    default:
-      break;
-  }
-}
-
-
-void gTimeline::ScaleImageHorizontalGradientColor::drawLabel( wxString semanticValueLabel, bool writeIt, TAlign align )
-{
-  if( writeIt )
-  {
-    wxSize labelSize = scaleDC->GetTextExtent( semanticValueLabel );
-
-    int shiftLeft;
-    switch( align )
-    {
-      case LEFT:
-        shiftLeft = 0;
-        break;
-      case CENTER:
-        shiftLeft = ceil( (double)labelSize.GetWidth() / 2 - (double)widthRect / 2 );
-        break;
-      case RIGHT:
-        shiftLeft = labelSize.GetWidth() - widthRect;
-        break;
-      default:
-        break;
-    }
-
-    int tmpXdst = xdst;
-    if( ( xdst - shiftLeft ) >= 0 )
-    {
-      tmpXdst = xdst - shiftLeft;
-    }
-
-    // Write text
-    scaleDC->DrawText( semanticValueLabel, tmpXdst, ydst );
-    scaleMaskDC->DrawText( semanticValueLabel, tmpXdst, ydst );
-  }
-}
-
-
-//---------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------
 
 void gTimeline::saveText()
 {
@@ -5071,7 +4213,7 @@ void gTimeline::saveText()
   // Builds following wildcard: _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" )
   // Also fills extension
   wxString tmpWildcard;
-  vector<wxString> extensions;
+  vector< wxString > extensions;
   for( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
     wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ) ).c_str() );
@@ -5092,7 +4234,7 @@ void gTimeline::saveText()
                                   _( "filedlg" ),
                                   extensions );
 
-  saveDialog.SetFilterIndex( static_cast<int>( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ) );
+  saveDialog.SetFilterIndex( static_cast< int >( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ) );
 
   if( saveDialog.ShowModal() == wxID_OK )
   {
@@ -5157,16 +4299,16 @@ void gTimeline::saveText()
 
 void gTimeline::saveCFG()
 {
-  vector<Timeline*> timelines;
+  vector< Timeline* > timelines;
   timelines.push_back( GetMyWindow() );
 
   setEnableDestroyButton( false );
 
   // TODO: use the window linked properties manager if any
   CFGS4DLinkedPropertiesManager dummyManager;
-  vector<CFGS4DLinkedPropertiesManager> dummyList;
+  vector< CFGS4DLinkedPropertiesManager > dummyList;
   dummyList.push_back( dummyManager );
-  paraverMain::myParaverMain->SaveConfigurationFile( (wxWindow*)this, SaveOptions(), timelines, vector<Histogram*>(), dummyList );
+  paraverMain::myParaverMain->SaveConfigurationFile( (wxWindow*)this, SaveOptions(), timelines, vector< Histogram* >(), dummyList );
 
   setEnableDestroyButton( true );
 }
@@ -5496,9 +4638,9 @@ void gTimeline::OnCheckWhatWhereText( wxCommandEvent& event )
   checkWWText->Enable( false );
   checkWWShowDate->Enable( false );
   checkWWHex->Enable( false );
-  std::vector<std::pair<TWhatWhereLine, wxString>> tmpWhatWhereLines;
+  std::vector< std::pair< TWhatWhereLine, wxString > > tmpWhatWhereLines;
 
-  std::vector<Timeline*> groupTimelines;
+  std::vector< Timeline* > groupTimelines;
 
   computeWhatWhere( tmpWhatWhereLines,
                     whatWhereTime,
@@ -5572,7 +4714,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
-  vector<TObjectOrder> selected;
+  vector< TObjectOrder > selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
   double heightPerRow     = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
@@ -5585,7 +4727,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
   TEventType type;
   TEventValue value;
-  vector<TEventType> events;
+  vector< TEventType > events;
   wxString command;
 
   wxString alienApp;
@@ -5758,7 +4900,7 @@ bool gTimeline::pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& 
 
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
-  vector<TObjectOrder> selected;
+  vector< TObjectOrder > selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
   double heightPerRow     = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
@@ -5781,7 +4923,7 @@ bool gTimeline::getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder w
   wxMemoryDC dc( bufferImage );
 
   // Get 3 pixels  (top/center/bottom)
-  std::vector<wxColour> nearbyPixels;
+  std::vector< wxColour > nearbyPixels;
   int tmpY;
   for( int i = -1; i <= 1; ++i )
   {
@@ -5861,7 +5003,7 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   whatWhereText->AppendText( _( "Working..." ) );
   Update();
 
-  std::vector<std::pair<TWhatWhereLine, wxString>> tmpWhatWhereLines;
+  std::vector< std::pair< TWhatWhereLine, wxString > > tmpWhatWhereLines;
 
   computeWhatWhere( tmpWhatWhereLines, time, object, tmpSemantic, checkWWText->IsChecked(), checkWWShowDate->IsChecked(), checkWWHex->IsChecked() );
 
@@ -5872,8 +5014,8 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
 }
 
 
-void gTimeline::drawTimeMarks( std::vector<TRecordTime> times,
-                               vector<TObjectOrder>& selectedObjects,
+void gTimeline::drawTimeMarks( std::vector< TRecordTime > times,
+                               vector< TObjectOrder >& selectedObjects,
                                bool drawXCross,
                                bool allObjects,
                                TObjectOrder lastFoundObject )
@@ -5901,7 +5043,7 @@ void gTimeline::drawTimeMarks( std::vector<TRecordTime> times,
   if( myWindow->getDrawCommLines() )
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
 
-  for( std::vector<TRecordTime>::iterator it = times.begin(); it != times.end(); ++it )
+  for( std::vector< TRecordTime >::iterator it = times.begin(); it != times.end(); ++it )
   {
     if( *it >= myWindow->getWindowBeginTime() && *it <= myWindow->getWindowEndTime() )
     {
@@ -5937,7 +5079,7 @@ void gTimeline::OnFindDialog()
   {
     TRecordTime beginTime, endTime;
     unsigned int objectSelection = dialog.choiceObjects->GetSelection();
-    vector<TObjectOrder> selectedObjects;
+    vector< TObjectOrder > selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
 
     if( dialog.radioObjects->GetValue() )
@@ -5949,9 +5091,9 @@ void gTimeline::OnFindDialog()
     {
       bool found = false;
       TRecordTime newFoundTime, timeToSearch;
-      set<TEventType> events          = myWindow->getTrace()->getLoadedEvents();
-      set<TEventType>::iterator itEvt = events.begin();
-      int i                           = 0;
+      set< TEventType > events          = myWindow->getTrace()->getLoadedEvents();
+      set< TEventType >::iterator itEvt = events.begin();
+      int i                             = 0;
       while( i < dialog.choiceEventType->GetSelection() )
       {
         ++i;
@@ -6147,7 +5289,7 @@ void gTimeline::OnFindDialog()
     findLastObject  = last;
     lastFoundObject = objectSelection;
 
-    std::vector<TRecordTime> tmpTimes;
+    std::vector< TRecordTime > tmpTimes;
     tmpTimes.push_back( lastSemanticFoundTime );
     bool drawXCross = true;
     bool allObjects = false;
@@ -6190,7 +5332,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
           newWheelFactor -= 0.01;
         else*/
     newWheelFactor -= 0.1;
-    if( newWheelFactor <= std::numeric_limits<double>::epsilon() )
+    if( newWheelFactor <= std::numeric_limits< double >::epsilon() )
       return;
   }
   else
@@ -6242,7 +5384,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   if( event.ControlDown() )
 #endif
   {
-    vector<TObjectOrder> selectedObjects;
+    vector< TObjectOrder > selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(),
                                selectedObjects,
                                myWindow->getZoomSecondDimension().first,
@@ -6458,7 +5600,7 @@ void gTimeline::MousePanLeftUp( wxMouseEvent& event )
 
   if( event.ControlDown() )
   {
-    vector<TObjectOrder> selectedObjects;
+    vector< TObjectOrder > selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(),
                                selectedObjects,
                                myWindow->getZoomSecondDimension().first,

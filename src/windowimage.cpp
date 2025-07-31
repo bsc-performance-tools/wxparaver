@@ -1,10 +1,34 @@
 #include "windowimage.h"
+
 #include "labelconstructor.h"
 
-#include <vector>
 #include <iterator>
+#include <vector>
+#include <wx/filename.h>
 
 #define SIZE_MARK_LABEL 4
+
+void imageFormatTypeToBitmapType( const TImageFormat& wichFilterIndex, wxBitmapType& imageType )
+{
+  switch( wichFilterIndex )
+  {
+    case TImageFormat::BMP:
+      imageType = wxBITMAP_TYPE_BMP;
+      break;
+    case TImageFormat::JPG:
+      imageType = wxBITMAP_TYPE_JPEG;
+      break;
+    case TImageFormat::PNG:
+      imageType = wxBITMAP_TYPE_PNG;
+      break;
+    case TImageFormat::XPM:
+      imageType = wxBITMAP_TYPE_XPM;
+      break;
+    default:
+      imageType = wxBITMAP_TYPE_PNG;
+      break;
+  }
+}
 
 WindowImageGenerator::WindowImageGenerator( wxBitmap* wichBitmapTimeline,
                                             Timeline* whichmyWindow,
@@ -22,6 +46,18 @@ WindowImageGenerator::WindowImageGenerator( wxBitmap* wichBitmapTimeline,
   myWindow        = whichmyWindow;
   filterIndex     = wichFilterIndex;
 }
+
+WindowImageGenerator::~WindowImageGenerator()
+{
+  delete scaleImage;
+
+  delete bitmapImageTimeline;
+  delete memoryImageTimeline;
+
+  delete bitmapImageTimelineScale;
+  delete memoryImageTimelineScale;
+}
+
 wxBitmap* WindowImageGenerator::getTimelineImage()
 {
   return bitmapImageTimeline;
@@ -34,14 +70,37 @@ wxBitmap* WindowImageGenerator::getScaleImage()
 {
   return scaleImage->getBitmap();
 }
+wxString WindowImageGenerator::getLegendSuffix()
+{
+  return scaleImage->getLegendSuffix();
+}
+
+TImageFormat WindowImageGenerator::getImageFormat()
+{
+  return filterIndex;
+}
+void WindowImageGenerator::setImageFormat( TImageFormat wichFilterIndex )
+{
+  filterIndex = wichFilterIndex;
+}
 
 void WindowImageGenerator::generateScaleImage( std::map< TSemanticValue, rgb > semanticValuesToColor )
 {
   std::map< TSemanticValue, rgb > scaleValues = semanticValuesToColor;
 
-  if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
+  if( myWindow->isGradientColorSet() )
   {
     typeScale        = TScaleImageType::TScaleImageGradientColor;
+    orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
+  }
+  else if( myWindow->isNotNullGradientColorSet() )
+  {
+    typeScale        = TScaleImageType::TScaleImageGradientColorNotNull;
+    orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
+  }
+  else if( myWindow->isAlternativeGradientColorSet() )
+  {
+    typeScale        = TScaleImageType::TScaleImageAlternativeGradientColor;
     orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
   }
   else if( myWindow->isCodeColorSet() )
@@ -68,6 +127,7 @@ void WindowImageGenerator::generateScaleImage( std::map< TSemanticValue, rgb > s
     orientationScale = TScaleImageOrientation::TScaleImageOrientationVertical;
 
     std::map< TSemanticValue, rgb > scaleValues = tmpObjects;
+    myWindow
   }
 
 
@@ -138,16 +198,23 @@ void WindowImageGenerator::generateTimelineImage()
 }
 
 
-void WindowImageGenerator::generateScaleTimelineImage()
+void WindowImageGenerator::generateScaleTimelineImage( std::map< TSemanticValue, rgb > semanticValuesToColor )
 {
-  wxBitmap* tmpScaleBitmap = scaleImage->getBitmap();
+  ScaleImageGenerator
+    tmpScaleImage( myWindow, semanticValuesToColor, imageBackground, imageForeground, imageTextFont, filterIndex, typeScale, orientationScale, true );
+
+  tmpScaleImage.initializeConfiguration();
+
+  std::optional< int > wantedWidth = bitmapTimeline->GetWidth();
+
+  tmpScaleImage.processImage( wantedWidth );
 
   int imageMargin = 5;
   int imageHeigth = bitmapTimeline->GetHeight() + imageTextFont.GetPointSize() + ( 2 * imageMargin ); // up + down margins + text + image
   int imageWidth  = bitmapTimeline->GetWidth();
 
-  int totalHeigth = imageHeigth + tmpScaleBitmap->GetHeight();
-  int totalWidth  = imageWidth > tmpScaleBitmap->GetWidth() ? imageWidth : tmpScaleBitmap->GetWidth();
+  int totalHeigth = imageHeigth + tmpScaleImage.getBitmap()->GetHeight();
+  int totalWidth  = imageWidth > tmpScaleImage.getBitmap()->GetWidth() ? imageWidth : tmpScaleImage.getBitmap()->GetWidth();
 
   bitmapImageTimelineScale = new wxBitmap( totalWidth, totalHeigth );
   memoryImageTimelineScale = new wxMemoryDC( *bitmapImageTimelineScale );
@@ -160,22 +227,43 @@ void WindowImageGenerator::generateScaleTimelineImage()
 
   memoryImageTimelineScale->Blit( posX, posY, imageWidth, imageHeigth, memoryImageTimeline, 0, 0 );
 
-  posX = totalWidth - tmpScaleBitmap->GetWidth();
+  posX = totalWidth - tmpScaleImage.getBitmap()->GetWidth();
   posY = imageHeigth;
 
-  wxMemoryDC tmpScaleMemory( *tmpScaleBitmap );
+  wxMemoryDC tmpScaleMemory( *tmpScaleImage.getBitmap() );
 
-  memoryImageTimelineScale->Blit( posX, posY, tmpScaleBitmap->GetWidth(), tmpScaleBitmap->GetHeight(), &tmpScaleMemory, 0, 0 );
+  memoryImageTimelineScale->Blit( posX, posY, tmpScaleImage.getBitmap()->GetWidth(), tmpScaleImage.getBitmap()->GetHeight(), &tmpScaleMemory, 0, 0 );
 }
 
-void WindowImageGenerator::saveImageTimeline()
+void WindowImageGenerator::saveImageTimeline( wxString whichFileName )
 {
+  wxBitmapType imageType;
+  imageFormatTypeToBitmapType( filterIndex, imageType );
+
+  wxImage timelineImage( bitmapImageTimeline->ConvertToImage() );
+
+  // Save timeline image without scale
+  timelineImage.SaveFile( whichFileName, imageType );
 }
-void WindowImageGenerator::saveImageTimelineScale()
+void WindowImageGenerator::saveImageTimelineScale( wxString whichFileName )
 {
+  wxImage timelineImageScale( bitmapImageTimelineScale->ConvertToImage() );
+
+
+  wxString currentFormat = wxString::FromUTF8( LabelConstructor::getImageFileSuffix( TImageFormat( filterIndex ) ).c_str() );
+  wxString tmpScaledTimelinePath =
+    wxFileName( whichFileName ).GetPathWithSep() + wxFileName( whichFileName ).GetName() + wxString( _( ".w_legend." ) ) + currentFormat;
+
+  wxBitmapType imageType;
+  imageFormatTypeToBitmapType( filterIndex, imageType );
+
+  // Save timeline image without scale
+  timelineImageScale.SaveFile( tmpScaledTimelinePath, imageType );
 }
-void WindowImageGenerator::saveImageScale()
+
+void WindowImageGenerator::saveImageScale( wxString imageName, bool appendLegendSufix )
 {
+  scaleImage->saveImage( imageName, appendLegendSufix );
 }
 
 
@@ -212,6 +300,15 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
 
   // Inicializa los mapas de etiquetas semánticas (vacíos por ahora)
   semanticValuesLabels.clear();
+  updateLegendSuffix();
+}
+ScaleImageGenerator::~ScaleImageGenerator()
+{
+  delete bitmapImageContent;
+  delete memoryImageContent;
+
+  delete bitmapImageMask;
+  delete memoryImageMask;
 }
 
 void ScaleImageGenerator::initializeConfiguration()
@@ -223,16 +320,17 @@ void ScaleImageGenerator::initializeConfiguration()
   dataImage.titleMargin  = 5;
   dataImage.rectMargin   = 2 * dataImage.titleMargin;
 
-  if( scaleType != TScaleImageType::TScaleImageGradientColor )
+  if( scaleType == TScaleImageType::TScaleImageGradientColor || scaleType == TScaleImageType::TScaleImageGradientColorNotNull ||
+      scaleType == TScaleImageType::TScaleImageAlternativeGradientColor )
   {
-    dataImage.drawOutliers = false;
-    dataImage.symbolicDesc = true;
+    dataImage.drawOutliers = true;
+    dataImage.symbolicDesc = false;
     // totalSquaresGradientColor = 10;
   }
   else
   {
-    dataImage.drawOutliers = true;
-    dataImage.symbolicDesc = false;
+    dataImage.drawOutliers = false;
+    dataImage.symbolicDesc = true;
   }
   if( scaleType != TScaleImageType::TScaleImageGradientFusedLines )
   {
@@ -335,7 +433,7 @@ void ScaleImageGenerator::computeGeneratedImageSize( int whichWantedWidth )
 
     if( whichWantedWidth != 0 )
     {
-      dataImage.widthRect = ( whichWantedWidth - 2 * dataImage.titleMargin - 4 * dataImage.rectMargin ) / ( ( totalSquaresGradientColor + 2 ) );
+      dataImage.widthRect = ( whichWantedWidth - 2 * dataImage.titleMargin - 2 * dataImage.rectMargin ) / ( ( totalSquaresGradientColor + 2 ) );
 
       dataImage.imageWidth = whichWantedWidth;
     }
@@ -382,7 +480,8 @@ void ScaleImageGenerator::createImageDC()
 
 void ScaleImageGenerator::drawImage()
 {
-  if( TScaleImageType::TScaleImageGradientColor == scaleType )
+  if( scaleType == TScaleImageType::TScaleImageGradientColor || scaleType == TScaleImageType::TScaleImageGradientColorNotNull ||
+      scaleType == TScaleImageType::TScaleImageAlternativeGradientColor )
     drawImageGradientColor();
   else
     drawImageCodeColor();
@@ -536,41 +635,59 @@ wxImage ScaleImageGenerator::bitmapToImage()
   return scaleImage;
 }
 
-void ScaleImageGenerator::saveImage( wxString imagePath )
+void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSufix )
 {
   wxBitmapType imageType;
+  wxString tmpSuffix;
 
-  switch( filterIndex )
+  imageFormatTypeToBitmapType( filterIndex, imageType );
+
+  if( appendLegendSufix )
   {
-    case TImageFormat::BMP:
-      imageType = wxBITMAP_TYPE_BMP;
-      break;
-    case TImageFormat::JPG:
-      imageType = wxBITMAP_TYPE_JPEG;
-      break;
-    case TImageFormat::PNG:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
-    case TImageFormat::XPM:
-      imageType = wxBITMAP_TYPE_XPM;
-      break;
-    default:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
+    tmpSuffix = legendSuffix + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
   }
+  else
+  {
+    tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  }
+
+  wxString imagePath = imageName + tmpSuffix;
 
   wxImage baseLayer = bitmapToImage();
   baseLayer.SaveFile( imagePath, imageType );
 }
 
-void ScaleImageGenerator::processImage()
+void ScaleImageGenerator::processImage( std::optional< int > wantedWidth )
 {
-  if(scaleType ==  TScaleImageType::TScaleImageGradientColor )
+  if( scaleType == TScaleImageType::TScaleImageGradientColor || scaleType == TScaleImageType::TScaleImageGradientColorNotNull ||
+      scaleType == TScaleImageType::TScaleImageAlternativeGradientColor )
   {
     this->sortSemanticValuesGradientColors();
   }
   this->computeMaxSemanticLabelsSize();
-  this->computeGeneratedImageSize();
+
+  if( wantedWidth == std::nullopt )
+    this->computeGeneratedImageSize();
+  else
+    this->computeGeneratedImageSize( wantedWidth.value() );
+
   this->createImageDC();
   this->drawImage();
+}
+
+wxString ScaleImageGenerator::getLegendSuffix()
+{
+  return legendSuffix;
+}
+
+void ScaleImageGenerator::updateLegendSuffix()
+{
+  if( scaleType == TScaleImageType::TScaleImageGradientColor )
+    legendSuffix = _( ".gradient_legend" );
+  else if( scaleType == TScaleImageType::TScaleImageGradientColorNotNull )
+    legendSuffix = _( ".nn_gradient_legend" );
+  else if( scaleType == TScaleImageType::TScaleImageAlternativeGradientColor )
+    legendSuffix = _( ".alt_gradient_legend" );
+  else
+    legendSuffix += _( ".code_legend" );
 }

@@ -28,6 +28,7 @@
  * Includes
  */
 #include "prvtypes.h"
+#include "windowimage.h"
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <wx/progdlg.h>
@@ -1042,9 +1043,11 @@ class gTimeline
   void EnableTiming( bool state );
   void OnItemColorLeftUp( wxMouseEvent& event );
 
-  void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG );
+
+  void saveImageTimeline( wxString whichFileName );
   void saveImageLegend( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool appendLegendSuffix = true );
-  void saveImageDialog( wxString whichFileName = _( "" ) );
+
+  void openSaveImageDialog( wxString whichFileName = _( "" ) );
 
   void saveText();
   void saveCFG();
@@ -1276,197 +1279,4 @@ class gTimeline
                       bool drawLabel );
 
   void setEnableDestroyParents( bool value );
-
-  class ScaleImageVertical
-  {
-   public:
-    ScaleImageVertical( Timeline* whichMyWindow,
-                        const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                        wxColour whichBackground,
-                        wxColour whichForeground,
-                        int whichBackgroundMode, // wxSOLID or wxTRANSPARENT; wxTRANSPARENT overrides fore and back
-                        wxFont whichTextFont,
-                        wxString& whichImagePath,
-                        const wxString& whichImageInfix,
-                        wxBitmapType& whichImageType );
-
-    virtual ~ScaleImageVertical();
-
-    void process();
-    void save();
-    wxImage* getImage()
-    {
-      return scaleImage;
-    }
-    wxBitmap* getBitmap()
-    {
-      return scaleBitmap;
-    }
-
-   protected:
-    virtual void init();
-    virtual void sortSemanticValues();
-    virtual void computeMaxLabelSize();
-    virtual void computeImageSize();
-    virtual void createDC();
-    virtual void draw();
-    virtual void bitmapToImage();
-    virtual wxString buildScaleImagePath();
-    virtual void drawLabeledRectangle( rgb semanticColour, wxString semanticValueLabel, bool drawIt = true );
-    void destroyDC();
-
-    Timeline* myWindow;
-    std::map<TSemanticValue, rgb> semValues;
-    wxColour background;
-    wxColour foreground;
-    int backgroundMode;
-    wxFont textFont;
-    wxString& imagePath;
-    wxString imageInfix;
-    wxBitmapType& imageType;
-    TImageFormat filterIndex;
-    wxString tmpSuffix;
-    TSemanticValue currentMin;
-    TSemanticValue currentMax;
-    PRV_UINT32 precision;
-    wxString extraPrefixOutlier;
-    std::map<TSemanticValue, wxString> semanticValueLabel;
-    TSemanticValue semanticValueWithLongestLabel;
-    int titleMargin;
-    int widthRect;
-    int heightRect;
-    int imageStepY;
-    int imageStepXRectangle;
-    bool drawOutliers;
-    bool symbolicDesc;
-    int imageWidth;
-    int imageHeight;
-    int xsrc;
-    int ysrc;
-    int xdst;
-    int ydst;
-    wxBitmap* scaleBitmap;
-    wxMemoryDC* scaleDC;
-    wxBitmap* scaleMaskBitmap;
-    wxMemoryDC* scaleMaskDC;
-    wxSize maxLabelSize;
-    wxImage* scaleImage;
-  };
-
-  class ScaleImageVerticalCodeColor : public ScaleImageVertical
-  {
-   public:
-    ScaleImageVerticalCodeColor( Timeline* whichMyWindow,
-                                 const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                                 wxColour whichBackground,
-                                 wxColour whichForeground,
-                                 int whichBackgroundMode,
-                                 wxFont whichTextFont,
-                                 wxString& whichImagePath,
-                                 const wxString& whichImageInfix,
-                                 wxBitmapType& whichImageType );
-
-    ~ScaleImageVerticalCodeColor()
-    {
-    }
-
-   protected:
-    virtual void init();
-  };
-
-  class ScaleImageVerticalGradientColor : public ScaleImageVertical
-  {
-   public:
-    ScaleImageVerticalGradientColor( Timeline* whichMyWindow,
-                                     const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                                     wxColour whichBackground,
-                                     wxColour whichForeground,
-                                     int whichBackgroundMode,
-                                     wxFont whichTextFont,
-                                     wxString& whichImagePath,
-                                     const wxString& whichImageInfix,
-                                     wxBitmapType& whichImageType );
-
-    ~ScaleImageVerticalGradientColor()
-    {
-    }
-
-   protected:
-    int numSquaresWithoutOutliers;
-    int totalSquares;
-
-    virtual void init();
-    virtual void sortSemanticValues();
-    virtual void draw();
-  };
-
-  class ScaleImageVerticalFusedLines : public ScaleImageVertical
-  {
-   public:
-    ScaleImageVerticalFusedLines( Timeline* whichMyWindow,
-                                  const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                                  wxColour whichBackground,
-                                  wxColour whichForeground,
-                                  int whichBackgroundMode,
-                                  wxFont whichTextFont,
-                                  wxString& whichImagePath,
-                                  const wxString& whichImageInfix,
-                                  wxBitmapType& whichImageType );
-
-    ~ScaleImageVerticalFusedLines()
-    {
-    }
-
-   protected:
-    virtual void init();
-    virtual void computeMaxLabelSize();
-  };
-
-
-  class ScaleImageHorizontalGradientColor : public ScaleImageVerticalGradientColor
-  {
-   public:
-    ScaleImageHorizontalGradientColor( Timeline* whichMyWindow,
-                                       const std::map<TSemanticValue, rgb>& whichSemanticValues,
-                                       wxColour whichBackground,
-                                       wxColour whichForeground,
-                                       int whichBackgroundMode,
-                                       wxFont whichTextFont,
-                                       wxString& whichImagePath,
-                                       const wxString& whichImageInfix,
-                                       wxBitmapType& whichImageType,
-                                       int whichWantedWidth = 0 );
-
-
-    ~ScaleImageHorizontalGradientColor()
-    {
-    }
-
-   protected:
-    virtual void init();
-    virtual void computeImageSize();
-    virtual void draw();
-
-   private:
-    typedef enum
-    {
-      LEFT = 0,
-      CENTER,
-      RIGHT
-    } TAlign;
-    typedef enum
-    {
-      FIRST = 0,
-      MIDDLE,
-      LAST,
-      ANY
-    } TPosition;
-
-    int SIZE_OF_TINY_MARK;
-    int outlierMargin; // Inner margin between outlier and whole scale
-    int wantedWidth;
-
-    void drawRectangle( rgb semanticColour, TPosition position = ANY );
-    void drawLabel( wxString semanticValueLabel, bool drawIt = true, TAlign align = LEFT );
-  };
 };

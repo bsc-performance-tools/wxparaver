@@ -748,8 +748,8 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             tmpTimeline->SetClientSize (window->getWidth (), window->getHeight ());
 
             tmpTimeline->redraw();
-            
-            tmpTimeline->saveImage( wxT( "" ) );
+
+            tmpTimeline->saveImageTimeline( wxT( "" ) );
             tmpTimeline->saveImageLegend();
             
             delete tmpTimeline;

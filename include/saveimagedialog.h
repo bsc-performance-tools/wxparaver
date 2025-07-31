@@ -65,6 +65,7 @@ class wxFileCtrl;
 #define ID_CHECKBOX_SCALEDSIZE          10007
 #define ID_SCROLLEDWINDOW               10001
 #define ID_SCROLLEDWINDOW_SCALE         10006
+#define ID_CHECKBOX_LEGEND              10008
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVEIMAGEDIALOG_TITLE _("Save Image Dialog")
 #define SYMBOL_SAVEIMAGEDIALOG_IDNAME ID_SAVEIMAGEDIALOG
@@ -149,6 +150,9 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_SCALE
   void onPaintScale( wxPaintEvent& event );
 
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND
+  void OnCheckboxLegendClick( wxCommandEvent& event );
+
   ////@end SaveImageDialog event handler declarations
 
   void OnFileNavigatorChanged( wxFileCtrlEvent& event );
@@ -203,4 +207,5 @@ public:
   bool isHistogram;
   wxString legendSuffix;
   bool resize_window = true;
+  bool resize_scale  = true;
 };

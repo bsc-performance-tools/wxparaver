@@ -66,6 +66,7 @@ BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
   EVT_UPDATE_UI( wxID_OK, SaveImageDialog::OnOkUpdate )
   EVT_BUTTON( wxID_CANCEL, SaveImageDialog::OnCancelClick )
   EVT_CHECKBOX( ID_CHECKBOX_SCALEDSIZE, SaveImageDialog::OnCheckboxScaledsizeClick )
+  EVT_CHECKBOX( ID_CHECKBOX_LEGEND, SaveImageDialog::OnCheckboxLegendClick )
   ////@end SaveImageDialog event table entries
 
   EVT_FILECTRL_SELECTIONCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
@@ -275,6 +276,9 @@ void SaveImageDialog::CreateControls()
                                           wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
   itemBoxSizer6->Add( drawScaleSingle, 0, wxGROW | wxALL, 5 );
   drawScaleSingle->SetScrollbars( 1, 1, 0, 0 );
+  wxCheckBox* itemCheckBox1 = new wxCheckBox( itemScrolledWindow3, ID_CHECKBOX_LEGEND, _( "Scale real size" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemCheckBox1->SetValue( true );
+  itemBoxSizer6->Add( itemCheckBox1, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5 );
 
   itemScrolledWindow3->FitInside();
   itemNotebook1->AddPage( itemScrolledWindow3, _( "Legend Preview" ) );
@@ -549,7 +553,7 @@ void SaveImageDialog::onPaintScale( wxPaintEvent& event )
   // Before editing this code, remove the block markers.
   wxPaintDC dc( wxDynamicCast( event.GetEventObject(), wxWindow ) );
   ////@end wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
-  wxPaintDC dcImage( drawScaleSingle );
+  wxPaintDC dcScale( drawScaleSingle );
   // wxPaintDC dcscale( drawScaleSingle );
 
   wxBitmap* originalBmp = imageGeneration->getScaleImage();
@@ -563,28 +567,47 @@ void SaveImageDialog::onPaintScale( wxPaintEvent& event )
     int scrollContainerHeight = drawScaleSingle->GetClientSize().GetHeight();
     int scrollContainerWidth  = drawScaleSingle->GetClientSize().GetWidth();
 
-    int newWidth;
-    int newHeight;
-    calculateScaledSize( originalWidth, originalHeight, scrollContainerWidth, scrollContainerHeight, newWidth, newHeight );
+    int posY = 0;
+    int posX = 0;
 
-    // Resize the image
-    wxImage scaledImg = img.Scale( newWidth, newHeight, wxIMAGE_QUALITY_HIGH );
+    if( resize_scale )
+    {
+      int newWidth;
+      int newHeight;
 
-    // Convert back to wxBitmap
-    wxBitmap scaledBmp( scaledImg );
+      calculateScaledSize( originalWidth, originalHeight, scrollContainerWidth, scrollContainerHeight, newWidth, newHeight );
 
-    dcImage.SetPen( *wxBLACK_PEN );
-    dcImage.SetBrush( *wxBLACK_BRUSH );
+      // Resize the image
+      wxImage scaledImg = img.Scale( newWidth, newHeight, wxIMAGE_QUALITY_HIGH );
 
-    int posY = ( scrollContainerHeight - newHeight ) / 2;
-    int posX = ( scrollContainerWidth - newWidth ) / 2;
+      // Convert back to wxBitmap
+      wxBitmap scaledBmp( scaledImg );
 
-    dcImage.DrawBitmap( scaledBmp, posX, posY, true );
-    drawScaleSingle->Refresh();
-    drawScaleSingle->Update();
+      if( ( scrollContainerHeight - newHeight ) > 0 )
+        posY = ( scrollContainerHeight - newHeight ) / 2;
+      if( ( scrollContainerWidth - newWidth ) > 0 )
+        posX = ( scrollContainerWidth - newWidth ) / 2;
+
+
+      dcScale.DrawBitmap( scaledBmp, posX, posY, true );
+
+      drawScaleSingle->Refresh();
+      drawScaleSingle->Update();
+    }
+
+    else
+    {
+      if( ( scrollContainerHeight - originalHeight ) > 0 )
+        posY = ( scrollContainerHeight - originalHeight ) / 2;
+      if( ( scrollContainerWidth - originalWidth ) > 0 )
+        posX = ( scrollContainerWidth - originalWidth ) / 2;
+      dcScale.DrawBitmap( *originalBmp, posX, posY, true );
+
+      drawScaleSingle->Refresh();
+      drawScaleSingle->Update();
+    }
   }
 }
-
 
 /*!
  * wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE
@@ -737,6 +760,44 @@ void SaveImageDialog::OnCheckboxScaledsizeClick( wxCommandEvent& event )
     }
   }
 
+  ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+  ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
+ */
+
+void SaveImageDialog::OnCheckboxLegendClick( wxCommandEvent& event )
+{
+  wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX_LEGEND ), wxCheckBox );
+  if( checkbox )
+  {
+    bool isChecked = checkbox->IsChecked();
+    if( isChecked )
+    {
+      wxSize clientSize = drawScaleSingle->GetClientSize();
+      drawScaleSingle->SetVirtualSize( clientSize ); // virtual size = client size → no scroll
+      drawScaleSingle->SetScrollRate( 0, 0 );        // disable scroll increments
+      drawScaleSingle->ShowScrollbars( wxSHOW_SB_NEVER, wxSHOW_SB_NEVER );
+      resize_scale = true;
+      // Checkbox is checked
+    }
+    else
+    {
+      int originalWidth  = imageGeneration->getScaleImage()->GetWidth();
+      int originalHeight = imageGeneration->getScaleImage()->GetHeight();
+
+      drawScaleSingle->SetVirtualSize( originalWidth, originalHeight );
+      drawScaleSingle->SetScrollRate( 10, 10 );
+      drawScaleSingle->ShowScrollbars( wxSHOW_SB_DEFAULT, wxSHOW_SB_DEFAULT );
+      resize_scale = false;
+      // Checkbox is unchecked
+    }
+  }
   ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
   // Before editing this code, remove the block markers.
   event.Skip();

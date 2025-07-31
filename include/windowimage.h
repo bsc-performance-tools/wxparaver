@@ -55,6 +55,8 @@ enum class TScaleImageType
 {
   TScaleImageCodeColor,
   TScaleImageGradientColor,
+  TScaleImageGradientColorNotNull,
+  TScaleImageAlternativeGradientColor,
   TScaleImageGradientFusedLines
 };
 
@@ -77,12 +79,16 @@ class ScaleImageGenerator
                          TScaleImageOrientation orientation,
                          bool whichMergedImages = false );
 
-    ~ScaleImageGenerator() = default;
+    ~ScaleImageGenerator();
 
     wxBitmap* getBitmap()
     {
       return bitmapImageContent;
     }
+
+    wxString getLegendSuffix();
+
+    void updateLegendSuffix();
 
     void initializeConfiguration();
 
@@ -98,8 +104,8 @@ class ScaleImageGenerator
     void drawImageGradientColor();
 
 
-    void saveImage( wxString imagePath );
-    void processImage();
+    void saveImage( wxString whichFileName, bool appendLegendSufix );
+    void processImage( std::optional< int > wantedWidth = std::nullopt );
 
 
   private:
@@ -134,6 +140,8 @@ class ScaleImageGenerator
 
     bool mergedImages;
     int totalSquaresGradientColor;
+
+    wxString legendSuffix;
 };
 
 
@@ -147,19 +155,24 @@ class WindowImageGenerator
                           wxFont whichTextFont,
                           TImageFormat wichFilterIndex,
                           bool whichMergedImages = false );
+    ~WindowImageGenerator();
 
   public:
     wxBitmap* getTimelineImage();
     wxBitmap* getTimelineScaleImage();
     wxBitmap* getScaleImage();
+    wxString getLegendSuffix();
+
+    TImageFormat getImageFormat();
+    void setImageFormat( TImageFormat filterIndex );
 
     void generateScaleImage( std::map< TSemanticValue, rgb > semanticValuesToColor);
     void generateTimelineImage();
-    void generateScaleTimelineImage();
+    void generateScaleTimelineImage( std::map< TSemanticValue, rgb > semanticValuesToColor );
 
-    void saveImageTimeline();
-    void saveImageTimelineScale();
-    void saveImageScale();
+    void saveImageTimeline( wxString whichFileName );
+    void saveImageTimelineScale( wxString whichFileName );
+    void saveImageScale( wxString whichFileName, bool appendLegendSufix );
 
   private:
     wxBitmap* bitmapTimeline;
@@ -184,3 +197,6 @@ class WindowImageGenerator
     TScaleImageType typeScale;
     TScaleImageOrientation orientationScale;
 };
+
+
+void imageFormatTypeToBitmapType( const TImageFormat& whichFilterIndex, wxBitmapType& imageType );
