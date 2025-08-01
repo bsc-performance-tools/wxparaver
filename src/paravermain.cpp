@@ -80,7 +80,7 @@
 #include <wx/display.h>
 #include <wx/mimetype.h>
 #include <wx/process.h>
-//#include "connection.h"
+// #include "connection.h"
 
 #ifdef _WIN32
 #  include <Shlwapi.h>
@@ -96,17 +96,17 @@
 #endif
 
 ////@begin XPM images
-#include "../icons/autoredraw_refresh.xpm"
-#include "../icons/cut_trace.xpm"
-#include "../icons/delete.xpm"
-#include "../icons/file_browser.xpm"
 #include "../icons/information.xpm"
+#include "../icons/new_window.xpm"
 #include "../icons/new_derived_window.xpm"
 #include "../icons/new_histogram.xpm"
-#include "../icons/new_window.xpm"
+#include "../icons/delete.xpm"
+#include "../icons/cut_trace.xpm"
 #include "../icons/run_script.xpm"
-#include "../icons/three_dots.xpm"
+#include "../icons/file_browser.xpm"
 #include "../icons/window_properties.xpm"
+#include "../icons/autoredraw_refresh.xpm"
+#include "../icons/three_dots.xpm"
 ////@end XPM images
 
 #include "derived_add.xpm"
@@ -131,8 +131,8 @@ using namespace std;
 
 class MenuHintFile : public wxObjectRefData
 {
- public:
-  string fileName;
+  public:
+    string fileName;
 };
 
 
@@ -150,50 +150,50 @@ IMPLEMENT_CLASS( paraverMain, wxFrame )
 BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
 ////@begin paraverMain event table entries
-EVT_CLOSE( paraverMain::OnCloseWindow )
-EVT_ICONIZE( paraverMain::OnIconize )
-EVT_SIZE( paraverMain::OnSize )
-EVT_IDLE( paraverMain::OnIdle )
-EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
-EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
-EVT_MENU( ID_MENUTRACEINFORMATION, paraverMain::OnTraceInformationClick )
-EVT_UPDATE_UI( ID_MENUTRACEINFORMATION, paraverMain::OnTraceInformationUpdate )
-EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
-EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
-EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
-EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
-EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
-EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
-EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
-EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
-EVT_UPDATE_UI( ID_RECENTSESSIONS, paraverMain::OnRecentsessionsUpdate )
-EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
-EVT_MENU( wxID_PREFERENCES, paraverMain::OnPreferencesClick )
-EVT_UPDATE_UI( wxID_PREFERENCES, paraverMain::OnPreferencesUpdate )
-EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
-EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
-EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
-EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
-EVT_MENU( ID_TOOL_TRACE_INFORMATION, paraverMain::OnTraceInformationClick )
-EVT_UPDATE_UI( ID_TOOL_TRACE_INFORMATION, paraverMain::OnTraceInformationUpdate )
-EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
-EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
-EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
-EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
-EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
-EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
-EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
-EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
-EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
-EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
-EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
-EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
-EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
-EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
-EVT_UPDATE_UI( ID_CHECKBOX_AUTO_REDRAW, paraverMain::OnCheckboxAutoRedrawUpdate )
-EVT_BUTTON( ID_BUTTON_FORCE_REDRAW, paraverMain::OnButtonForceRedrawClick )
-EVT_UPDATE_UI( ID_BUTTON_FORCE_REDRAW, paraverMain::OnButtonForceRedrawUpdate )
-EVT_BUTTON( ID_BUTTON_ACTIVE_WORKSPACES, paraverMain::OnButtonActiveWorkspacesClick )
+  EVT_CLOSE( paraverMain::OnCloseWindow )
+  EVT_ICONIZE( paraverMain::OnIconize )
+  EVT_SIZE( paraverMain::OnSize )
+  EVT_IDLE( paraverMain::OnIdle )
+  EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
+  EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
+  EVT_MENU( ID_MENUTRACEINFORMATION, paraverMain::OnTraceInformationClick )
+  EVT_UPDATE_UI( ID_MENUTRACEINFORMATION, paraverMain::OnTraceInformationUpdate )
+  EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
+  EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
+  EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
+  EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
+  EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
+  EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
+  EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
+  EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
+  EVT_UPDATE_UI( ID_RECENTSESSIONS, paraverMain::OnRecentsessionsUpdate )
+  EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
+  EVT_MENU( wxID_PREFERENCES, paraverMain::OnPreferencesClick )
+  EVT_UPDATE_UI( wxID_PREFERENCES, paraverMain::OnPreferencesUpdate )
+  EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
+  EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
+  EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
+  EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
+  EVT_MENU( ID_TOOL_TRACE_INFORMATION, paraverMain::OnTraceInformationClick )
+  EVT_UPDATE_UI( ID_TOOL_TRACE_INFORMATION, paraverMain::OnTraceInformationUpdate )
+  EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
+  EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
+  EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
+  EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
+  EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
+  EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
+  EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
+  EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
+  EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
+  EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
+  EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
+  EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
+  EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
+  EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_AUTO_REDRAW, paraverMain::OnCheckboxAutoRedrawUpdate )
+  EVT_BUTTON( ID_BUTTON_FORCE_REDRAW, paraverMain::OnButtonForceRedrawClick )
+  EVT_UPDATE_UI( ID_BUTTON_FORCE_REDRAW, paraverMain::OnButtonForceRedrawUpdate )
+  EVT_BUTTON( ID_BUTTON_ACTIVE_WORKSPACES, paraverMain::OnButtonActiveWorkspacesClick )
 ////@end paraverMain event table entries
 
 EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -236,7 +236,7 @@ static bool userMessage( UserMessageID message )
   if( paraverMain::disableUserMessages )
     return true;
   wxMessageDialog tmpDialog( nullptr,
-                             wxString::FromUTF8( userMessages[ static_cast<size_t>( message ) ].c_str() ) + _( " Continue loading CFG file?" ),
+                             wxString::FromUTF8( userMessages[ static_cast< size_t >( message ) ].c_str() ) + _( " Continue loading CFG file?" ),
                              _( "Paraver question" ),
                              wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
@@ -378,7 +378,7 @@ paraverMain::~paraverMain()
     Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousCFGsClick );
   }
 
-  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
+  for( vector< Trace * >::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     delete *it;
   delete localKernel;
 
@@ -398,7 +398,7 @@ paraverMain::~paraverMain()
   delete previousSessions;
   delete previousTraces;
 
-  for( std::vector<PropertyClientData *>::iterator it = propertiesClientData.begin(); it != propertiesClientData.end(); ++it )
+  for( std::vector< PropertyClientData * >::iterator it = propertiesClientData.begin(); it != propertiesClientData.end(); ++it )
     delete *it;
 
   wxMemoryFSHandler::RemoveFile( wxT( "logoBSC.xpm" ) );
@@ -412,46 +412,46 @@ paraverMain::~paraverMain()
 void paraverMain::Init()
 {
   ////@begin paraverMain member initialisation
-  CFGLoadedBefore           = false;
-  XMLLoadedBefore           = false;
-  canServeSignal            = true;
-  clusteringWindow          = nullptr;
-  currentHisto              = nullptr;
-  currentTimeline           = nullptr;
-  currentTrace              = -1;
-  currentWindow             = nullptr;
-  helpContents              = nullptr;
-  lastHisto                 = nullptr;
-  lastTimeline              = nullptr;
-  numNewDerived             = 0;
-  numNewHistograms          = 0;
-  numNewWindows             = 0;
-  openedPropertyDialog      = nullptr;
-  paraverConfig             = ParaverConfig::getInstance();
-  previousCFGs              = PreviousFiles::createPreviousCFGs();
+  CFGLoadedBefore = false;
+  XMLLoadedBefore = false;
+  canServeSignal = true;
+  clusteringWindow = nullptr;
+  currentHisto = nullptr;
+  currentTimeline = nullptr;
+  currentTrace = -1;
+  currentWindow = nullptr;
+  helpContents = nullptr;
+  lastHisto = nullptr;
+  lastTimeline = nullptr;
+  numNewDerived = 0;
+  numNewHistograms = 0;
+  numNewWindows = 0;
+  openedPropertyDialog = nullptr;
+  paraverConfig = ParaverConfig::getInstance();
+  previousCFGs = PreviousFiles::createPreviousCFGs();
   previousCutFilteredTraces = PreviousFiles::createPreviousTreatedTraces();
-  previousSessions          = PreviousFiles::createPreviousSessions();
-  previousTraces            = PreviousFiles::createPreviousTraces();
-  raiseCurrentWindow        = true;
-  runApplication            = nullptr;
-  sessionTimer              = new wxTimer( this, ID_TIMER_MAIN );
-  someWinIsRedraw           = false;
-  traceLoadedBefore         = false;
-  tutorialsWindow           = nullptr;
-  workspacesManager         = WorkspaceManager::getInstance( localKernel );
-  menuFile                  = NULL;
-  menuHints                 = NULL;
-  menuHelp                  = NULL;
-  tbarMain                  = NULL;
-  choiceWindowBrowser       = NULL;
-  toolBookFilesProperties   = NULL;
-  dirctrlFiles              = NULL;
-  windowProperties          = NULL;
-  panelAutoRedraw           = NULL;
-  checkAutoRedraw           = NULL;
-  buttonForceRedraw         = NULL;
-  txtActiveWorkspaces       = NULL;
-  btnActiveWorkspaces       = NULL;
+  previousSessions = PreviousFiles::createPreviousSessions();
+  previousTraces = PreviousFiles::createPreviousTraces();
+  raiseCurrentWindow = true;
+  runApplication = nullptr;
+  sessionTimer = new wxTimer( this, ID_TIMER_MAIN );
+  someWinIsRedraw = false;
+  traceLoadedBefore = false;
+  tutorialsWindow = nullptr;
+  workspacesManager = WorkspaceManager::getInstance( localKernel );
+  menuFile = NULL;
+  menuHints = NULL;
+  menuHelp = NULL;
+  tbarMain = NULL;
+  choiceWindowBrowser = NULL;
+  toolBookFilesProperties = NULL;
+  dirctrlFiles = NULL;
+  windowProperties = NULL;
+  panelAutoRedraw = NULL;
+  checkAutoRedraw = NULL;
+  buttonForceRedraw = NULL;
+  txtActiveWorkspaces = NULL;
+  btnActiveWorkspaces = NULL;
   ////@end paraverMain member initialisation
 
   cutFilterFinished = false;
@@ -500,247 +500,136 @@ void paraverMain::Init()
 void paraverMain::CreateControls()
 {
   ////@begin paraverMain content construction
-  paraverMain *itemFrame1 = this;
+  paraverMain* itemFrame1 = this;
 
-  GetAuiManager().SetManagedWindow( this );
+  GetAuiManager().SetManagedWindow(this);
 
-  wxMenuBar *menuBar = new wxMenuBar;
-  menuFile           = new wxMenu;
-  menuFile->Append( wxID_OPEN, _( "Load &Trace..." ), wxEmptyString, wxITEM_NORMAL );
-  wxMenu *itemMenu5 = new wxMenu;
-  menuFile->Append( ID_RECENTTRACES, _( "Previous Traces" ), itemMenu5 );
-  menuFile->Append( ID_MENUTRACEINFORMATION, _( "Trace Information..." ), wxEmptyString, wxITEM_NORMAL );
-  menuFile->Append( ID_UNLOADTRACE, _( "Unload Traces..." ), wxEmptyString, wxITEM_NORMAL );
+  wxMenuBar* menuBar = new wxMenuBar;
+  menuFile = new wxMenu;
+  menuFile->Append(wxID_OPEN, _("Load &Trace..."), wxEmptyString, wxITEM_NORMAL);
+  wxMenu* itemMenu5 = new wxMenu;
+  menuFile->Append(ID_RECENTTRACES, _("Previous Traces"), itemMenu5);
+  menuFile->Append(ID_MENUTRACEINFORMATION, _("Trace Information..."), wxEmptyString, wxITEM_NORMAL);
+  menuFile->Append(ID_UNLOADTRACE, _("Unload Traces..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
-  menuFile->Append( ID_MENULOADCFG, _( "Load &Configuration..." ), wxEmptyString, wxITEM_NORMAL );
-  wxMenu *itemMenu9 = new wxMenu;
-  menuFile->Append( ID_RECENTCFGS, _( "Previous Configurations" ), itemMenu9 );
-  menuFile->Append( ID_MENUSAVECFG, _( "&Save Configuration..." ), wxEmptyString, wxITEM_NORMAL );
+  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), wxEmptyString, wxITEM_NORMAL);
+  wxMenu* itemMenu9 = new wxMenu;
+  menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu9);
+  menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
-  menuFile->Append( ID_MENULOADSESSION, _( "Load Session...\tCTRL+l" ), wxEmptyString, wxITEM_NORMAL );
-  wxMenu *itemMenu1 = new wxMenu;
-  menuFile->Append( ID_RECENTSESSIONS, _( "Previous Sessions" ), itemMenu1 );
-  menuFile->Append( ID_MENUSAVESESSION, _( "Save Session...\tCTRL+S" ), wxEmptyString, wxITEM_NORMAL );
+  menuFile->Append(ID_MENULOADSESSION, _("Load Session...\tCTRL+l"), wxEmptyString, wxITEM_NORMAL);
+  wxMenu* itemMenu1 = new wxMenu;
+  menuFile->Append(ID_RECENTSESSIONS, _("Previous Sessions"), itemMenu1);
+  menuFile->Append(ID_MENUSAVESESSION, _("Save Session...\tCTRL+S"), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
-  menuFile->Append( wxID_PREFERENCES, _( "&Preferences..." ), wxEmptyString, wxITEM_NORMAL );
+  menuFile->Append(wxID_PREFERENCES, _("&Preferences..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
-  menuFile->Append( wxID_EXIT, _( "&Quit" ), wxEmptyString, wxITEM_NORMAL );
-  menuBar->Append( menuFile, _( "&File" ) );
+  menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
+  menuBar->Append(menuFile, _("&File"));
   menuHints = new wxMenu;
-  menuBar->Append( menuHints, _( "Hints" ) );
+  menuBar->Append(menuHints, _("Hints"));
   menuHelp = new wxMenu;
-  menuHelp->Append( wxID_HELPCONTENTS, _( "&Help Contents..." ), wxEmptyString, wxITEM_NORMAL );
-  menuHelp->Append( wxID_TUTORIALS, _( "&Tutorials..." ), wxEmptyString, wxITEM_NORMAL );
-  menuHelp->Append( wxID_ABOUT, _( "&About..." ), wxEmptyString, wxITEM_NORMAL );
-  menuBar->Append( menuHelp, _( "&Help" ) );
-  itemFrame1->SetMenuBar( menuBar );
+  menuHelp->Append(wxID_HELPCONTENTS, _("&Help Contents..."), wxEmptyString, wxITEM_NORMAL);
+  menuHelp->Append(wxID_TUTORIALS, _("&Tutorials..."), wxEmptyString, wxITEM_NORMAL);
+  menuHelp->Append(wxID_ABOUT, _("&About..."), wxEmptyString, wxITEM_NORMAL);
+  menuBar->Append(menuHelp, _("&Help"));
+  itemFrame1->SetMenuBar(menuBar);
 
-  tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_HORIZONTAL | wxTB_NODIVIDER | wxWANTS_CHARS );
-  wxBitmap itemtool2Bitmap( itemFrame1->GetBitmapResource( wxT( "icons/information.xpm" ) ) );
+  tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxWANTS_CHARS );
+  wxBitmap itemtool2Bitmap(itemFrame1->GetBitmapResource(wxT("icons/information.xpm")));
   wxBitmap itemtool2BitmapDisabled;
-  tbarMain->AddTool( ID_TOOL_TRACE_INFORMATION,
-                     _( "Trace Information" ),
-                     itemtool2Bitmap,
-                     itemtool2BitmapDisabled,
-                     wxITEM_NORMAL,
-                     _( "View Trace Information" ),
-                     wxEmptyString );
+  tbarMain->AddTool(ID_TOOL_TRACE_INFORMATION, _("Trace Information"), itemtool2Bitmap, itemtool2BitmapDisabled, wxITEM_NORMAL, _("View Trace Information"), wxEmptyString);
   tbarMain->AddSeparator();
-  wxBitmap itemtool24Bitmap( itemFrame1->GetBitmapResource( wxT( "icons/new_window.xpm" ) ) );
+  wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_window.xpm")));
   wxBitmap itemtool24BitmapDisabled;
-  tbarMain->AddTool( ID_NEW_WINDOW,
-                     _( "Create new window" ),
-                     itemtool24Bitmap,
-                     itemtool24BitmapDisabled,
-                     wxITEM_NORMAL,
-                     _( "New single timeline window" ),
-                     wxEmptyString );
-  tbarMain->EnableTool( ID_NEW_WINDOW, false );
-  wxBitmap itemtool25Bitmap( itemFrame1->GetBitmapResource( wxT( "icons/new_derived_window.xpm" ) ) );
+  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_WINDOW, false);
+  wxBitmap itemtool25Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_derived_window.xpm")));
   wxBitmap itemtool25BitmapDisabled;
-  tbarMain->AddTool( ID_NEW_DERIVED_WINDOW,
-                     _( "Create new derived window" ),
-                     itemtool25Bitmap,
-                     itemtool25BitmapDisabled,
-                     wxITEM_NORMAL,
-                     _( "New derived timeline window" ),
-                     wxEmptyString );
-  tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
-  wxBitmap itemtool26Bitmap( itemFrame1->GetBitmapResource( wxT( "icons/new_histogram.xpm" ) ) );
+  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool25Bitmap, itemtool25BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
+  wxBitmap itemtool26Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_histogram.xpm")));
   wxBitmap itemtool26BitmapDisabled;
-  tbarMain->AddTool( ID_NEW_HISTOGRAM,
-                     _( "Create new histogram" ),
-                     itemtool26Bitmap,
-                     itemtool26BitmapDisabled,
-                     wxITEM_NORMAL,
-                     _( "New histogram" ),
-                     wxEmptyString );
-  tbarMain->EnableTool( ID_NEW_HISTOGRAM, false );
+  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool26Bitmap, itemtool26BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
   tbarMain->AddSeparator();
-  wxBitmap itemtool28Bitmap( itemFrame1->GetBitmapResource( wxT( "icons/delete.xpm" ) ) );
+  wxBitmap itemtool28Bitmap(itemFrame1->GetBitmapResource(wxT("icons/delete.xpm")));
   wxBitmap itemtool28BitmapDisabled;
-  tbarMain->AddTool( ID_TOOLDELETE,
-                     _( "Delete window (Ctrl+DEL)" ),
-                     itemtool28Bitmap,
-                     itemtool28BitmapDisabled,
-                     wxITEM_NORMAL,
-                     _( "Delete selected window (Ctrl+DEL)" ),
-                     wxEmptyString );
+  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window (Ctrl+DEL)"), itemtool28Bitmap, itemtool28BitmapDisabled, wxITEM_NORMAL, _("Delete selected window (Ctrl+DEL)"), wxEmptyString);
   tbarMain->AddSeparator();
-  wxBitmap itemtool30Bitmap( itemFrame1->GetBitmapResource( wxT( "icons/cut_trace.xpm" ) ) );
+  wxBitmap itemtool30Bitmap(itemFrame1->GetBitmapResource(wxT("icons/cut_trace.xpm")));
   wxBitmap itemtool30BitmapDisabled;
-  tbarMain->AddTool( ID_TOOL_CUT_TRACE,
-                     _( "Filter Trace" ),
-                     itemtool30Bitmap,
-                     itemtool30BitmapDisabled,
-                     wxITEM_NORMAL,
-                     _( "Filter Trace" ),
-                     wxEmptyString );
-  wxBitmap itemtool31Bitmap( itemFrame1->GetBitmapResource( wxT( "icons/run_script.xpm" ) ) );
+  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool30Bitmap, itemtool30BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
+  wxBitmap itemtool31Bitmap(itemFrame1->GetBitmapResource(wxT("icons/run_script.xpm")));
   wxBitmap itemtool31BitmapDisabled;
-  tbarMain->AddTool( ID_TOOL_RUN_APPLICATION,
-                     _( "Run Application" ),
-                     itemtool31Bitmap,
-                     itemtool31BitmapDisabled,
-                     wxITEM_NORMAL,
-                     _( "Run Application" ),
-                     wxEmptyString );
+  tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool31Bitmap, itemtool31BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
   tbarMain->Realize();
-  itemFrame1->GetAuiManager().AddPane( tbarMain,
-                                       wxAuiPaneInfo()
-                                         .ToolbarPane()
-                                         .Name( wxT( "auiTBarMain" ) )
-                                         .Top()
-                                         .Layer( 10 )
-                                         .CaptionVisible( false )
-                                         .CloseButton( false )
-                                         .DestroyOnClose( false )
-                                         .Resizable( false )
-                                         .Floatable( false )
-                                         .Gripper( true ) );
+  itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
+    .ToolbarPane().Name(wxT("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
 
-  choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT | wxWANTS_CHARS );
+  choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
-  itemFrame1->GetAuiManager().AddPane( choiceWindowBrowser,
-                                       wxAuiPaneInfo()
-                                         .Name( wxT( "auiWindowBrowser" ) )
-                                         .Caption( _( "Window browser" ) )
-                                         .Centre()
-                                         .Position( 1 )
-                                         .CloseButton( false )
-                                         .DestroyOnClose( false )
-                                         .Resizable( true ) );
+  itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
+    .Name(wxT("auiWindowBrowser")).Caption(_("Window browser")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true));
 
   toolBookFilesProperties = new wxToolbook( itemFrame1, ID_TOOLBOOKFILESANDPROPERTIES, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
-  wxImageList *toolBookFilesPropertiesImageList = new wxImageList( 16, 16, true, 2 );
+  wxImageList* toolBookFilesPropertiesImageList = new wxImageList(16, 16, true, 2);
   {
-    wxIcon toolBookFilesPropertiesIcon0( itemFrame1->GetIconResource( wxT( "icons/file_browser.xpm" ) ) );
-    toolBookFilesPropertiesImageList->Add( toolBookFilesPropertiesIcon0 );
-    wxIcon toolBookFilesPropertiesIcon1( itemFrame1->GetIconResource( wxT( "icons/window_properties.xpm" ) ) );
-    toolBookFilesPropertiesImageList->Add( toolBookFilesPropertiesIcon1 );
+    wxIcon toolBookFilesPropertiesIcon0(itemFrame1->GetIconResource(wxT("icons/file_browser.xpm")));
+    toolBookFilesPropertiesImageList->Add(toolBookFilesPropertiesIcon0);
+    wxIcon toolBookFilesPropertiesIcon1(itemFrame1->GetIconResource(wxT("icons/window_properties.xpm")));
+    toolBookFilesPropertiesImageList->Add(toolBookFilesPropertiesIcon1);
   }
-  toolBookFilesProperties->AssignImageList( toolBookFilesPropertiesImageList );
+  toolBookFilesProperties->AssignImageList(toolBookFilesPropertiesImageList);
 
-  dirctrlFiles = new wxGenericDirCtrl( toolBookFilesProperties,
-                                       ID_DIRCTRLFILES,
-                                       wxEmptyString,
-                                       wxDefaultPosition,
-                                       wxDefaultSize,
-                                       wxDIRCTRL_SELECT_FIRST | wxDIRCTRL_SHOW_FILTERS,
-                                       wxT( "Paraver files|*.prv;*.prv.gz;*.cfg|CFG files (*.cfg)|*.cfg|PRV Files (*.prv, *.prv.gz)|*.prv;*.prv.gz" ),
-                                       0 );
+  dirctrlFiles = new wxGenericDirCtrl( toolBookFilesProperties, ID_DIRCTRLFILES, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_SELECT_FIRST|wxDIRCTRL_SHOW_FILTERS, wxT("Paraver files|*.prv;*.prv.gz;*.cfg|CFG files (*.cfg)|*.cfg|PRV Files (*.prv, *.prv.gz)|*.prv;*.prv.gz"), 0 );
 
-  toolBookFilesProperties->AddPage( dirctrlFiles, wxEmptyString, false, 0 );
+  toolBookFilesProperties->AddPage(dirctrlFiles, wxEmptyString, false, 0);
 
-  windowProperties = new wxPropertyGrid( toolBookFilesProperties, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER | wxWANTS_CHARS );
+  windowProperties = new wxPropertyGrid( toolBookFilesProperties, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
 
-  toolBookFilesProperties->AddPage( windowProperties, wxEmptyString, false, 1 );
+  toolBookFilesProperties->AddPage(windowProperties, wxEmptyString, false, 1);
 
-  itemFrame1->GetAuiManager().AddPane( toolBookFilesProperties,
-                                       wxAuiPaneInfo()
-                                         .Name( wxT( "auiCfgAndProperties" ) )
-                                         .Caption( _( "Files & Window Properties" ) )
-                                         .Centre()
-                                         .Position( 2 )
-                                         .CloseButton( false )
-                                         .DestroyOnClose( false )
-                                         .Resizable( true )
-                                         .PaneBorder( false ) );
+  itemFrame1->GetAuiManager().AddPane(toolBookFilesProperties, wxAuiPaneInfo()
+    .Name(wxT("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(2).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
 
   panelAutoRedraw = new wxPanel( itemFrame1, ID_PANEL_AUTOREDRAW, wxDefaultPosition, wxDefaultSize, 0 );
-  panelAutoRedraw->SetExtraStyle( wxWS_EX_VALIDATE_RECURSIVELY );
-  itemFrame1->GetAuiManager().AddPane( panelAutoRedraw,
-                                       wxAuiPaneInfo()
-                                         .Name( wxT( "auiAutoRedraw" ) )
-                                         .Caption( _( "Auto Redraw" ) )
-                                         .Bottom()
-                                         .Dockable( false )
-                                         .CaptionVisible( false )
-                                         .CloseButton( false )
-                                         .DestroyOnClose( false )
-                                         .Resizable( false )
-                                         .Floatable( false )
-                                         .Movable( false )
-                                         .PaneBorder( false ) );
+  panelAutoRedraw->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+  itemFrame1->GetAuiManager().AddPane(panelAutoRedraw, wxAuiPaneInfo()
+    .Name(wxT("auiAutoRedraw")).Caption(_("Auto Redraw")).Bottom().Dockable(false).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
 
-  wxBoxSizer *itemBoxSizer4 = new wxBoxSizer( wxHORIZONTAL );
-  panelAutoRedraw->SetSizer( itemBoxSizer4 );
+  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+  panelAutoRedraw->SetSizer(itemBoxSizer4);
 
-  wxStaticBitmap *itemStaticBitmap1 = new wxStaticBitmap( panelAutoRedraw,
-                                                          wxID_STATIC,
-                                                          itemFrame1->GetBitmapResource( wxT( "icons/autoredraw_refresh.xpm" ) ),
-                                                          wxDefaultPosition,
-                                                          wxDLG_UNIT( panelAutoRedraw, wxSize( 8, 6 ) ),
-                                                          0 );
-  itemBoxSizer4->Add( itemStaticBitmap1, 0, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( panelAutoRedraw, wxSize( 2, -1 ) ).x );
+  wxStaticBitmap* itemStaticBitmap1 = new wxStaticBitmap( panelAutoRedraw, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("icons/autoredraw_refresh.xpm")), wxDefaultPosition, wxDLG_UNIT(panelAutoRedraw, wxSize(8, 6)), 0 );
+  itemBoxSizer4->Add(itemStaticBitmap1, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelAutoRedraw, wxSize(2, -1)).x);
 
-  checkAutoRedraw = new wxCheckBox( panelAutoRedraw, ID_CHECKBOX_AUTO_REDRAW, _( "Automatic Redraw" ), wxDefaultPosition, wxDefaultSize, 0 );
-  checkAutoRedraw->SetValue( true );
-  itemBoxSizer4->Add( checkAutoRedraw, 1, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( panelAutoRedraw, wxSize( 2, -1 ) ).x );
+  checkAutoRedraw = new wxCheckBox( panelAutoRedraw, ID_CHECKBOX_AUTO_REDRAW, _("Automatic Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkAutoRedraw->SetValue(true);
+  itemBoxSizer4->Add(checkAutoRedraw, 1, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelAutoRedraw, wxSize(2, -1)).x);
 
-  buttonForceRedraw = new wxButton( panelAutoRedraw, ID_BUTTON_FORCE_REDRAW, _( "Force Redraw" ), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer4->Add( buttonForceRedraw, 0, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( panelAutoRedraw, wxSize( 1, -1 ) ).x );
+  buttonForceRedraw = new wxButton( panelAutoRedraw, ID_BUTTON_FORCE_REDRAW, _("Force Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer4->Add(buttonForceRedraw, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelAutoRedraw, wxSize(1, -1)).x);
 
   // Fit to content
-  itemFrame1->GetAuiManager()
-    .GetPane( wxT( "auiAutoRedraw" ) )
-    .BestSize( panelAutoRedraw->GetSizer()->Fit( panelAutoRedraw ) )
-    .MinSize( panelAutoRedraw->GetSizer()->GetMinSize() );
+  itemFrame1->GetAuiManager().GetPane(wxT("auiAutoRedraw")).BestSize(panelAutoRedraw->GetSizer()->Fit(panelAutoRedraw)).MinSize(panelAutoRedraw->GetSizer()->GetMinSize());
 
-  wxPanel *itemPanel36 = new wxPanel( itemFrame1, ID_PANEL_WORKSPACES, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxTAB_TRAVERSAL );
-  itemFrame1->GetAuiManager().AddPane( itemPanel36,
-                                       wxAuiPaneInfo()
-                                         .Name( wxT( "Pane1" ) )
-                                         .Caption( _( "Workspaces" ) )
-                                         .Top()
-                                         .Dockable( false )
-                                         .CloseButton( false )
-                                         .DestroyOnClose( false )
-                                         .Resizable( false )
-                                         .Floatable( false )
-                                         .Movable( false )
-                                         .PaneBorder( false ) );
+  wxPanel* itemPanel36 = new wxPanel( itemFrame1, ID_PANEL_WORKSPACES, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemFrame1->GetAuiManager().AddPane(itemPanel36, wxAuiPaneInfo()
+    .Name(wxT("Pane1")).Caption(_("Workspaces")).Top().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
 
-  wxBoxSizer *itemBoxSizer37 = new wxBoxSizer( wxHORIZONTAL );
-  itemPanel36->SetSizer( itemBoxSizer37 );
+  wxBoxSizer* itemBoxSizer37 = new wxBoxSizer(wxHORIZONTAL);
+  itemPanel36->SetSizer(itemBoxSizer37);
 
   txtActiveWorkspaces = new wxTextCtrl( itemPanel36, ID_TEXT_ACTIVE_WORKSPACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  itemBoxSizer37->Add( txtActiveWorkspaces, 1, wxALIGN_CENTER_VERTICAL | wxALL, 0 );
+  itemBoxSizer37->Add(txtActiveWorkspaces, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
-  btnActiveWorkspaces = new wxBitmapButton( itemPanel36,
-                                            ID_BUTTON_ACTIVE_WORKSPACES,
-                                            itemFrame1->GetBitmapResource( wxT( "icons/three_dots.xpm" ) ),
-                                            wxDefaultPosition,
-                                            wxDefaultSize,
-                                            wxBU_AUTODRAW );
-  btnActiveWorkspaces->Show( false );
-  itemBoxSizer37->Add( btnActiveWorkspaces, 0, wxALIGN_CENTER_VERTICAL | wxALL, 0 );
+  btnActiveWorkspaces = new wxBitmapButton( itemPanel36, ID_BUTTON_ACTIVE_WORKSPACES, itemFrame1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  btnActiveWorkspaces->Show(false);
+  itemBoxSizer37->Add(btnActiveWorkspaces, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
   // Fit to content
-  itemFrame1->GetAuiManager()
-    .GetPane( wxT( "Pane1" ) )
-    .BestSize( itemPanel36->GetSizer()->Fit( itemPanel36 ) )
-    .MinSize( itemPanel36->GetSizer()->GetMinSize() );
+  itemFrame1->GetAuiManager().GetPane(wxT("Pane1")).BestSize(itemPanel36->GetSizer()->Fit(itemPanel36)).MinSize(itemPanel36->GetSizer()->GetMinSize());
 
   GetAuiManager().Update();
 
@@ -797,14 +686,14 @@ void paraverMain::refreshMenuHints()
 
   // Create updated menu hints
   size_t currentWorkspace = 0;
-  for( vector<string>::iterator it = traceWorkspaces[ getCurrentTrace() ].begin(); it != traceWorkspaces[ getCurrentTrace() ].end(); ++it )
+  for( vector< string >::iterator it = traceWorkspaces[ getCurrentTrace() ].begin(); it != traceWorkspaces[ getCurrentTrace() ].end(); ++it )
   {
     wxString currentWorkspaceName  = wxString::FromUTF8( it->c_str() );
     wxMenu *currentWorkspaceMenu   = new wxMenu();
     wxMenu *discardedWorkspaceMenu = new wxMenu();
 
     // Build combined hints DISTRIBUTED + USER_DEFINED
-    std::vector<std::pair<std::string, std::string>> currentHints;
+    std::vector< std::pair< std::string, std::string > > currentHints;
     if( currentWorkspace < firstUserWorkspace[ getCurrentTrace() ] ) // Distributed workspaces
     {
       currentHints = workspacesManager->getWorkspace( *it, TWorkspaceSet::DISTRIBUTED ).getHintCFGs();
@@ -812,14 +701,14 @@ void paraverMain::refreshMenuHints()
       // Add the hints of a user defined workspace if it has the same name and event types
       if( workspacesManager->existWorkspace( *it, TWorkspaceSet::USER_DEFINED ) )
       {
-        vector<WorkspaceValue> tmpDistAutoTypes = workspacesManager->getWorkspace( *it, TWorkspaceSet::DISTRIBUTED ).getAutoTypes();
+        vector< WorkspaceValue > tmpDistAutoTypes = workspacesManager->getWorkspace( *it, TWorkspaceSet::DISTRIBUTED ).getAutoTypes();
         sort( tmpDistAutoTypes.begin(), tmpDistAutoTypes.end() );
-        vector<WorkspaceValue> tmpUserAutoTypes = workspacesManager->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ).getAutoTypes();
+        vector< WorkspaceValue > tmpUserAutoTypes = workspacesManager->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ).getAutoTypes();
         sort( tmpUserAutoTypes.begin(), tmpUserAutoTypes.end() );
         if( includes( tmpDistAutoTypes.begin(), tmpDistAutoTypes.end(), tmpUserAutoTypes.begin(), tmpUserAutoTypes.end() ) )
         {
-          currentHints.push_back( std::pair<std::string, std::string>( "WXSEPARATOR", "WXSEPARATOR" ) );
-          std::vector<std::pair<std::string, std::string>> tmpHints =
+          currentHints.push_back( std::pair< std::string, std::string >( "WXSEPARATOR", "WXSEPARATOR" ) );
+          std::vector< std::pair< std::string, std::string > > tmpHints =
             workspacesManager->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ).getHintCFGs();
           currentHints.insert( currentHints.end(), tmpHints.begin(), tmpHints.end() );
         }
@@ -838,7 +727,7 @@ void paraverMain::refreshMenuHints()
     }
 
     // Iterate through combined hints to build wxwidgets menu detecting trace events + workspace state to discard non-relevant hints
-    for( std::vector<std::pair<std::string, std::string>>::iterator itHints = currentHints.begin(); itHints != currentHints.end(); ++itHints )
+    for( std::vector< std::pair< std::string, std::string > >::iterator itHints = currentHints.begin(); itHints != currentHints.end(); ++itHints )
     {
       if( ( *itHints ).first == "WXSEPARATOR" && ( *itHints ).second == "WXSEPARATOR" )
       {
@@ -900,8 +789,8 @@ void paraverMain::refreshMenuHints()
 // Initial set, to be called after inserting new trace
 void paraverMain::setTraceWorkspaces( Trace *whichTrace )
 {
-  set<TState> tmpLoadedStates      = whichTrace->getLoadedStates();
-  set<TEventType> tmpLoadedTypes   = whichTrace->getLoadedEvents();
+  set< TState > tmpLoadedStates    = whichTrace->getLoadedStates();
+  set< TEventType > tmpLoadedTypes = whichTrace->getLoadedEvents();
   firstUserWorkspace[ whichTrace ] = 0;
   traceWorkspaces[ whichTrace ].clear();
   workspacesManager->getMergedWorkspaces( tmpLoadedStates, tmpLoadedTypes, traceWorkspaces[ whichTrace ], firstUserWorkspace[ whichTrace ] );
@@ -933,10 +822,10 @@ void paraverMain::DoLoadSession( const string &whichFileName )
 }
 
 
-bool paraverMain::DoLoadTrace( const string &path )
+std::optional< Trace * > paraverMain::DoLoadTrace( const string &path )
 {
-  Trace *tr   = nullptr;
-  bool loaded = true;
+  Trace *tr = nullptr;
+  std::optional< Trace * > returnTrace;
 
   canServeSignal = false;
 
@@ -964,7 +853,6 @@ bool paraverMain::DoLoadTrace( const string &path )
                                    wxT( "Reduce trace size" ),
                                    wxYES_NO | wxCANCEL | wxICON_QUESTION );
 
-    bool tmpResult = true;
     switch( maxSizeDialog.ShowModal() )
     {
       case wxID_YES:
@@ -973,7 +861,7 @@ bool paraverMain::DoLoadTrace( const string &path )
 
 
         // canServeSignal = true;
-        return tmpResult;
+        return returnTrace;
         break;
 
       case wxID_NO:
@@ -981,12 +869,12 @@ bool paraverMain::DoLoadTrace( const string &path )
 
       case wxID_CANCEL:
         canServeSignal = true;
-        return false;
+        return returnTrace;
         break;
     }
   }
 
-  map<string, PRV_UINT32>::iterator it = traceInstance.find( std::string( tmpFileName.GetFullName().mb_str() ) );
+  map< string, PRV_UINT32 >::iterator it = traceInstance.find( std::string( tmpFileName.GetFullName().mb_str() ) );
   if( it == traceInstance.end() )
     traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ] = 0;
 
@@ -998,7 +886,7 @@ bool paraverMain::DoLoadTrace( const string &path )
       paraverMain::dialogProgress =
         new wxProgressDialog( wxT( "Loading trace..." ),
                               wxT( "" ),
-                              numeric_limits<PRV_INT16>::max(),
+                              numeric_limits< PRV_INT16 >::max(),
                               this,
                               wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
 
@@ -1049,10 +937,11 @@ bool paraverMain::DoLoadTrace( const string &path )
     tracePath         = tmpFileName.GetPath();
 
     tr->setSuitableApps( ExternalApps::suitableAppsForTrace( *tr ) );
+
+    returnTrace = tr;
   }
   catch( ParaverKernelException &ex )
   {
-    loaded = false;
     wxMessageDialog message( this, wxString::FromUTF8( ex.what() ), _( "Error loading trace" ), wxOK );
     raiseCurrentWindow = false;
     message.ShowModal();
@@ -1068,10 +957,10 @@ bool paraverMain::DoLoadTrace( const string &path )
 
   canServeSignal = true;
 
-  return loaded;
+  return returnTrace;
 }
 
-bool paraverMain::DoLoadCFG( const string &path )
+bool paraverMain::DoLoadCFG( const string &path, std::optional< Trace * > whichTrace )
 {
   if( !CFGLoader::isCFGFile( path ) )
   {
@@ -1083,11 +972,15 @@ bool paraverMain::DoLoadCFG( const string &path )
   }
   else
   {
-    vector<Timeline *> newWindows;
-    vector<Histogram *> newHistograms;
+    vector< Timeline * > newWindows;
+    vector< Histogram * > newHistograms;
     SaveOptions options;
 
-    Trace *tmpTraceToUse = getCurrentTrace();
+    Trace *tmpTraceToUse;
+    if( !whichTrace )
+      tmpTraceToUse = getCurrentTrace();
+    else
+      tmpTraceToUse = *whichTrace;
 
     if( !CFGLoader::loadCFG( localKernel, path, tmpTraceToUse, newWindows, newHistograms, options ) )
     {
@@ -1124,7 +1017,7 @@ bool paraverMain::DoLoadCFG( const string &path )
       }
 
       wxTreeItemId child;
-      for( vector<Timeline *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
+      for( vector< Timeline * >::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
       {
         wxTreeCtrl *allTracesPage = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
         wxTreeCtrl *currentPage   = (wxTreeCtrl *)choiceWindowBrowser->GetPage( getTracePosition( tmpTraceToUse ) + 1 );
@@ -1140,7 +1033,7 @@ bool paraverMain::DoLoadCFG( const string &path )
       }
 
       int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
-      for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
+      for( vector< Histogram * >::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
       {
         wxPoint tmpPos( ( *it )->getPosX(), ( *it )->getPosY() );
         if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
@@ -1354,50 +1247,50 @@ wxBitmap paraverMain::GetBitmapResource( const wxString &name )
 {
   // Bitmap retrieval
   ////@begin paraverMain bitmap retrieval
-  wxUnusedVar( name );
-  if( name == wxT( "icons/information.xpm" ) )
+  wxUnusedVar(name);
+  if (name == wxT("icons/information.xpm"))
   {
-    wxBitmap bitmap( information );
+    wxBitmap bitmap(information);
     return bitmap;
   }
-  else if( name == wxT( "icons/new_window.xpm" ) )
+  else if (name == wxT("icons/new_window.xpm"))
   {
-    wxBitmap bitmap( application_star_xpm );
+    wxBitmap bitmap(application_star_xpm);
     return bitmap;
   }
-  else if( name == wxT( "icons/new_derived_window.xpm" ) )
+  else if (name == wxT("icons/new_derived_window.xpm"))
   {
-    wxBitmap bitmap( application_add_xpm );
+    wxBitmap bitmap(application_add_xpm);
     return bitmap;
   }
-  else if( name == wxT( "icons/new_histogram.xpm" ) )
+  else if (name == wxT("icons/new_histogram.xpm"))
   {
-    wxBitmap bitmap( new_histogram_xpm );
+    wxBitmap bitmap(new_histogram_xpm);
     return bitmap;
   }
-  else if( name == wxT( "icons/delete.xpm" ) )
+  else if (name == wxT("icons/delete.xpm"))
   {
-    wxBitmap bitmap( delete_xpm );
+    wxBitmap bitmap(delete_xpm);
     return bitmap;
   }
-  else if( name == wxT( "icons/cut_trace.xpm" ) )
+  else if (name == wxT("icons/cut_trace.xpm"))
   {
-    wxBitmap bitmap( cut_trace_xpm );
+    wxBitmap bitmap(cut_trace_xpm);
     return bitmap;
   }
-  else if( name == wxT( "icons/run_script.xpm" ) )
+  else if (name == wxT("icons/run_script.xpm"))
   {
-    wxBitmap bitmap( run_script_xpm );
+    wxBitmap bitmap(run_script_xpm);
     return bitmap;
   }
-  else if( name == wxT( "icons/autoredraw_refresh.xpm" ) )
+  else if (name == wxT("icons/autoredraw_refresh.xpm"))
   {
-    wxBitmap bitmap( autoredraw_refresh_xpm );
+    wxBitmap bitmap(autoredraw_refresh_xpm);
     return bitmap;
   }
-  else if( name == wxT( "icons/three_dots.xpm" ) )
+  else if (name == wxT("icons/three_dots.xpm"))
   {
-    wxBitmap bitmap( three_dots_xpm );
+    wxBitmap bitmap(three_dots_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -1412,15 +1305,15 @@ wxIcon paraverMain::GetIconResource( const wxString &name )
 {
   // Icon retrieval
   ////@begin paraverMain icon retrieval
-  wxUnusedVar( name );
-  if( name == wxT( "icons/file_browser.xpm" ) )
+  wxUnusedVar(name);
+  if (name == wxT("icons/file_browser.xpm"))
   {
-    wxIcon icon( file_browser_xpm );
+    wxIcon icon(file_browser_xpm);
     return icon;
   }
-  else if( name == wxT( "icons/window_properties.xpm" ) )
+  else if (name == wxT("icons/window_properties.xpm"))
   {
-    wxIcon icon( window_properties_xpm );
+    wxIcon icon(window_properties_xpm);
     return icon;
   }
   return wxNullIcon;
@@ -1435,8 +1328,8 @@ void paraverMain::spreadSetChangedRecursive( Timeline *whichWindow )
   if( whichWindow->getChild() != nullptr )
     spreadSetChangedRecursive( whichWindow->getChild() );
 
-  set<Histogram *> tmpHistograms = whichWindow->getHistograms();
-  for( set<Histogram *>::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
+  set< Histogram * > tmpHistograms = whichWindow->getHistograms();
+  for( set< Histogram * >::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
     ( *it )->setChanged( true );
 }
 
@@ -1457,8 +1350,8 @@ void paraverMain::spreadSetRedrawRecursive( Timeline *whichWindow )
   if( whichWindow->getChild() != nullptr )
     spreadSetRedrawRecursive( whichWindow->getChild() );
 
-  set<Histogram *> tmpHistograms = whichWindow->getHistograms();
-  for( set<Histogram *>::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
+  set< Histogram * > tmpHistograms = whichWindow->getHistograms();
+  for( set< Histogram * >::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
     ( *it )->setRecalc( true );
 }
 
@@ -1492,7 +1385,7 @@ std::string getCFG4DParameterOriginalName( Histogram *whichWindow, TWindowLevel 
   return "";
 }
 
-template<typename T>
+template< typename T >
 bool paraverMain::linkedSetPropertyValue( T *whichWindow,
                                           wxPropertyGridEvent &event,
                                           wxPGProperty *property,
@@ -1643,8 +1536,8 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
       whichTimeline->setWindowBeginTime( whichTimeline->windowUnitsToTraceUnits( tmpValue ) );
 
       // modify current zoom directly
-      pair<TTime, TTime> zoomInfo = whichTimeline->getZoomFirstDimension();
-      zoomInfo.first              = property->GetValue().GetDouble(); // begin
+      pair< TTime, TTime > zoomInfo = whichTimeline->getZoomFirstDimension();
+      zoomInfo.first                = property->GetValue().GetDouble(); // begin
       whichTimeline->setZoomFirstDimension( zoomInfo );
 
       whichTimeline->setChanged( true );
@@ -1681,8 +1574,8 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
       whichTimeline->setWindowEndTime( whichTimeline->windowUnitsToTraceUnits( tmpValue ) );
 
       // modify current zoom directly
-      pair<TTime, TTime> zoomInfo = whichTimeline->getZoomFirstDimension();
-      zoomInfo.second             = property->GetValue().GetDouble(); // end
+      pair< TTime, TTime > zoomInfo = whichTimeline->getZoomFirstDimension();
+      zoomInfo.second               = property->GetValue().GetDouble(); // end
       whichTimeline->setZoomFirstDimension( zoomInfo );
 
       whichTimeline->setChanged( true );
@@ -1726,8 +1619,8 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     whichHistogram->setControlMin( property->GetValue().GetDouble() );
 
     // modify current zoom directly
-    pair<HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo> zoomInfo = whichHistogram->getZoomFirstDimension();
-    zoomInfo.first.begin                                                = property->GetValue().GetDouble(); // minimum
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = whichHistogram->getZoomFirstDimension();
+    zoomInfo.first.begin                                                  = property->GetValue().GetDouble(); // minimum
     whichHistogram->setZoomFirstDimension( zoomInfo );
 
     whichHistogram->setCompute2DScale( false );
@@ -1738,8 +1631,8 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     whichHistogram->setControlMax( property->GetValue().GetDouble() );
 
     // modify current zoom directly
-    pair<HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo> zoomInfo = whichHistogram->getZoomFirstDimension();
-    zoomInfo.first.end                                                  = property->GetValue().GetDouble(); // maximum
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = whichHistogram->getZoomFirstDimension();
+    zoomInfo.first.end                                                    = property->GetValue().GetDouble(); // maximum
     whichHistogram->setZoomFirstDimension( zoomInfo );
 
     whichHistogram->setCompute2DScale( false );
@@ -1755,8 +1648,8 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     whichHistogram->setControlDelta( property->GetValue().GetDouble() );
 
     // modify current zoom directly
-    pair<HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo> zoomInfo = whichHistogram->getZoomFirstDimension();
-    zoomInfo.second.begin                                               = property->GetValue().GetDouble(); // delta
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = whichHistogram->getZoomFirstDimension();
+    zoomInfo.second.begin                                                 = property->GetValue().GetDouble(); // delta
     whichHistogram->setZoomFirstDimension( zoomInfo );
 
     whichHistogram->setCompute2DScale( false );
@@ -1768,7 +1661,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     unsigned long newNumColumns;
     wxString numColumnsStr = property->GetValueAsString();
 
-    vector<wxString> listNumColumnsChoices;
+    vector< wxString > listNumColumnsChoices;
     NumColumnsChoices::createChoices(
       [ & ]( wxString el )
       {
@@ -1832,9 +1725,9 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     }
     else
     {
-      map<string, string> statList( whichHistogram->getCFG4DStatisticsAliasList() );
+      map< string, string > statList( whichHistogram->getCFG4DStatisticsAliasList() );
       string selected( std::string( property->GetDisplayedString().mb_str() ) );
-      for( map<string, string>::iterator it = statList.begin(); it != statList.end(); ++it )
+      for( map< string, string >::iterator it = statList.begin(); it != statList.end(); ++it )
       {
         if( it->second == selected )
         {
@@ -1894,7 +1787,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
   // Timeline related properties
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_LEVEL, DERIVED_LEVEL, HISTOGRAM_NULL ) )
   {
-    whichTimeline->setLevel( static_cast<TTraceLevel>( property->GetValue().GetLong() ) );
+    whichTimeline->setLevel( static_cast< TTraceLevel >( property->GetValue().GetLong() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
@@ -1936,9 +1829,9 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     Filter *filter = whichTimeline->getFilter();
     filter->clearCommFrom();
-    vector<TObjectOrder> selection;
+    vector< TObjectOrder > selection;
     myProperty->GetSelectionAsVector( whichTimeline->getLevel(), selection );
-    for( vector<TObjectOrder>::iterator it = selection.begin(); it != selection.end(); ++it )
+    for( vector< TObjectOrder >::iterator it = selection.begin(); it != selection.end(); ++it )
     {
       filter->insertCommFrom( long( *it ) );
     }
@@ -1968,9 +1861,9 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     Filter *filter = whichTimeline->getFilter();
     filter->clearCommTo();
-    vector<TObjectOrder> selection;
+    vector< TObjectOrder > selection;
     myProperty->GetSelectionAsVector( whichTimeline->getLevel(), selection );
-    for( vector<TObjectOrder>::iterator it = selection.begin(); it != selection.end(); ++it )
+    for( vector< TObjectOrder >::iterator it = selection.begin(); it != selection.end(); ++it )
     {
       filter->insertCommTo( long( *it ) );
     }
@@ -2320,7 +2213,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
 
   tmpTree->GetSelections( selectedItems );
 
-  TreeBrowserItemData *itemSelected = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+  TreeBrowserItemData *itemSelected = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
   bool hasTimeline                  = false;
   bool hasHistogram                 = false;
 
@@ -2330,7 +2223,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
 
     wxString itemText = tmpTree->GetItemText( selectedItem );
 
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
 
     if( itemSelected == itemData )
     {
@@ -2389,7 +2282,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
  */
 void paraverMain::OnTreeItemActivated( wxTreeEvent &event )
 {
-  wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+  wxTreeCtrl *tmpTree = static_cast< wxTreeCtrl * >( event.GetEventObject() );
 
   wxArrayTreeItemIds selectedItems;
   tmpTree->GetSelections( selectedItems );
@@ -2416,7 +2309,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent &event )
 
     wxString itemText = tmpTree->GetItemText( selectedItem );
 
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
 
     endDragWindow = nullptr;
 
@@ -2449,7 +2342,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent &event )
  */
 void paraverMain::OnTreeRightClick( wxTreeEvent &event )
 {
-  wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+  wxTreeCtrl *tmpTree = static_cast< wxTreeCtrl * >( event.GetEventObject() );
   if( tmpTree->GetParent()->GetId() == ID_DIRCTRLFILES )
   {
     event.Skip();
@@ -2460,7 +2353,7 @@ void paraverMain::OnTreeRightClick( wxTreeEvent &event )
   tmpTree->GetSelections( selectedItems );
 
 
-  std::vector<std::variant<gHistogram *, gTimeline *>> itemDataWindow;
+  std::vector< std::variant< gHistogram *, gTimeline * > > itemDataWindow;
 
   for( size_t i = 0; i < selectedItems.GetCount(); ++i )
   {
@@ -2468,7 +2361,7 @@ void paraverMain::OnTreeRightClick( wxTreeEvent &event )
 
     wxString itemText = tmpTree->GetItemText( selectedItem );
 
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
     endDragWindow                 = nullptr;
 
     if( gHistogram *histo = itemData->getHistogram() )
@@ -2521,7 +2414,7 @@ void paraverMain::OnTreeEndLabelRename( wxTreeEvent &event )
   wxArrayTreeItemIds selectedItems;
   currentTree->GetSelections( selectedItems );
 
-  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( selectedItems[ 0 ] ) );
+  TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( currentTree->GetItemData( selectedItems[ 0 ] ) );
 
   if( !event.IsEditCancelled() )
   {
@@ -2569,7 +2462,7 @@ gTimeline *paraverMain::GetSelectedTimeline()
 
     wxString itemText = tmpTree->GetItemText( selectedItem );
 
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
 
     if( gTimeline *timeline = itemData->getTimeline() )
     {
@@ -2596,7 +2489,7 @@ gHistogram *paraverMain::GetSelectedHistogram()
 
     wxString itemText = tmpTree->GetItemText( selectedItem );
 
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
 
     if( gHistogram *histo = itemData->getHistogram() )
     {
@@ -2619,7 +2512,7 @@ void paraverMain::renameTreeItem()
 
   if( currentTree->GetSelections( selectedItems ) == 1 )
   {
-    TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( selectedItems[ 0 ] ) );
+    TreeBrowserItemData *item = static_cast< TreeBrowserItemData * >( currentTree->GetItemData( selectedItems[ 0 ] ) );
     if( item->getHistogram() != nullptr )
     {
       item->getHistogram()->setEditMode( true );
@@ -2645,9 +2538,9 @@ void paraverMain::renameTreeItem()
 void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent &event )
 {
   // Get a copy of all Windows and Histograms from LoadedWindows
-  vector<Timeline *> allWindows;
+  vector< Timeline * > allWindows;
   LoadedWindows::getInstance()->getAll( allWindows );
-  vector<Histogram *> allHistograms;
+  vector< Histogram * > allHistograms;
   bool destroyed = false;
 
   // Update loop and delete
@@ -2689,7 +2582,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent &event )
   }
 
   // add pending window or histogram
-  for( vector<Timeline *>::iterator it = allWindows.begin(); it != allWindows.end(); ++it )
+  for( vector< Timeline * >::iterator it = allWindows.begin(); it != allWindows.end(); ++it )
   {
     if( ( *it )->getDestroy() )
       continue;
@@ -2701,7 +2594,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent &event )
       BuildTree( this, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
   }
 
-  for( vector<Histogram *>::iterator it = allHistograms.begin(); it != allHistograms.end(); ++it )
+  for( vector< Histogram * >::iterator it = allHistograms.begin(); it != allHistograms.end(); ++it )
   {
     if( ( *it )->getDestroy() )
       continue;
@@ -2829,7 +2722,7 @@ void paraverMain::OnPreviousSessionsClick( wxCommandEvent &event )
 
 void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent &event )
 {
-  vector<string> v = previousTraces->getFiles();
+  vector< string > v = previousTraces->getFiles();
 
   wxMenuItem *tmpItem = menuFile->FindItem( ID_RECENTTRACES );
   wxMenu *menuTraces  = tmpItem->GetSubMenu();
@@ -2837,7 +2730,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent &event )
   wxMenuItemList &menuItems       = menuTraces->GetMenuItems();
   wxMenuItemList::iterator menuIt = menuItems.begin();
 
-  for( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
+  for( vector< string >::iterator it = v.begin(); it != v.end(); ++it )
   {
     if( menuIt == menuItems.end() )
     {
@@ -2861,7 +2754,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent &event )
 
 void paraverMain::OnRecentsessionsUpdate( wxUpdateUIEvent &event )
 {
-  vector<string> v = previousSessions->getFiles();
+  vector< string > v = previousSessions->getFiles();
 
   wxMenuItem *tmpItem  = menuFile->FindItem( ID_RECENTSESSIONS );
   wxMenu *menuSessions = tmpItem->GetSubMenu();
@@ -2889,7 +2782,7 @@ void paraverMain::OnRecentsessionsUpdate( wxUpdateUIEvent &event )
   }
   else
   {
-    for( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
+    for( vector< string >::iterator it = v.begin(); it != v.end(); ++it )
     {
       // Handler load auto-session options
       if( menuItems.size() == 0 && it == v.begin() )
@@ -2946,7 +2839,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent &event )
   // event.Enable( loadedTraces.size() > 0 ); // why not this one?
   event.Enable( currentTrace != -1 );
 
-  vector<string> v = previousCFGs->getFiles();
+  vector< string > v = previousCFGs->getFiles();
 
   wxMenuItem *tmpItem = menuFile->FindItem( ID_RECENTCFGS );
   wxMenu *menuCFGs    = tmpItem->GetSubMenu();
@@ -2954,7 +2847,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent &event )
   wxMenuItemList &menuItems       = menuCFGs->GetMenuItems();
   wxMenuItemList::iterator menuIt = menuItems.begin();
 
-  for( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
+  for( vector< string >::iterator it = v.begin(); it != v.end(); ++it )
   {
     if( menuIt == menuItems.end() )
     {
@@ -2974,7 +2867,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent &event )
 
 void progressFunction( void *whichProgressDialog, ProgressController *progress )
 {
-  wxProgressDialog *tmpProgressDialog = static_cast<wxProgressDialog *>( whichProgressDialog );
+  wxProgressDialog *tmpProgressDialog = static_cast< wxProgressDialog * >( whichProgressDialog );
 
   int p;
   if( progress->getCurrentProgress() > progress->getEndLimit() )
@@ -3032,12 +2925,12 @@ bool isWindowRelatedToOtherTraces( Timeline *whichWindow, Trace *whichTrace, Tim
 }
 
 
-bool allWindowsRelatedToOtherTraces( vector<Timeline *> windows )
+bool allWindowsRelatedToOtherTraces( vector< Timeline * > windows )
 {
   if( windows.empty() )
     return false;
 
-  for( vector<Timeline *>::iterator it = windows.begin(); it != windows.end(); ++it )
+  for( vector< Timeline * >::iterator it = windows.begin(); it != windows.end(); ++it )
   {
     if( !( *it )->isDerivedWindow() && ( *it )->getChild() == nullptr )
       return false;
@@ -3086,14 +2979,14 @@ void paraverMain::OnIdle( wxIdleEvent &event )
 
   if( wxTheApp->IsActive() )
   {
-    int iTrace                   = 0;
-    vector<Trace *>::iterator it = loadedTraces.begin();
+    int iTrace                     = 0;
+    vector< Trace * >::iterator it = loadedTraces.begin();
     while( it != loadedTraces.end() )
     {
       if( ( *it )->getUnload() )
       {
-        vector<Timeline *> windows;
-        vector<Histogram *> histograms;
+        vector< Timeline * > windows;
+        vector< Histogram * > histograms;
 
         LoadedWindows::getInstance()->getAll( *it, windows );
         LoadedWindows::getInstance()->getAll( *it, histograms );
@@ -3113,7 +3006,7 @@ void paraverMain::OnIdle( wxIdleEvent &event )
           }
           else
           {
-            vector<Trace *>::iterator tmpIt = it;
+            vector< Trace * >::iterator tmpIt = it;
             --tmpIt;
             loadedTraces.erase( it );
             ++tmpIt;
@@ -3185,7 +3078,7 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent &event )
   tree->GetSelections( selectedItems );
   if( !selectedItems.empty() )
   {
-    TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[ 0 ] ) );
+    TreeBrowserItemData *item = static_cast< TreeBrowserItemData * >( tree->GetItemData( selectedItems[ 0 ] ) );
     if( !item )
     {
       if( item->getTimeline() != nullptr )
@@ -3211,14 +3104,14 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent &event )
 
 void paraverMain::SaveConfigurationFile( wxWindow *parent,
                                          SaveOptions options,
-                                         vector<Timeline *> timelines,
-                                         vector<Histogram *> histograms,
-                                         const vector<CFGS4DLinkedPropertiesManager> &linkedProperties )
+                                         vector< Timeline * > timelines,
+                                         vector< Histogram * > histograms,
+                                         const vector< CFGS4DLinkedPropertiesManager > &linkedProperties )
 {
   if( !CFGLoadedBefore )
     CFGPath = wxString::FromUTF8( paraverConfig->getGlobalCFGsPath().c_str() );
 
-  vector<wxString> extensions;
+  vector< wxString > extensions;
   extensions.push_back( wxT( "cfg" ) );
 
   if( parent == nullptr )
@@ -3253,8 +3146,8 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
 void paraverMain::OnMenusavecfgClick( wxCommandEvent &event )
 {
   SaveOptions options;
-  vector<Timeline *> timelines;
-  vector<Histogram *> histograms;
+  vector< Timeline * > timelines;
+  vector< Histogram * > histograms;
   SaveConfigurationDialog saveDialog( this );
 
   saveDialog.SetOptions( options );
@@ -3265,8 +3158,8 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent &event )
 
   // Find trace to put in the selector
   Trace *selectedTrace = nullptr;
-  vector<Timeline *> auxWindows;
-  vector<Histogram *> auxHistograms;
+  vector< Timeline * > auxWindows;
+  vector< Histogram * > auxHistograms;
 
   int currentPage = choiceWindowBrowser->GetSelection();
   LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], auxWindows );
@@ -3286,17 +3179,17 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent &event )
     histograms                                            = saveDialog.GetSelectedHistograms();
     options                                               = saveDialog.GetOptions();
     const CFGS4DLinkedPropertiesManager &linkedProperties = saveDialog.getLinkedPropertiesManager();
-    vector<CFGS4DLinkedPropertiesManager> propertiesList;
+    vector< CFGS4DLinkedPropertiesManager > propertiesList;
     propertiesList.push_back( linkedProperties );
 
     SaveConfigurationFile( (wxWindow *)this, options, timelines, histograms, propertiesList );
 
     // Disable CFG4D once it is saved
-    for( vector<Timeline *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+    for( vector< Timeline * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
     {
       ( *it )->setCFG4DEnabled( false );
     }
-    for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+    for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
     {
       ( *it )->setCFG4DEnabled( false );
     }
@@ -3422,7 +3315,7 @@ void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent &event )
 void paraverMain::ShowDerivedDialog()
 {
   DerivedTimelineDialog derivedDialog( this );
-  vector<TWindowID> timelines;
+  vector< TWindowID > timelines;
 
   LoadedWindows::getInstance()->getDerivedCompatible( beginDragWindow->getTrace(), timelines );
 
@@ -3496,7 +3389,7 @@ void paraverMain::ShowDerivedDialog()
     newWindow->setDrawModeTime( beginDragWindow->getDrawModeTime() );
     newWindow->getSemanticColor().setGradientFunction( beginDragWindow->getSemanticColor().getGradientFunction() );
     newWindow->setLevel( beginDragWindow->getLevel() );
-    vector<bool> tmpSel;
+    vector< bool > tmpSel;
     for( TTraceLevel level = TTraceLevel::APPLICATION; level <= TTraceLevel::THREAD; ++level )
     {
       tmpSel.clear();
@@ -3514,7 +3407,7 @@ void paraverMain::ShowDerivedDialog()
     }
 
     // Semantic
-    vector<string> auxCompose = derivedDialog.GetTopCompose1();
+    vector< string > auxCompose = derivedDialog.GetTopCompose1();
     newWindow->setLevelFunction( TOPCOMPOSE1, auxCompose[ 0 ] );
     auxCompose = derivedDialog.GetTopCompose2();
     newWindow->setLevelFunction( TOPCOMPOSE2, auxCompose[ 0 ] );
@@ -3545,7 +3438,7 @@ void paraverMain::ShowDerivedDialog()
       newWindow->setFunctionParam( TOPCOMPOSE2, 1, auxParam );
     auxParam.clear();
 
-    vector<string> semanticDerivedFunction = derivedDialog.GetOperations();
+    vector< string > semanticDerivedFunction = derivedDialog.GetOperations();
     newWindow->setLevelFunction( DERIVED, semanticDerivedFunction[ 0 ] );
 
     // Build gtimeline and append new window to windows tree
@@ -3568,12 +3461,12 @@ void paraverMain::ShowHistogramDialog()
   HistogramDialog histogramDialog( this );
   // HistogramDialog histogramDialog( nullptr );
 
-  vector<TWindowID> timelines;
+  vector< TWindowID > timelines;
   LoadedWindows::getInstance()->getAll( timelines );
 
   histogramDialog.SetControlTimelines( timelines );
 
-  vector<pair<TRecordTime, TRecordTime>> ranges;
+  vector< pair< TRecordTime, TRecordTime > > ranges;
   // Timeline Times
   ranges.push_back( make_pair( currentTimeline->getWindowBeginTime(), currentTimeline->getWindowEndTime() ) );
   // Trace Times
@@ -3586,9 +3479,9 @@ void paraverMain::ShowHistogramDialog()
   raiseCurrentWindow = false;
   if( ParaverConfig::getInstance()->getHistogramSkipCreateDialog() || histogramDialog.ShowModal() == wxID_OK )
   {
-    vector<TWindowID> controlTimeline = histogramDialog.GetControlTimelines();
-    vector<TWindowID> dataTimeline    = histogramDialog.GetDataTimelines();
-    vector<TWindowID> extraControlTimeline;
+    vector< TWindowID > controlTimeline = histogramDialog.GetControlTimelines();
+    vector< TWindowID > dataTimeline    = histogramDialog.GetDataTimelines();
+    vector< TWindowID > extraControlTimeline;
     if( !ParaverConfig::getInstance()->getHistogramSkipCreateDialog() )
       extraControlTimeline = histogramDialog.GetExtraControlTimelines();
 
@@ -3701,7 +3594,7 @@ void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent &event )
 {
   if( loadedTraces.size() > 0 && currentTrace > -1 )
   {
-    vector<Timeline *> timelines;
+    vector< Timeline * > timelines;
     LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
 
     event.Enable( ( timelines.size() > 0 ) && ( currentTimeline != nullptr ) );
@@ -3716,8 +3609,8 @@ void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent &event )
 
 void paraverMain::OnTreeBeginDrag( wxTreeEvent &event )
 {
-  wxTreeCtrl *tmpTree           = static_cast<wxTreeCtrl *>( event.GetEventObject() );
-  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+  wxTreeCtrl *tmpTree           = static_cast< wxTreeCtrl * >( event.GetEventObject() );
+  TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
 
   beginDragWindow = nullptr;
   if( itemData != nullptr )
@@ -3758,13 +3651,13 @@ int paraverMain::GetNextPosY()
 
 void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
 {
-  if( static_cast<wxTreeCtrl *>( event.GetEventObject() ) == dirctrlFiles->GetTreeCtrl() )
+  if( static_cast< wxTreeCtrl * >( event.GetEventObject() ) == dirctrlFiles->GetTreeCtrl() )
     return;
 
   if( event.GetItem().IsOk() )
   {
-    wxTreeCtrl *tmpTree           = static_cast<wxTreeCtrl *>( event.GetEventObject() );
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+    wxTreeCtrl *tmpTree           = static_cast< wxTreeCtrl * >( event.GetEventObject() );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
 
     endDragWindow = nullptr;
 
@@ -3801,7 +3694,7 @@ void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent &event )
 {
   if( loadedTraces.size() > 0 )
   {
-    vector<Timeline *> timelines;
+    vector< Timeline * > timelines;
     if( currentTrace == -1 )
       LoadedWindows::getInstance()->getAll( timelines );
     else
@@ -3812,7 +3705,7 @@ void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent &event )
     tbarMain->EnableTool( ID_NEW_HISTOGRAM, false );
 }
 
-wxArrayString paraverMain::FromVectorStringToWxArray( std::vector<std::string> vec, std::string fileType )
+wxArrayString paraverMain::FromVectorStringToWxArray( std::vector< std::string > vec, std::string fileType )
 {
   wxArrayString arr;
   for( int i = 0; i < vec.size(); ++i )
@@ -3823,9 +3716,9 @@ wxArrayString paraverMain::FromVectorStringToWxArray( std::vector<std::string> v
   return arr;
 }
 
-std::vector<std::string> paraverMain::FromWxArrayToVectorString( wxArrayString arr )
+std::vector< std::string > paraverMain::FromWxArrayToVectorString( wxArrayString arr )
 {
-  std::vector<std::string> vec( 0 );
+  std::vector< std::string > vec( 0 );
   for( int i = 0; i < arr.size(); ++i )
     vec.push_back( std::string( arr[ i ].mb_str() ) );
 
@@ -3886,7 +3779,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetHistogramHideEmpty( !paraverConfig->getHistogramViewEmptyColumns() );
   preferences.SetHistogramShowGradient( paraverConfig->getHistogramViewGradientColors() );
   preferences.SetHistogramLabelsColor( paraverConfig->getHistogramViewFirstRowColored() );
-  preferences.SetHistogramGradientFunction( static_cast<PRV_UINT32>( paraverConfig->getHistogramGradientFunction() ) );
+  preferences.SetHistogramGradientFunction( static_cast< PRV_UINT32 >( paraverConfig->getHistogramGradientFunction() ) );
   preferences.SetHistogramDrawmodeSemantic( (PRV_UINT32)paraverConfig->getHistogramDrawmodeSemantic() );
   preferences.SetHistogramDrawmodeObjects( (PRV_UINT32)paraverConfig->getHistogramDrawmodeObjects() );
   preferences.SetHistogramScientificNotation( paraverConfig->getHistogramScientificNotation() );
@@ -4028,9 +3921,9 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setColorsLowGradient( preferences.GetGradientColourLow() );
     paraverConfig->setColorsTopGradient( preferences.GetGradientColourTop() );
 
-    vector<Timeline *> tmpWins;
+    vector< Timeline * > tmpWins;
     LoadedWindows::getInstance()->getAll( tmpWins );
-    for( vector<Timeline *>::iterator it = tmpWins.begin(); it != tmpWins.end(); ++it )
+    for( vector< Timeline * >::iterator it = tmpWins.begin(); it != tmpWins.end(); ++it )
     {
       ( *it )->getSemanticColor().setBeginGradientColor( preferences.GetGradientColourBegin() );
       ( *it )->getSemanticColor().setEndGradientColor( preferences.GetGradientColourEnd() );
@@ -4042,8 +3935,8 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setFiltersXMLPath( preferences.GetFiltersXMLPath() );
 
     // EXTERNAL APPS
-    std::vector<std::string> vectorTextEditors = paraverMain::FromWxArrayToVectorString( preferences.GetGlobalExternalTextEditors() );
-    std::vector<std::string> vectorPDFReaders  = paraverMain::FromWxArrayToVectorString( preferences.GetGlobalExternalPDFReaders() );
+    std::vector< std::string > vectorTextEditors = paraverMain::FromWxArrayToVectorString( preferences.GetGlobalExternalTextEditors() );
+    std::vector< std::string > vectorPDFReaders  = paraverMain::FromWxArrayToVectorString( preferences.GetGlobalExternalPDFReaders() );
     paraverConfig->setGlobalExternalTextEditors( vectorTextEditors );
     paraverConfig->setGlobalExternalPDFReaders( vectorPDFReaders );
 
@@ -4055,7 +3948,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
 
     paraverConfig->setWorkspacesHintsDiscardedSubmenu( preferences.GetWorkspaceDiscardedSubmenu() );
 
-    for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
+    for( vector< Trace * >::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     {
       setTraceWorkspaces( *it );
     }
@@ -4128,8 +4021,8 @@ bool paraverMain::getUsedBySomeHistogram( Timeline *whichWindow, bool deleteAllT
     if( !deleteAllTraceWindows )
       return true;
 
-    const std::set<Histogram *> histogramsUsed = whichWindow->getHistograms();
-    for( std::set<Histogram *>::const_iterator it = histogramsUsed.begin(); it != histogramsUsed.end(); ++it )
+    const std::set< Histogram * > histogramsUsed = whichWindow->getHistograms();
+    for( std::set< Histogram * >::const_iterator it = histogramsUsed.begin(); it != histogramsUsed.end(); ++it )
     {
       bool traceToDeleteFound = false;
       for( size_t i = 0; i < tracesToDelete.GetCount(); ++i )
@@ -4174,8 +4067,8 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent &event )
   tmpTree->GetSelections( selectedItems );
 
 
-  std::vector<gHistogram *> itemDataWindowHistogram;
-  std::vector<gTimeline *> itemDataWindowTimeline;
+  std::vector< gHistogram * > itemDataWindowHistogram;
+  std::vector< gTimeline * > itemDataWindowTimeline;
 
   for( size_t i = 0; i < selectedItems.GetCount(); ++i )
   {
@@ -4183,7 +4076,7 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent &event )
 
     wxString itemText = tmpTree->GetItemText( selectedItem );
 
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
 
     if( gHistogram *histo = itemData->getHistogram() )
     {
@@ -4258,7 +4151,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent &event )
 {
   wxArrayString choices;
 
-  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
+  for( vector< Trace * >::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     choices.Add( wxString::FromUTF8( ( *it )->getTraceNameNumbered().c_str() ) );
   wxMultiChoiceDialog dialog( this, _( "Select the traces to unload:" ), _( "Unload Traces" ), choices );
 
@@ -4270,11 +4163,11 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent &event )
     wxArrayInt sel = dialog.GetSelections();
     for( size_t i = 0; i < sel.GetCount(); ++i )
     {
-      vector<Timeline *> windows;
+      vector< Timeline * > windows;
       LoadedWindows::getInstance()->getAll( loadedTraces[ sel.Item( i ) ], windows );
 
       bool isThereHistogramLinkedToWindow = false;
-      for( vector<Timeline *>::iterator it = windows.begin(); !isThereHistogramLinkedToWindow && it != windows.end(); ++it )
+      for( vector< Timeline * >::iterator it = windows.begin(); !isThereHistogramLinkedToWindow && it != windows.end(); ++it )
       {
         isThereHistogramLinkedToWindow = getUsedBySomeHistogram( ( *it ), true, sel );
         if( isThereHistogramLinkedToWindow )
@@ -4310,20 +4203,20 @@ void paraverMain::OnUnloadtraceUpdate( wxUpdateUIEvent &event )
 
 void paraverMain::UnloadTrace( int whichTrace )
 {
-  vector<Timeline *> windows;
-  vector<Histogram *> histograms;
+  vector< Timeline * > windows;
+  vector< Histogram * > histograms;
 
   LoadedWindows::getInstance()->getAll( loadedTraces[ whichTrace ], windows );
   LoadedWindows::getInstance()->getAll( loadedTraces[ whichTrace ], histograms );
 
-  for( vector<Timeline *>::iterator it = windows.begin(); it != windows.end(); ++it )
+  for( vector< Timeline * >::iterator it = windows.begin(); it != windows.end(); ++it )
   {
     ( *it )->setShowWindow( false );
     if( ( *it )->getChild() == nullptr )
       ( *it )->setDestroy( true );
   }
 
-  for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
     ( *it )->clearControlWindow();
     ( *it )->clearDataWindow();
@@ -4372,7 +4265,7 @@ void paraverMain::HandleMaxSessionFiles()
     wxDir::GetAllFiles( folder, &filesInFolder, wxT( "*.session" ), wxDIR_FILES );
     if( filesInFolder.size() > CUTOFF )
     {
-      map<boost::posix_time::ptime, wxString> dtToFile;
+      map< boost::posix_time::ptime, wxString > dtToFile;
       for( int i = 0; i < filesInFolder.size(); ++i )
       {
 #ifdef _WIN32
@@ -4383,7 +4276,7 @@ void paraverMain::HandleMaxSessionFiles()
         datetime[ 8 ] = 'T';
 
         boost::posix_time::ptime dt( boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) ) );
-        dtToFile.insert( std::pair<boost::posix_time::ptime, wxString>( dt, filesInFolder[ i ] ) );
+        dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt, filesInFolder[ i ] ) );
       }
 
       // Remove >=10 oldest auto-saved session files EXCEPT those in execution
@@ -4393,29 +4286,29 @@ void paraverMain::HandleMaxSessionFiles()
         // ST : Service Table
         wxDir wxd( wxT( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\" ) );
         wxString service, serviceFlag = wxT( "wxparaver_service*" );
-        std::map<wxString, wxString> serviceMap;
+        std::map< wxString, wxString > serviceMap;
         bool cont = wxd.GetFirst( &service, serviceFlag );
 
         while( cont )
         {
           wxString servicePID  = service.AfterLast( '-' );
           wxString serviceName = wxT( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\" ) + service;
-          serviceMap.insert( std::pair<wxString, wxString>( servicePID, serviceName ) );
+          serviceMap.insert( std::pair< wxString, wxString >( servicePID, serviceName ) );
           cont = wxd.GetNext( &service );
         }
 #else
         // ST : Service Table
         wxDir wxd( wxT( "/tmp/" ) );
         wxString service, serviceFlag = wxT( "wxparaver_service*" );
-        std::map<wxString, wxString> serviceMap;
+        std::map< wxString, wxString > serviceMap;
         bool cont = wxd.GetFirst( &service, serviceFlag );
 
         while( cont )
         {
-          wxString servicePID = service.AfterLast( '-' );
+          wxString servicePID  = service.AfterLast( '-' );
           wxString serviceName = wxT( "/tmp/" ) + service;
 
-          serviceMap.insert( std::pair<wxString, wxString>( servicePID, serviceName ) );
+          serviceMap.insert( std::pair< wxString, wxString >( servicePID, serviceName ) );
           cont = wxd.GetNext( &service );
         }
 #endif
@@ -4424,7 +4317,7 @@ void paraverMain::HandleMaxSessionFiles()
         stClient *client  = new stClient;
         wxString hostName = wxT( "localhost" );
 
-        map<boost::posix_time::ptime, wxString>::iterator it = dtToFile.begin();
+        map< boost::posix_time::ptime, wxString >::iterator it = dtToFile.begin();
         for( int deleteCtr = 0; deleteCtr < filesInFolder.size() - CUTOFF; ++deleteCtr )
         {
           wxString folderToRemove = ( *it ).second;
@@ -4465,7 +4358,7 @@ void paraverMain::PrepareToExit()
     stringstream strPid;
     stringstream strStatus;
     strPid << sessionInfo.pid;
-    strStatus << static_cast<int>( sessionInfo.status );
+    strStatus << static_cast< int >( sessionInfo.status );
 #ifdef _WIN32
 
     wxString file( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + strPid.str() + "_" +
@@ -4504,7 +4397,7 @@ void paraverMain::PrepareToExit()
     }
 
     strStatus.str( std::string() ); // clear
-    strStatus << static_cast<int>( sessionInfo.status );
+    strStatus << static_cast< int >( sessionInfo.status );
 #ifdef _WIN32
     file = wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + strPid.str() + "_" +
                                   sessionInfo.sessionDate + "_" + strStatus.str() + ".session" )
@@ -4522,10 +4415,10 @@ void paraverMain::PrepareToExit()
   }
 
 
-  vector<Histogram *> histograms;
+  vector< Histogram * > histograms;
   LoadedWindows::getInstance()->getAll( histograms );
 
-  for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
     ( *it )->clearControlWindow();
     ( *it )->clearDataWindow();
@@ -4692,7 +4585,7 @@ void paraverMain::OnKeyCopy()
   wxTreeCtrl *tree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
   wxArrayTreeItemIds selectedItems;
   tree->GetSelections( selectedItems );
-  TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[ 0 ] ) );
+  TreeBrowserItemData *item = static_cast< TreeBrowserItemData * >( tree->GetItemData( selectedItems[ 0 ] ) );
 
   if( !item )
     return;
@@ -4710,7 +4603,7 @@ void paraverMain::OnKeyPaste()
   wxTreeCtrl *tree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
   wxArrayTreeItemIds selectedItems;
   tree->GetSelections( selectedItems );
-  TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[ 0 ] ) );
+  TreeBrowserItemData *item = static_cast< TreeBrowserItemData * >( tree->GetItemData( selectedItems[ 0 ] ) );
   if( !item )
     return;
   if( item->getTimeline() != nullptr )
@@ -4725,7 +4618,7 @@ void paraverMain::OnFindDialog()
   wxTreeCtrl *tree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
   wxArrayTreeItemIds selectedItems;
   tree->GetSelections( selectedItems );
-  TreeBrowserItemData *item = static_cast<TreeBrowserItemData *>( tree->GetItemData( selectedItems[ 0 ] ) );
+  TreeBrowserItemData *item = static_cast< TreeBrowserItemData * >( tree->GetItemData( selectedItems[ 0 ] ) );
 
   if( !item )
     return;
@@ -4750,7 +4643,7 @@ void paraverMain::OnSyncWindows( int groupId )
     wxMessageBox( wxString::Format( "Group %d does not exist", wichGroup + 1 ), "Warning", wxOK | wxICON_INFORMATION );
     return;
   }
-  wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( choiceWindowBrowser->GetCurrentPage() );
+  wxTreeCtrl *tmpTree = static_cast< wxTreeCtrl * >( choiceWindowBrowser->GetCurrentPage() );
 
   wxArrayTreeItemIds selectedItems;
   tmpTree->GetSelections( selectedItems );
@@ -4758,7 +4651,7 @@ void paraverMain::OnSyncWindows( int groupId )
   for( size_t i = 0; i < selectedItems.GetCount(); ++i )
   {
     wxTreeItemId selectedItem     = selectedItems[ i ];
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
 
     if( gHistogram *histo = itemData->getHistogram() )
     {
@@ -4780,7 +4673,7 @@ void paraverMain::OnSyncWindows( int groupId )
   {
     wxTreeItemId selectedItem = selectedItems[ i ];
 
-    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( selectedItem ) );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
 
     if( gHistogram *histo = itemData->getHistogram() )
     {
@@ -4805,12 +4698,15 @@ void paraverMain::OnToolCutTraceClick( wxCommandEvent &event )
 }
 
 
-string paraverMain::DoLoadFilteredTrace( string traceSrcFileName, string traceDstFileName, TraceOptions *traceOptions, vector<string> &filterToolIDs )
+string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
+                                         string traceDstFileName,
+                                         TraceOptions *traceOptions,
+                                         vector< string > &filterToolIDs )
 {
   string tmpTraceIn, tmpTraceOut;
   string tmpNameIn, tmpNameOut, tmpPathOut, tmpPathOutBackup;
   string strOutputFile;
-  vector<string> tmpFiles;
+  vector< string > tmpFiles;
 
   ProgressController *progress = ProgressController::create( localKernel );
 
@@ -4848,7 +4744,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName, string traceDs
     }
     else if( filterToolIDs[ i ] == TraceFilter::getID() )
     {
-      map<TTypeValuePair, TTypeValuePair> dummyTranslation; // it it's empty, it's ignored
+      map< TTypeValuePair, TTypeValuePair > dummyTranslation; // it it's empty, it's ignored
 
       TraceFilter *traceFilter =
         localKernel->newTraceFilter( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str(), traceOptions, dummyTranslation, progress );
@@ -4916,7 +4812,7 @@ void paraverMain::MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,
 void paraverMain::OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialog,
                                                  TraceOptions *traceOptions,
                                                  const string &xmlFile,
-                                                 vector<string> &filterToolOrder )
+                                                 vector< string > &filterToolOrder )
 {
   if( !xmlFile.empty() )
   {
@@ -4944,9 +4840,9 @@ void paraverMain::OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialo
 
 void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog )
 {
-  vector<string> filterToolOrder = cutFilterDialog->GetFilterToolOrder();
-  string srcTrace                = cutFilterDialog->GetNameSourceTrace();
-  string dstTrace                = cutFilterDialog->GetNameDestinyTrace();
+  vector< string > filterToolOrder = cutFilterDialog->GetFilterToolOrder();
+  string srcTrace                  = cutFilterDialog->GetNameSourceTrace();
+  string dstTrace                  = cutFilterDialog->GetNameDestinyTrace();
 
   DoLoadFilteredTrace( srcTrace, dstTrace, cutFilterDialog->GetTraceOptions(), filterToolOrder );
 
@@ -4977,7 +4873,7 @@ void paraverMain::ShowCutTraceWindow( const string &filename, bool loadTrace, co
   MainSettingsCutFilterDialog( cutFilterDialog, filename, loadTrace );
 
   TraceOptions *traceOptions = TraceOptions::create( localKernel );
-  vector<string> filterToolOrder;
+  vector< string > filterToolOrder;
   OptionsSettingCutFilterDialog( cutFilterDialog, traceOptions, xmlFile, filterToolOrder );
 
   if( modalDialog )
@@ -5044,7 +4940,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent &event )
     stringstream strPid;
     stringstream strStatus;
     strPid << sessionInfo.pid;
-    strStatus << static_cast<int>( sessionInfo.status );
+    strStatus << static_cast< int >( sessionInfo.status );
 
 #ifdef _WIN32
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + strPid.str() + "_" + sessionInfo.sessionDate +
@@ -5092,7 +4988,7 @@ void paraverMain::OnMenusavesessionClick( wxCommandEvent &event )
 
 bool paraverMain::OnMenusavesession()
 {
-  vector<wxString> extensions;
+  vector< wxString > extensions;
   extensions.push_back( wxT( "session" ) );
 
   FileDialogExtension dialog( this,
@@ -5245,7 +5141,7 @@ bool paraverMain::getParaverHome( wxString &paraverHome )
 #elif defined( __APPLE__ )
 
   CFBundleRef mainBundle = CFBundleGetMainBundle();
-  CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL( mainBundle );
+  CFURLRef resourcesURL  = CFBundleCopyResourcesDirectoryURL( mainBundle );
   char tmpPath[ PATH_MAX ];
   if( !CFURLGetFileSystemRepresentation( resourcesURL, TRUE, (UInt8 *)tmpPath, PATH_MAX ) )
   {
@@ -5381,7 +5277,7 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent &event )
 }
 
 
-wxString paraverMain::getHintComposed( const std::pair<std::string, std::string> &hint )
+wxString paraverMain::getHintComposed( const std::pair< std::string, std::string > &hint )
 {
   //  wxFileName filename( wxString::FromUTF8(  hint.first.c_str() ) );
   //  return filename.GetName() + _( " - " ) + wxString::FromUTF8(  hint.second.c_str() );
@@ -5422,7 +5318,7 @@ void paraverMain::OnHintClick( wxCommandEvent &event )
 
 void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent &event )
 {
-  vector<string> tmpWorkspaces = workspacesManager->getWorkspaces( TWorkspaceSet::ALL );
+  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces( TWorkspaceSet::ALL );
 
   if( tmpWorkspaces.empty() )
   {
@@ -5441,7 +5337,7 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent &event )
   wxArrayString tmpNames;
   wxArrayInt tmpActive;
   int position = 0;
-  for( vector<string>::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
+  for( vector< string >::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
   {
     tmpNames.Add( wxString::FromUTF8( it->c_str() ) );
     if( std::find( traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(), traceWorkspaces[ loadedTraces[ currentTrace ] ].end(), *it ) !=
@@ -5478,7 +5374,7 @@ void paraverMain::setActiveWorkspacesText()
   {
     wxString tmpActive;
     size_t tmpCurrentWorkspace = 0;
-    for( vector<string>::iterator it = traceWorkspaces[ getCurrentTrace() ].begin(); it != traceWorkspaces[ getCurrentTrace() ].end(); ++it )
+    for( vector< string >::iterator it = traceWorkspaces[ getCurrentTrace() ].begin(); it != traceWorkspaces[ getCurrentTrace() ].end(); ++it )
     {
       if( !tmpActive.IsEmpty() )
         tmpActive += _( "+" );
@@ -5570,7 +5466,7 @@ void paraverMain::insertSignalItem( bool isSig1 )
   tmpSignalItem.signal1 = isSig1;
 
   // Read all lines in paraload.sig
-  vector<string> lines;
+  vector< string > lines;
   string auxLine;
   while( !paraloadFile.eof() )
   {
@@ -5710,7 +5606,7 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
       wxString serviceName = wxT( "wxparaver_service-" ) + wxGetUserId() + wxT( "-" ) + sessionPID;
 #else
       wxString folderPathSimple = folderPath.AfterLast( '/' );
-      wxString sessionPID = folderPathSimple.BeforeFirst( '_' ).AfterLast( 's' );
+      wxString sessionPID       = folderPathSimple.BeforeFirst( '_' ).AfterLast( 's' );
       sessionPID.Replace( wxT( "ps" ), wxT( "" ) );
       wxString serviceName = wxT( "/tmp/wxparaver_service-" ) + wxGetUserId() + wxT( "-" ) + sessionPID;
 #endif
@@ -5782,7 +5678,7 @@ void paraverMain::initSessionInfo()
 
   boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
   std::stringstream ss;
-  ss << ZeroTrail( now.date().year() ) << ZeroTrail( static_cast<int>( now.date().month() ) ) << ZeroTrail( now.date().day() ) << "_"
+  ss << ZeroTrail( now.date().year() ) << ZeroTrail( static_cast< int >( now.date().month() ) ) << ZeroTrail( now.date().day() ) << "_"
      << ZeroTrail( now.time_of_day().hours() ) << ZeroTrail( now.time_of_day().minutes() ) << ZeroTrail( now.time_of_day().seconds() ); // iso
 
   sessionInfo.sessionDate = ss.str();
@@ -5813,7 +5709,7 @@ void paraverMain::filterExternalApps()
   for( int i = 0; i < externalTextEditors.size(); ++i )
   {
     wxString command = externalTextEditors[ i ] + wxT( " --version 1>&- 2>&-'" );
-    int execRes = wxExecute( command, dummyOutput, dummyErrors, wxEXEC_SYNC );
+    int execRes      = wxExecute( command, dummyOutput, dummyErrors, wxEXEC_SYNC );
 
     if( execRes == 0 )
       newTxt.Add( externalTextEditors[ i ] );
@@ -5844,7 +5740,7 @@ void paraverMain::filterExternalApps()
   for( int i = 0; i < externalPDFReaders.size(); ++i )
   {
     wxString command = externalPDFReaders[ i ] + wxT( " --version 1>&- 2>&-'" );
-    int execRes = wxExecute( command, dummyOutput, dummyErrors, wxEXEC_SYNC );
+    int execRes      = wxExecute( command, dummyOutput, dummyErrors, wxEXEC_SYNC );
 
     if( execRes == 0 )
       newPDF.Add( externalPDFReaders[ i ] );
