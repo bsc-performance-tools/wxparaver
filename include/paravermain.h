@@ -40,11 +40,11 @@
 
 ////@begin includes
 #include "wx/aui/framemanager.h"
+#include "wx/choicebk.h"
+#include "wx/dirctrl.h"
 #include "wx/frame.h"
 #include "wx/toolbar.h"
-#include "wx/choicebk.h"
 #include "wx/toolbook.h"
-#include "wx/dirctrl.h"
 ////@end includes
 #include "cfg.h" // SaveOptions
 #include "connection.h"
@@ -98,6 +98,7 @@ constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits< PRV_INT16 >::m
  * Control identifiers
  */
 
+// clang-format off
 ////@begin control identifiers
 #define ID_PARAVERMAIN 10000
 #define ID_RECENTTRACES 10008
@@ -135,6 +136,7 @@ constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits< PRV_INT16 >::m
 #define SYMBOL_PARAVERMAIN_SIZE wxSize(300, 600)
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, -1)
 ////@end control identifiers
+// clang-format on
 #define ID_TIMER_MAIN 40010
 
 #define ID_CTRL_1           wxID_HIGHEST + 101
@@ -270,6 +272,7 @@ class paraverMain : public wxFrame
     void initSessionInfo();
     void filterExternalApps();
 
+    // clang-format off
     ////@begin paraverMain event handler declarations
 
   /// wxEVT_CLOSE_WINDOW event handler for ID_PARAVERMAIN
@@ -396,6 +399,7 @@ class paraverMain : public wxFrame
   void OnButtonActiveWorkspacesClick( wxCommandEvent& event );
 
     ////@end paraverMain event handler declarations
+    // clang-format on
 
     /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
     void OnTreeSelChanged( wxTreeEvent& event );
@@ -427,6 +431,8 @@ class paraverMain : public wxFrame
     void OnPreviousSessionsClick( wxCommandEvent& event );
 
     void OnActivate( wxActivateEvent& event );
+
+    // clang-format off
     ////@begin paraverMain member function declarations
 
   /// Returns the AUI manager object
@@ -555,6 +561,7 @@ class paraverMain : public wxFrame
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
     ////@end paraverMain member function declarations
+    // clang-format on
 
     gTimeline* GetSelectedTimeline();
     gHistogram* GetSelectedHistogram();
@@ -657,6 +664,7 @@ class paraverMain : public wxFrame
     void helpQuestion();
     void exitManager();
 
+    // clang-format off
     ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
   wxMenu* menuFile;
@@ -713,8 +721,11 @@ private:
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
     ////@end paraverMain member variables
+    //clang-format on
+
     SessionInfo sessionInfo;
     bool firstSave;
+    bool selectionChanging = false;
 
     wxSingleInstanceChecker* instChecker;
     std::map< std::string, PRV_UINT32 > traceInstance;
