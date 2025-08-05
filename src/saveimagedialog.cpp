@@ -107,10 +107,6 @@ BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
     Create( parent, id, caption, pos, size, style );
 
     imageGeneration = whichImageGeneration;
-    // int originalWidth  = imageGeneration->getTimelineImage()->GetWidth();
-    // int originalHeight = imageGeneration->getTimelineImage()->GetHeight();
-    // drawWindowSingle->SetVirtualSize( originalWidth, originalHeight ); // 👈 Important!
-    // drawWindowSingle->SetScrollRate( 10, 10 );                         // Optional: smooth scrolling
   }
 
 
@@ -444,8 +440,6 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
 
 void SaveImageDialog::OnCancelClick( wxCommandEvent& event )
 {
-  // wxImage tmpImage = imageGeneration->getTimelineImage()->ConvertToImage();
-  // tmpImage.SaveFile( "/tmp/imageTest.png", wxBITMAP_TYPE_PNG );
   ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
   // Before editing this code, remove the block markers.
   event.Skip();
@@ -554,6 +548,7 @@ void SaveImageDialog::onPaintScale( wxPaintEvent& event )
   wxPaintDC dc( wxDynamicCast( event.GetEventObject(), wxWindow ) );
   ////@end wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
   wxPaintDC dcScale( drawScaleSingle );
+  drawScaleSingle->PrepareDC( dcScale );
   // wxPaintDC dcscale( drawScaleSingle );
 
   wxBitmap* originalBmp = imageGeneration->getScaleImage();
@@ -622,7 +617,7 @@ void SaveImageDialog::OnPaintWindow( wxPaintEvent& event )
   wxPaintDC dcScale( drawWindowSingle );
   drawWindowSingle->PrepareDC( dcScale ); // <--- This line is critical!
 
-  wxBitmap* originalBmp = imageGeneration->getTimelineImage();
+  wxBitmap* originalBmp = imageGeneration->getWindowsImage();
   if( originalBmp && originalBmp->IsOk() )
   {
     // Convert to wxImage
@@ -749,8 +744,8 @@ void SaveImageDialog::OnCheckboxScaledsizeClick( wxCommandEvent& event )
     }
     else
     {
-      int originalWidth  = imageGeneration->getTimelineImage()->GetWidth();
-      int originalHeight = imageGeneration->getTimelineImage()->GetHeight();
+      int originalWidth  = imageGeneration->getWindowsImage()->GetWidth();
+      int originalHeight = imageGeneration->getWindowsImage()->GetHeight();
 
       drawWindowSingle->SetVirtualSize( originalWidth, originalHeight );
       drawWindowSingle->SetScrollRate( 10, 10 );

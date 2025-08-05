@@ -718,6 +718,8 @@ void gHistogram::fillZoom()
   bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight * pixelSize);
   bufferDraw.DrawRectangle( 0, 0, cellWidth * pixelSize, bufferDraw.GetSize().GetHeight() );
 
+  semanticValuesToColorData.clear();
+
   for( THistogramColumn iCol = 0; iCol < tmpNumCols; ++iCol )
   {
     THistogramColumn realCol = myHistogram->getSemanticRealColumn( iCol, noVoidSemRanges );
@@ -814,6 +816,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
     curPlane = myHistogram->getSelectedPlane();
 
   valuesObjects.clear();
+
   for( TObjectOrder iRow = 0; iRow < numRows; ++iRow )
   {
     valuesColumns.clear();
@@ -888,8 +891,11 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
         tmpCol = controlWindow->getSemanticColor().calcColor( tmpValue,
                                                               controlWindow->getMinimumY(),
                                                               controlWindow->getMaximumY() );
+      semanticValuesToColorControl[ tmpValue ] = tmpCol;
+
       bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-      bufferDraw.DrawRectangle( rint( ( firstDrawCol ) * cellWidth * pixelSize ), rint( ( firstDrawRow ) * cellHeight *pixelSize ),
+      bufferDraw.DrawRectangle( rint( (firstDrawCol)*cellWidth * pixelSize ),
+                                rint( (firstDrawRow)*cellHeight * pixelSize ),
                                 cellWidth < 1.0 ? pixelSize * 2 : ceil( cellWidth * pixelSize ),
                                 cellHeight < 1.0 ? pixelSize * 2 : ceil( cellHeight * pixelSize ) );
       firstRowColored = false;
@@ -928,8 +934,9 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
         bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth * pixelSize ), rint( ( iDrawRow + 1 ) * cellHeight * pixelSize ),
                                   cellWidth < 1.0 ? pixelSize * 2 : ceil( cellWidth * pixelSize ),
                                   cellHeight < 1.0 ? pixelSize * 2 : ceil( cellHeight * pixelSize ) );
+        semanticValuesToColorData[ tmpValueToDraw ] = tmpColorToDraw;
       }
-      
+
       valuesObjects.clear();
     }
   }
@@ -3225,13 +3232,29 @@ void gHistogram::saveImageDialog( wxString whichFileName )
     defaultDir = startingDir.GetPath();
 
     // filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
+    wxFont semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
 
-    SaveImageDialog saveDialog( this, defaultDir, imageName, true );
- 
+    wxColour foregroundColour = *wxWHITE;
+    wxColour backgroundColour = *wxBLACK;
+
+    WindowImageGenerator* newWindowImage =
+      new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+    if( GetHistogram()->getZoom() )
+      newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+    else
+      newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+
+    Timeline* controlWindow = myHistogram->getDataWindow();
+
+    newWindowImage->generateScaleImageControlWindows( semanticValuesToColorData, controlWindow, myHistogram );
+
+
+    SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, true );
+
     // TODO
-    //saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
- 
-    if ( saveDialog.ShowModal() != wxID_OK )
+    // saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
+
+    if( saveDialog.ShowModal() != wxID_OK )
     {
       setEnableDestroyButton( true );
       return;
@@ -3239,8 +3262,8 @@ void gHistogram::saveImageDialog( wxString whichFileName )
 
     filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
     imagePath = saveDialog.GetImageFilePath();
-  
-    saveImage( imagePath, filterIndex );
+
+    newWindowImage->saveImageWindows( imageName );
   }
 }
 
@@ -3276,103 +3299,6 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     imagePath = imageName + tmpSuffix;
   }
-  
-  // Build image to be saved as: title image + timeline image
-
-  // Get title
-  wxString longTitle = wxString::FromUTF8(
-          ( myHistogram->getName() + " @ " +
-            myHistogram->getTrace()->getTraceNameNumbered() ).c_str());
-  wxString shortTitle = wxString::FromUTF8( ( myHistogram->getName() ).c_str() );
-  wxString writtenTitle = longTitle;
-
-  // Get colors
-  wxColour foregroundColour = *wxWHITE;
-  wxColour backgroundColour = *wxBLACK;
-
-  // Get font
-  wxFont titleFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
-
-  // Get dimensions
-  int imageWidth = 0;
-  int imageHeight = 0;
-  if ( GetHistogram()->getZoom() )
-  {
-    wxImage img = drawImage.ConvertToImage();
-    imageWidth = img.GetWidth();
-    imageHeight = img.GetHeight();
-  }
-  else
-  {
-    auto sumSize = []( const auto& sizes, auto numElems, auto& totalSize )
-      {
-        for( unsigned int c = 0; c < numElems; ++c )
-          totalSize += sizes.GetSize( c );
-      };
-
-    sumSize( gridHisto->GetColSizes(), gridHisto->GetNumberCols(), imageWidth );
-    sumSize( gridHisto->GetRowSizes(), gridHisto->GetNumberRows(), imageHeight );
-
-    imageWidth += gridHisto->GetRowLabelSize();
-    imageHeight += gridHisto->GetColLabelSize();
-  }
-
-  int titleWidth = imageWidth;
-  int titleMargin = 5; // used in 4 sides
-  int titleHeight = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
-
-  imageHeight += titleHeight;
-
-  // Build DC for title
-  wxBitmap titleBitmap( imageWidth, titleHeight );
-  wxMemoryDC titleDC( titleBitmap );
-
-  // Set font and check if using it the title will fit
-  titleDC.SetFont( titleFont );
-  const wxSize titleSize { titleDC.GetTextExtent( writtenTitle ) };
-
-  if ( titleSize.GetWidth() > imageWidth )
-    writtenTitle = shortTitle;
-
-  // Set colors
-  titleDC.SetBackground( wxBrush( backgroundColour ) );
-  titleDC.Clear();
-
-  titleDC.SetPen( wxPen( backgroundColour, 1 ) );
-  titleDC.SetTextBackground( backgroundColour );
-  titleDC.SetTextForeground( foregroundColour );
-
-  // Compute title image size
-  titleDC.DrawText( writtenTitle, titleMargin, titleMargin );
-
-  wxBitmap imageBitmap( imageWidth, imageHeight );
-  wxMemoryDC imageDC( imageBitmap );
-
-  // Due to some bug in wxWidgets Render method, the Row headers renders with transparency
-  auto c = gridHisto->GetLabelBackgroundColour();
-  imageDC.SetBackground( wxBrush( c ) );
-  imageDC.Clear();
-
-  wxCoord xsrc = 0;
-  wxCoord ysrc = 0;
-  wxCoord xdst = 0;
-  wxCoord ydst = 0;
-  imageDC.Blit( xdst, ydst, titleWidth, titleHeight, &titleDC, xsrc, ysrc );
-
-  if ( GetHistogram()->getZoom() )
-  {
-    wxMemoryDC histogramDC( drawImage );
-    xsrc = 0;
-    ysrc = 0;
-    xdst = 0;
-    ydst = titleHeight;
-    imageDC.Blit( xdst, ydst, imageWidth, imageHeight, &histogramDC, xsrc, ysrc );
-  }
-  else
-  {
-    gridHisto->Render( imageDC, wxPoint( xdst, titleHeight ) );
-  }
-
   // Get extension and save
   wxBitmapType imageType;
   switch( filterIndex )
@@ -3394,8 +3320,20 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
       break;
   }
 
-  wxImage baseLayer = imageBitmap.ConvertToImage();
-  baseLayer.SaveFile( imagePath, imageType );
+
+  wxFont semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
+
+  wxColour foregroundColour = *wxWHITE;
+  wxColour backgroundColour = *wxBLACK;
+
+  WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  if( GetHistogram()->getZoom() )
+    newWindowImage.generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+  else
+    newWindowImage.generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+
+  newWindowImage.saveImageWindows( imagePath );
+
 
   setEnableDestroyButton( true );
 }

@@ -31,7 +31,7 @@ void imageFormatTypeToBitmapType( const TImageFormat& wichFilterIndex, wxBitmapT
 }
 
 WindowImageGenerator::WindowImageGenerator( wxBitmap* wichBitmapTimeline,
-                                            Timeline* whichmyWindow,
+                                            // WindowGenericItem wichGenericItem,
                                             wxColour whichBackground,
                                             wxColour whichForeground,
                                             wxFont whichTextFont,
@@ -39,11 +39,11 @@ WindowImageGenerator::WindowImageGenerator( wxBitmap* wichBitmapTimeline,
                                             bool whichMergedImages )
 
 {
+  // genericItem     = wichGenericItem;
   bitmapTimeline  = wichBitmapTimeline;
   imageBackground = whichBackground;
   imageForeground = whichForeground;
   imageTextFont   = whichTextFont;
-  myWindow        = whichmyWindow;
   filterIndex     = wichFilterIndex;
 }
 
@@ -58,7 +58,7 @@ WindowImageGenerator::~WindowImageGenerator()
   delete memoryImageTimelineScale;
 }
 
-wxBitmap* WindowImageGenerator::getTimelineImage()
+wxBitmap* WindowImageGenerator::getWindowsImage()
 {
   return bitmapImageTimeline;
 }
@@ -84,7 +84,48 @@ void WindowImageGenerator::setImageFormat( TImageFormat wichFilterIndex )
   filterIndex = wichFilterIndex;
 }
 
-void WindowImageGenerator::generateScaleImage( std::map< TSemanticValue, rgb > semanticValuesToColor )
+void WindowImageGenerator::generateScaleImageControlWindows( std::map< TSemanticValue, rgb > semanticValuesToColor,
+                                                             Timeline* myWindow,
+                                                             Histogram* myHistogram )
+{
+  std::map< TSemanticValue, rgb > scaleValues = semanticValuesToColor;
+
+  if( myHistogram->getColorMode() == TColorFunction::GRADIENT )
+  {
+    typeScale        = TScaleImageType::TScaleImageGradientColor;
+    orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
+  }
+  else if( myHistogram->getColorMode() == TColorFunction::NOT_NULL_GRADIENT )
+  {
+    typeScale        = TScaleImageType::TScaleImageGradientColorNotNull;
+    orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
+  }
+  else if( myHistogram->getColorMode() == TColorFunction::ALTERNATIVE_GRADIENT )
+  {
+    typeScale        = TScaleImageType::TScaleImageAlternativeGradientColor;
+    orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
+  }
+  else if( myHistogram->getColorMode() == TColorFunction::CODE_COLOR )
+  {
+    typeScale        = TScaleImageType::TScaleImageCodeColor;
+    orientationScale = TScaleImageOrientation::TScaleImageOrientationVertical;
+  }
+
+  scaleImage = new ScaleImageGenerator( myHistogram,
+                                        myWindow,
+                                        scaleValues,
+                                        imageBackground,
+                                        imageForeground,
+                                        imageTextFont,
+                                        filterIndex,
+                                        typeScale,
+                                        orientationScale );
+
+  scaleImage->initializeConfiguration();
+  scaleImage->processImage();
+}
+
+void WindowImageGenerator::generateScaleImageControlWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow )
 {
   std::map< TSemanticValue, rgb > scaleValues = semanticValuesToColor;
 
@@ -127,9 +168,7 @@ void WindowImageGenerator::generateScaleImage( std::map< TSemanticValue, rgb > s
     orientationScale = TScaleImageOrientation::TScaleImageOrientationVertical;
 
     std::map< TSemanticValue, rgb > scaleValues = tmpObjects;
-    myWindow
   }
-
 
   scaleImage =
     new ScaleImageGenerator( myWindow, scaleValues, imageBackground, imageForeground, imageTextFont, filterIndex, typeScale, orientationScale );
@@ -138,12 +177,13 @@ void WindowImageGenerator::generateScaleImage( std::map< TSemanticValue, rgb > s
   scaleImage->processImage();
 }
 
-void WindowImageGenerator::generateTimelineImage()
+
+void WindowImageGenerator::generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName )
 {
   int marginSpace = 5;
   // Get title
-  wxString longTitle    = wxString::FromUTF8( ( myWindow->getName() + " @ " + myWindow->getTrace()->getTraceNameNumbered() ).c_str() );
-  wxString shortTitle   = wxString::FromUTF8( ( myWindow->getName() ).c_str() );
+  wxString longTitle    = wxString::FromUTF8( ( windowsName + " @ " + windowTraceName ).c_str() );
+  wxString shortTitle   = wxString::FromUTF8( ( windowsName ).c_str() );
   wxString writtenTitle = longTitle;
 
 
@@ -197,8 +237,75 @@ void WindowImageGenerator::generateTimelineImage()
   memoryImageTimeline->Blit( 0, titleHeigth, bitmapTimeline->GetWidth(), bitmapTimeline->GetHeight(), &timelineDC, 0, 0 );
 }
 
+void WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName )
+{
+  int imageWidth  = 0;
+  int imageHeight = 0;
 
-void WindowImageGenerator::generateScaleTimelineImage( std::map< TSemanticValue, rgb > semanticValuesToColor )
+  auto sumSize = []( const auto& sizes, auto numElems, auto& totalSize )
+  {
+    for( unsigned int c = 0; c < numElems; ++c )
+      totalSize += sizes.GetSize( c );
+  };
+
+  sumSize( gridImage->GetColSizes(), gridImage->GetNumberCols(), imageWidth );
+  sumSize( gridImage->GetRowSizes(), gridImage->GetNumberRows(), imageHeight );
+
+  imageWidth += gridImage->GetRowLabelSize();
+  imageHeight += gridImage->GetColLabelSize();
+
+  int marginSpace = 5;
+  // Get title
+  wxString longTitle    = wxString::FromUTF8( ( windowsName + " @ " + windowTraceName ).c_str() );
+  wxString shortTitle   = wxString::FromUTF8( ( windowsName ).c_str() );
+  wxString writtenTitle = longTitle;
+
+
+  int titleHeigth = imageTextFont.GetPointSize() + ( 2 * marginSpace ); // up + down margins + text
+  int titleWidth  = imageWidth;
+
+  int titleWritableWidth = titleWidth - ( 2 * marginSpace );
+
+  int imageMargin         = 5;
+  int imageTimelineHeigth = imageHeight + imageTextFont.GetPointSize() + ( 2 * imageMargin ); // up + down margins + text + image
+  int imageTimelineWidth  = imageWidth;
+
+  // Build DC for title
+  wxBitmap titleBitmap( titleWidth, titleHeigth );
+  wxMemoryDC titleDC( titleBitmap );
+
+  // Set font and check if using it the title will fit
+  titleDC.SetFont( imageTextFont );
+  wxSize titleSize = titleDC.GetTextExtent( writtenTitle );
+
+  if( titleSize.GetWidth() > titleWritableWidth )
+  {
+    titleSize    = titleDC.GetTextExtent( shortTitle );
+    writtenTitle = shortTitle;
+  }
+
+  // Set colors
+  titleDC.SetBackground( wxBrush( imageBackground ) );
+  titleDC.Clear();
+
+  titleDC.SetPen( wxPen( imageBackground, 1 ) );
+  titleDC.SetTextBackground( imageBackground );
+  titleDC.SetTextForeground( imageForeground );
+  titleDC.DrawText( writtenTitle, marginSpace, marginSpace );
+
+
+  bitmapImageTimeline = new wxBitmap( imageTimelineWidth, imageTimelineHeigth );
+  memoryImageTimeline = new wxMemoryDC( *bitmapImageTimeline );
+
+  // Compute title image size
+
+  memoryImageTimeline->Blit( 0, 0, titleWidth, titleHeigth, &titleDC, 0, 0 );
+
+  gridImage->Render( *memoryImageTimeline, wxPoint( 0, titleHeigth ) );
+}
+
+
+void WindowImageGenerator::generateScaleWindowsImage( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow )
 {
   ScaleImageGenerator
     tmpScaleImage( myWindow, semanticValuesToColor, imageBackground, imageForeground, imageTextFont, filterIndex, typeScale, orientationScale, true );
@@ -235,7 +342,7 @@ void WindowImageGenerator::generateScaleTimelineImage( std::map< TSemanticValue,
   memoryImageTimelineScale->Blit( posX, posY, tmpScaleImage.getBitmap()->GetWidth(), tmpScaleImage.getBitmap()->GetHeight(), &tmpScaleMemory, 0, 0 );
 }
 
-void WindowImageGenerator::saveImageTimeline( wxString whichFileName )
+void WindowImageGenerator::saveImageWindows( wxString whichFileName )
 {
   wxBitmapType imageType;
   imageFormatTypeToBitmapType( filterIndex, imageType );
@@ -245,7 +352,7 @@ void WindowImageGenerator::saveImageTimeline( wxString whichFileName )
   // Save timeline image without scale
   timelineImage.SaveFile( whichFileName, imageType );
 }
-void WindowImageGenerator::saveImageTimelineScale( wxString whichFileName )
+void WindowImageGenerator::saveImageWindowScale( wxString whichFileName )
 {
   wxImage timelineImageScale( bitmapImageTimelineScale->ConvertToImage() );
 
@@ -267,6 +374,43 @@ void WindowImageGenerator::saveImageScale( wxString imageName, bool appendLegend
 }
 
 
+ScaleImageGenerator::ScaleImageGenerator( Histogram* whichMyWindow,
+                                          Timeline* whichmyDataWindow,
+                                          const std::map< TSemanticValue, rgb >& whichSemanticValues,
+                                          wxColour whichBackground,
+                                          wxColour whichForeground,
+                                          wxFont whichTextFont,
+                                          TImageFormat& whichImageType,
+                                          TScaleImageType wichScaleType,
+                                          TScaleImageOrientation wichOrientation,
+                                          bool whichMergedImages )
+  : myWindow( whichMyWindow )
+  , semanticValuesColors( whichSemanticValues )
+  , myDataWindow( whichmyDataWindow )
+  , filterIndex( whichImageType )
+  , dataImage()
+  , scaleType( wichScaleType )
+  , orientation( wichOrientation )
+  , maxLabelSize( 0, 0 )
+  , totalSquaresGradientColor( 21 )
+  , mergedImages( whichMergedImages )
+{
+  // Inicializar dataImage con algunos valores lógicos o por defecto
+  dataImage.precision = 2;
+
+  // Inicializar punteros a nullptr
+  bitmapImageContent = nullptr;
+  memoryImageContent = nullptr;
+
+  bitmapImageMask = nullptr;
+  memoryImageMask = nullptr;
+
+  dataImage.textFont = whichTextFont;
+
+  semanticValuesLabels.clear();
+  updateLegendSuffix();
+}
+
 ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
                                           const std::map< TSemanticValue, rgb >& whichSemanticValues,
                                           wxColour whichBackground,
@@ -277,6 +421,7 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
                                           TScaleImageOrientation wichOrientation,
                                           bool whichMergedImages )
   : myWindow( whichmyWindow )
+  , myDataWindow( whichmyWindow )
   , semanticValuesColors( whichSemanticValues )
   , filterIndex( whichImageType )
   , dataImage()
@@ -298,10 +443,10 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
 
   dataImage.textFont = whichTextFont;
 
-  // Inicializa los mapas de etiquetas semánticas (vacíos por ahora)
-  semanticValuesLabels.clear();
+  // Inicializa los mapas de etiquetas semánticas( vacíos por ahora ) semanticValuesLabels.clear();
   updateLegendSuffix();
 }
+
 ScaleImageGenerator::~ScaleImageGenerator()
 {
   delete bitmapImageContent;
@@ -313,13 +458,30 @@ ScaleImageGenerator::~ScaleImageGenerator()
 
 void ScaleImageGenerator::initializeConfiguration()
 {
-  currentMin = myWindow->getMinimumY();
-  currentMax = myWindow->getMaximumY();
-
+  auto visitorMaxiumY = overloads{ []( Timeline* myWindow )
+                                   {
+                                     return myWindow->getMaximumY();
+                                   },
+                                   []( Histogram* myWindow )
+                                   {
+                                     return myWindow->getMaxGradient();
+                                   } };
+  auto visitorMiniumY = overloads{ []( Timeline* myWindow )
+                                   {
+                                     return myWindow->getMinimumY();
+                                   },
+                                   []( Histogram* myWindow )
+                                   {
+                                     return myWindow->getMinGradient();
+                                   } };
+  //
+  currentMin = std::visit( visitorMiniumY, myWindow );
+  currentMax = std::visit( visitorMaxiumY, myWindow );
+  //
   dataImage.symbolicDesc = false;
   dataImage.titleMargin  = 5;
   dataImage.rectMargin   = 2 * dataImage.titleMargin;
-
+  //
   if( scaleType == TScaleImageType::TScaleImageGradientColor || scaleType == TScaleImageType::TScaleImageGradientColorNotNull ||
       scaleType == TScaleImageType::TScaleImageAlternativeGradientColor )
   {
@@ -332,22 +494,20 @@ void ScaleImageGenerator::initializeConfiguration()
     dataImage.drawOutliers = false;
     dataImage.symbolicDesc = true;
   }
-  if( scaleType != TScaleImageType::TScaleImageGradientFusedLines )
+  if( scaleType == TScaleImageType::TScaleImageGradientFusedLines )
   {
-    currentMin = myWindow->getMinimumY();
-    currentMax = myWindow->getMaximumY();
-  }
-  else
-  {
-    currentMin = 0;
-    currentMax = myWindow->getTrace()->getLevelObjects( myWindow->getLevel() );
+    if( auto timeline = std::get_if< Timeline* >( &myWindow ) )
+    {
+      currentMin = 0;
+      currentMax = ( *timeline )->getTrace()->getLevelObjects( ( *timeline )->getLevel() );
+    }
   }
   dataImage.widthRect   = 10;
   dataImage.heightRect  = dataImage.textFont.GetPointSize() + 3;
   dataImage.imageHeight = dataImage.textFont.GetPointSize() + 2 * dataImage.titleMargin;
   dataImage.imageWidth  = dataImage.widthRect;
-
-
+  //
+  //
   if( filterIndex == TImageFormat::BMP || TImageFormat::JPG == filterIndex || mergedImages )
   {
     dataImage.backgroundMode = TBackgroundMode::BACKGROUND_SOLID_DARK;
@@ -357,49 +517,52 @@ void ScaleImageGenerator::initializeConfiguration()
     dataImage.backgroundMode = TBackgroundMode::BACKGROUND_TRANSPARENT;
   }
 }
-
-
+//
+//
 void ScaleImageGenerator::computeMaxSemanticLabelsSize()
 {
   // Dimensions: loop for every value to build labels and measure the maximum
   wxString curLabel;
   wxString maxLabel;
-
+  //
   TSemanticValue semanticValueMaxLengthLabel;
-
+  //
   size_t maxLengthLabel = 0;
   size_t curLengthLabel;
-
+  //
   for( auto it = semanticValuesColors.begin(); it != semanticValuesColors.end(); ++it )
   {
     // Get Labels
     if( TScaleImageType::TScaleImageGradientFusedLines != scaleType )
     {
       semanticValuesLabels[ it->first ] =
-        wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, it->first, dataImage.symbolicDesc, dataImage.precision, false ).c_str() );
+        wxString::FromUTF8( LabelConstructor::semanticLabel( myDataWindow, it->first, dataImage.symbolicDesc, dataImage.precision, false ).c_str() );
     }
     else
     {
-      semanticValuesLabels[ it->first ] =
-        wxString::FromUTF8( LabelConstructor::objectLabel( it->first, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+      if( auto timeline = std::get_if< Timeline* >( &myWindow ) )
+      {
+        semanticValuesLabels[ it->first ] =
+          wxString::FromUTF8( LabelConstructor::objectLabel( it->first, ( *timeline )->getLevel(), ( *timeline )->getTrace() ).c_str() );
+      }
     }
-
+    //
     // Get Longest label
     curLengthLabel = semanticValuesLabels[ it->first ].Len();
-
+    //
     if( maxLengthLabel < curLengthLabel )
     {
       maxLengthLabel              = curLengthLabel;
       semanticValueMaxLengthLabel = it->first;
     }
   }
-
+  //
   wxBitmap maxLabelBitmap( 1920, 64 );
   wxMemoryDC maxLabelDC( maxLabelBitmap );
   maxLabelDC.SetFont( dataImage.textFont );
   maxLabelSize = maxLabelDC.GetTextExtent( semanticValuesLabels[ semanticValueMaxLengthLabel ] );
 }
-
+//
 void ScaleImageGenerator::sortSemanticValuesGradientColors()
 {
   semanticValuesColors.clear();
@@ -409,32 +572,43 @@ void ScaleImageGenerator::sortSemanticValuesGradientColors()
     TSemanticValue current = ( i * step ) + currentMin;
     if( current > currentMax )
       current = currentMax;
-
-    semanticValuesColors[ current ] = myWindow->getSemanticColor().calcColor( current, currentMin, currentMax );
+    //
+    auto min = currentMin;
+    auto max = currentMax;
+    //
+    semanticValuesColors[ current ] = std::visit( overloads{ [ current ]( Histogram* myWindow )
+                                                             {
+                                                               return myWindow->calcGradientColor( current );
+                                                             },
+                                                             [ current, min, max ]( Timeline* myWindow )
+                                                             {
+                                                               return myWindow->getSemanticColor().calcColor( current, min, max );
+                                                             } },
+                                                  myWindow );
   }
 }
-
-
+//
+//
 void ScaleImageGenerator::computeGeneratedImageSize( int whichWantedWidth )
 {
   if( orientation == TScaleImageOrientation::TScaleImageOrientationVertical )
   {
     dataImage.imageHeight =
       ( semanticValuesLabels.size() - 1 ) * ( dataImage.heightRect + dataImage.rectMargin ) + dataImage.heightRect + 2 * dataImage.titleMargin;
-
+    //
     if( dataImage.drawOutliers )
       dataImage.imageHeight += ( dataImage.heightRect + dataImage.titleMargin ) * 2;
-
+    //
     dataImage.imageWidth = maxLabelSize.GetWidth() + ( 2 * dataImage.titleMargin ) + dataImage.widthRect + 2 * dataImage.rectMargin;
   }
   else if( orientation == TScaleImageOrientation::TScaleImageOrientationHorizontal )
   {
     dataImage.imageHeight = dataImage.heightRect + maxLabelSize.GetHeight() + 3 * dataImage.titleMargin;
-
+    //
     if( whichWantedWidth != 0 )
     {
       dataImage.widthRect = ( whichWantedWidth - 2 * dataImage.titleMargin - 2 * dataImage.rectMargin ) / ( ( totalSquaresGradientColor + 2 ) );
-
+      //
       dataImage.imageWidth = whichWantedWidth;
     }
     else
@@ -444,14 +618,14 @@ void ScaleImageGenerator::computeGeneratedImageSize( int whichWantedWidth )
     }
   }
 }
-
+//
 void ScaleImageGenerator::createImageDC()
 {
   bitmapImageContent = new wxBitmap( dataImage.imageWidth, dataImage.imageHeight );
   memoryImageContent = new wxMemoryDC( *bitmapImageContent );
-
+  //
   memoryImageContent->SetFont( dataImage.textFont );
-
+  //
   if( dataImage.backgroundMode == TBackgroundMode::BACKGROUND_SOLID_DARK )
   {
     memoryImageContent->SetBackground( wxBrush( *wxBLACK ) );
@@ -464,9 +638,9 @@ void ScaleImageGenerator::createImageDC()
     memoryImageContent->SetBackground( *wxWHITE_BRUSH );
     memoryImageContent->SetTextForeground( *wxBLACK );
   }
-
+  //
   memoryImageContent->Clear();
-
+  //
   // Mask for legend
   bitmapImageMask = new wxBitmap( dataImage.imageWidth, dataImage.imageHeight );
   memoryImageMask = new wxMemoryDC( *bitmapImageMask );
@@ -477,7 +651,7 @@ void ScaleImageGenerator::createImageDC()
   memoryImageMask->SetFont( dataImage.textFont );
   memoryImageMask->Clear();
 }
-
+//
 void ScaleImageGenerator::drawImage()
 {
   if( scaleType == TScaleImageType::TScaleImageGradientColor || scaleType == TScaleImageType::TScaleImageGradientColorNotNull ||
@@ -486,21 +660,21 @@ void ScaleImageGenerator::drawImage()
   else
     drawImageCodeColor();
 }
-
+//
 void ScaleImageGenerator::drawImageCodeColor()
 {
   int posX = dataImage.rectMargin + dataImage.titleMargin;
   int posY = dataImage.titleMargin;
-
+  //
   for( auto it = semanticValuesColors.begin(); it != semanticValuesColors.end(); ++it )
   {
     drawRectangle( it->second, posX, posY );
-
+    //
     posX += dataImage.heightRect + dataImage.rectMargin;
-
+    //
     memoryImageContent->DrawText( semanticValuesLabels[ it->first ], posX, posY );
     memoryImageMask->DrawText( semanticValuesLabels[ it->first ], posX, posY );
-
+    //
     if( orientation == TScaleImageOrientation::TScaleImageOrientationVertical )
     {
       posX = dataImage.rectMargin + dataImage.titleMargin;
@@ -512,8 +686,8 @@ void ScaleImageGenerator::drawImageCodeColor()
     }
   }
 }
-
-
+//
+//
 void ScaleImageGenerator::drawImageGradientColor()
 {
   // *** 1. Draw color scale ****************************************************************
@@ -521,19 +695,29 @@ void ScaleImageGenerator::drawImageGradientColor()
   int posX                = dataImage.rectMargin + dataImage.titleMargin;
   int posY                = dataImage.titleMargin;
   const int middleElement = ( totalSquaresGradientColor / 2 ) + 1;
-
+  //
+  auto visitorBelowOutlier = overloads{ []( auto* myWindow )
+                                        {
+                                          return myWindow->getSemanticColor().getBelowOutlierColor();
+                                        } };
+  auto visitorAboveOutlier = overloads{ []( auto* myWindow )
+                                        {
+                                          return myWindow->getSemanticColor().getAboveOutlierColor();
+                                        } };
+  //
   wxString tmpSemanticValueLabel = wxT( "<" );
-  drawRectangle( myWindow->getSemanticColor().getBelowOutlierColor(), posX, posY );
-
+  //
+  drawRectangle( std::visit( visitorBelowOutlier, myWindow ), posX, posY );
+  //
   memoryImageContent->DrawText( tmpSemanticValueLabel, posX, posY + dataImage.heightRect + SIZE_MARK_LABEL );
   memoryImageMask->DrawText( tmpSemanticValueLabel, posX, posY + dataImage.heightRect + SIZE_MARK_LABEL );
-
+  //
   posX = posX + dataImage.widthRect + dataImage.rectMargin;
-
+  //
   for( auto it = semanticValuesColors.begin(); it != semanticValuesColors.end(); ++it )
   {
     ++currentElement;
-
+    //
     if( it == semanticValuesColors.begin() )
     {
       drawRectangle( it->second, posX, posY );
@@ -553,18 +737,18 @@ void ScaleImageGenerator::drawImageGradientColor()
     {
       drawRectangle( it->second, posX, posY );
     }
-
+    //
     posX += dataImage.widthRect;
   }
-
+  
   posX += dataImage.rectMargin;
-
+  
   tmpSemanticValueLabel = wxT( "<" );
-
+  
   wxSize labelSize = memoryImageContent->GetTextExtent( tmpSemanticValueLabel );
-
-  drawRectangle( myWindow->getSemanticColor().getAboveOutlierColor(), posX, posY );
-
+  
+  drawRectangle( std::visit( visitorAboveOutlier, myWindow ), posX, posY );
+  
   memoryImageContent->DrawText( tmpSemanticValueLabel,
                                 posX + dataImage.widthRect - labelSize.GetWidth(),
                                 posY + dataImage.heightRect + SIZE_MARK_LABEL );
@@ -572,22 +756,22 @@ void ScaleImageGenerator::drawImageGradientColor()
                              posX + dataImage.widthRect - labelSize.GetWidth(),
                              posY + dataImage.heightRect + SIZE_MARK_LABEL );
 }
-
-
+//
+//
 void ScaleImageGenerator::drawRectangle( rgb semanticColour, int posX, int posY )
 {
   memoryImageContent->SetBrush( wxColour( semanticColour.red, semanticColour.green, semanticColour.blue ) );
   memoryImageContent->DrawRectangle( posX, posY, dataImage.widthRect, dataImage.heightRect );
-
+  //
   memoryImageMask->DrawRectangle( posX, posY, dataImage.widthRect, dataImage.heightRect );
 }
-
+//
 void ScaleImageGenerator::drawLabelGradient( wxString semanticValueLabel, TPosition alignmentLabel, int posX, int posY )
 {
   wxSize labelSize = memoryImageContent->GetTextExtent( semanticValueLabel );
-
+  //
   int shiftLeftLabel = 0, shiftLeftLine = 0;
-
+  //
   switch( alignmentLabel )
   {
     case TPosition::FIRST:
@@ -605,21 +789,21 @@ void ScaleImageGenerator::drawLabelGradient( wxString semanticValueLabel, TPosit
     default:
       break;
   }
-
+  //
   memoryImageContent->DrawLine( posX + shiftLeftLine,
                                 posY + dataImage.heightRect,
                                 posX + shiftLeftLine,
                                 posY + dataImage.heightRect + SIZE_MARK_LABEL );
   memoryImageMask->DrawLine( posX + shiftLeftLine, posY + dataImage.heightRect, posX + shiftLeftLine, posY + dataImage.heightRect + SIZE_MARK_LABEL );
-
+  //
   memoryImageContent->DrawText( semanticValueLabel, posX + shiftLeftLabel, posY + dataImage.heightRect + SIZE_MARK_LABEL + 1 );
   memoryImageMask->DrawText( semanticValueLabel, posX + shiftLeftLabel, posY + dataImage.heightRect + SIZE_MARK_LABEL + 1 );
 }
-
+//
 wxImage ScaleImageGenerator::bitmapToImage()
 {
   memoryImageContent->SelectObject( wxNullBitmap );
-
+//
 #ifndef __WXMAC__
   // TODO: avoid to create/handle scaleMaskDC in all the other methods if wxTRANSPARENT
   if( dataImage.backgroundMode == TBackgroundMode::BACKGROUND_TRANSPARENT )
@@ -629,9 +813,9 @@ wxImage ScaleImageGenerator::bitmapToImage()
     bitmapImageContent->SetMask( mask );
   }
 #endif
-
+  
   wxImage scaleImage( bitmapImageContent->ConvertToImage() );
-
+  
   return scaleImage;
 }
 
@@ -665,21 +849,21 @@ void ScaleImageGenerator::processImage( std::optional< int > wantedWidth )
     this->sortSemanticValuesGradientColors();
   }
   this->computeMaxSemanticLabelsSize();
-
+  //
   if( wantedWidth == std::nullopt )
     this->computeGeneratedImageSize();
   else
     this->computeGeneratedImageSize( wantedWidth.value() );
-
+  //
   this->createImageDC();
   this->drawImage();
 }
-
+//
 wxString ScaleImageGenerator::getLegendSuffix()
 {
   return legendSuffix;
 }
-
+//
 void ScaleImageGenerator::updateLegendSuffix()
 {
   if( scaleType == TScaleImageType::TScaleImageGradientColor )

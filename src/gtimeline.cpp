@@ -4002,10 +4002,9 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
 
   TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
 
-  WindowImageGenerator* newWindowImage =
-    new WindowImageGenerator( &drawImage, myWindow, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  WindowImageGenerator* newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
-  newWindowImage->generateTimelineImage();
+  newWindowImage->generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
 
   if( myWindow->isFusedLinesColorSet() )
   {
@@ -4022,15 +4021,15 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
       tmpObjects[ (TSemanticValue)( *it ) ] = tmprgb;
     }
 
-    newWindowImage->generateScaleImage( tmpObjects );
+    newWindowImage->generateScaleImageControlWindows( tmpObjects, myWindow );
   }
   else
   {
-    newWindowImage->generateScaleImage( semanticValuesToColor );
+    newWindowImage->generateScaleImageControlWindows( semanticValuesToColor, myWindow );
 
     if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
     {
-      newWindowImage->generateScaleTimelineImage( semanticValuesToColor );
+      newWindowImage->generateScaleWindowsImage( semanticValuesToColor, myWindow );
     }
   }
 
@@ -4048,11 +4047,11 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
   if( saveDialog.DialogSavesImage() )
   {
     imageName = saveDialog.GetImageFilePath();
-    newWindowImage->saveImageTimeline( imageName );
+    newWindowImage->saveImageWindows( imageName );
 
     if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
     {
-      newWindowImage->saveImageTimelineScale( imageName );
+      newWindowImage->saveImageWindowScale( imageName );
     }
   }
 
@@ -4061,10 +4060,12 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
     imageName = saveDialog.GetLegendFilePath(); // .GetPath();
     newWindowImage->saveImageScale( imageName, false );
   }
+
+  delete newWindowImage;
 }
 
 
-void gTimeline::saveImageTimeline( wxString whichFileName )
+void gTimeline::saveImageWindows( wxString whichFileName )
 {
   wxString imagePath;
   /* TImageFormat filterIndex;*/
@@ -4109,9 +4110,9 @@ void gTimeline::saveImageTimeline( wxString whichFileName )
       break;
   }
 
-  WindowImageGenerator newWindowImage( &drawImage, myWindow, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
-  newWindowImage.generateTimelineImage();
-  newWindowImage.saveImageTimeline( imagePath );
+  WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  newWindowImage.generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
+  newWindowImage.saveImageWindows( imagePath );
 }
 
 
@@ -4161,7 +4162,7 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
       break;
   }
 
-  WindowImageGenerator newWindowImage( &drawImage, myWindow, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
   if( myWindow->isFusedLinesColorSet() )
   {
@@ -4178,11 +4179,11 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
       tmpObjects[ (TSemanticValue)( *it ) ] = tmprgb;
     }
 
-    newWindowImage.generateScaleImage( tmpObjects );
+    newWindowImage.generateScaleImageControlWindows( tmpObjects, myWindow );
   }
   else
   {
-    newWindowImage.generateScaleImage( semanticValuesToColor );
+    newWindowImage.generateScaleImageControlWindows( semanticValuesToColor, myWindow );
   }
 
   newWindowImage.saveImageScale( imagePath, true );

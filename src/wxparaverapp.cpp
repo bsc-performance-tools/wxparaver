@@ -749,7 +749,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
 
             tmpTimeline->redraw();
 
-            tmpTimeline->saveImageTimeline( wxT( "" ) );
+            tmpTimeline->saveImageWindows( wxT( "" ) );
             tmpTimeline->saveImageLegend();
             
             delete tmpTimeline;

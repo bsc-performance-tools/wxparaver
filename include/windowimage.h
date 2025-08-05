@@ -8,6 +8,7 @@
 
 #include <wx/dc.h>
 #include <wx/dcclient.h>
+#include <wx/grid.h>
 
 enum class TPosition
 {
@@ -66,10 +67,12 @@ enum class TScaleImageOrientation
   TScaleImageOrientationHorizontal
 };
 
+
 class ScaleImageGenerator
 {
   public:
-    ScaleImageGenerator( Timeline* whichMyWindow,
+    ScaleImageGenerator( Histogram* whichMyWindow,
+                         Timeline* whichMyDataWindow,
                          const std::map< TSemanticValue, rgb >& whichSemanticValues,
                          wxColour whichBackground,
                          wxColour whichForeground,
@@ -79,6 +82,15 @@ class ScaleImageGenerator
                          TScaleImageOrientation orientation,
                          bool whichMergedImages = false );
 
+    ScaleImageGenerator( Timeline* whichMyWindow,
+                         const std::map< TSemanticValue, rgb >& whichSemanticValues,
+                         wxColour whichBackground,
+                         wxColour whichForeground,
+                         wxFont whichTextFont,
+                         TImageFormat& whichImageType,
+                         TScaleImageType scaleType,
+                         TScaleImageOrientation orientation,
+                         bool whichMergedImages = false );
     ~ScaleImageGenerator();
 
     wxBitmap* getBitmap()
@@ -116,7 +128,9 @@ class ScaleImageGenerator
 
 
   private:
-    Timeline* myWindow;
+    WindowGenericItem myWindow;
+
+    Timeline* myDataWindow;
     TImageFormat filterIndex;
 
     std::map< TSemanticValue, rgb > semanticValuesColors;
@@ -149,7 +163,7 @@ class WindowImageGenerator
 {
   public:
     WindowImageGenerator( wxBitmap* wichBitmapTimeline,
-                          Timeline* whichMyWindow,
+                          // WindowGenericItem genericItem,
                           wxColour whichBackground,
                           wxColour whichForeground,
                           wxFont whichTextFont,
@@ -158,7 +172,7 @@ class WindowImageGenerator
     ~WindowImageGenerator();
 
   public:
-    wxBitmap* getTimelineImage();
+    wxBitmap* getWindowsImage();
     wxBitmap* getTimelineScaleImage();
     wxBitmap* getScaleImage();
     wxString getLegendSuffix();
@@ -166,12 +180,15 @@ class WindowImageGenerator
     TImageFormat getImageFormat();
     void setImageFormat( TImageFormat filterIndex );
 
-    void generateScaleImage( std::map< TSemanticValue, rgb > semanticValuesToColor);
-    void generateTimelineImage();
-    void generateScaleTimelineImage( std::map< TSemanticValue, rgb > semanticValuesToColor );
+    void generateScaleImageControlWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow );
+    void generateScaleImageControlWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram );
 
-    void saveImageTimeline( wxString whichFileName );
-    void saveImageTimelineScale( wxString whichFileName );
+    void generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName );
+    void generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName );
+    void generateScaleWindowsImage( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow );
+
+    void saveImageWindows( wxString whichFileName );
+    void saveImageWindowScale( wxString whichFileName );
     void saveImageScale( wxString whichFileName, bool appendLegendSufix );
 
   private:
@@ -186,8 +203,6 @@ class WindowImageGenerator
     ScaleImageGenerator* scaleImage;
 
     TImageFormat filterIndex;
-
-    Timeline* myWindow;
 
     wxColour imageBackground;
     wxColour imageForeground;

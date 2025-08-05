@@ -473,6 +473,25 @@ public:
   wxIcon GetIconResource( const wxString& name );
 ////@end gHistogram member function declarations
 
+  std::map< TSemanticValue, rgb > GetSemanticValuesToColorControl() const
+  {
+    return semanticValuesToColorControl;
+  }
+  void SetSemanticValuesToColorControl( std::map< TSemanticValue, rgb > value )
+  {
+    semanticValuesToColorControl = value;
+  }
+
+  std::map< TSemanticValue, rgb > GetSemanticValuesToColorData() const
+  {
+    return semanticValuesToColorData;
+  }
+  void SetSemanticValuesToColorData( std::map< TSemanticValue, rgb > value )
+  {
+    semanticValuesToColorData = value;
+  }
+
+
   const SelectionManagement<THistogramColumn, int> &GetColumnSelection () const
   {
     return columnSelection;
@@ -632,6 +651,10 @@ private:
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
   bool forceAutohideColumns;
+
+  std::map< TSemanticValue, rgb > semanticValuesToColorControl;
+  std::map< TSemanticValue, rgb > semanticValuesToColorData;
+
 
   std::vector<THistogramColumn> noVoidSemRanges;
 

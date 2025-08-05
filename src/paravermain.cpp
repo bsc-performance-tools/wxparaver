@@ -4641,7 +4641,7 @@ void paraverMain::OnSignal()
 
       // Save image if needed
       if( !currentSignal.imageFileName.empty() )
-        tmpTimeline->saveImageTimeline( wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
+        tmpTimeline->saveImageWindows( wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
     }
     else // Histogram
     {

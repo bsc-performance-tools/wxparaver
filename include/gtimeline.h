@@ -1044,7 +1044,7 @@ class gTimeline
   void OnItemColorLeftUp( wxMouseEvent& event );
 
 
-  void saveImageTimeline( wxString whichFileName );
+  void saveImageWindows( wxString whichFileName );
   void saveImageLegend( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool appendLegendSuffix = true );
 
   void openSaveImageDialog( wxString whichFileName = _( "" ) );
