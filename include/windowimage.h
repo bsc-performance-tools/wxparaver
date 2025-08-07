@@ -136,7 +136,7 @@ class ScaleImageGenerator
     std::map< TSemanticValue, rgb > semanticValuesColors;
     std::map< TSemanticValue, wxString > semanticValuesLabels;
 
-    wxBitmap* bitmapImageContent;
+    wxBitmap* bitmapImageContent = nullptr;
     wxMemoryDC* memoryImageContent;
 
     wxBitmap* bitmapImageMask;
@@ -175,13 +175,14 @@ class WindowImageGenerator
     wxBitmap* getWindowsImage();
     wxBitmap* getTimelineScaleImage();
     wxBitmap* getScaleImage();
+    wxBitmap* getScaleDataImage();
     wxString getLegendSuffix();
 
     TImageFormat getImageFormat();
     void setImageFormat( TImageFormat filterIndex );
 
-    void generateScaleImageControlWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow );
-    void generateScaleImageControlWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram );
+    void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow );
+    void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram );
 
     void generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName );
     void generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName );
@@ -190,6 +191,7 @@ class WindowImageGenerator
     void saveImageWindows( wxString whichFileName );
     void saveImageWindowScale( wxString whichFileName );
     void saveImageScale( wxString whichFileName, bool appendLegendSufix );
+    void saveImageControlScale( wxString imageName, bool appendLegendSufix );
 
   private:
     wxBitmap* bitmapTimeline;
@@ -200,7 +202,8 @@ class WindowImageGenerator
     wxBitmap* bitmapImageTimelineScale;
     wxMemoryDC* memoryImageTimelineScale;
 
-    ScaleImageGenerator* scaleImage;
+    ScaleImageGenerator* scaleImage     = nullptr;
+    ScaleImageGenerator* scaleImageData = nullptr;
 
     TImageFormat filterIndex;
 

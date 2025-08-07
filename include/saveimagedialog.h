@@ -59,6 +59,8 @@ class wxFileCtrl;
 #define ID_SAVEIMAGETEXTCTRL 10505
 #define ID_SAVELEGENDCHECKBOX 10506
 #define ID_SAVELEGENDTEXTCTRL 10507
+#define ID_SAVELEGENDCONTROLCHECKBOX    10012
+#define ID_SAVELEGENDCONTROLTEXTCTRL    10013
 #define ID_NOTEBOOK                     10004
 #define ID_SCROLLEDWINDOW1              10003
 #define ID_SCROLLEDWINDOW_IMAGE         10005
@@ -66,6 +68,9 @@ class wxFileCtrl;
 #define ID_SCROLLEDWINDOW               10001
 #define ID_SCROLLEDWINDOW_SCALE         10006
 #define ID_CHECKBOX_LEGEND              10008
+#define ID_SCROLLEDWINDOW2              10009
+#define ID_SCROLLEDWINDOW_SCALE_CONTROL 10010
+#define ID_CHECKBOX_LEGEND_CONTROL      10011
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVEIMAGEDIALOG_TITLE _("Save Image Dialog")
 #define SYMBOL_SAVEIMAGEDIALOG_IDNAME ID_SAVEIMAGEDIALOG
@@ -90,13 +95,14 @@ public:
                    wxString& directoryStartingPath,
                    wxString defaultFileName,
                    WindowImageGenerator* imageGeneration,
-                   bool isHistogram        = false,
-                   wxString legendSuffix   = _( "_legend" ),
-                   wxWindowID id           = SYMBOL_SAVEIMAGEDIALOG_IDNAME,
-                   const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE,
-                   const wxPoint& pos      = SYMBOL_SAVEIMAGEDIALOG_POSITION,
-                   const wxSize& size      = SYMBOL_SAVEIMAGEDIALOG_SIZE,
-                   long style              = SYMBOL_SAVEIMAGEDIALOG_STYLE );
+                   bool isHistogram             = false,
+                   wxString legendSuffix        = _( "_legend" ),
+                   wxString legendControlSuffix = _( "_legendControl" ),
+                   wxWindowID id                = SYMBOL_SAVEIMAGEDIALOG_IDNAME,
+                   const wxString& caption      = SYMBOL_SAVEIMAGEDIALOG_TITLE,
+                   const wxPoint& pos           = SYMBOL_SAVEIMAGEDIALOG_POSITION,
+                   const wxSize& size           = SYMBOL_SAVEIMAGEDIALOG_SIZE,
+                   long style                   = SYMBOL_SAVEIMAGEDIALOG_STYLE );
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
@@ -113,9 +119,11 @@ public:
 
   wxString GetImageFilePath();
   wxString GetLegendFilePath();
+  wxString GetLegendControlFilePath();
 
   bool DialogSavesImage();
   bool DialogSavesLegend();
+  bool DialogSavesControlLegend();
   int GetFilterIndex(); // Should it be TImageFormat ???
 
 ////@begin SaveImageDialog event handler declarations
@@ -131,6 +139,9 @@ public:
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SAVELEGENDCHECKBOX
   void OnSavelegendcheckboxClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SAVELEGENDCONTROLCHECKBOX
+  void OnSavelegendcontrolcheckboxClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
@@ -152,6 +163,12 @@ public:
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND
   void OnCheckboxLegendClick( wxCommandEvent& event );
+
+  /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_SCALE_CONTROL
+  void onPaintScaleControl( wxPaintEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND_CONTROL
+  void OnCheckboxLegendControlClick( wxCommandEvent& event );
 
   ////@end SaveImageDialog event handler declarations
 
@@ -190,10 +207,14 @@ public:
   wxBoxSizer* legendSizer;
   wxCheckBox* legendCheckbox;
   wxTextCtrl* legendFileName;
+  wxBoxSizer* legendControlSizer;
+  wxCheckBox* legendControlCheckbox;
+  wxTextCtrl* legendControlFileName;
   wxButton* buttonSave;
   wxButton* buttonCancel;
   wxScrolledWindow* drawWindowSingle;
   wxScrolledWindow* drawScaleSingle;
+  wxScrolledWindow* drawScaleControlSingle;
   ////@end SaveImageDialog member variables
 
   WindowImageGenerator* imageGeneration;
@@ -202,10 +223,13 @@ public:
   wxString defaultFileName;
   wxString selectedImageFilePath;
   wxString selectedLegendFilePath;
+  wxString selectedLegendControlFilePath;
 
   wxString fileTypeText;
   bool isHistogram;
   wxString legendSuffix;
+  wxString legendControlSuffix;
   bool resize_window = true;
   bool resize_scale  = true;
+  bool resize_scale_control = true;
 };
