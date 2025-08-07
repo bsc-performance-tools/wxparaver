@@ -24,38 +24,35 @@
 #pragma once
 
 
-
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 #include "wx/tglbtn.h"
 #include "wx/statline.h"
 ////@end includes
+// clang-format on
 
-#include <vector>
-
+#include "loadedwindows.h"
 #include "paraverkerneltypes.h"
 #include "window.h"
-#include "loadedwindows.h"
 
-// wxPropertyDialogSheet
-//#include <wx/propdlg.h>
-//#include <wx/generic/propdlg.h>
+#include <vector>
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class wxToggleButton;
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_HISTOGRAMDIALOG 10061
 #define ID_HISTOGRAM_CONTROLTIMELINETEXT 10065
@@ -84,7 +81,7 @@ class wxToggleButton;
 #define SYMBOL_HISTOGRAMDIALOG_SIZE wxSize(400, 300)
 #define SYMBOL_HISTOGRAMDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
-
+// clang-format on
 
 // Radio Button
 enum class TTimeRangeSource
@@ -98,29 +95,40 @@ enum class TTimeRangeSource
  * HistogramDialog class declaration
  */
 
-class HistogramDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( HistogramDialog )
-  DECLARE_EVENT_TABLE()
+class HistogramDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( HistogramDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  HistogramDialog();
-  HistogramDialog( wxWindow* parent, wxWindowID id = SYMBOL_HISTOGRAMDIALOG_IDNAME, const wxString& caption = SYMBOL_HISTOGRAMDIALOG_TITLE, const wxPoint& pos = SYMBOL_HISTOGRAMDIALOG_POSITION, const wxSize& size = SYMBOL_HISTOGRAMDIALOG_SIZE, long style = SYMBOL_HISTOGRAMDIALOG_STYLE );
+  public:
+    /// Constructors
+    HistogramDialog();
+    HistogramDialog( wxWindow* parent,
+                     wxWindowID id           = SYMBOL_HISTOGRAMDIALOG_IDNAME,
+                     const wxString& caption = SYMBOL_HISTOGRAMDIALOG_TITLE,
+                     const wxPoint& pos      = SYMBOL_HISTOGRAMDIALOG_POSITION,
+                     const wxSize& size      = SYMBOL_HISTOGRAMDIALOG_SIZE,
+                     long style              = SYMBOL_HISTOGRAMDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_HISTOGRAMDIALOG_IDNAME, const wxString& caption = SYMBOL_HISTOGRAMDIALOG_TITLE, const wxPoint& pos = SYMBOL_HISTOGRAMDIALOG_POSITION, const wxSize& size = SYMBOL_HISTOGRAMDIALOG_SIZE, long style = SYMBOL_HISTOGRAMDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_HISTOGRAMDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_HISTOGRAMDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_HISTOGRAMDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_HISTOGRAMDIALOG_SIZE,
+                 long style              = SYMBOL_HISTOGRAMDIALOG_STYLE );
 
-  /// Destructor
-  ~HistogramDialog();
+    /// Destructor
+    ~HistogramDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-////@begin HistogramDialog event handler declarations
+    // clang-format off
+  ////@begin HistogramDialog event handler declarations
 
   /// wxEVT_IDLE event handler for ID_HISTOGRAMDIALOG
   void OnIdle( wxIdleEvent& event );
@@ -176,9 +184,11 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
 
-////@end HistogramDialog event handler declarations
+  ////@end HistogramDialog event handler declarations
+    // clang-format on
 
-////@begin HistogramDialog member function declarations
+    // clang-format off
+  ////@begin HistogramDialog member function declarations
 
   bool GetControlTimelineAutofit() const { return controlTimelineAutofit ; }
   void SetControlTimelineAutofit(bool value) { controlTimelineAutofit = value ; }
@@ -236,15 +246,17 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end HistogramDialog member function declarations
+  ////@end HistogramDialog member function declarations
+    // clang-format on
 
-  bool TransferDataToWindow( Timeline *current );
-  bool TransferDataFromWindow();
+    bool TransferDataToWindow( Timeline* current );
+    bool TransferDataFromWindow();
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-////@begin HistogramDialog member variables
+    // clang-format off
+  ////@begin HistogramDialog member variables
   wxTextCtrl* txtControlTimelines;
   wxBitmapButton* buttonControlTimelines;
   wxToggleButton* buttonControlTimelineAutoFit;
@@ -290,16 +302,15 @@ private:
   std::vector<TWindowID> extraControlTimelines;
   std::vector<std::pair<TRecordTime,TRecordTime> > timeRange;
   bool waitingGlobalTiming;
-////@end HistogramDialog member variables
+  ////@end HistogramDialog member variables
+    // clang-format on
 
-  wxString formatNumber( double value );
+    wxString formatNumber( double value );
 
-  TSemanticValue computeDelta( TSemanticValue min, TSemanticValue max );
-  void computeColumns( Timeline *timeline, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta );
-  void updateControlTimelineAutofit();
-  void updateExtraControlTimelineAutofit();
-  PRV_UINT32 fillList( Timeline *current, std::vector< TWindowID > listTimelines, wxChoice *listWidget );
-  void enable3DFields( bool autofit );
+    TSemanticValue computeDelta( TSemanticValue min, TSemanticValue max );
+    void computeColumns( Timeline* timeline, TSemanticValue& min, TSemanticValue& max, TSemanticValue& delta );
+    void updateControlTimelineAutofit();
+    void updateExtraControlTimelineAutofit();
+    PRV_UINT32 fillList( Timeline* current, std::vector< TWindowID > listTimelines, wxChoice* listWidget );
+    void enable3DFields( bool autofit );
 };
-
-

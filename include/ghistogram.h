@@ -27,12 +27,14 @@
  * Includes
  */
 
+// clang-format off
 ////@begin includes
 #include "wx/frame.h"
 #include "wx/grid.h"
 #include "wx/statusbr.h"
 #include "wx/toolbar.h"
 ////@end includes
+// clang-format on
 #include "copypaste.h"
 #include "paraverkerneltypes.h"
 #include "windows_tree.h"
@@ -49,11 +51,13 @@
  * Forward declarations
  */
 
+// clang-format off
 ////@begin forward declarations
 class wxBoxSizer;
 class wxGrid;
 class wxStatusBar;
 ////@end forward declarations
+// clang-format on
 class Histogram;
 class HistoTableBase;
 class gWindow;
@@ -62,6 +66,7 @@ class gWindow;
  * Control identifiers
  */
 
+// clang-format off
 ////@begin control identifiers
 #define ID_GHISTOGRAM                        10004
 #define HISTO_PANEL_TOOLBAR                  10001
@@ -94,6 +99,7 @@ class gWindow;
 #define SYMBOL_GHISTOGRAM_SIZE               wxSize( 400, 300 )
 #define SYMBOL_GHISTOGRAM_POSITION           wxDefaultPosition
 ////@end control identifiers
+// clang-format on
 
 #define ID_TIMER_SIZE_HISTOGRAM     10029
 #define ID_TIMER_ZOOM_HISTOGRAM     10030
@@ -136,6 +142,7 @@ class gHistogram: public wxFrame, public gWindow
     /// Creates the controls and sizers
     void CreateControls();
 
+    // clang-format off
     ////@begin gHistogram event handler declarations
 
     /// wxEVT_CLOSE_WINDOW event handler for ID_GHISTOGRAM
@@ -283,11 +290,13 @@ class gHistogram: public wxFrame, public gWindow
     void OnAutoredrawLeftDown( wxMouseEvent& event );
 
     ////@end gHistogram event handler declarations
+    // clang-format on
 
     void OnRangeSelect( wxGridRangeSelectEvent& event );
 
     void OnMove( wxMoveEvent& event );
 
+    // clang-format off
     ////@begin gHistogram member function declarations
 
     wxBitmap GetDrawImage() const
@@ -431,6 +440,7 @@ class gHistogram: public wxFrame, public gWindow
     /// Retrieves icon resources
     wxIcon GetIconResource( const wxString& name );
     ////@end gHistogram member function declarations
+    // clang-format on
 
     const SelectionManagement< THistogramColumn, int >& GetColumnSelection() const
     {
@@ -549,6 +559,7 @@ class gHistogram: public wxFrame, public gWindow
 
     void InitHistogramCallbacks();
 
+    // clang-format off
     ////@begin gHistogram member variables
     wxPanel* panelToolbar;
     wxToolBar* tbarHisto;
@@ -580,6 +591,8 @@ class gHistogram: public wxFrame, public gWindow
     wxPoint zoomPointBegin;
     wxPoint zoomPointEnd;
     ////@end gHistogram member variables
+    // clang-format on
+
     wxWindow* parent; // for clone
     bool forceAutohideColumns;
     bool isEditMode         = false;

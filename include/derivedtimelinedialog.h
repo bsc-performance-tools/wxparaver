@@ -25,31 +25,32 @@
 #pragma once
 
 
-
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 #include "wx/statline.h"
 #include "wx/spinctrl.h"
 ////@end includes
+// clang-format on
 
-#include "window.h"
 #include "loadedwindows.h"
+#include "window.h"
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class wxSpinCtrl;
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_DERIVEDTIMELINEDIALOG 10032
 #define ID_DERIVED_NAME 10001
@@ -75,34 +76,46 @@ class wxSpinCtrl;
 #define SYMBOL_DERIVEDTIMELINEDIALOG_SIZE wxDefaultSize
 #define SYMBOL_DERIVEDTIMELINEDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
+// clang-format on
 
 /*!
  * DerivedTimelineDialog class declaration
  */
 
-class DerivedTimelineDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( DerivedTimelineDialog )
-  DECLARE_EVENT_TABLE()
+class DerivedTimelineDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( DerivedTimelineDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  DerivedTimelineDialog();
-  DerivedTimelineDialog( wxWindow* parent, wxWindowID id = SYMBOL_DERIVEDTIMELINEDIALOG_IDNAME, const wxString& caption = SYMBOL_DERIVEDTIMELINEDIALOG_TITLE, const wxPoint& pos = SYMBOL_DERIVEDTIMELINEDIALOG_POSITION, const wxSize& size = SYMBOL_DERIVEDTIMELINEDIALOG_SIZE, long style = SYMBOL_DERIVEDTIMELINEDIALOG_STYLE );
+  public:
+    /// Constructors
+    DerivedTimelineDialog();
+    DerivedTimelineDialog( wxWindow* parent,
+                           wxWindowID id           = SYMBOL_DERIVEDTIMELINEDIALOG_IDNAME,
+                           const wxString& caption = SYMBOL_DERIVEDTIMELINEDIALOG_TITLE,
+                           const wxPoint& pos      = SYMBOL_DERIVEDTIMELINEDIALOG_POSITION,
+                           const wxSize& size      = SYMBOL_DERIVEDTIMELINEDIALOG_SIZE,
+                           long style              = SYMBOL_DERIVEDTIMELINEDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_DERIVEDTIMELINEDIALOG_IDNAME, const wxString& caption = SYMBOL_DERIVEDTIMELINEDIALOG_TITLE, const wxPoint& pos = SYMBOL_DERIVEDTIMELINEDIALOG_POSITION, const wxSize& size = SYMBOL_DERIVEDTIMELINEDIALOG_SIZE, long style = SYMBOL_DERIVEDTIMELINEDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_DERIVEDTIMELINEDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_DERIVEDTIMELINEDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_DERIVEDTIMELINEDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_DERIVEDTIMELINEDIALOG_SIZE,
+                 long style              = SYMBOL_DERIVEDTIMELINEDIALOG_STYLE );
 
-  /// Destructor
-  ~DerivedTimelineDialog();
+    /// Destructor
+    ~DerivedTimelineDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-////@begin DerivedTimelineDialog event handler declarations
+    // clang-format off
+  ////@begin DerivedTimelineDialog event handler declarations
 
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOPCOMPOSE1
   void OnTopcompose1Selected( wxCommandEvent& event );
@@ -125,9 +138,11 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
 
-////@end DerivedTimelineDialog event handler declarations
+  ////@end DerivedTimelineDialog event handler declarations
+    // clang-format on
 
-////@begin DerivedTimelineDialog member function declarations
+    // clang-format off
+  ////@begin DerivedTimelineDialog member function declarations
 
   Timeline * GetCurrentWindow1() const { return currentWindow1 ; }
   void SetCurrentWindow1(Timeline * value) { currentWindow1 = value ; }
@@ -188,15 +203,17 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end DerivedTimelineDialog member function declarations
+  ////@end DerivedTimelineDialog member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-  bool TransferDataToWindow();
-  bool TransferDataFromWindow();
+    bool TransferDataToWindow();
+    bool TransferDataFromWindow();
 
-////@begin DerivedTimelineDialog member variables
+    // clang-format off
+  ////@begin DerivedTimelineDialog member variables
   wxTextCtrl* widgetName;
   wxChoice* widgetTopCompose1;
   wxStaticText* widgetLabelMinCompose1;
@@ -239,32 +256,26 @@ private:
   std::vector<TWindowID> timelines2;
   std::vector< std::string > topCompose1;
   std::vector< std::string > topCompose2;
-////@end DerivedTimelineDialog member variables
+  ////@end DerivedTimelineDialog member variables
+    // clang-format on
 
-  void presetTimelineComboBox( std::vector< Timeline * > timelines,
-                               Timeline *currentWindow,
-                               wxComboBox *comboBox,
-                               int& currentSelection );
-  void presetStringChoiceBox( std::vector< std::string > list, wxChoice *choiceBox );
-  void presetFactorField( double value, wxTextCtrl *field );
-  void presetNameField( std::string whichName, wxTextCtrl *field );
+    void presetTimelineComboBox( std::vector< Timeline* > timelines, Timeline* currentWindow, wxComboBox* comboBox, int& currentSelection );
+    void presetStringChoiceBox( std::vector< std::string > list, wxChoice* choiceBox );
+    void presetFactorField( double value, wxTextCtrl* field );
+    void presetNameField( std::string whichName, wxTextCtrl* field );
 
-  void getSelectedString( wxChoice *choiceBox, std::vector< std::string > &selection ) const;
-  void getSelectedWindow( wxComboBox *comboBox, std::vector< Timeline * > &selection ) const;
-  void getName( wxTextCtrl *field, std::string &whichName ) const;
-  bool getFactorFields( double &whichFactor1,
-                        double &whichFactor2 );
-  void setParametersCompose( PRV_UINT32 compose,
-                             std::string nameFunction,
-                             PRV_UINT32 numParameters,
-                             std::vector< std::string > namesParameters,
-                             std::vector< std::vector< double > > defaultValues );
+    void getSelectedString( wxChoice* choiceBox, std::vector< std::string >& selection ) const;
+    void getSelectedWindow( wxComboBox* comboBox, std::vector< Timeline* >& selection ) const;
+    void getName( wxTextCtrl* field, std::string& whichName ) const;
+    bool getFactorFields( double& whichFactor1, double& whichFactor2 );
+    void setParametersCompose( PRV_UINT32 compose,
+                               std::string nameFunction,
+                               PRV_UINT32 numParameters,
+                               std::vector< std::string > namesParameters,
+                               std::vector< std::vector< double > > defaultValues );
 
-  bool getParameterCompose( wxTextCtrl *field,
-                            TParamValue &parameter,
-                            wxString prefixMessage );
+    bool getParameterCompose( wxTextCtrl* field, TParamValue& parameter, wxString prefixMessage );
 
-  void setParameterComposeField( TParamValue defaultValues, wxTextCtrl *field );
-  bool getParameterComposeField( wxTextCtrl *field, TParamValue &values );
-
+    void setParameterComposeField( TParamValue defaultValues, wxTextCtrl* field );
+    bool getParameterComposeField( wxTextCtrl* field, TParamValue& values );
 };

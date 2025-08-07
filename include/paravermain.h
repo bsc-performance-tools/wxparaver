@@ -38,14 +38,17 @@
 #include <wx/snglinst.h>
 #include <wx/treectrl.h>
 
+// clang-format off
 ////@begin includes
 #include "wx/aui/framemanager.h"
-#include "wx/choicebk.h"
-#include "wx/dirctrl.h"
 #include "wx/frame.h"
 #include "wx/toolbar.h"
+#include "wx/choicebk.h"
 #include "wx/toolbook.h"
+#include "wx/dirctrl.h"
 ////@end includes
+// clang-format on
+
 #include "cfg.h" // SaveOptions
 #include "connection.h"
 #include "loadcfgdialog.h"
@@ -68,6 +71,7 @@
  * Forward declarations
  */
 
+// clang-format off
 ////@begin forward declarations
 class wxMenu;
 class wxChoicebook;
@@ -75,6 +79,8 @@ class wxToolbook;
 class wxGenericDirCtrl;
 class wxPropertyGrid;
 ////@end forward declarations
+// clang-format on
+
 class wxPGProperty;
 class wxCheckBox;
 class ProgressController;

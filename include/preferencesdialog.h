@@ -24,14 +24,13 @@
 #pragma once
 
 
-
-/*!P
+/*!
  * Includes
  */
 
 #include <map>
 #include <string>
-
+// clang-format off
 ////@begin includes
 #include "wx/propdlg.h"
 #include "wx/spinctrl.h"
@@ -39,30 +38,32 @@
 #include "wx/clrpicker.h"
 #include "wx/statline.h"
 ////@end includes
+// clang-format on
 
+#include "paraverconfig.h"
+#include "workspace.h"
 #include "wx/bmpbuttn.h"
 #include "wx/filedlg.h"
 #include "wx/radiobut.h"
 
-#include "paraverconfig.h"
-#include "workspace.h"
-
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class wxSpinCtrl;
 class DirBrowserButton;
 class wxColourPickerCtrl;
 class FileBrowserButton;
 ////@end forward declarations
+// clang-format on
 class wxCheckBox;
 class wxListBox;
 
 /*!
  * Control identifiers
  */
+// clang-format off
 ////@begin control identifiers
 #define ID_PREFERENCESDIALOG 10069
 #define ID_PREFERENCES_GLOBAL 10073
@@ -185,37 +186,52 @@ class wxListBox;
 #define SYMBOL_PREFERENCESDIALOG_SIZE wxSize(400, 300)
 #define SYMBOL_PREFERENCESDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
-
+// clang-format on
 
 /*!
  * PreferencesDialog class declaration
  */
 
-class PreferencesDialog: public wxPropertySheetDialog
-{    
-  DECLARE_DYNAMIC_CLASS( PreferencesDialog )
-  DECLARE_EVENT_TABLE()
+class PreferencesDialog : public wxPropertySheetDialog
+{
+    DECLARE_DYNAMIC_CLASS( PreferencesDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  enum class ItemCheck { ITEM_SHOW_UNITS, ITEM_THOUSAND_SEPARATOR };
+  public:
+    enum class ItemCheck
+    {
+      ITEM_SHOW_UNITS,
+      ITEM_THOUSAND_SEPARATOR
+    };
 
-  /// Constructors
-  PreferencesDialog();
-  PreferencesDialog( wxWindow* parent, wxWindowID id = SYMBOL_PREFERENCESDIALOG_IDNAME, const wxString& caption = SYMBOL_PREFERENCESDIALOG_TITLE, const wxPoint& pos = SYMBOL_PREFERENCESDIALOG_POSITION, const wxSize& size = SYMBOL_PREFERENCESDIALOG_SIZE, long style = SYMBOL_PREFERENCESDIALOG_STYLE );
+    /// Constructors
+    PreferencesDialog();
+    PreferencesDialog( wxWindow* parent,
+                       wxWindowID id           = SYMBOL_PREFERENCESDIALOG_IDNAME,
+                       const wxString& caption = SYMBOL_PREFERENCESDIALOG_TITLE,
+                       const wxPoint& pos      = SYMBOL_PREFERENCESDIALOG_POSITION,
+                       const wxSize& size      = SYMBOL_PREFERENCESDIALOG_SIZE,
+                       long style              = SYMBOL_PREFERENCESDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_PREFERENCESDIALOG_IDNAME, const wxString& caption = SYMBOL_PREFERENCESDIALOG_TITLE, const wxPoint& pos = SYMBOL_PREFERENCESDIALOG_POSITION, const wxSize& size = SYMBOL_PREFERENCESDIALOG_SIZE, long style = SYMBOL_PREFERENCESDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_PREFERENCESDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_PREFERENCESDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_PREFERENCESDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_PREFERENCESDIALOG_SIZE,
+                 long style              = SYMBOL_PREFERENCESDIALOG_STYLE );
 
-  /// Destructor
-  ~PreferencesDialog();
+    /// Destructor
+    ~PreferencesDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-////@begin PreferencesDialog event handler declarations
+    // clang-format off
+  ////@begin PreferencesDialog event handler declarations
 
   /// wxEVT_COMMAND_SPINCTRL_UPDATED event handler for ID_PREFERENCES_GLOBAL_TIME_SESSION
   void OnPreferencesGlobalTimeSessionUpdated( wxSpinEvent& event );
@@ -391,9 +407,11 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_PDF_DOWN
   void OnButtonPdfDownUpdate( wxUpdateUIEvent& event );
 
-////@end PreferencesDialog event handler declarations
+  ////@end PreferencesDialog event handler declarations
+    // clang-format on
 
-////@begin PreferencesDialog member function declarations
+    // clang-format off
+  ////@begin PreferencesDialog member function declarations
 
   bool GetAskForPrevSessionLoad() const { return askForPrevSessionLoad ; }
   void SetAskForPrevSessionLoad(bool value) { askForPrevSessionLoad = value ; }
@@ -634,21 +652,23 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end PreferencesDialog member function declarations
+  ////@end PreferencesDialog member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-  bool TransferDataToWindow();
-  bool TransferDataFromWindow();
+    bool TransferDataToWindow();
+    bool TransferDataFromWindow();
 
-  /* SetPanel allowed values (tab IDs):
-      ID_PREFERENCES_GLOBAL, ID_PREFERENCES_TIMELINE, ID_PREFERENCES_HISTOGRAM,
-      ID_PREFERENCES_COLOR, ID_PREFERENCES_WORKSPACES
-  */
-  bool SetPanel( wxWindowID whichPanelID );
+    /* SetPanel allowed values (tab IDs):
+        ID_PREFERENCES_GLOBAL, ID_PREFERENCES_TIMELINE, ID_PREFERENCES_HISTOGRAM,
+        ID_PREFERENCES_COLOR, ID_PREFERENCES_WORKSPACES
+    */
+    bool SetPanel( wxWindowID whichPanelID );
 
-////@begin PreferencesDialog member variables
+    // clang-format off
+  ////@begin PreferencesDialog member variables
   wxPanel* panelGlobal;
   wxCheckBox* checkGlobalFillStateGaps;
   wxCheckBox* checkGlobalFullTracePath;
@@ -841,20 +861,18 @@ private:
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
   bool workspaceDiscardedSubmenu;
-////@end PreferencesDialog member variables
+  ////@end PreferencesDialog member variables
+    // clang-format on
 
-  // To keep the original name of the selected workspace
-  wxString originalWorkspaceName;
-  
-  std::map< wxWindowID, size_t > panelID;
-  
-  wxString formatNumber( long value );
-  void setLabelsChoiceBox( const std::vector< std::string > &list,
-                           const PRV_UINT32 &selected,
-                           wxChoice *choiceBox );
-  rgb wxColourToRGB( wxColour colour ) ;
-  wxColour RGBTowxColour( rgb colour );
+    // To keep the original name of the selected workspace
+    wxString originalWorkspaceName;
 
-  void workSpaceNameKillFocus( const wxString& whichName );
- 
+    std::map< wxWindowID, size_t > panelID;
+
+    wxString formatNumber( long value );
+    void setLabelsChoiceBox( const std::vector< std::string >& list, const PRV_UINT32& selected, wxChoice* choiceBox );
+    rgb wxColourToRGB( wxColour colour );
+    wxColour RGBTowxColour( rgb colour );
+
+    void workSpaceNameKillFocus( const wxString& whichName );
 };

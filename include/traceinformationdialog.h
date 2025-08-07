@@ -21,33 +21,33 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _TRACEINFORMATIONDIALOG_H_
-#define _TRACEINFORMATIONDIALOG_H_
-
+#pragma once
 
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 #include "wx/notebook.h"
 #include "wx/richtext/richtextctrl.h"
 ////@end includes
+// clang-format on
 #include "trace.h"
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class wxBoxSizer;
 class wxRichTextCtrl;
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_TRACEINFORMATIONDIALOG 10000
 #define ID_NOTEBOOK 10006
@@ -68,54 +68,71 @@ class wxRichTextCtrl;
 #define SYMBOL_TRACEINFORMATIONDIALOG_SIZE wxSize(400, 500)
 #define SYMBOL_TRACEINFORMATIONDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
+// clang-format on
 
 
 /*!
  * TraceInformationDialog class declaration
  */
 
-class TraceInformationDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( TraceInformationDialog )
-  DECLARE_EVENT_TABLE()
+class TraceInformationDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( TraceInformationDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  TraceInformationDialog( );
-  TraceInformationDialog( wxWindow* parent, Trace* whichTrace, wxWindowID id = SYMBOL_TRACEINFORMATIONDIALOG_IDNAME, const wxString& caption = SYMBOL_TRACEINFORMATIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_TRACEINFORMATIONDIALOG_POSITION, const wxSize& size = SYMBOL_TRACEINFORMATIONDIALOG_SIZE, long style = SYMBOL_TRACEINFORMATIONDIALOG_STYLE );
+  public:
+    /// Constructors
+    TraceInformationDialog();
+    TraceInformationDialog( wxWindow* parent,
+                            Trace* whichTrace,
+                            wxWindowID id           = SYMBOL_TRACEINFORMATIONDIALOG_IDNAME,
+                            const wxString& caption = SYMBOL_TRACEINFORMATIONDIALOG_TITLE,
+                            const wxPoint& pos      = SYMBOL_TRACEINFORMATIONDIALOG_POSITION,
+                            const wxSize& size      = SYMBOL_TRACEINFORMATIONDIALOG_SIZE,
+                            long style              = SYMBOL_TRACEINFORMATIONDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_TRACEINFORMATIONDIALOG_IDNAME, const wxString& caption = SYMBOL_TRACEINFORMATIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_TRACEINFORMATIONDIALOG_POSITION, const wxSize& size = SYMBOL_TRACEINFORMATIONDIALOG_SIZE, long style = SYMBOL_TRACEINFORMATIONDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_TRACEINFORMATIONDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_TRACEINFORMATIONDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_TRACEINFORMATIONDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_TRACEINFORMATIONDIALOG_SIZE,
+                 long style              = SYMBOL_TRACEINFORMATIONDIALOG_STYLE );
 
-  /// Destructor
-  ~TraceInformationDialog();
+    /// Destructor
+    ~TraceInformationDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-////@begin TraceInformationDialog event handler declarations
+    // clang-format off
+  ////@begin TraceInformationDialog event handler declarations
 
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TYPES
   void OnListboxTypesSelected( wxCommandEvent& event );
 
-////@end TraceInformationDialog event handler declarations
+  ////@end TraceInformationDialog event handler declarations
+    // clang-format on
 
-////@begin TraceInformationDialog member function declarations
+    // clang-format off
+  ////@begin TraceInformationDialog member function declarations
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end TraceInformationDialog member function declarations
+  ////@end TraceInformationDialog member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-////@begin TraceInformationDialog member variables
+    // clang-format off
+  ////@begin TraceInformationDialog member variables
   wxBoxSizer* sizerMain;
   wxBoxSizer* GeneralInfoSizer;
   wxRichTextCtrl* TraceGeneralInfo;
@@ -127,17 +144,15 @@ public:
   wxRichTextCtrl* ResourceModelInfo;
   wxListBox* listTypes;
   wxListBox* listValues;
-////@end TraceInformationDialog member variables
+  ////@end TraceInformationDialog member variables
+    // clang-format on
 
-  Trace* myTrace;
+    Trace* myTrace;
 
-private:
-  void DisplayTraceInformation();
-  wxString FormatTraceSize( double traceByteSize );
-  int getRackInformation();
+  private:
+    void DisplayTraceInformation();
+    wxString FormatTraceSize( double traceByteSize );
+    int getRackInformation();
 
-  std::vector< TEventType > eventTypes;
+    std::vector< TEventType > eventTypes;
 };
-
-#endif
-  // _TRACEINFORMATIONDIALOG_H_

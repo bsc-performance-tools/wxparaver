@@ -29,34 +29,36 @@
  * Includes
  */
 
-
+// clang-format off
 ////@begin includes
 #include "wx/tglbtn.h"
 ////@end includes
+// clang-format on
 
-#include <vector>
-#include <map>
-#include <set>
-
+#include "cfgs4d.h"
+#include "histogram.h"
 #include "paraverkerneltypes.h"
 #include "window.h"
-#include "histogram.h"
-#include "cfgs4d.h"
+
+#include <map>
+#include <set>
+#include <vector>
 
 using std::multimap;
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class wxToggleButton;
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_ADVANCEDSAVECONFIGURATION 10186
 #define ID_CHOICE_WINDOW 10185
@@ -69,7 +71,7 @@ class wxToggleButton;
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE wxDefaultSize
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION wxDefaultPosition
 ////@end control identifiers
-
+// clang-format on
 
 /*!
  * AdvancedSaveConfiguration class declaration
@@ -81,44 +83,49 @@ enum class TEditorMode
   HISTOGRAM_STATISTIC_TAGS
 };
 
-class AdvancedSaveConfiguration: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( AdvancedSaveConfiguration )
-  DECLARE_EVENT_TABLE()
+class AdvancedSaveConfiguration : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( AdvancedSaveConfiguration )
+    DECLARE_EVENT_TABLE()
 
-public:
+  public:
+    /// Constructors
+    AdvancedSaveConfiguration();
+    AdvancedSaveConfiguration( wxWindow* parent,
+                               wxWindowID id           = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
+                               const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE,
+                               const wxPoint& pos      = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION,
+                               const wxSize& size      = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE,
+                               long style              = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
+    AdvancedSaveConfiguration( wxWindow* parent,
+                               const std::vector< Timeline* >& whichTimelines,
+                               const std::vector< Histogram* >& whichHistograms,
+                               TEditorMode mode        = TEditorMode::PROPERTIES_TAGS,
+                               wxWindowID id           = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
+                               const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE,
+                               const wxPoint& pos      = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION,
+                               const wxSize& size      = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE,
+                               long style              = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
 
-  /// Constructors
-  AdvancedSaveConfiguration();
-  AdvancedSaveConfiguration( wxWindow* parent,
-                             wxWindowID id = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
-                             const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE,
-                             const wxPoint& pos = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION,
-                             const wxSize& size = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE,
-                             long style = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
-  AdvancedSaveConfiguration( wxWindow* parent,
-                             const std::vector< Timeline * > &whichTimelines,
-                             const std::vector< Histogram * > &whichHistograms,
-                             TEditorMode mode = TEditorMode::PROPERTIES_TAGS,
-                             wxWindowID id = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
-                             const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE,
-                             const wxPoint& pos = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION,
-                             const wxSize& size = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE,
-                             long style = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
+                 const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE,
+                 const wxPoint& pos      = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION,
+                 const wxSize& size      = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE,
+                 long style              = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME, const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE, const wxPoint& pos = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION, const wxSize& size = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE, long style = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
+    /// Destructor
+    ~AdvancedSaveConfiguration();
 
-  /// Destructor
-  ~AdvancedSaveConfiguration();
+    /// Initialises member variables
+    void Init();
 
-  /// Initialises member variables
-  void Init();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-  /// Creates the controls and sizers
-  void CreateControls();
-
-////@begin AdvancedSaveConfiguration event handler declarations
+    // clang-format off
+  ////@begin AdvancedSaveConfiguration event handler declarations
 
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_WINDOW
   void OnChoiceWindowSelected( wxCommandEvent& event );
@@ -132,30 +139,34 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_SAVE
   void OnSaveClick( wxCommandEvent& event );
 
-////@end AdvancedSaveConfiguration event handler declarations
+  ////@end AdvancedSaveConfiguration event handler declarations
+    // clang-format on
 
-////@begin AdvancedSaveConfiguration member function declarations
+    // clang-format off
+  ////@begin AdvancedSaveConfiguration member function declarations
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end AdvancedSaveConfiguration member function declarations
+  ////@end AdvancedSaveConfiguration member function declarations
+    // clang-format on
 
-  const CFGS4DLinkedPropertiesManager& getLinkedPropertiesManager() const;
+    const CFGS4DLinkedPropertiesManager& getLinkedPropertiesManager() const;
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-////@begin AdvancedSaveConfiguration member variables
+    // clang-format off
+  ////@begin AdvancedSaveConfiguration member variables
   wxChoice* choiceWindow;
   wxScrolledWindow* scrolledWindow;
   wxScrolledWindow* scrolledLinkProperties;
   wxToggleButton* toggleOnlySelected;
   wxButton* buttonSave;
-////@end AdvancedSaveConfiguration member variables
-
+  ////@end AdvancedSaveConfiguration member variables
+    // clang-format on
 
   protected:
     const static wxString KParamSeparator;
@@ -167,19 +178,19 @@ public:
 
   private:
     bool isTimeline;
-    int currentItem;                   // Index to selected item in choice widget. Used to compute
-                                       // position of Timeline * or Histogram * in next vectors.
-    std::vector< Timeline * > timelines;
-    std::vector< Histogram * > histograms;
+    int currentItem; // Index to selected item in choice widget. Used to compute
+                     // position of Timeline * or Histogram * in next vectors.
+    std::vector< Timeline* > timelines;
+    std::vector< Histogram* > histograms;
 
-    std::map< Timeline *, bool > backupTimelinesCFG4DEnabled;
-    std::map< Timeline *, bool > backupTimelinesCFG4DMode;
-    std::map< Timeline *, std::map< std::string, std::string > > backupTimelinesCFG4DAliasList;
-    std::map< Timeline *, Timeline::TParamAlias > backupTimelinesCFG4DParamAlias;
-    std::map< Histogram *, bool > backupHistogramsCFG4DEnabled;
-    std::map< Histogram *, bool > backupHistogramsCFG4DMode;
-    std::map< Histogram *, std::map< std::string, std::string > > backupHistogramsCFG4DAliasList;
-    std::map< Histogram *, std::map< std::string, std::string > > backupHistogramsCFG4DStatisticsAliasList;
+    std::map< Timeline*, bool > backupTimelinesCFG4DEnabled;
+    std::map< Timeline*, bool > backupTimelinesCFG4DMode;
+    std::map< Timeline*, std::map< std::string, std::string > > backupTimelinesCFG4DAliasList;
+    std::map< Timeline*, Timeline::TParamAlias > backupTimelinesCFG4DParamAlias;
+    std::map< Histogram*, bool > backupHistogramsCFG4DEnabled;
+    std::map< Histogram*, bool > backupHistogramsCFG4DMode;
+    std::map< Histogram*, std::map< std::string, std::string > > backupHistogramsCFG4DAliasList;
+    std::map< Histogram*, std::map< std::string, std::string > > backupHistogramsCFG4DStatisticsAliasList;
 
     std::vector< std::string > fullTagList;
     std::map< std::string, std::string > renamedTag;
@@ -191,30 +202,25 @@ public:
     CFGS4DLinkedPropertiesManager unlinkedManager;
     CFGS4DLinkedPropertiesManager linkedManager;
 
-    int GetSelectionIndexCorrected( int index, bool &isTimeline );
+    int GetSelectionIndexCorrected( int index, bool& isTimeline );
 
-    void initLinks( Timeline *whichTimeline );
-    void initLinks( Histogram *whichHistogram );
+    void initLinks( Timeline* whichTimeline );
+    void initLinks( Histogram* whichHistogram );
 
-    wxString BuildName( Timeline *current );
-    wxString BuildName( Histogram *current );
+    wxString BuildName( Timeline* current );
+    wxString BuildName( Histogram* current );
 
-    bool allowedLevel( const std::string &tag );
+    bool allowedLevel( const std::string& tag );
 
-    void BuildTagMaps( const std::map< std::string, std::string > &renamedTagMap,
-                       const bool showFullList );
-    void parseSemanticParameterTag( const wxString& whichTag,
-                                    std::string& onSemanticLevel,
-                                    std::string& onFunction,
-                                    TParamIndex& onNumParameter );
-    void InsertParametersToTagMaps( const std::vector< Timeline::TParamAliasKey > &fullParamList,
-                                    const Timeline::TParamAlias &renamedParamAlias,
+    void BuildTagMaps( const std::map< std::string, std::string >& renamedTagMap, const bool showFullList );
+    void parseSemanticParameterTag( const wxString& whichTag, std::string& onSemanticLevel, std::string& onFunction, TParamIndex& onNumParameter );
+    void InsertParametersToTagMaps( const std::vector< Timeline::TParamAliasKey >& fullParamList,
+                                    const Timeline::TParamAlias& renamedParamAlias,
                                     const bool showFullList );
-    wxBoxSizer *BuildTagRowWidgets( std::map< std::string, std::string >::iterator it,
-                                    bool showFullList );
+    wxBoxSizer* BuildTagRowWidgets( std::map< std::string, std::string >::iterator it, bool showFullList );
     void BuildTagWidgets( const bool showFullList );
-    void BuildTagsPanel( Timeline *currentWindow, const bool showFullList );
-    void BuildTagsPanel( Histogram *currentHistogram, const bool showFullList );
+    void BuildTagsPanel( Timeline* currentWindow, const bool showFullList );
+    void BuildTagsPanel( Histogram* currentHistogram, const bool showFullList );
 
     void PreparePanel( bool showFullList );
     void TransferDataFromPanel( bool showFullList );
@@ -222,34 +228,28 @@ public:
     void DisconnectWidgetsTagsPanel( bool showFullList );
     void CleanTagsPanel( bool showFullList );
 
-    wxCheckBox *GetCheckBoxByName( const wxString& widgetName ) const;
-    wxTextCtrl *GetTextCtrlByName( const wxString& widgetName ) const;
-    wxButton *GetButtonByName( const wxString& widgetName ) const;
+    wxCheckBox* GetCheckBoxByName( const wxString& widgetName ) const;
+    wxTextCtrl* GetTextCtrlByName( const wxString& widgetName ) const;
+    wxButton* GetButtonByName( const wxString& widgetName ) const;
 
     template< class T >
-    void insertLinkInUnlinkedManager( const std::string& originalName, const std::string& newCustomName, T *whichWindow );
+    void insertLinkInUnlinkedManager( const std::string& originalName, const std::string& newCustomName, T* whichWindow );
 
     void OnCheckBoxPropertyClicked( wxCommandEvent& event );
     void OnCheckBoxLinkWindowClicked( wxCommandEvent& event );
     void OnStatisticsButtonClick( wxCommandEvent& event );
-    void OnTextCtrlPropertyChanged( wxCommandEvent &event );
+    void OnTextCtrlPropertyChanged( wxCommandEvent& event );
 
     void RefreshList( bool showFullList );
 
-    void buildWindowsSetWidgets( const std::string& propertyName, wxBoxSizer *boxSizerLinks, bool checked );
-    template <typename WindowType>
-    void buildLinkWindowWidget( wxBoxSizer *boxSizerLinks, 
-                                const std::string& propertyName,
-                                WindowType *whichWindow,
-                                bool checked );
+    void buildWindowsSetWidgets( const std::string& propertyName, wxBoxSizer* boxSizerLinks, bool checked );
+    template< typename WindowType >
+    void buildLinkWindowWidget( wxBoxSizer* boxSizerLinks, const std::string& propertyName, WindowType* whichWindow, bool checked );
     void updateLinkPropertiesWidgets();
     void updateAliasForLinkedWindows( std::string whichOriginalName, std::string whichCustomName );
 
     void OnCheckBoxLinkPropertyClicked( wxCommandEvent& event );
     void OnLinkedPropertiesNameChanged( wxCommandEvent& event );
 
-    void setTimelineCFG4DAlias( Timeline *whichWindow,
-                                const std::string& whichOriginalName,
-                                const std::string& whichCustomName );
-
+    void setTimelineCFG4DAlias( Timeline* whichWindow, const std::string& whichOriginalName, const std::string& whichCustomName );
 };
