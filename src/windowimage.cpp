@@ -160,7 +160,7 @@ void WindowImageGenerator::generatescaleImageDataWindows( std::map< TSemanticVal
   else if( myWindow->isCodeColorSet() )
   {
     typeScale        = TScaleImageType::TScaleImageCodeColor;
-    orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
+    orientationScale = TScaleImageOrientation::TScaleImageOrientationVertical;
   }
   else if( myWindow->isFusedLinesColorSet() )
   {
