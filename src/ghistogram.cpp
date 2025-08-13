@@ -578,7 +578,7 @@ void gHistogram::execute()
   }
 
   selectedRows.clear();
-  myHistogram->getSelectedRows( selectedRows, beginRow, endRow );
+  myHistogram->getSelectedRows( myHistogram->getLevel(), selectedRows, beginRow, endRow, true );
   if( selectedRows.size() == 0 )
     myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(), selectedRows, beginRow, endRow, true );
 
@@ -2916,7 +2916,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     bool commStat = myHistogram->isCommunicationStat( myHistogram->getCurrentStat() );
 
     vector< bool > tmpSelectedRows;
-    myHistogram->getSelectedRows( tmpSelectedRows );
+    myHistogram->getSelectedRows( myHistogram->getLevel(), tmpSelectedRows );
     TObjectOrder maxRow = tmpSelectedRows.size();
     vector< bool > present( maxRow, false );
 
@@ -2998,7 +2998,8 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       for( vector< bool >::iterator it = tmpSelectedRows.begin(); it != tmpSelectedRows.end(); ++it )
         *it = true;
     }
-    openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), tmpSelectedRows );
+    openWindow->GetMyWindow()->setRowSelectionManager( myHistogram->getRowSelectionManager() );
+    openWindow->GetMyWindow()->setSelectedRows( myHistogram->getLevel(), tmpSelectedRows );
 
     openWindow->GetMyWindow()->unsetUsedByHistogram( myHistogram );
     openWindow->GetMyWindow()->setShowWindow( true );

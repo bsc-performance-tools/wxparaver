@@ -444,9 +444,9 @@ void gPasteWindowProperties::paste( gHistogram *destinyHistogram, const string p
       destinyHistogram->GetHistogram()->addZoom( sourceTimeline->GetMyWindow()->getZoomSecondDimension().first,
                                                  sourceTimeline->GetMyWindow()->getZoomSecondDimension().second );
 
-      SelectionManagement< TObjectOrder, TTraceLevel > *tSel = sourceTimeline->GetMyWindow()->getSelectedRows();
+      const SelectionManagement< TObjectOrder, TTraceLevel > &tSel = sourceTimeline->GetMyWindow()->getRowSelectionManager();
       vector< TObjectOrder > auxRows;
-      tSel->getSelected( auxRows, sourceTimeline->GetMyWindow()->getLevel() );
+      tSel.getSelected( auxRows, sourceTimeline->GetMyWindow()->getLevel() );
       destinyHistogram->GetHistogram()->setSelectedRows( auxRows );
     }
     else if( property == STR_DURATION )

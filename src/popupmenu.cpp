@@ -1881,18 +1881,18 @@ void gPopUpMenu ::createRowSelectionDialog()
 
   auto visitorSelectedRows = overloads{ []( gHistogram *histogram )
                                         {
-                                          return histogram->GetHistogram()->getRowSelectionManagement();
+                                          return histogram->GetHistogram()->getRowSelectionManager();
                                         },
                                         []( gTimeline *timeline )
                                         {
-                                          return timeline->GetMyWindow()->getSelectedRows();
+                                          return timeline->GetMyWindow()->getRowSelectionManager();
                                         }
 
   };
 
   auto dataWindow   = std::visit( visitor, *windowGenericList.begin() );
   auto selectedRows = std::visit( visitorSelectedRows, *windowGenericList.begin() );
-  selectedRows->getAllSelected( intersectedSelection );
+  selectedRows.getAllSelected( intersectedSelection );
 
   isProcessModel = ( ( dataWindow->getLevel() >= TTraceLevel::WORKLOAD ) && ( dataWindow->getLevel() <= TTraceLevel::THREAD ) );
   trace          = dataWindow->getTrace();
@@ -1900,7 +1900,7 @@ void gPopUpMenu ::createRowSelectionDialog()
   for( auto &window : windowGenericList )
   {
     dataWindow = std::visit( visitor, window );
-    dataWindow->getSelectedRows()->getAllSelected( tmpWindowSelection );
+    dataWindow->getRowSelectionManager().getAllSelected( tmpWindowSelection );
 
     intersectedSelection = matrix_intersection( tmpWindowSelection, intersectedSelection );
   }
@@ -1912,7 +1912,7 @@ void gPopUpMenu ::createRowSelectionDialog()
 
   intersectionSelectedRows.setAllSelected( intersectedSelection );
 
-  RowsSelectionDialog *myDialog = new RowsSelectionDialog( trace, isProcessModel, &intersectionSelectedRows );
+  RowsSelectionDialog *myDialog = new RowsSelectionDialog( trace, isProcessModel, intersectionSelectedRows );
 
   if( myDialog->ShowModal() == wxID_OK )
   {
@@ -2060,8 +2060,7 @@ void gPopUpMenu ::transferDataSelectionToObjects( RowsSelectionDialog *myDialog,
       {
         tmpHistogram = std::get< gHistogram * >( window );
         std::vector< TObjectOrder > selection;
-        tmpHistogram->GetHistogram()->getRowSelectionManagement()->getSelected( selection,
-                                                                                tmpHistogram->GetHistogram()->getDataWindow()->getLevel() );
+        tmpHistogram->GetHistogram()->getRowSelectionManager().getSelected( selection, tmpHistogram->GetHistogram()->getDataWindow()->getLevel() );
 
         auto zoomAware = myDialog->isZoomAwareTransferData( selection );
         if( applyZoom && !zoomAware )
@@ -2081,7 +2080,7 @@ RowsSelectionDialog *gPopUpMenu ::createRowSelectionDialog( gTimeline *whichTime
     ( ( whichTimeline->GetMyWindow()->getLevel() >= TTraceLevel::WORKLOAD ) && ( whichTimeline->GetMyWindow()->getLevel() <= TTraceLevel::THREAD ) );
 
   RowsSelectionDialog *myDialog =
-    new RowsSelectionDialog( whichTimeline->GetMyWindow()->getTrace(), isProcessModel, whichTimeline->GetMyWindow()->getSelectedRows() );
+    new RowsSelectionDialog( whichTimeline->GetMyWindow()->getTrace(), isProcessModel, whichTimeline->GetMyWindow()->getRowSelectionManager() );
 
   return myDialog;
 }
@@ -2092,7 +2091,7 @@ RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gHistogram *histogram
                           ( histogram->GetHistogram()->getDataWindow()->getLevel() <= TTraceLevel::THREAD ) );
 
   RowsSelectionDialog *myDialog =
-    new RowsSelectionDialog( histogram->GetHistogram()->getTrace(), isProcessModel, histogram->GetHistogram()->getRowSelectionManagement() );
+    new RowsSelectionDialog( histogram->GetHistogram()->getTrace(), isProcessModel, histogram->GetHistogram()->getRowSelectionManager() );
 
   return myDialog;
 }
