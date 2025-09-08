@@ -254,7 +254,7 @@ wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Timeline *wanted, bool &fou
 
 
 // precond : current is a derived gTimeline
-void getParentGTimeline( gTimeline *current, vector<gTimeline *> &parents )
+void getParentGTimeline( gTimeline *current, vector< gTimeline * > &parents )
 {
   // find item for given current gTimeline.
   bool found;
@@ -331,8 +331,8 @@ void BuildTree( paraverMain *parent,
 
 bool updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId &id,
-                     vector<Timeline *> &allWindows,
-                     vector<Histogram *> &allHistograms,
+                     vector< Timeline * > &allWindows,
+                     vector< Histogram * > &allHistograms,
                      wxWindow **currentWindow,
                      bool allTracesTree )
 {
@@ -359,13 +359,13 @@ bool updateTreeItem( wxTreeCtrl *tree,
 
       getGroupColor( windowGroup, r, g, b );
 
-      tree->SetItemTextColour( id, *wxColour( r, g, b ) );
+      tree->SetItemTextColour( id, wxColour( r, g, b ) );
 
       groupName = "[#" + std::to_string( windowGroup ) + "] ";
     }
     else
     {
-      tree->SetItemTextColour( id, *wxColour( 0, 0, 0 ) );
+      tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
       tree->SetItemBold( id, false );
     }
     if( tmpTimeline->IsActive() && !tmpWindow->getDestroy() )
@@ -377,7 +377,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
     tmpName       = groupName + wxString::FromUTF8( tmpWindow->getName().c_str() );
     tmpWindowName = wxString::FromUTF8( tmpWindow->getName().c_str() );
 
-    for( vector<Timeline *>::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
+    for( vector< Timeline * >::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
     {
       if( *it == tmpWindow )
       {
@@ -425,13 +425,13 @@ bool updateTreeItem( wxTreeCtrl *tree,
 
       getGroupColor( windowGroup, r, g, b );
 
-      tree->SetItemTextColour( id, *wxColour( r, g, b ) );
+      tree->SetItemTextColour( id, wxColour( r, g, b ) );
 
       groupName = "[#" + std::to_string( windowGroup ) + "] ";
     }
     else
     {
-      tree->SetItemTextColour( id, *wxColour( 0, 0, 0 ) );
+      tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
       tree->SetItemBold( id, false );
     }
 
@@ -442,7 +442,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
     }
     tmpName = groupName + wxString::FromUTF8( tmpHisto->getName().c_str() );
 
-    for( vector<Histogram *>::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
+    for( vector< Histogram * >::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
     {
       if( *it == tmpHisto )
       {
