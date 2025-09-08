@@ -821,6 +821,22 @@ void gPopUpMenu ::buildPopUpMenuDrawMode()
       { popUpMenuDrawModeBoth,
         _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
         wxITEM_CHECK,
+        &gPopUpMenu::OnPopUpDrawModeBothAbsoluteMinimumNotZero,
+        ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MINIMUM_NOT_ZERO,
+        ( drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO ) &&
+          ( drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO ) },
+
+      { popUpMenuDrawModeBoth,
+        _( GUI_DRAWMODE_RANDOM ),
+        wxITEM_CHECK,
+        &gPopUpMenu::OnPopUpDrawModeBothRandom,
+        ID_MENU_DRAWMODE_BOTH_RANDOM,
+        ( drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_RANDOM ) &&
+          ( drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_RANDOM ) },
+
+      { popUpMenuDrawModeBoth,
+        _( GUI_DRAWMODE_RANDOM_NOT_ZERO ),
+        wxITEM_CHECK,
         &gPopUpMenu::OnPopUpDrawModeBothRandomNotZero,
         ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO,
         ( drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_RANDNOTZERO ) &&
