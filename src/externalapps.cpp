@@ -22,7 +22,8 @@
 \*****************************************************************************/
 
 #include <wx/arrstr.h>
-#include <wx/utils.h> 
+#include <wx/log.h>
+#include <wx/utils.h>
 
 #include <algorithm>
 #include <set>
@@ -180,6 +181,7 @@ wxString ExternalApps::getApplicationCheckBin( TExternalAppID whichApp )
 bool ExternalApps::existCommand( const wxString& program )
 {
   static wxArrayString tmpOutput, tmpErrors;
+  wxLogNull dummyLog;
   return wxExecute( program + " --version", tmpOutput, tmpErrors, wxEXEC_SYNC ) == 0;
 }
 
