@@ -1416,12 +1416,12 @@ wxMenuItem *gPopUpMenu::buildItem( wxMenu *baseMenuContainer,
     newMenuItem->Check( isChecked );
   }
 
-#ifdef _WIN32
-  Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
-#else
+//#ifdef _WIN32
+//  Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
+//#else
   baseMenuContainer->Bind( wxEVT_COMMAND_MENU_SELECTED, callbackFunctionMenuItem, this, windowId );
 
-#endif
+//#endif
 
   return newMenuItem;
 }
