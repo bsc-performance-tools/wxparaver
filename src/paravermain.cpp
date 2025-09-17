@@ -2590,6 +2590,10 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
     lastTimeline = nullptr;
     if( lastHisto == currentHisto && !currentHisto->getChanged() )
       return;
+
+    if ( currentHisto->getDestroy() && currentHisto->isDerivedHistogram() && currentHisto->haveChildren() )  
+      return;
+
     lastHisto = currentHisto;
 
     updateHistogramProperties( windowProperties, currentHisto, propertiesClientData );
@@ -4264,8 +4268,7 @@ void paraverMain::UnloadTrace( int whichTrace )
     (*it)->clearExtraControlWindow();
     (*it)->setShowWindow( false );
 
-    if( !(*it)->haveChildren() )
-      (*it)->setDestroy( true );
+    (*it)->setDestroy( true );
   }
 
   traceWorkspaces.erase( loadedTraces[ whichTrace ] );
