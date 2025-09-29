@@ -2247,6 +2247,8 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     {
       currentTimeline = timeline->GetMyWindow();
       beginDragWindow = timeline->GetMyWindow();
+    currentWindow   = (wxWindow *)timeline;
+    currentHisto    = nullptr;
 
       //if( timeline->IsShown() )
         //timeline->Raise();
@@ -2256,15 +2258,23 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     else if( gHistogram *histo = itemSelected->getHistogram() ) // Is a histogram?
     {
       currentHisto  = histo->GetHistogram();
+      currentWindow   = (wxWindow *)histo;
+
       beginDragWindow = nullptr;
 
-      if( histo->IsShown() )
-        histo->Raise();
+    if( histo->IsShown() )
+      histo->Raise();
 
-      currentHisto = histo->GetHistogram();
-    }
+    currentHisto = histo->GetHistogram();
+  }
+
   selectionChanging = false;
 
+  if( choiceWindowBrowser->GetSelection() == 0 )
+  {
+    refreshMenuHints();
+    setActiveWorkspacesText();
+  }
 
 }
 
