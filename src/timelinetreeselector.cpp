@@ -59,7 +59,7 @@ class TimelineSelectorItemData: public wxTreeItemData
     
   private:
     wxString desc;
-    Timeline * myTimeline;
+    Timeline * myTimeline = nullptr;
 };
 
 

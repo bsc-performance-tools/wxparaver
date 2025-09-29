@@ -188,8 +188,8 @@ class TreeBrowserItemData : public wxTreeItemData
 
   private:
     wxString desc;
-    gTimeline* myTimeline;
-    gHistogram* myHisto;
+    gTimeline* myTimeline = nullptr;
+    gHistogram* myHisto = nullptr;
 };
 
 

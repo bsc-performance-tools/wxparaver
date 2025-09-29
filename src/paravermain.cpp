@@ -2193,7 +2193,11 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     event.Skip();
     return;
   }
-  selectionChanging = true;
+   if( !event.GetItem().IsOk() )
+  {
+    event.Skip();
+    return;
+  }
 
   wxTreeCtrl *tmpTree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
 
@@ -2201,7 +2205,11 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
   {
     return;
   } 
-  TreeBrowserItemData *itemSelected = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
+  TreeBrowserItemData *itemSelected = dynamic_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
+  if (itemSelected == nullptr) {
+    return;
+  }
+  selectionChanging = true;
 
   if( !wxGetKeyState( WXK_CONTROL ) && !wxGetKeyState( WXK_SHIFT ) )
   {
@@ -2211,7 +2219,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     {
     
       wxTreeItemId selectedItem = selectedItems[ 0 ];
-      TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
+      TreeBrowserItemData *itemData = dynamic_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
 
       if(itemData != itemSelected){
           tmpTree->UnselectAll();
@@ -2219,6 +2227,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
       }
       else
       {
+        selectionChanging = false;
         return;
       }
       //tmpTree->UnselectAll();
@@ -2232,28 +2241,30 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
   
   }
 
-   if( gTimeline *timeline = itemSelected->getTimeline() )
-  {
-    currentTimeline = timeline->GetMyWindow();
-    beginDragWindow = timeline->GetMyWindow();
+  
 
-    //if( timeline->IsShown() )
-      //timeline->Raise();
+    if( gTimeline *timeline = itemSelected->getTimeline() )
+    {
+      currentTimeline = timeline->GetMyWindow();
+      beginDragWindow = timeline->GetMyWindow();
 
-    currentTimeline = timeline->GetMyWindow();
-  }
-  else if( gHistogram *histo = itemSelected->getHistogram() ) // Is a histogram?
-  {
-    currentHisto  = histo->GetHistogram();
-    beginDragWindow = nullptr;
+      //if( timeline->IsShown() )
+        //timeline->Raise();
 
-    if( histo->IsShown() )
-      histo->Raise();
+      currentTimeline = timeline->GetMyWindow();
+    }
+    else if( gHistogram *histo = itemSelected->getHistogram() ) // Is a histogram?
+    {
+      currentHisto  = histo->GetHistogram();
+      beginDragWindow = nullptr;
 
-    currentHisto = histo->GetHistogram();
-  }
+      if( histo->IsShown() )
+        histo->Raise();
 
+      currentHisto = histo->GetHistogram();
+    }
   selectionChanging = false;
+
 
 }
 
@@ -4107,12 +4118,14 @@ void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent &event )
   {
     bool dummyFound;
     gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), currentTimeline, dummyFound );
-    tmpEnableButtonDestroy = tmpTimeline->getEnableDestroyButton();
+    if(tmpTimeline != nullptr)
+      tmpEnableButtonDestroy = tmpTimeline->getEnableDestroyButton();
   }
   else if( currentHisto != nullptr )
   {
     gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), currentHisto );
-    tmpEnableButtonDestroy   = tmpHistogram->getEnableDestroyButton();
+      if(tmpHistogram != nullptr)
+      tmpEnableButtonDestroy   = tmpHistogram->getEnableDestroyButton();
   }
   else // Both null
   {
