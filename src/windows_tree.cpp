@@ -422,26 +422,36 @@ bool updateTreeItem( wxTreeCtrl *tree,
   else if( gHistogram *tmpHistogram = itemData->getHistogram() )
   {
     isEditMode            = tmpHistogram->getEditMode();
+    Histogram *tmpHisto   = tmpHistogram->GetHistogram();
+
     std::string groupName = "";
 
-    Histogram *tmpHisto = tmpHistogram->GetHistogram();
     if( tmpHisto->isSync() )
     {
-      tree->SetItemBold( id, true );
-
       int windowGroup = tmpHisto->getSyncGroup() + 1;
-      int r = 0, g = 0, b = 0;
-
-      getGroupColor( windowGroup, r, g, b );
-
-      tree->SetItemTextColour( id, wxColour( r, g, b ) );
 
       groupName = "[#" + std::to_string( windowGroup ) + "] ";
+      tmpName   = groupName + wxString::FromUTF8( tmpHisto->getName().c_str() );
+
+      if( !isEditMode && tmpName != tree->GetItemText( id ) )
+      {
+        tree->SetItemBold( id, true );
+
+        int r = 0, g = 0, b = 0;
+
+        getGroupColor( windowGroup, r, g, b );
+
+        tree->SetItemTextColour( id, wxColour( r, g, b ) );
+      }
     }
     else
     {
-      tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
-      tree->SetItemBold( id, false );
+      tmpName = wxString::FromUTF8( tmpHisto->getName().c_str() );
+      if( !isEditMode && tmpName != tree->GetItemText( id ) )
+      {
+        tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
+        tree->SetItemBold( id, false );
+      }
     }
 
     if( tmpHistogram->IsActive() && !tmpHisto->getDestroy() )
@@ -449,7 +459,6 @@ bool updateTreeItem( wxTreeCtrl *tree,
       *currentWindow = tmpHistogram;
       tree->SelectItem( id );
     }
-    tmpName = groupName + wxString::FromUTF8( tmpHisto->getName().c_str() );
 
     for( vector< Histogram * >::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
     {
