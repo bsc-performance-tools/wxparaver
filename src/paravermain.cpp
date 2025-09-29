@@ -2215,25 +2215,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
   {
     wxArrayTreeItemIds selectedItems;
     tmpTree->GetSelections( selectedItems );
-    if(selectedItems.GetCount() == 1)
-    {
-    
-      wxTreeItemId selectedItem = selectedItems[ 0 ];
-      TreeBrowserItemData *itemData = dynamic_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
-
-      if(itemData != itemSelected){
-          tmpTree->UnselectAll();
-          tmpTree->SelectItem( event.GetItem() );    
-      }
-      else
-      {
-        selectionChanging = false;
-        return;
-      }
-      //tmpTree->UnselectAll();
-      tmpTree->SelectItem( event.GetItem() );    
-    }
-    else
+    if( selectedItems.GetCount() != 1 )
     {
       tmpTree->UnselectAll();
       tmpTree->SelectItem( event.GetItem() );  
@@ -2265,7 +2247,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     if( histo->IsShown() )
       histo->Raise();
 
-    currentHisto = histo->GetHistogram();
+    currentTimeline = nullptr;
   }
 
   selectionChanging = false;
