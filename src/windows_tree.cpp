@@ -352,21 +352,31 @@ bool updateTreeItem( wxTreeCtrl *tree,
     std::string groupName = "";
     if( tmpWindow->isSync() )
     {
-      tree->SetItemBold( id, true );
-
       int windowGroup = tmpWindow->getSyncGroup() + 1;
-      int r = 0, g = 0, b = 0;
-
-      getGroupColor( windowGroup, r, g, b );
-
-      tree->SetItemTextColour( id, wxColour( r, g, b ) );
 
       groupName = "[#" + std::to_string( windowGroup ) + "] ";
+      tmpName = groupName + wxString::FromUTF8( tmpWindow->getName().c_str() );
+
+      if( !isEditMode && tmpName != tree->GetItemText( id ) )
+      {
+        tree->SetItemBold( id, true );
+
+        int r = 0, g = 0, b = 0;
+
+        getGroupColor( windowGroup, r, g, b );
+
+        tree->SetItemTextColour( id, wxColour( r, g, b ) );
+      }
     }
     else
     {
-      tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
-      tree->SetItemBold( id, false );
+      tmpName = wxString::FromUTF8( tmpWindow->getName().c_str() );
+      if( !isEditMode && tmpName != tree->GetItemText( id ) )
+      {
+        tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
+        tree->SetItemBold( id, false );
+        tree->SetItemText( id, tmpName );
+      }
     }
     if( tmpTimeline->IsActive() && !tmpWindow->getDestroy() )
     {
@@ -374,7 +384,6 @@ bool updateTreeItem( wxTreeCtrl *tree,
 
       tree->SelectItem( id );
     }
-    tmpName       = groupName + wxString::FromUTF8( tmpWindow->getName().c_str() );
     tmpWindowName = wxString::FromUTF8( tmpWindow->getName().c_str() );
 
     for( vector< Timeline * >::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
@@ -464,11 +473,6 @@ bool updateTreeItem( wxTreeCtrl *tree,
     }
   }
 
-  // Update its name
-  if( !isEditMode && tmpName != tree->GetItemText( id ) )
-  {
-    tree->SetItemText( id, tmpName );
-  }
 
   // Recursive update
   if( tree->ItemHasChildren( id ) )
