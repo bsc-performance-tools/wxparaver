@@ -1289,7 +1289,7 @@ void gPopUpMenu ::buildPopUpMenuSync()
                      wxString::Format( _( "%u" ), *itGroup + 1 ),
                      wxITEM_NORMAL,
                      &gPopUpMenu::OnPopUpSynchronizeProperties,
-                     ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
+                     ID_MENU_SYNC_PROPERTIES_GROUP_BASE + i );
     ++i;
   }
 
@@ -3049,7 +3049,7 @@ void gPopUpMenu::OnPopUpSynchronize( wxCommandEvent &event )
 
 void gPopUpMenu::OnPopUpSynchronizeProperties( wxCommandEvent &event )
 {
-  TGroupId tmpGroup = event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE;
+  TGroupId tmpGroup = event.GetId() - ID_MENU_SYNC_PROPERTIES_GROUP_BASE;
   openSyncSelection( tmpGroup );
 }
 
