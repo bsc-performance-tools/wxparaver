@@ -597,6 +597,8 @@ class gHistogram: public wxFrame, public gWindow
     bool forceAutohideColumns;
     bool isEditMode         = false;
     bool newPositionApplied = false;
+    bool codeChangeSize     = true;
+
     wxTimer* timerSize;
     wxTimer* timerZoom;
     wxTimer* timerPosition;

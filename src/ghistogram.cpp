@@ -2269,13 +2269,14 @@ void gHistogram::OnSize( wxSizeEvent& event )
 
 void gHistogram::OnTimerSize( wxTimerEvent& event )
 {
-  timerSize->Stop();
-
   auto width  = this->GetClientSize().GetWidth();
   auto height = this->GetClientSize().GetHeight();
 
-  myHistogram->setWidth( width, !this->IsMaximized() );
-  myHistogram->setHeight( height, !this->IsMaximized() );
+  myHistogram->setWidth( width, !this->IsMaximized() && !codeChangeSize );
+  myHistogram->setHeight( height, !this->IsMaximized() && !codeChangeSize );
+  codeChangeSize = false;
+
+  timerSize->Stop();
 }
 
 void gHistogram::OnTimerPosition( wxTimerEvent& event )
@@ -3821,6 +3822,7 @@ void gHistogram::InitHistogramCallbacks()
   myHistogram->registerResizeFunctionCallback(
     [ this ]( int w, int h )
     {
+      codeChangeSize = true;
       if( !this->IsMaximized() )
       {
         this->SetClientSize( w, h );

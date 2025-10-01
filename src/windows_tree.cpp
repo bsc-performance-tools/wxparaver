@@ -366,6 +366,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
         getGroupColor( windowGroup, r, g, b );
 
         tree->SetItemTextColour( id, wxColour( r, g, b ) );
+        tree->SetItemText( id, tmpName );
       }
     }
     else
@@ -442,6 +443,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
         getGroupColor( windowGroup, r, g, b );
 
         tree->SetItemTextColour( id, wxColour( r, g, b ) );
+        tree->SetItemText( id, tmpName );
       }
     }
     else

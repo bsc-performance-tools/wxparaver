@@ -3578,10 +3578,16 @@ void gTimeline::printWWRecords( Timeline* temporalWindow,
 
 void gTimeline::resizeDrawZone( int width, int height )
 {
+  codeChangeSize = true;
   canRedraw = false;
 
   if( !splitter->IsSplit() )
-    this->SetClientSize( width, height );
+  {
+    drawZone->SetClientSize( width, height );
+    this->SetSize( width, height );
+    canRedraw    = true;
+    splitChanged = true;
+  }
   else
   {
 #ifdef _WIN32
@@ -3590,11 +3596,11 @@ void gTimeline::resizeDrawZone( int width, int height )
     splitter->SetSashPosition( height );
 #ifndef _WIN32
     drawZone->SetClientSize( width, height );
-    this->SetClientSize( width, height + infoZoneLastSize + 5 );
+    this->SetSize( width, height + infoZoneLastSize + 5 );
 #endif
   }
-  myWindow->setWidth( width );
-  myWindow->setHeight( height );
+  myWindow->setWidth( width, false );
+  myWindow->setHeight( height, false );
   canRedraw = true;
 }
 
@@ -3638,6 +3644,9 @@ void gTimeline::Unsplit()
   canRedraw = false;
   this->Freeze();
 
+  splitter->Unsplit( infoZone );
+
+
   /*#ifdef _WIN32
     this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() -
                                                            infoZone->GetClientSize().GetHeight() );
@@ -3658,7 +3667,7 @@ void gTimeline::Split()
   this->Freeze();
   splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
   resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
-  infoZone->SetClientSize( myWindow->getWidth(), infoZoneLastSize );
+  // infoZone->SetSize( myWindow->getWidth(), infoZoneLastSize );
   this->Thaw();
   canRedraw    = true;
   splitChanged = true;
@@ -5220,9 +5229,10 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
     auto width  = drawZone->GetClientSize().GetWidth();
     auto height = drawZone->GetClientSize().GetHeight();
 
-    myWindow->setHeight( height, !this->IsMaximized() );
-    myWindow->setWidth( width, !this->IsMaximized() );
+    myWindow->setHeight( height, !this->IsMaximized() && !codeChangeSize );
+    myWindow->setWidth( width, !this->IsMaximized() && !codeChangeSize );
   }
+  codeChangeSize = false;
 
   timerSize->Stop();
 
