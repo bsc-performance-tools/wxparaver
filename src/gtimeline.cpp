@@ -3584,7 +3584,7 @@ void gTimeline::resizeDrawZone( int width, int height )
   if( !splitter->IsSplit() )
   {
     drawZone->SetClientSize( width, height );
-    #ifdef _WIN32
+    #ifndef _WIN32
       this->SetClientSize( width, height );
     #else
       this->SetSize( width, height );
