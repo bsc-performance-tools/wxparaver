@@ -3592,16 +3592,19 @@ void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent &event )
 
 void paraverMain::OnTreeBeginDrag( wxTreeEvent &event )
 {
-  wxTreeCtrl *tmpTree           = static_cast< wxTreeCtrl * >( event.GetEventObject() );
-  TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
-
-  beginDragWindow = nullptr;
-  if( itemData != nullptr )
+  if( event.GetItem().IsOk() )
   {
-    if( gTimeline *timeline = itemData->getTimeline() )
+    wxTreeCtrl *tmpTree           = static_cast< wxTreeCtrl * >( event.GetEventObject() );
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
+
+    beginDragWindow = nullptr;
+    if( itemData != nullptr )
     {
-      beginDragWindow = timeline->GetMyWindow();
-      event.Allow();
+      if( gTimeline *timeline = itemData->getTimeline() )
+      {
+        beginDragWindow = timeline->GetMyWindow();
+        event.Allow();
+      }
     }
   }
 }
