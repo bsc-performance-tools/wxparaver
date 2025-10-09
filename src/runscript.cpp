@@ -50,10 +50,11 @@
 #include <wx/arrstr.h>
 #include <wx/validate.h>
 
-#include <vector>
 #include <algorithm>
+#include <functional>
 #include <iostream>
 #include <regex>
+#include <vector>
 
 #include "wxparaverapp.h"
 #include "runscript.h"
@@ -62,6 +63,7 @@
 #include "windows_tree.h"
 #include "gtimeline.h"
 
+#include "utils/traceparser/pcffileparser.h"
 
 using namespace std;
 
@@ -80,7 +82,6 @@ void RunningProcess::OnTerminate( int pid, int status )
   while ( HasInput() )
     ;
 
-  //parent->executionStatus = status;
   parent->OnProcessTerminated( pid );
 }
 
@@ -178,8 +179,7 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
-  EVT_RADIOBUTTON( ID_RADIOBUTTON_PROFET_BY_SOCKET, RunScript::OnRadiobuttonProfetBySocketSelected )
-  EVT_RADIOBUTTON( ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, RunScript::OnRadiobuttonProfetByMemoryControllerSelected )
+  EVT_UPDATE_UI( ID_MESS_ADDITIONAL_PLOTS, RunScript::OnMessAdditionalPlotsUpdate )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
@@ -203,19 +203,29 @@ RunScript::RunScript()
 }
 
 
-RunScript::RunScript( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+RunScript::RunScript( wxWindow* parent,
+                      std::vector<bool> whichAcceptableApps,
+                      wxWindowID id,
+                      const wxString& caption,
+                      const wxPoint& pos,
+                      const wxSize& size,
+                      long style )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create(parent, whichAcceptableApps, id, caption, pos, size, style);
 }
 
 
 RunScript::RunScript( wxWindow* parent,
                       wxString whichTrace,
-                      wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+                      wxWindowID id,
+                      const wxString& caption,
+                      const wxPoint& pos,
+                      const wxSize& size,
+                      long style )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create(parent, {}, id, caption, pos, size, style);
   
   if ( !whichTrace.IsEmpty() )
   {
@@ -229,13 +239,23 @@ RunScript::RunScript( wxWindow* parent,
 /*!
  * RunScript creator
  */
-bool RunScript::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+bool RunScript::Create( wxWindow* parent,
+                        std::vector<bool> whichAcceptableApps,
+                        wxWindowID id,
+                        const wxString& caption,
+                        const wxPoint& pos,
+                        const wxSize& size,
+                        long style )
 {
 ////@begin RunScript creation
   SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
 
-  CreateControls();
+  CreateControls( whichAcceptableApps );
+  if (GetSizer())
+  {
+    GetSizer()->SetSizeHints(this);
+  }
   Centre();
 ////@end RunScript creation
 
@@ -334,12 +354,11 @@ void RunScript::Init()
   checkboxFoldingReuseFiles = NULL;
   checkboxFoldingUseSemanticValues = NULL;
   comboboxFoldingModel = NULL;
-  profetSection = NULL;
-  textCtrlProfetOutputTrace = NULL;
-  textCtrlProfetCFG = NULL;
-  fileBrowserButtonProfetCFG = NULL;
-  radioButtonProfetBySocket = NULL;
-  radioButtonProfetByMemoryController = NULL;
+  messSection = NULL;
+  textCtrlMessOutputTrace = NULL;
+  textCtrlMessCFG = NULL;
+  fileBrowserButtonMessCFG = NULL;
+  checkMessAdditionalPlots = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
@@ -348,8 +367,6 @@ void RunScript::Init()
   listboxRunLog = NULL;
   buttonExit = NULL;
 ////@end RunScript member initialisation
-
-  //executionStatus = -2;
 
   progressBar = nullptr;
 
@@ -370,31 +387,6 @@ void RunScript::Init()
   environmentVariable[ TEnvironmentVar::PATH ]         = wxString( wxT("PATH") );
   environmentVariable[ TEnvironmentVar::PARAVER_HOME ] = wxString( wxT("PARAVER_HOME") );
   environmentVariable[ TEnvironmentVar::DIMEMAS_HOME ] = wxString( wxT("DIMEMAS_HOME") );
-
-  // Labels to construct selector & warning dialogs
-  applicationLabel[ TExternalApp::DIMEMAS_WRAPPER ]  = wxString( wxT("Dimemas") );
-  applicationLabel[ TExternalApp::PRVSTATS_WRAPPER ] = wxString( wxT("prvstats") );
-  applicationLabel[ TExternalApp::CLUSTERING ]       = wxString( wxT("Clustering") );
-  applicationLabel[ TExternalApp::FOLDING ]          = wxString( wxT("Folding") );
-  applicationLabel[ TExternalApp::PROFET ]           = wxString( wxT("PROFET") );
-  applicationLabel[ TExternalApp::USER_COMMAND ]     = wxString( wxT("User command") );
-  // Following only for warning dialogs
-  applicationLabel[ TExternalApp::DIMEMAS_GUI ]      = wxString( wxT("DimemasGUI") );
-  applicationLabel[ TExternalApp::PRVSTATS ]         = wxString( wxT("prvstats") );
-  
-  // application names
-  application[ TExternalApp::DIMEMAS_WRAPPER ]       = wxString( wxT("dimemas-wrapper.sh") );
-#ifdef _WIN32
-  application[ TExternalApp::PRVSTATS_WRAPPER ]      = wxString( wxT("prvstats.exe") );
-#else
-  application[ TExternalApp::PRVSTATS_WRAPPER ]      = wxString( wxT("prvstats-wrapper.sh") );
-#endif
-  application[ TExternalApp::CLUSTERING ]            = wxString( wxT("BurstClustering") );
-  application[ TExternalApp::FOLDING ]               = wxString( wxT("rri-auto") );
-  application[ TExternalApp::USER_COMMAND ]          = wxString( wxT("") ); // NOT USED
-  application[ TExternalApp::DIMEMAS_GUI ]           = wxString( wxT("DimemasGUI") );
-  application[ TExternalApp::PRVSTATS ]              = wxString( wxT("prvstats") );
-  application[ TExternalApp::PROFET ]                = wxString( wxT("profet") );
 
   tagFoldingOutputDirectory = wxString( wxT("Output directory:") );
 
@@ -455,7 +447,7 @@ wxString RunScript::getEnvironmentPath( TEnvironmentVar envVar, wxString command
 /*!
  * Control creation for RunScript
  */
-void RunScript::CreateControls()
+void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
 {    
 ////@begin RunScript content construction
   RunScript* itemDialog1 = this;
@@ -955,43 +947,38 @@ void RunScript::CreateControls()
     comboboxFoldingModel->SetToolTip(_("Combine the trace-file hardware counters for the selected architecture"));
   itemBoxSizer124->Add(comboboxFoldingModel, 12, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
 
-  profetSection = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(profetSection, 0, wxGROW|wxALL, 2);
+  messSection = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(messSection, 0, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-  profetSection->Add(itemBoxSizer5, 0, wxGROW|wxALL, 2);
+  messSection->Add(itemBoxSizer5, 0, wxGROW|wxALL, 2);
 
   wxStaticText* itemStaticText6 = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Trace"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer5->Add(itemStaticText6, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textCtrlProfetOutputTrace = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_PROFET_OUTPUT_TRACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer5->Add(textCtrlProfetOutputTrace, 12, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  textCtrlMessOutputTrace = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_MESS_OUTPUT_TRACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer5->Add(textCtrlMessOutputTrace, 12, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
-  profetSection->Add(itemBoxSizer9, 0, wxGROW|wxALL, 2);
+  messSection->Add(itemBoxSizer9, 0, wxGROW|wxALL, 2);
 
   wxStaticText* itemStaticText10 = new wxStaticText( itemDialog1, wxID_STATIC, _("Config file"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer9->Add(itemStaticText10, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textCtrlProfetCFG = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_PROFET_CONFIG_FILE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer9->Add(textCtrlProfetCFG, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  textCtrlMessCFG = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_MESS_CONFIG_FILE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer9->Add(textCtrlMessCFG, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonProfetCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_PROFET_CONFIG_FILE, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer9->Add(fileBrowserButtonProfetCFG, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  fileBrowserButtonMessCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_MESS_CONFIG_FILE, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer9->Add(fileBrowserButtonMessCFG, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Memory metrics aggregated by: "));
-  wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxHORIZONTAL);
-  profetSection->Add(itemStaticBoxSizer1, 0, wxGROW|wxALL, 2);
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+  messSection->Add(itemBoxSizer6, 0, wxGROW|wxALL, 2);
 
-  itemStaticBoxSizer1->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer6->Add(5, 5, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  radioButtonProfetBySocket = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_BY_SOCKET, _("Socket"), wxDefaultPosition, wxDefaultSize, 0 );
-  radioButtonProfetBySocket->SetValue(true);
-  itemStaticBoxSizer1->Add(radioButtonProfetBySocket, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  radioButtonProfetByMemoryController = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, _("Memory controller"), wxDefaultPosition, wxDefaultSize, 0 );
-  radioButtonProfetByMemoryController->SetValue(false);
-  itemStaticBoxSizer1->Add(radioButtonProfetByMemoryController, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  checkMessAdditionalPlots = new wxCheckBox( itemDialog1, ID_MESS_ADDITIONAL_PLOTS, _("Generate additional plots per socket (estimation: 0 plots)"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkMessAdditionalPlots->SetValue(false);
+  itemBoxSizer6->Add(checkMessAdditionalPlots, 12, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
@@ -1050,16 +1037,23 @@ void RunScript::CreateControls()
 ////@end RunScript content construction
   listboxRunLog->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
 
-  for ( int i = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); i < static_cast<int>( TExternalApp::USER_COMMAND ); ++i )
+  auto addChoiceApps = [&]( std::function< bool( long int ) > appFunc )
   {
-    choiceApplication->Append( applicationLabel[ TExternalApp( i ) ] );
-    appIsFound[ i ] = true;
-    // appIsFound[ i ] = existCommand( application[ TExternalApp( i + static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ) ) ] );
-    // if ( !appIsFound[ i ] )
-    //   choiceApplication->SetString( i, applicationLabel[ TExternalApp( i ) ] + " [NOT FOUND]" );
-  }
-  choiceApplication->Append( applicationLabel[ TExternalApp::USER_COMMAND ] );
-  appIsFound[ static_cast<int>( TExternalApp::USER_COMMAND ) ] = true;
+    for ( long int i = static_cast<long int>( TExternalAppID::DIMEMAS ); i < static_cast<long int>( TExternalAppID::USER_COMMAND ); ++i )
+    {
+      if ( appIsFound[ i ] = appFunc( i ) )
+      {
+        choiceApplication->Append( ExternalApps::getApplicationLabel( TExternalAppID( i ) ), (void *)i );
+      }
+    }
+    choiceApplication->Append( ExternalApps::getApplicationLabel( TExternalAppID::USER_COMMAND ), (void *)TExternalAppID::USER_COMMAND );
+    appIsFound[ static_cast<int>( TExternalAppID::USER_COMMAND ) ] = true;
+  };
+
+  if( whichAcceptableApps.empty() )
+    addChoiceApps( [&]( long int i ) { return ExternalApps::existCommand( TExternalAppID( i ) ); } );
+  else
+    addChoiceApps( [&]( long int i ) { return whichAcceptableApps[ i ]; } );
 
   // Trace browser
   fileBrowserButtonTrace->SetTextBox( textCtrlTrace );
@@ -1080,11 +1074,11 @@ void RunScript::CreateControls()
   fileBrowserButtonClusteringXML->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonClusteringXML->Enable();
 
-  fileBrowserButtonProfetCFG->SetTextBox( textCtrlProfetCFG );
-  fileBrowserButtonProfetCFG->SetDialogMessage( _( "Load PROFET Configuration" ) );
-  tmpWildCard = wxT( "PROFET configuration file (*.json)|*.json|All files (*.*)|*.*" );
-  fileBrowserButtonProfetCFG->SetFileDialogWildcard( tmpWildCard );
-  fileBrowserButtonProfetCFG->Enable();
+  fileBrowserButtonMessCFG->SetTextBox( textCtrlMessCFG );
+  fileBrowserButtonMessCFG->SetDialogMessage( _( "Load MESS Configuration" ) );
+  tmpWildCard = wxT( "MESS configuration file (*.json)|*.json|All files (*.*)|*.*" );
+  fileBrowserButtonMessCFG->SetFileDialogWildcard( tmpWildCard );
+  fileBrowserButtonMessCFG->Enable();
 
   // Filter forbidden chars
   wxArrayString forbidden;
@@ -1098,8 +1092,7 @@ void RunScript::CreateControls()
   clusteringTextBoxRefinementEpsilonMax->SetValidator( validator );
   clusteringTextBoxNumberOfSamples->SetValidator( validator );
 
-  int appNumber = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); // Default is 0
-  choiceApplication->Select( appNumber );
+  choiceApplication->Select( 0 );
 
   adaptWindowToApplicationSelection();
 
@@ -1152,7 +1145,7 @@ wxIcon RunScript::GetIconResource( const wxString& name )
 }
 
 
-wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExternalApp selectedApp )
+wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExternalAppID selectedApp )
 {
   wxFileName tmpFilename;
   wxString tmpPath;
@@ -1165,15 +1158,10 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
   command.Clear();
   parameters.Clear();
 
-  if ( selectedApp == TExternalApp::DEFAULT )
-  {
-    selectedApp = static_cast< TExternalApp >( choiceApplication->GetSelection() );
-  }
-
   switch ( selectedApp )
   {
-    case TExternalApp::DIMEMAS_WRAPPER:
-      command = application[ TExternalApp::DIMEMAS_WRAPPER ];
+    case TExternalAppID::DIMEMAS:
+      command = ExternalApps::getApplicationBin( TExternalAppID::DIMEMAS );
 
       parameters = doubleQuote( fileBrowserButtonTrace->GetPath() ); // Source trace
       parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonDimemasCFG->GetPath() ); // Dimemas cfg
@@ -1241,26 +1229,25 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case TExternalApp::DIMEMAS_GUI:
-      command = application[ TExternalApp::DIMEMAS_GUI ];
+    case TExternalAppID::DIMEMAS_GUI:
+      command = ExternalApps::getApplicationBin( TExternalAppID::DIMEMAS_GUI );
       if ( !fileBrowserButtonDimemasCFG->GetPath().IsEmpty() )
         parameters = doubleQuote( fileBrowserButtonDimemasCFG->GetPath() );
 
       break;
 
-    case TExternalApp::PRVSTATS_WRAPPER:
-    case TExternalApp::PRVSTATS:
+    case TExternalAppID::PRVSTATS:
 
       if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
       {
-        command  = application[ TExternalApp::PRVSTATS ];
+        command  = ExternalApps::getApplicationBin( TExternalAppID::PRVSTATS );
         parameters = textCtrlDefaultParameters->GetValue();
         helpOption = true;
       }
       else
       {
         // TODO: DEFAULT VALUES?
-        command  = application[ TExternalApp::PRVSTATS_WRAPPER ];
+        command  = ExternalApps::getApplicationBin( TExternalAppID::PRVSTATS );
 
         parameters = doubleQuote( fileBrowserButtonTrace->GetPath() ); // Source trace
         parameters += wxString( wxT( " -o " ) ) + doubleQuote( statsTextCtrlOutputName->GetValue() ); // Final name
@@ -1286,8 +1273,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case TExternalApp::CLUSTERING:
-      command = application[ TExternalApp::CLUSTERING ];
+    case TExternalAppID::CLUSTERING:
+      command = ExternalApps::getApplicationBin( TExternalAppID::CLUSTERING );
 
       parameters = wxString( wxT( " -p" ) );
       
@@ -1388,38 +1375,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case TExternalApp::FOLDING:
-      command = application[ TExternalApp::FOLDING ];
-
-      /* // Only FOLDING
-      
-      if ( comboboxFoldingModel->GetValue() != wxString( wxT("none") ) )
-      {
-        parameters += wxString( wxT( " -model " ) ) + doubleQuote( comboboxFoldingModel->GetValue() );
-      }
-
-      parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
-      
-      if ( checkboxFoldingUseSemanticValues->IsChecked() )
-      {
-        if ( !foldingCSV.IsEmpty() )
-        {
-          parameters += wxString( wxT(" ") );
-          parameters += doubleQuote( foldingCSV );
-        }
-      }
-      else
-      {
-        parameters += wxString( wxT( " " ) );
-        parameters += doubleQuote( expandVariables( textCtrlDefaultParameters->GetValue() ) ); // Event type
-      }
-      
-      if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
-      {
-        helpOption = true;
-      }
-      
-      */
+    case TExternalAppID::FOLDING:
+      command = ExternalApps::getApplicationBin( TExternalAppID::FOLDING );
 
       // Flags
       if ( checkboxFoldingOnly->IsChecked() )
@@ -1435,7 +1392,6 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       // --folding-args
       if ( comboboxFoldingModel->GetValue() != wxString( wxT("none") ) )
       {
-        //tmpFoldingArgs += wxString( wxT( " -model " ) ) + doubleQuote( comboboxFoldingModel->GetValue() );
         tmpFoldingArgs += doubleQuote( wxString( wxT( " -model " ) ) + comboboxFoldingModel->GetValue() );
       }
       if( !tmpFoldingArgs.IsEmpty() )
@@ -1460,46 +1416,45 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case TExternalApp::PROFET:
-      command = application[ TExternalApp::PROFET ];
+    case TExternalAppID::MESS:
+      command = ExternalApps::getApplicationBin( TExternalAppID::MESS );
 
       // Default flags:
       // -w: don't show warnings
       // -I/--plot-interactive: visualize interactive plot
-      // --exclude-original: the output trace doesn't contain any info of the original trace
-      parameters = wxString( wxT( " -w --plot-interactive --exclude-original " ) );
+      parameters = wxString( wxT( " -w --plot-interactive " ) );
 
-      if ( radioButtonProfetByMemoryController->GetValue() ) 
+      if ( checkMessAdditionalPlots ->GetValue() ) 
       {
-        parameters += wxString( wxT( " --memory-channel " ) );
+        parameters += wxString( wxT( " -e " ) );
       }
 
       // Source Trace
       parameters += doubleQuote( fileBrowserButtonTrace->GetPath() );
 
       // Output trace
-      if ( !textCtrlProfetOutputTrace->IsEmpty() )
+      if ( !textCtrlMessOutputTrace->IsEmpty() )
       {
-        if ( textCtrlProfetOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
+        if ( textCtrlMessOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
         {
           // We assume that the presence of PATH_SEP means an absolute path
-          parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlProfetOutputTrace->GetValue());
+          parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlMessOutputTrace->GetValue());
         }
         else
         {
           // and its absence is a relative path to the trace
           tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
           tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
-          parameters += wxString( wxT( " " ) ) + doubleQuote( tmpPath + textCtrlProfetOutputTrace->GetValue());
+          parameters += wxString( wxT( " " ) ) + doubleQuote( tmpPath + textCtrlMessOutputTrace->GetValue());
         }
       }
 
-      // Profet CFG
-      parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonProfetCFG->GetPath() );
+      // Mess CFG
+      parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonMessCFG->GetPath() );
 
       break;
 
-    case TExternalApp::USER_COMMAND:
+    case TExternalAppID::USER_COMMAND:
       
       tmpParams = expandVariables( textCtrlDefaultParameters->GetValue() );
       command = tmpParams.BeforeFirst( ' ' );
@@ -1554,7 +1509,7 @@ void RunScript::ShowWarningUnreachableProgram( wxString program, TEnvironmentVar
 }
 
 
-wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
+wxString RunScript::GetReachableCommand( TExternalAppID selectedApp )
 {
   wxString program, parameters;
   wxString readyCommand;
@@ -1567,14 +1522,9 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
   }
   else
   {
-    if ( selectedApp == TExternalApp::DEFAULT )
-    {
-      selectedApp = (TExternalApp)choiceApplication->GetSelection();
-    }
-
     switch ( selectedApp )
     {
-      case TExternalApp::DIMEMAS_GUI:
+      case TExternalAppID::DIMEMAS_GUI:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::DIMEMAS_HOME );
         if ( !pathToProgram.IsEmpty() )
         {
@@ -1587,7 +1537,7 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
 
         break;
 
-      case TExternalApp::DIMEMAS_WRAPPER:
+      case TExternalAppID::DIMEMAS:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
@@ -1608,7 +1558,7 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
 
         break;
 
-      case TExternalApp::PRVSTATS_WRAPPER:
+      case TExternalAppID::PRVSTATS:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
@@ -1629,9 +1579,9 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
 
         break;
 
-      case TExternalApp::CLUSTERING:
-      case TExternalApp::FOLDING:
-      case TExternalApp::USER_COMMAND:
+      case TExternalAppID::CLUSTERING:
+      case TExternalAppID::FOLDING:
+      case TExternalAppID::USER_COMMAND:
       default:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
         if ( !pathToProgram.IsEmpty() )
@@ -1660,10 +1610,10 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   helpOption = false;
   bool ready = true;
 
-  wxString readyCommand = GetReachableCommand();
+  wxString readyCommand = GetReachableCommand( getSelectedApp() );
   if ( !readyCommand.IsEmpty() )
   {
-    if ( choiceApplication->GetSelection() == static_cast< int >( TExternalApp::CLUSTERING ) )
+    if ( getSelectedApp() == TExternalAppID::CLUSTERING )
     {
       // Check the output trace path
       if ( !textCtrlClusteringOutputTrace->IsEmpty() )
@@ -1693,7 +1643,6 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
 
     if ( ready )
     {
-      //executionStatus = -2;
       myProcess = new RunningProcess( this, readyCommand );
       myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, myProcess );
 
@@ -1722,38 +1671,38 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
   // Check parameters
   bool active = ( myProcess == nullptr );
 
-  TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
+  TExternalAppID selectedApp = getSelectedApp();
   active &= appIsFound[ static_cast<int>( selectedApp ) ];
 
   switch ( selectedApp )
   {
-    case TExternalApp::DIMEMAS_WRAPPER:
+    case TExternalAppID::DIMEMAS:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       active &= !fileBrowserButtonDimemasCFG->GetPath().IsEmpty();
       active &= !textCtrlOutputTrace->GetValue().IsEmpty();
       break;
 
-    case TExternalApp::PRVSTATS_WRAPPER:
+    case TExternalAppID::PRVSTATS:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       break;
       
-    case TExternalApp::CLUSTERING:
+    case TExternalAppID::CLUSTERING:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       active &= !fileBrowserButtonClusteringXML->GetPath().IsEmpty();
       active &= !textCtrlClusteringOutputTrace->IsEmpty();
       break;
 
-    case TExternalApp::FOLDING:
+    case TExternalAppID::FOLDING:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       break;
 
-    case TExternalApp::PROFET:
+    case TExternalAppID::MESS:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
-      active &= !fileBrowserButtonProfetCFG->GetPath().IsEmpty();
-      active &= !textCtrlProfetOutputTrace->IsEmpty();
+      active &= !fileBrowserButtonMessCFG->GetPath().IsEmpty();
+      active &= !textCtrlMessOutputTrace->IsEmpty();
       break;
 
-    case TExternalApp::USER_COMMAND:
+    case TExternalAppID::USER_COMMAND:
       active &= !textCtrlDefaultParameters->GetValue().IsEmpty();
       break;
 
@@ -1785,7 +1734,7 @@ void RunScript::OnProcessTerminated( int pid )
 
 void RunScript::AppendToLog( wxString msg, bool formatOutput )
 {
-  TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
+  TExternalAppID selectedApp = getSelectedApp();
 
   // Bar width for progress is 30 by default
   static regex progressRegex( R"(\[([#]{30}|[\s]{30}|[#]+[\s]+)\]\s+[0-9]+[.][0-9]%)" );
@@ -1795,7 +1744,7 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
     msg.AfterLast( ' ' ).BeforeFirst( '.' ).ToLong( &newValue );
 
     if( progressBar == nullptr )
-      progressBar = new wxProgressDialog( "Running", applicationLabel[ selectedApp ], 100, this );
+      progressBar = new wxProgressDialog( "Running", ExternalApps::getApplicationLabel( selectedApp ), 100, this );
 
     progressBar->Show();
     progressBar->Update( (int) newValue );
@@ -1852,14 +1801,14 @@ wxString RunScript::doubleQuote( const wxString& path )
 void RunScript::adaptWindowToApplicationSelection()
 {
   wxString toolTip( wxT( "" ) );
-  currentApp = static_cast<TExternalApp>( choiceApplication->GetSelection() );
+  currentApp = getSelectedApp();
 
   textCtrlDefaultParameters->Clear();
   labelTextCtrlDefaultParameters->SetToolTip( toolTip );
 
   switch ( currentApp )
   {
-    case TExternalApp::DIMEMAS_WRAPPER:
+    case TExternalAppID::DIMEMAS:
       toolTip = wxString( wxT( "Extra parameters passed to the script\n"
                                "%TRACE refers to input trace" ) );
 
@@ -1873,7 +1822,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case TExternalApp::PRVSTATS_WRAPPER:
+    case TExternalAppID::PRVSTATS:
       toolTip = wxString( wxT( "Extra parameters passed to 'prvstats'\n"
                                "-events_histo[:type1[-type2],...]\n"
                                "-thread_calls[:type1[-type2],...]\n" ) );
@@ -1890,7 +1839,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case TExternalApp::CLUSTERING:
+    case TExternalAppID::CLUSTERING:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
 
@@ -1915,7 +1864,7 @@ void RunScript::adaptWindowToApplicationSelection()
         checkBoxClusteringUseSemanticWindow->Enable( true );
       break;
 
-    case TExternalApp::FOLDING:
+    case TExternalAppID::FOLDING:
       toolTip = wxString( wxT( "Event type that determines the folded regions."
                                " Allowed formats include either numerical or string"
                                " (i.e. 90000001 or 'Cluster ID')." ) );
@@ -1934,23 +1883,18 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case TExternalApp::PROFET:
+    case TExternalAppID::MESS:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
 
-      if ( textCtrlProfetOutputTrace->IsEmpty() && !textCtrlTrace->IsEmpty() )
+      if ( textCtrlMessOutputTrace->IsEmpty() && !textCtrlTrace->IsEmpty() )
       {
         wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
-        wxString tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
-        wxString tmpNameWOExtension = tmpFilename.GetName();
-        if ( radioButtonProfetByMemoryController->GetValue() )
-          textCtrlProfetOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".profet.mc.prv" )));
-        else
-          textCtrlProfetOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".profet.skt.prv" )));
+        textCtrlMessOutputTrace->SetValue( tmpFilename.GetName() + wxString( wxT( ".mess.prv" )));
       }
       break;
 
-    case TExternalApp::USER_COMMAND:
+    case TExternalAppID::USER_COMMAND:
     default:
       toolTip = wxString( wxT( "Command and parameters to execute\n"
                                "%TRACE refers to input trace" ) );
@@ -1966,12 +1910,12 @@ void RunScript::adaptWindowToApplicationSelection()
       break;
   }
 
-  dimemasSection->Show( currentApp == TExternalApp::DIMEMAS_WRAPPER );
-  statsSection->Show( currentApp == TExternalApp::PRVSTATS_WRAPPER );
-  clusteringSection->Show( currentApp == TExternalApp::CLUSTERING );
+  dimemasSection->Show( currentApp == TExternalAppID::DIMEMAS );
+  statsSection->Show( currentApp == TExternalAppID::PRVSTATS );
+  clusteringSection->Show( currentApp == TExternalAppID::CLUSTERING );
   adaptClusteringAlgorithmParameters();
-  foldingSection->Show( currentApp == TExternalApp::FOLDING );
-  profetSection->Show( currentApp == TExternalApp::PROFET );
+  foldingSection->Show( currentApp == TExternalAppID::FOLDING );
+  messSection->Show( currentApp == TExternalAppID::MESS );
 
   Layout();
 }
@@ -2098,12 +2042,12 @@ void RunScript::InitOutputLinks()
 
   defaultLinkMaker = makeLinkComponents;
 
-  applicationLinkMaker[ TExternalApp::DIMEMAS_WRAPPER ] = makeLinkComponents;
-  applicationLinkMaker[ TExternalApp::PRVSTATS_WRAPPER ]   = makeLinkComponents;
-  applicationLinkMaker[ TExternalApp::CLUSTERING ]      = makeLinkComponentsClustering;
-  applicationLinkMaker[ TExternalApp::FOLDING ]         = makeLinkComponentsFolding;
-  applicationLinkMaker[ TExternalApp::PROFET ]          = makeLinkComponents;
-  applicationLinkMaker[ TExternalApp::USER_COMMAND ]    = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::DIMEMAS ]  = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::PRVSTATS ] = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::CLUSTERING ]       = makeLinkComponentsClustering;
+  applicationLinkMaker[ TExternalAppID::FOLDING ]          = makeLinkComponentsFolding;
+  applicationLinkMaker[ TExternalAppID::MESS ]           = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::USER_COMMAND ]     = makeLinkComponents;
   
   // These applications aren't executed by "Run" button, so will not generate links
   // applicationLinkMaker[ DIMEMAS_GUI ]     = makeLinkComponents;
@@ -2270,7 +2214,7 @@ wxString RunScript::insertLog( wxString rawLine, wxArrayString extensions )
   {
     formattedLine = insertTimeMarkLink( rawLine, tagPosition );
   }
-  else if (( choiceApplication->GetSelection() == static_cast< int >( TExternalApp::FOLDING ) ) && readFoldingTag( rawLine ) )
+  else if ( ( getSelectedApp() == TExternalAppID::FOLDING ) && readFoldingTag( rawLine ) )
   {
     formattedLine = rawFormat( rawLine );
   }
@@ -2323,9 +2267,9 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 {
   wxString auxCommand;
   
-  if ( currentApp == TExternalApp::CLUSTERING && matchHrefExtension( event, extensions[ 10 ] ) ) // _link_to_clustered_trace
+  if ( currentApp == TExternalAppID::CLUSTERING && matchHrefExtension( event, extensions[ 10 ] ) ) // _link_to_clustered_trace
   {
-    // Trick used to distinguish "analyse ClusterId" link inserted to log if TExternalApp::CLUSTERING
+    // Trick used to distinguish "analyse ClusterId" link inserted to log if TExternalAppID::CLUSTERING
     wxString tmpSuffixToErase = extensions[ 10 ]; // _link_to_clustered_trace
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event, tmpSuffixToErase ) );
 
@@ -2447,7 +2391,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     size_t i;
     for ( i = 0; i < pdfReaders.size(); ++i )
     {
-      if ( existCommand( pdfReaders[ i ] ) )
+      if ( ExternalApps::existCommand( pdfReaders[ i ] ) )
       {
         runCommandAsync( pdfReaders[ i ], tmpFile );
         break;
@@ -2539,7 +2483,6 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
 void RunScript::runDetachedProcess( wxString command, bool checkPidDimemasGUI )
 {
-  //executionStatus = -2;
   RunningProcess *localProcess = new RunningProcess( this, command );
 
   int myProcessPid = wxExecute( command, wxEXEC_ASYNC, localProcess );
@@ -2568,7 +2511,7 @@ void RunScript::runDetachedProcess( wxString command, bool checkPidDimemasGUI )
  */
 void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
 {
-  wxString command = GetReachableCommand( TExternalApp::DIMEMAS_GUI );
+  wxString command = GetReachableCommand( TExternalAppID::DIMEMAS_GUI );
   if( !command.IsEmpty() && pidDimemasGUI == 0 )
   {  
     bool checkPidDimemasGUI = true;
@@ -2582,7 +2525,6 @@ void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
  */
 void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
 {
-  // bool active = ( myProcess == nullptr );
   bool active = ( pidDimemasGUI == 0 );
   
   if ( active && !buttonDimemasGUI->IsEnabled() )
@@ -2601,7 +2543,7 @@ void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
 void RunScript::OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event )
 {
   wxString dummyCommand, dummyParameter;
-  event.SetText( GetCommand( dummyCommand, dummyParameter ) );
+  event.SetText( GetCommand( dummyCommand, dummyParameter, getSelectedApp() ) );
 }
 
 
@@ -2636,48 +2578,58 @@ void RunScript::setTrace( wxString whichTrace )
 }
 
 
-void RunScript::setApp( TExternalApp whichApp )
+void RunScript::setApp( TExternalAppID whichApp )
 {
-  choiceApplication->Select( static_cast< int >( whichApp ) );
+  int tmpSelection = 0;
+  for( int i = 0; i < choiceApplication->GetCount(); ++i )
+  {
+    if( (long int)choiceApplication->GetClientData( i ) == static_cast< long int >( whichApp ) )
+    {
+      tmpSelection = i;
+      break;
+    }
+  }
+
+  choiceApplication->Select( tmpSelection );
   adaptWindowToApplicationSelection();
 }
 
 
 void RunScript::setDimemas()
 {
-  setApp( TExternalApp::DIMEMAS_WRAPPER );
+  setApp( TExternalAppID::DIMEMAS );
 }
 
 
 void RunScript::setStats()
 {
-  setApp( TExternalApp::PRVSTATS_WRAPPER );
+  setApp( TExternalAppID::PRVSTATS );
 }
 
 
 void RunScript::setClustering( wxString whichClusteringCSV )
 {
   clusteringCSV = whichClusteringCSV;
-  setApp( TExternalApp::CLUSTERING );
+  setApp( TExternalAppID::CLUSTERING );
 }
 
 
 void RunScript::setFolding( wxString whichFoldingCSV )
 {
   foldingCSV = whichFoldingCSV;
-  setApp( TExternalApp::FOLDING );
+  setApp( TExternalAppID::FOLDING );
 }
 
 
-void RunScript::setProfet()
+void RunScript::setMess()
 {
-  setApp( TExternalApp::PROFET );
+  setApp( TExternalAppID::MESS );
 }
 
 
 void RunScript::setUserCommand()
 {
-  setApp( TExternalApp::USER_COMMAND );
+  setApp( TExternalAppID::USER_COMMAND );
 }
 
 
@@ -2695,7 +2647,7 @@ void RunScript::adaptClusteringAlgorithmParameters()
   clusteringLabelRefinementMinPoints->Enable( tuneByHand );
   clusteringTextBoxRefinementMinPoints->Enable( tuneByHand );
 
-  bool clusteringSelected = ( choiceApplication->GetSelection() == static_cast< int >( TExternalApp::CLUSTERING ) );
+  bool clusteringSelected = getSelectedApp() == TExternalAppID::CLUSTERING;
   clusteringSizerDBScan->Show( clusteringSelected && clusteringRadioDBScan->GetValue() );
   clusteringSizerRefinement->Show( clusteringSelected && clusteringRadioRefinement->GetValue() );
   clusteringAlgorithmLineSeparator->Show( clusteringSelected && !clusteringRadioXMLDefined->GetValue() );
@@ -2768,22 +2720,18 @@ void RunScript::OnButtonKillClick( wxCommandEvent& event )
  */
 void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
 {
-  if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::PRVSTATS_WRAPPER ) )
+  if ( getSelectedApp() == TExternalAppID::PRVSTATS )
   {
     statsTextCtrlOutputName->SetValue( fileBrowserButtonTrace->GetPath() );
   }
-  else if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ) )
+  else if ( getSelectedApp() == TExternalAppID::DIMEMAS )
   {
     textCtrlOutputTrace->SetValue( wxString( (
             LocalKernel::composeName( std::string( event.GetString().mb_str() ),
                                       std::string( "sim" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
   }
-  else if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::CLUSTERING ) )
+  else if ( getSelectedApp() == TExternalAppID::CLUSTERING )
   {
-    /*tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
-    tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
-    tmpNameWOExtension = tmpFilename.GetName();
-    */
     if ( textCtrlClusteringOutputTrace->IsEmpty() )
     {
       textCtrlClusteringOutputTrace->SetValue( wxString( (
@@ -2791,22 +2739,12 @@ void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
                                     std::string( "clustered" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
     }
   }
-  else if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::PROFET ) )
+  else if ( getSelectedApp() == TExternalAppID::MESS )
   {
-    std::string tmpInfix = radioButtonProfetByMemoryController->GetValue()?
-                             std::string("profet.mc"):
-                             std::string("profet.skt");
-
-    textCtrlProfetOutputTrace->SetValue(
-            wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), tmpInfix ) +
+    textCtrlMessOutputTrace->SetValue(
+            wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), "mess" ) +
                         PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
   }
-}
-
-
-bool RunScript::existCommand( const wxString& program )
-{
-  return wxExecute( program + _(" ") + wxT( " --version" ), wxEXEC_SYNC ) == 0 ;
 }
 
 
@@ -2826,12 +2764,11 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
 
 
   wxArrayString editor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalTextEditors(), "txt" );
-  //wxArrayString versionParameter;
   
   size_t i;
   for ( i = 0; i < editor.size(); ++i )
   {
-    if ( existCommand( editor[ i ] ) )
+    if ( ExternalApps::existCommand( editor[ i ] ) )
     {
       runCommandAsync( editor[ i ], fileToEdit );
       break;
@@ -2924,31 +2861,47 @@ void RunScript::OnCloseWindow( wxCloseEvent& event )
 
 
 /*!
- * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER
+ * wxEVT_UPDATE_UI event handler for ID_MESS_ADDITIONAL_PLOTS
  */
 
-void RunScript::OnRadiobuttonProfetByMemoryControllerSelected( wxCommandEvent& event )
+void RunScript::OnMessAdditionalPlotsUpdate( wxUpdateUIEvent& event )
 {
-  if ( !textCtrlProfetOutputTrace->IsEmpty() )
+  if( textCtrlTrace->GetValue() != lastProcessedTrace )
   {
-    wxString tmpOutputTrace = textCtrlProfetOutputTrace->GetValue();
-    tmpOutputTrace.Replace( ".profet.skt.prv", ".profet.mc.prv" );
-    textCtrlProfetOutputTrace->SetValue( tmpOutputTrace );
+    lastProcessedTrace = textCtrlTrace->GetValue();
+    wxFileName filename( lastProcessedTrace );
+    filename.SetExt( "pcf" );
+    PCFFileParser<> pcfFile( std::string( filename.GetFullPath().c_str() ) );
+    std::set< std::string > cpuLabels;
+
+    std::vector< TEventType > events;
+    pcfFile.getEventTypes( events );
+    for( auto currentEvent : events )
+    {
+      if( pcfFile.getEventValues( currentEvent ).empty() )
+      {
+        std::string eventLabel = pcfFile.getEventLabel( currentEvent );
+        size_t startPos = eventLabel.find( ":cpu=" );
+        if( startPos == eventLabel.npos )
+          continue;
+
+        std::string cpuLabel = eventLabel.substr( startPos, eventLabel.find( " ", startPos ) - startPos );
+        cpuLabels.insert( cpuLabel );
+      }
+    }
+
+    wxString newCheckText;
+    newCheckText << "Generate additional plots per socket (estimation: " << cpuLabels.size();
+    if( cpuLabels.size() == 1 ) 
+      newCheckText << " plot)";
+    else
+      newCheckText << " plots)";
+
+    event.SetText( newCheckText );
   }
 }
 
-
-/*!
- * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_SOCKET
- */
-
-void RunScript::OnRadiobuttonProfetBySocketSelected( wxCommandEvent& event )
+TExternalAppID RunScript::getSelectedApp() const
 {
-  if ( !textCtrlProfetOutputTrace->IsEmpty() )
-  {
-    wxString tmpOutputTrace = textCtrlProfetOutputTrace->GetValue();
-    tmpOutputTrace.Replace( ".profet.mc.prv", ".profet.skt.prv" );
-    textCtrlProfetOutputTrace->SetValue( tmpOutputTrace );
-  }
+  return static_cast<TExternalAppID>( (long int)choiceApplication->GetClientData( choiceApplication->GetSelection() ) );
 }
-

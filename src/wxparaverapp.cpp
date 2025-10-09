@@ -713,10 +713,13 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             string composedName = histo->getName() + " @ " +
                                   histo->getControlWindow()->getTrace()->getTraceName();
 
-            gHistogram* tmpGHisto = new gHistogram( mainWindow, 
-                wxID_ANY, 
-                wxString::FromUTF8( composedName.c_str() ) );
+            gHistogram* tmpGHisto = new gHistogram( mainWindow,
+                                                    wxID_ANY,
+                                                    wxString::FromUTF8( composedName.c_str() ) );
             tmpGHisto->SetHistogram( histo );
+            tmpGHisto->InitHistogramCallbacks ();
+
+            tmpGHisto->SetClientSize (histo->getWidth (), histo->getHeight ());
 
             histo->setZoom( true );
             histo->setRecalc( false );
@@ -734,16 +737,18 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             window->setRedraw( false );
             string composedName = window->getName() + " @ " +
                                   window->getTrace()->getTraceName();
-
             wxPoint tmpPos( window->getPosX(), window->getPosY() );
-            gTimeline* tmpTimeline = new gTimeline( mainWindow, 
-                    wxID_ANY, 
-                    wxString::FromUTF8( composedName.c_str() ), 
-                    tmpPos );
-            tmpTimeline->SetMyWindow( window );
-            tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
             
+            gTimeline* tmpTimeline = new gTimeline( mainWindow,
+                                                    wxID_ANY,
+                                                    wxString::FromUTF8( composedName.c_str() ),
+                                                    tmpPos );
+            tmpTimeline->SetMyWindow( window );
+            tmpTimeline->InitMyWindowCallbacks ();
+            tmpTimeline->SetClientSize (window->getWidth (), window->getHeight ());
+
             tmpTimeline->redraw();
+            
             tmpTimeline->saveImage( wxT( "" ) );
             tmpTimeline->saveImageLegend();
             
@@ -751,13 +756,11 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             newWindows.pop_back();
           }
 
-          for( vector<Histogram *>::iterator it = newHistograms.begin();
-               it != newHistograms.end(); ++it )
+          for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
             delete (*it);
           newHistograms.clear();
 
-          for( vector<Timeline *>::iterator it = newWindows.begin();
-               it != newWindows.end(); ++it )
+          for( vector<Timeline *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
             delete (*it);
           newWindows.clear();
         }
@@ -873,6 +876,13 @@ int wxparaverApp::FilterEvent(wxEvent& event)
           SessionSaver::LoadSession( dialog.GetPath() );
         }
       }
+      else if (keyCode >= '1' && keyCode <= '9')
+      {
+        TGroupId number = keyCode - '0' - 1;
+        mainWindow->OnSyncWindows (number);
+      }
+      else if (keyCode == (long)'N')
+        mainWindow->OnSyncNewGroup ();
       else if ( keyCode == (long) 'F' )
         mainWindow->OnFindDialog();
       else if ( keyCode == (long) 'Q' )

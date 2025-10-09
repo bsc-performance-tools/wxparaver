@@ -24,32 +24,34 @@
 #pragma once
 
 
-
 /*!
  * Includes
  */
+#include "cfg.h"
+
+#include <map>
+#include <wx/dir.h>
 #include <wx/filectrl.h>
 #include <wx/filename.h>
 #include <wx/textfile.h>
-#include <wx/dir.h>
-#include <map>
-#include "cfg.h"
-
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class wxFileCtrl;
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_LOADCFGDIALOG 10000
 #define ID_SEARCHCTRL 10004
@@ -61,36 +63,48 @@ class wxFileCtrl;
 #define SYMBOL_LOADCFGDIALOG_SIZE wxSize(800, 600)
 #define SYMBOL_LOADCFGDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
+// clang-format on
 
-
-/*!A.
+/*!
  * LoadCFGDialog class declaration
  */
 
-class LoadCFGDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( LoadCFGDialog )
-  DECLARE_EVENT_TABLE()
+class LoadCFGDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( LoadCFGDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  LoadCFGDialog();
-  LoadCFGDialog( wxWindow* parent, wxString directoryPath = _( "" ), wxWindowID id = SYMBOL_LOADCFGDIALOG_IDNAME, const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE, const wxPoint& pos = SYMBOL_LOADCFGDIALOG_POSITION, const wxSize& size = SYMBOL_LOADCFGDIALOG_SIZE, long style = SYMBOL_LOADCFGDIALOG_STYLE );
+  public:
+    /// Constructors
+    LoadCFGDialog();
+    LoadCFGDialog( wxWindow* parent,
+                   wxString directoryPath  = _( "" ),
+                   wxWindowID id           = SYMBOL_LOADCFGDIALOG_IDNAME,
+                   const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE,
+                   const wxPoint& pos      = SYMBOL_LOADCFGDIALOG_POSITION,
+                   const wxSize& size      = SYMBOL_LOADCFGDIALOG_SIZE,
+                   long style              = SYMBOL_LOADCFGDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_LOADCFGDIALOG_IDNAME, const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE, const wxPoint& pos = SYMBOL_LOADCFGDIALOG_POSITION, const wxSize& size = SYMBOL_LOADCFGDIALOG_SIZE, long style = SYMBOL_LOADCFGDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_LOADCFGDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_LOADCFGDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_LOADCFGDIALOG_SIZE,
+                 long style              = SYMBOL_LOADCFGDIALOG_STYLE );
 
 
-  /// Destructor
-  ~LoadCFGDialog();
+    /// Destructor
+    ~LoadCFGDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-////@begin LoadCFGDialog event handler declarations
+    // clang-format off
+  ////@begin LoadCFGDialog event handler declarations
 
   /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_SEARCHCTRL
   void OnSearchctrlEnter( wxCommandEvent& event );
@@ -107,34 +121,37 @@ public:
   /// wxEVT_UPDATE_UI event handler for wxID_OK
   void OnOkUpdate( wxUpdateUIEvent& event );
 
-////@end LoadCFGDialog event handler declarations
+  ////@end LoadCFGDialog event handler declarations
+    // clang-format on
 
-  void OnFileNavigatorDoubleClick( wxFileCtrlEvent& event );
+    void OnFileNavigatorDoubleClick( wxFileCtrlEvent& event );
 
-  wxString GetFilePath();
+    wxString GetFilePath();
 
-
-////@begin LoadCFGDialog member function declarations
+    // clang-format off
+  ////@begin LoadCFGDialog member function declarations
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end LoadCFGDialog member function declarations
+  ////@end LoadCFGDialog member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-////@begin LoadCFGDialog member variables
+    // clang-format off
+  ////@begin LoadCFGDialog member variables
   wxTextCtrl* searchBar;
   wxFileCtrl* fileNavigator;
   wxTextCtrl* textDescription;
   wxButton* buttonCancel;
   wxButton* buttonLoad;
-////@end LoadCFGDialog member variables
-  wxString directoryStartingPath;
-  wxString selectedCfgFilePath;
-  std::map< wxString, wxString > linksPerFileName;
-  
+  ////@end LoadCFGDialog member variables
+    // clang-format on
+    wxString directoryStartingPath;
+    wxString selectedCfgFilePath;
+    std::map< wxString, wxString > linksPerFileName;
 };

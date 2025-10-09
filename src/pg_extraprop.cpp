@@ -26,26 +26,27 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
+
+#include "eventsselectiondialog.h"
+#include "filter.h"
+#include "labelconstructor.h"
+#include "paraverlabels.h"
+#include "pg_extraprop.h"
+#include "rowsselectiondialog.h"
+#include "selectionrowsutils.h"
+#include "timelinetreeselector.h"
+#include "window.h"
+#include "wxparaverapp.h"
 
 #include <wx/choicdlg.h>
 #include <wx/event.h>
 #include <wx/utils.h>
-#include "wxparaverapp.h"
-#include "pg_extraprop.h"
-#include "window.h"
-#include "selectionrowsutils.h"
-#include "labelconstructor.h"
-#include "filter.h"
-#include "eventsselectiondialog.h"
-#include "rowsselectiondialog.h"
-#include "timelinetreeselector.h"
-#include "paraverlabels.h"
 
 using namespace std;
 
@@ -53,54 +54,43 @@ using namespace std;
  **       prvEventTypeProperty
  **********************************************************/
 #if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
-wxPG_IMPLEMENT_PROPERTY_CLASS( prvEventTypeProperty, wxPGProperty,
-                               TextCtrlAndButton )
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvEventTypeProperty, wxPGProperty, TextCtrlAndButton )
 #else
-WX_PG_IMPLEMENT_PROPERTY_CLASS( prvEventTypeProperty, wxPGProperty,
-                                wxArrayInt, const wxArrayInt&, TextCtrlAndButton )
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvEventTypeProperty, wxPGProperty, wxArrayInt, const wxArrayInt&, TextCtrlAndButton )
 #endif
 
-prvEventTypeProperty::prvEventTypeProperty( const wxString& label,
-                                            const wxString& name,
-                                            const wxPGChoices& choices,
-                                            const wxArrayInt& value)
-                                              : wxPGProperty(label,name)
+  prvEventTypeProperty::prvEventTypeProperty( const wxString& label, const wxString& name, const wxPGChoices& choices, const wxArrayInt& value )
+  : wxPGProperty( label, name )
 {
-    m_choices.Assign(choices);
-    wxArrayString tmpArray;
+  m_choices.Assign( choices );
+  wxArrayString tmpArray;
 
-    unsigned int i;
-    for ( i=0; i<value.GetCount(); i++ )
-      tmpArray.Add( wxString().Format(_( "%d" ), value[i] ) );
-    SetValue(tmpArray);
+  unsigned int i;
+  for( i = 0; i < value.GetCount(); i++ )
+    tmpArray.Add( wxString().Format( _( "%d" ), value[ i ] ) );
+  SetValue( tmpArray );
 }
 
-prvEventTypeProperty::prvEventTypeProperty( const wxString& label,
-                                            const wxString& name,
-                                            const wxArrayString& strings,
-                                            const wxArrayInt& value)
-                                              : wxPGProperty(label,name)
+prvEventTypeProperty::prvEventTypeProperty( const wxString& label, const wxString& name, const wxArrayString& strings, const wxArrayInt& value )
+  : wxPGProperty( label, name )
 {
-    m_choices.Set(strings);
-    wxArrayString tmpArray;
-    unsigned int i;
-    for ( i=0; i<value.GetCount(); i++ )
-      tmpArray.Add( wxString().Format( _( "%d" ), value[i] ) );
-    SetValue(tmpArray);
+  m_choices.Set( strings );
+  wxArrayString tmpArray;
+  unsigned int i;
+  for( i = 0; i < value.GetCount(); i++ )
+    tmpArray.Add( wxString().Format( _( "%d" ), value[ i ] ) );
+  SetValue( tmpArray );
 }
 
-prvEventTypeProperty::prvEventTypeProperty( const wxString& label,
-                                            const wxString& name,
-                                            const wxArrayInt& value)
-                                              : wxPGProperty(label,name)
+prvEventTypeProperty::prvEventTypeProperty( const wxString& label, const wxString& name, const wxArrayInt& value ) : wxPGProperty( label, name )
 {
-    wxArrayString strings;
-    m_choices.Set(strings);
-    wxArrayString tmpArray;
-    unsigned int i;
-    for ( i=0; i<value.GetCount(); i++ )
-      tmpArray.Add( wxString().Format( _( "%d" ), value[i] ) );
-    SetValue(tmpArray);
+  wxArrayString strings;
+  m_choices.Set( strings );
+  wxArrayString tmpArray;
+  unsigned int i;
+  for( i = 0; i < value.GetCount(); i++ )
+    tmpArray.Add( wxString().Format( _( "%d" ), value[ i ] ) );
+  SetValue( tmpArray );
 }
 
 prvEventTypeProperty::~prvEventTypeProperty()
@@ -109,161 +99,154 @@ prvEventTypeProperty::~prvEventTypeProperty()
 
 void prvEventTypeProperty::OnSetValue()
 {
-    GenerateValueAsString();
+  GenerateValueAsString();
 }
 
 
-wxString prvEventTypeProperty::ValueToString( wxVariant & value, int argFlags ) const
+wxString prvEventTypeProperty::ValueToString( wxVariant& value, int argFlags ) const
 {
   return value.GetString();
 }
 
 void prvEventTypeProperty::GenerateValueAsString()
 {
-    wxString &tempStr = m_display;
-    tempStr = GetValue().GetString();
+  wxString& tempStr = m_display;
+  tempStr           = GetValue().GetString();
 }
 
 wxArrayInt prvEventTypeProperty::GetValueAsIndices() const
 {
-    const wxArrayInt& valueArr = GetValueAsArrayInt();
-    unsigned int i;
+  const wxArrayInt& valueArr = GetValueAsArrayInt();
+  unsigned int i;
 
-    // Translate values to string indices.
-    wxArrayInt selections;
+  // Translate values to string indices.
+  wxArrayInt selections;
 
-    if ( !m_choices.IsOk() || !m_choices.GetCount() )
+  if( !m_choices.IsOk() || !m_choices.GetCount() )
+  {
+    for( i = 0; i < valueArr.GetCount(); i++ )
+      selections.Add( -1 );
+  }
+  else
+  {
+    for( i = 0; i < valueArr.GetCount(); i++ )
     {
-        for ( i=0; i<valueArr.GetCount(); i++ )
-            selections.Add(-1);
+      int sIndex = m_choices.Index( valueArr[ i ] );
+      if( sIndex >= 0 )
+        selections.Add( sIndex );
     }
-    else
-    {
-        for ( i=0; i<valueArr.GetCount(); i++ )
-        {
-            int sIndex = m_choices.Index(valueArr[i]);
-            if ( sIndex >= 0 )
-                selections.Add(sIndex);
-        }
-    }
+  }
 
-    return selections;
+  return selections;
 }
 
-bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
-                                     wxWindow* WXUNUSED(primary),
-                                     wxEvent& event )
+bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid, wxWindow* WXUNUSED( primary ), wxEvent& event )
 {
-    if ( propgrid->IsMainButtonEvent(event) )
+  if( propgrid->IsMainButtonEvent( event ) )
+  {
+    // Update the value
+    propgrid->GetUncommittedPropertyValue();
+
+    wxArrayString labels = m_choices.GetLabels();
+    unsigned int choiceCount;
+
+    if( m_choices.IsOk() )
+      choiceCount = m_choices.GetCount();
+    else
+      choiceCount = 0;
+
+    // launch editor dialog
+    wxMultiChoiceDialog dlg( propgrid, _( "Make a selection:" ), m_label, choiceCount, choiceCount ? &labels[ 0 ] : nullptr, wxCHOICEDLG_STYLE );
+
+    dlg.Move( propgrid->GetGoodEditorDialogPosition( this, dlg.GetSize() ) );
+
+    wxArrayString strings = m_value.GetArrayString();
+    wxArrayString extraStrings;
+    wxArrayInt values;
+    for( unsigned int idx = 0; idx < strings.GetCount(); idx++ )
     {
-        // Update the value
-        propgrid->GetUncommittedPropertyValue();
-
-        wxArrayString labels = m_choices.GetLabels();
-        unsigned int choiceCount;
-
-        if ( m_choices.IsOk() )
-            choiceCount = m_choices.GetCount();
-        else
-            choiceCount = 0;
-
-        // launch editor dialog
-        wxMultiChoiceDialog dlg( propgrid,
-                                 _("Make a selection:"),
-                                 m_label,
-                                 choiceCount,
-                                 choiceCount?&labels[0]:nullptr,
-                                 wxCHOICEDLG_STYLE );
-
-        dlg.Move( propgrid->GetGoodEditorDialogPosition(this,dlg.GetSize()) );
-
-        wxArrayString strings = m_value.GetArrayString();
-        wxArrayString extraStrings;
-        wxArrayInt values;
-        for( unsigned int idx = 0; idx < strings.GetCount(); idx++ )
-        {
-          long tmpLong;
-          strings[ idx ].ToLong( &tmpLong );
-          int tmpValue = m_choices.Index( tmpLong );
-          if( tmpValue != -1 )
-            values.Add( tmpValue );
-          else
-            extraStrings.Add( strings[ idx ] );
-        }
-
-        dlg.SetSelections(values);
-        
-        if ( dlg.ShowModal() == wxID_OK && choiceCount )
-        {
-            int userStringMode = GetAttributeAsLong(wxT("UserStringMode"), 0);
-
-            wxArrayInt arrInt = dlg.GetSelections();
-
-            wxVariant variant;
-
-            // Strings that were not in list of choices
-            wxArrayString value;
-
-            // Translate string indices to strings
-
-            unsigned int n;
-            if ( userStringMode == 1 )
-            {
-                for ( n=0; n<extraStrings.size(); n++ )
-                    value.push_back( extraStrings[ n ] );
-            }
-
-            unsigned int i;
-            for ( i=0; i<arrInt.GetCount(); i++ )
-                value.Add( wxString() << m_choices.GetValue( arrInt.Item( i ) ) );
-
-            if ( userStringMode == 2 )
-            {
-                for (n=0;n<extraStrings.size();n++)
-                    value.push_back( extraStrings[ n ] );
-            }
-
-            value.Sort();
-            
-            variant = WXVARIANT(value);
-
-            SetValueInEvent(variant);
-
-            return true;
-        }
+      long tmpLong;
+      strings[ idx ].ToLong( &tmpLong );
+      int tmpValue = m_choices.Index( tmpLong );
+      if( tmpValue != -1 )
+        values.Add( tmpValue );
+      else
+        extraStrings.Add( strings[ idx ] );
     }
-    return false;
+
+    dlg.SetSelections( values );
+
+    if( dlg.ShowModal() == wxID_OK && choiceCount )
+    {
+      int userStringMode = GetAttributeAsLong( wxT( "UserStringMode" ), 0 );
+
+      wxArrayInt arrInt = dlg.GetSelections();
+
+      wxVariant variant;
+
+      // Strings that were not in list of choices
+      wxArrayString value;
+
+      // Translate string indices to strings
+
+      unsigned int n;
+      if( userStringMode == 1 )
+      {
+        for( n = 0; n < extraStrings.size(); n++ )
+          value.push_back( extraStrings[ n ] );
+      }
+
+      unsigned int i;
+      for( i = 0; i < arrInt.GetCount(); i++ )
+        value.Add( wxString() << m_choices.GetValue( arrInt.Item( i ) ) );
+
+      if( userStringMode == 2 )
+      {
+        for( n = 0; n < extraStrings.size(); n++ )
+          value.push_back( extraStrings[ n ] );
+      }
+
+      value.Sort();
+
+      variant = WXVARIANT( value );
+
+      SetValueInEvent( variant );
+
+      return true;
+    }
+  }
+  return false;
 }
 
 bool prvEventTypeProperty::StringToValue( wxVariant& variant, const wxString& text, int ) const
 {
-    wxArrayString arr;
+  wxArrayString arr;
 
-    int userStringMode = GetAttributeAsLong(wxT("UserStringMode"), 0);
+  int userStringMode = GetAttributeAsLong( wxT( "UserStringMode" ), 0 );
 
-    WX_PG_TOKENIZER1_BEGIN(text,wxT(';'))
-        if ( userStringMode > 0 || (m_choices.IsOk() && m_choices.Index( token ) != wxNOT_FOUND) )
-            arr.Add(token);
-    WX_PG_TOKENIZER1_END()
+  WX_PG_TOKENIZER1_BEGIN( text, wxT( ';' ) )
+  if( userStringMode > 0 || ( m_choices.IsOk() && m_choices.Index( token ) != wxNOT_FOUND ) )
+    arr.Add( token );
+  WX_PG_TOKENIZER1_END()
 
-    wxVariant v( WXVARIANT(arr) );
-    variant = v;
+  wxVariant v( WXVARIANT( arr ) );
+  variant = v;
 
-    return true;
+  return true;
 }
 
 wxArrayInt prvEventTypeProperty::GetValueAsArrayInt() const
 {
   wxArrayInt retValue;
   wxArrayString strValues = m_value.GetArrayString();
-  
+
   for( unsigned int idx = 0; idx < strValues.GetCount(); idx++ )
   {
     long tmpInt;
     strValues[ idx ].ToLong( &tmpInt );
     retValue.Add( tmpInt );
   }
-    
+
   return retValue;
 }
 
@@ -272,23 +255,18 @@ wxArrayInt prvEventTypeProperty::GetValueAsArrayInt() const
  **********************************************************/
 
 #if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
-wxPG_IMPLEMENT_PROPERTY_CLASS( prvEventInfoProperty, wxPGProperty,
-                               TextCtrlAndButton )
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvEventInfoProperty, wxPGProperty, TextCtrlAndButton )
 #else
-WX_PG_IMPLEMENT_PROPERTY_CLASS( prvEventInfoProperty, wxPGProperty,
-                                wxArrayInt, const wxArrayInt&, TextCtrlAndButton )
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvEventInfoProperty, wxPGProperty, wxArrayInt, const wxArrayInt&, TextCtrlAndButton )
 #endif
 
-prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
-                                            const wxString& name,
-                                            const wxArrayString& strings,
-                                            const wxArrayInt& value)
-                                              : wxPGProperty( label, name )
+  prvEventInfoProperty::prvEventInfoProperty( const wxString& label, const wxString& name, const wxArrayString& strings, const wxArrayInt& value )
+  : wxPGProperty( label, name )
 {
   m_choices.Set( strings );
 
   wxArrayString tmpArray;
-  for ( unsigned int i = 0; i < value.GetCount(); ++i )
+  for( unsigned int i = 0; i < value.GetCount(); ++i )
     tmpArray.Add( wxString().Format( _( "%d" ), value[ i ] ) );
 
   SetValue( tmpArray );
@@ -298,10 +276,10 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 
 prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
                                             const wxString& name,
-                                            Timeline *whichWindow,
+                                            Timeline* whichWindow,
                                             prvEventInfoType whichInfoType,
                                             const wxPGChoices& choices )
-                                              : wxPGProperty( label, name )
+  : wxPGProperty( label, name )
 {
   m_choices.Assign( choices );
 
@@ -309,23 +287,23 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 
   wxArrayString tmpArray;
 
-  vector<TEventType> typesSel;
-  vector<TSemanticValue> valuesSel;
+  vector< TEventType > typesSel;
+  vector< TSemanticValue > valuesSel;
 
   switch( whichInfoType )
   {
     case prvEventInfoType::TYPES:
       currentWindow->getFilter()->getEventType( typesSel );
-      for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
+      for( vector< TEventType >::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
       {
-        tmpArray.Add( wxString().Format( _( "%d" ), (*it) ) );
+        tmpArray.Add( wxString().Format( _( "%d" ), ( *it ) ) );
       }
-      
+
       break;
 
     case prvEventInfoType::VALUES:
       currentWindow->getFilter()->getEventValue( valuesSel );
-      for( vector<TSemanticValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
+      for( vector< TSemanticValue >::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
       {
         double tmpIntpart;
         if( std::modf( *it, &tmpIntpart ) == 0.0 )
@@ -334,11 +312,11 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
           tmpArray.Add( wxString().Format( _( "%lld" ), tmpEventValue ) );
         }
         else
-          tmpArray.Add( wxString().Format( _( "%f" ), (*it) ) );
+          tmpArray.Add( wxString().Format( _( "%f" ), ( *it ) ) );
       }
-      
+
       break;
-      
+
     default:
       break;
   }
@@ -347,10 +325,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 }
 
 
-prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
-                                            const wxString& name,
-                                            const wxArrayInt& value )
-                                              : wxPGProperty(label,name)
+prvEventInfoProperty::prvEventInfoProperty( const wxString& label, const wxString& name, const wxArrayInt& value ) : wxPGProperty( label, name )
 {
   wxArrayString strings;
   m_choices.Set( strings );
@@ -376,7 +351,7 @@ void prvEventInfoProperty::OnSetValue()
 }
 
 
-wxString prvEventInfoProperty::ValueToString( wxVariant & value, int argFlags ) const
+wxString prvEventInfoProperty::ValueToString( wxVariant& value, int argFlags ) const
 {
   return value.GetString();
 }
@@ -384,8 +359,8 @@ wxString prvEventInfoProperty::ValueToString( wxVariant & value, int argFlags ) 
 
 void prvEventInfoProperty::GenerateValueAsString()
 {
-  wxString &tempStr = m_display;
-  tempStr = GetValue().GetString();
+  wxString& tempStr = m_display;
+  tempStr           = GetValue().GetString();
 }
 
 
@@ -397,17 +372,17 @@ wxArrayInt prvEventInfoProperty::GetValueAsIndices() const
   // Translate values to string indices.
   wxArrayInt selections;
 
-  if ( !m_choices.IsOk() || !m_choices.GetCount() )
+  if( !m_choices.IsOk() || !m_choices.GetCount() )
   {
-    for ( i = 0; i < valueArr.GetCount(); ++i )
+    for( i = 0; i < valueArr.GetCount(); ++i )
       selections.Add( -1 );
   }
   else
   {
-    for ( i = 0; i < valueArr.GetCount(); ++i )
+    for( i = 0; i < valueArr.GetCount(); ++i )
     {
       int sIndex = m_choices.Index( valueArr[ i ] );
-      if ( sIndex >= 0 )
+      if( sIndex >= 0 )
         selections.Add( sIndex );
     }
   }
@@ -415,11 +390,9 @@ wxArrayInt prvEventInfoProperty::GetValueAsIndices() const
   return selections;
 }
 
-bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
-                                    wxWindow* WXUNUSED( primary ),
-                                    wxEvent& event )
+bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid, wxWindow* WXUNUSED( primary ), wxEvent& event )
 {
-  if ( propgrid->IsMainButtonEvent( event ))
+  if( propgrid->IsMainButtonEvent( event ) )
   {
     wxArrayString labels;
     unsigned int numLabels = 0;
@@ -427,30 +400,27 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
     // Update the value
     propgrid->GetUncommittedPropertyValue();
 
-    if ( m_choices.IsOk() )
+    if( m_choices.IsOk() )
     {
       labels    = m_choices.GetLabels();
       numLabels = m_choices.GetCount();
     }
 
     bool hideChoiceOperators = false;
-    const wxString windowTitle( _("Events Selection") );
+    const wxString windowTitle( _( "Events Selection" ) );
 
     wxArrayString labelsSelected = m_value.GetArrayString();
 
-    EventsSelectionDialog eventsDialog( propgrid,
-                                        currentWindow,
-                                        hideChoiceOperators,
-                                        windowTitle );
+    EventsSelectionDialog eventsDialog( propgrid, currentWindow, hideChoiceOperators, windowTitle );
 
     wxparaverApp::mainWindow->SetOpenedPropertyDialog( &eventsDialog );
 
-    if ( eventsDialog.ShowModal() == wxID_OK && numLabels )
+    if( eventsDialog.ShowModal() == wxID_OK && numLabels )
     {
       TWindowsSet timelines;
       TWindowsSet allTimelines;
 
-      if ( eventsDialog.ChangedEventTypesFunction() )
+      if( eventsDialog.ChangedEventTypesFunction() )
       {
         CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DGroupLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEFUNCTION ] ),
                                                       SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEFUNCTION ],
@@ -461,11 +431,11 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         for( TWindowsSet::iterator it = timelines.begin(); it != timelines.end(); ++it )
         {
           allTimelines.insert( *it );
-          (*it)->getFilter()->setEventTypeFunction( eventsDialog.GetNameEventTypesFunction() );
+          ( *it )->getFilter()->setEventTypeFunction( eventsDialog.GetNameEventTypesFunction() );
         }
       }
 
-      if ( eventsDialog.ChangedEventTypesSelection() )
+      if( eventsDialog.ChangedEventTypesSelection() )
       {
         wxArrayInt tmpEventTypes = eventsDialog.GetEventTypesSelection();
 
@@ -480,7 +450,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         {
           allTimelines.insert( *it );
 
-          Filter *filter = (*it)->getFilter();
+          Filter* filter = ( *it )->getFilter();
           filter->clearEventTypes();
 
           for( unsigned int i = 0; i < tmpEventTypes.GetCount(); ++i )
@@ -490,7 +460,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         }
       }
 
-      if ( eventsDialog.ChangedOperatorTypeValue() )
+      if( eventsDialog.ChangedOperatorTypeValue() )
       {
         int func = eventsDialog.GetIndexOperatorTypeValue();
 
@@ -505,14 +475,14 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         {
           allTimelines.insert( *it );
 
-          if ( func == 0 )
-            (*it)->getFilter()->setOpTypeValueAnd();
-          else 
-            (*it)->getFilter()->setOpTypeValueOr();
+          if( func == 0 )
+            ( *it )->getFilter()->setOpTypeValueAnd();
+          else
+            ( *it )->getFilter()->setOpTypeValueOr();
         }
       }
 
-      if ( eventsDialog.ChangedEventValuesFunction() )
+      if( eventsDialog.ChangedEventValuesFunction() )
       {
         timelines.clear();
         CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DGroupLink( SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEFUNCTION ] ),
@@ -524,11 +494,11 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         for( TWindowsSet::iterator it = timelines.begin(); it != timelines.end(); ++it )
         {
           allTimelines.insert( *it );
-          (*it)->getFilter()->setEventValueFunction( eventsDialog.GetNameEventValuesFunction() );
+          ( *it )->getFilter()->setEventValueFunction( eventsDialog.GetNameEventValuesFunction() );
         }
       }
 
-      if ( eventsDialog.ChangedEventValuesSelection() )
+      if( eventsDialog.ChangedEventValuesSelection() )
       {
         wxArrayDouble tmpEventValues = eventsDialog.GetEventValues();
 
@@ -543,7 +513,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         {
           allTimelines.insert( *it );
 
-          Filter *filter = (*it)->getFilter();
+          Filter* filter = ( *it )->getFilter();
           filter->clearEventValues();
           for( unsigned int i = 0; i < tmpEventValues.GetCount(); ++i )
           {
@@ -573,26 +543,26 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
 bool prvEventInfoProperty::StringToValue( wxVariant& variant, const wxString& text, int ) const
 {
-    wxArrayString arr;
+  wxArrayString arr;
 
-    int userStringMode = GetAttributeAsLong( wxT("UserStringMode"), 0 );
+  int userStringMode = GetAttributeAsLong( wxT( "UserStringMode" ), 0 );
 
-    WX_PG_TOKENIZER1_BEGIN(text,wxT(';'))
-        if ( userStringMode > 0 || (m_choices.IsOk() && m_choices.Index( token ) != wxNOT_FOUND) )
-            arr.Add(token);
-    WX_PG_TOKENIZER1_END()
+  WX_PG_TOKENIZER1_BEGIN( text, wxT( ';' ) )
+  if( userStringMode > 0 || ( m_choices.IsOk() && m_choices.Index( token ) != wxNOT_FOUND ) )
+    arr.Add( token );
+  WX_PG_TOKENIZER1_END()
 
-    wxVariant v( WXVARIANT(arr) );
-    variant = v;
+  wxVariant v( WXVARIANT( arr ) );
+  variant = v;
 
-    return true;
+  return true;
 }
 
 wxArrayInt prvEventInfoProperty::GetValueAsArrayInt() const
 {
   wxArrayInt retValue;
   wxArrayString strValues = m_value.GetArrayString();
-  
+
   for( unsigned int idx = 0; idx < strValues.GetCount(); idx++ )
   {
     long tmpInt;
@@ -608,24 +578,23 @@ wxArrayInt prvEventInfoProperty::GetValueAsArrayInt() const
  **********************************************************/
 
 BEGIN_EVENT_TABLE( SemanticMenu, wxMenu )
-  EVT_MENU_RANGE( 1, 200, SemanticMenu::OnMenu )
+EVT_MENU_RANGE( 1, 200, SemanticMenu::OnMenu )
 END_EVENT_TABLE()
 
-SemanticMenu::SemanticMenu( const vector<string>& levels,
-                            const vector<vector<string> >& functions,
+SemanticMenu::SemanticMenu( const vector< string >& levels,
+                            const vector< vector< string > >& functions,
                             const wxString& value,
-                            prvSemanticThreadProperty *prop )
-                            : myProperty( prop )
+                            prvSemanticThreadProperty* prop )
+  : myProperty( prop )
 {
   int idMenu = 1;
-  
+
   for( unsigned int i = 0; i < levels.size(); ++i )
   {
     subMenus.push_back( new wxMenu() );
-    for( vector<string>::const_iterator it = functions[ i ].begin(); 
-         it != functions[ i ].end(); ++it )
+    for( vector< string >::const_iterator it = functions[ i ].begin(); it != functions[ i ].end(); ++it )
     {
-      wxString tmpStr( wxString::FromUTF8( (*it).c_str() ) );
+      wxString tmpStr( wxString::FromUTF8( ( *it ).c_str() ) );
       subMenus[ i ]->AppendCheckItem( idMenu, tmpStr );
       if( tmpStr == value )
       {
@@ -636,27 +605,24 @@ SemanticMenu::SemanticMenu( const vector<string>& levels,
         subMenus[ i ]->Check( idMenu, false );
       ++idMenu;
     }
-    subMenus[ i ]->Connect( wxEVT_COMMAND_MENU_SELECTED, 
-                            wxCommandEventHandler( SemanticMenu::OnMenu ),
-                            nullptr,
-                            this );
+    subMenus[ i ]->Connect( wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( SemanticMenu::OnMenu ), nullptr, this );
     Append( i, wxString::FromUTF8( levels[ i ].c_str() ), subMenus[ i ] );
   }
 }
 
 SemanticMenu::~SemanticMenu()
-{}
+{
+}
 
 void SemanticMenu::OnMenu( wxCommandEvent& event )
 {
-  wxMenuItem *lastItem;
+  wxMenuItem* lastItem;
   int itemMenu = 1;
-  bool stop = false;
-  
-  for( vector<wxMenu *>::iterator it = subMenus.begin();
-       it != subMenus.end(); ++it )
+  bool stop    = false;
+
+  for( vector< wxMenu* >::iterator it = subMenus.begin(); it != subMenus.end(); ++it )
   {
-    if( ( lastItem = (*it)->FindItem( currentItemID ) ) != nullptr )
+    if( ( lastItem = ( *it )->FindItem( currentItemID ) ) != nullptr )
     {
       if( !lastItem->IsChecked() )
         lastItem->Check( true );
@@ -665,47 +631,45 @@ void SemanticMenu::OnMenu( wxCommandEvent& event )
       break;
     }
   }
-  for( vector<wxMenu *>::iterator it = subMenus.begin();
-       it != subMenus.end(); ++it )
+  for( vector< wxMenu* >::iterator it = subMenus.begin(); it != subMenus.end(); ++it )
   {
-    for( unsigned int i = 0; i < (*it)->GetMenuItemCount(); ++i )
+    for( unsigned int i = 0; i < ( *it )->GetMenuItemCount(); ++i )
     {
-      if( (*it)->IsChecked( itemMenu ) )
+      if( ( *it )->IsChecked( itemMenu ) )
       {
         currentItemID = itemMenu;
-        stop = true;
-        myProperty->SetValueInEvent( wxString( (*it)->GetLabelText( itemMenu ) ) );
+        stop          = true;
+        myProperty->SetValueInEvent( wxString( ( *it )->GetLabelText( itemMenu ) ) );
         break;
       }
       ++itemMenu;
     }
-    if( stop ) break;
+    if( stop )
+      break;
   }
 }
 
-void SemanticMenu::PopupMenu( wxWindow *onWindow )
+void SemanticMenu::PopupMenu( wxWindow* onWindow )
 {
   onWindow->PopupMenu( this );
 }
 
 
 #if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
-wxPG_IMPLEMENT_PROPERTY_CLASS( prvSemanticThreadProperty, wxPGProperty,
-                               TextCtrlAndButton )
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvSemanticThreadProperty, wxPGProperty, TextCtrlAndButton )
 #else
-WX_PG_IMPLEMENT_PROPERTY_CLASS( prvSemanticThreadProperty, wxPGProperty,
-                                wxString, wxString&, TextCtrlAndButton )
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvSemanticThreadProperty, wxPGProperty, wxString, wxString&, TextCtrlAndButton )
 #endif
 
-prvSemanticThreadProperty::prvSemanticThreadProperty( const wxString& label,
-                                                      const wxString& name,
-                                                      const vector<string>& levels,
-                                                      const vector<vector<string> >& functions,
-                                                      const wxString& value )
-                                                        : wxPGProperty(label,name)
+  prvSemanticThreadProperty::prvSemanticThreadProperty( const wxString& label,
+                                                        const wxString& name,
+                                                        const vector< string >& levels,
+                                                        const vector< vector< string > >& functions,
+                                                        const wxString& value )
+  : wxPGProperty( label, name )
 {
   SetValue( value );
-  
+
   myMenu = new SemanticMenu( levels, functions, value, this );
 }
 
@@ -713,18 +677,16 @@ prvSemanticThreadProperty::~prvSemanticThreadProperty()
 {
 }
 
-bool prvSemanticThreadProperty::OnEvent( wxPropertyGrid* propgrid,
-                                         wxWindow* WXUNUSED(primary),
-                                         wxEvent& event )
+bool prvSemanticThreadProperty::OnEvent( wxPropertyGrid* propgrid, wxWindow* WXUNUSED( primary ), wxEvent& event )
 {
-  if ( propgrid->IsMainButtonEvent(event) )
+  if( propgrid->IsMainButtonEvent( event ) )
   {
     myMenu->PopupMenu( propgrid );
   }
   return true;
 }
 
-wxString prvSemanticThreadProperty::ValueToString( wxVariant & value, int argFlags ) const
+wxString prvSemanticThreadProperty::ValueToString( wxVariant& value, int argFlags ) const
 {
   return value.GetString();
 }
@@ -735,32 +697,26 @@ wxString prvSemanticThreadProperty::ValueToString( wxVariant & value, int argFla
  **********************************************************/
 
 #if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
-wxPG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty,
-                               TextCtrlAndButton )
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty, TextCtrlAndButton )
 #else
-WX_PG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty,
-                                wxString, wxString&, TextCtrlAndButton )
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty, wxString, wxString&, TextCtrlAndButton )
 #endif
 
-prvRowsSelectionProperty::prvRowsSelectionProperty( const wxString &label,
-                                                    const wxString &name,
-                                                    Timeline *whichWindow,
-                                                    const wxString &windowName,
-                                                    vector<TObjectOrder> &whichSelection ) : wxPGProperty(label, name)
+  prvRowsSelectionProperty::prvRowsSelectionProperty( const wxString& label,
+                                                      const wxString& name,
+                                                      Timeline* whichWindow,
+                                                      const wxString& windowName,
+                                                      vector< TObjectOrder >& whichSelection )
+  : wxPGProperty( label, name )
 {
-  myTimeline = whichWindow;
+  myTimeline   = whichWindow;
   myWindowName = windowName;
-  
-  mySelectedRows.init( myTimeline->getTrace() );
-  mySelectedRows.setSelected( whichSelection,
-                              myTimeline->getTrace()->getLevelObjects( myTimeline->getLevel() ),
-                              myTimeline->getLevel() );
 
-  vector<TObjectOrder> tmpSelection( whichSelection );
-  SelectionRowsUtils::getAllLevelsSelectedRows( myTimeline->getTrace(), 
-                                                mySelectedRows,
-                                                myTimeline->getLevel(),
-                                                tmpSelection );
+  mySelectedRows.init( myTimeline->getTrace() );
+  mySelectedRows.setSelected( whichSelection, myTimeline->getTrace()->getLevelObjects( myTimeline->getLevel() ), myTimeline->getLevel() );
+
+  vector< TObjectOrder > tmpSelection( whichSelection );
+  SelectionRowsUtils::getAllLevelsSelectedRows( myTimeline->getTrace(), mySelectedRows, myTimeline->getLevel(), tmpSelection );
   wxString tmp;
   GetStringValueFromVector( tmpSelection, tmp );
   SetValue( tmp );
@@ -772,79 +728,64 @@ prvRowsSelectionProperty::~prvRowsSelectionProperty()
 }
 
 
-wxString prvRowsSelectionProperty::ValueToString( wxVariant & value, int argFlags ) const
+wxString prvRowsSelectionProperty::ValueToString( wxVariant& value, int argFlags ) const
 {
   return value.GetString();
 }
 
-void prvRowsSelectionProperty::GetSelectionAsVector( TTraceLevel whichLevel,
-                                                     vector<TObjectOrder> &levelSelections )
+void prvRowsSelectionProperty::GetSelectionAsVector( TTraceLevel whichLevel, vector< TObjectOrder >& levelSelections )
 {
   mySelectedRows.getSelected( levelSelections, whichLevel );
 }
 
 
-bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
-                                        wxWindow* WXUNUSED(primary),
-                                        wxEvent& event )
+bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid, wxWindow* WXUNUSED( primary ), wxEvent& event )
 {
-  if ( propgrid->IsMainButtonEvent(event) )
+  if( propgrid->IsMainButtonEvent( event ) )
   {
     bool parentIsGtimeline = false;
-    RowsSelectionDialog *dialog = new RowsSelectionDialog( (wxWindow *)propgrid,
-                                                           myTimeline,
-                                                           &mySelectedRows,
-                                                           ID_ROWSSELECTIONDIALOG,
-                                                           myWindowName,
-                                                           parentIsGtimeline );
+    bool isProcessModel    = ( ( myTimeline->getLevel() >= TTraceLevel::WORKLOAD ) && ( myTimeline->getLevel() <= TTraceLevel::THREAD ) );
+
+    RowsSelectionDialog* dialog = new RowsSelectionDialog( myTimeline->getTrace(), isProcessModel, myTimeline->getRowSelectionManager() );
+
     wxparaverApp::mainWindow->SetOpenedPropertyDialog( dialog );
-    
-    if ( dialog->ShowModal() == wxID_OK )
+
+    if( dialog->ShowModal() == wxID_OK )
     {
       wxArrayInt tmpArray;
-      vector<TObjectOrder> tmpSelection;
-      
+      vector< TObjectOrder > tmpSelection;
+
       dialog->GetSelections( myTimeline->getLevel(), tmpArray );
       for( unsigned int idx = 0; idx < tmpArray.GetCount(); idx++ )
         tmpSelection.push_back( tmpArray[ idx ] );
 
-      SelectionRowsUtils::getAllLevelsSelectedRows( myTimeline->getTrace(), 
-                                                    mySelectedRows,
-                                                    myTimeline->getLevel(),
-                                                    tmpSelection );
+      SelectionRowsUtils::getAllLevelsSelectedRows( myTimeline->getTrace(), mySelectedRows, myTimeline->getLevel(), tmpSelection );
       wxString tmp;
       GetStringValueFromVector( tmpSelection, tmp );
       SetValueInEvent( tmp );
     }
-  
+
     wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
     delete dialog;
   }
-  
+
   return true;
 }
 
 
-void prvRowsSelectionProperty::GetStringValueFromVector( vector<TObjectOrder> &whichSelection,
-                                                         wxString &onString )
+void prvRowsSelectionProperty::GetStringValueFromVector( vector< TObjectOrder >& whichSelection, wxString& onString )
 {
-  for (  vector<TObjectOrder>::iterator it = whichSelection.begin(); it != whichSelection.end(); ++it )
+  for( vector< TObjectOrder >::iterator it = whichSelection.begin(); it != whichSelection.end(); ++it )
   {
-    if ( it != whichSelection.begin() ) 
+    if( it != whichSelection.begin() )
     {
-      onString += _(", ");
+      onString += _( ", " );
     }
 
     if( myTimeline->getLevel() == TTraceLevel::CPU )
-      onString += wxString::FromUTF8( LabelConstructor::objectLabel( *it + 1,
-                                                                      myTimeline->getLevel(),
-                                                                      myTimeline->getTrace(),
-                                                                      false ).c_str() );
+      onString += wxString::FromUTF8( LabelConstructor::objectLabel( *it + 1, myTimeline->getLevel(), myTimeline->getTrace(), false ).c_str() );
     else
-      onString += wxString::FromUTF8( LabelConstructor::objectLabel( *it,
-                                                                      myTimeline->getLevel(),
-                                                                      myTimeline->getTrace(),
-                                                                      false ).c_str() );
+      onString += wxString::FromUTF8( LabelConstructor::objectLabel( *it, myTimeline->getLevel(), myTimeline->getTrace(), false ).c_str() );
   }
 }
 
@@ -854,38 +795,31 @@ void prvRowsSelectionProperty::GetStringValueFromVector( vector<TObjectOrder> &w
  **********************************************************/
 
 #if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
-wxPG_IMPLEMENT_PROPERTY_CLASS( prvNumbersListProperty, wxPGProperty,
-                               TextCtrl )
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvNumbersListProperty, wxPGProperty, TextCtrl )
 #else
-WX_PG_IMPLEMENT_PROPERTY_CLASS( prvNumbersListProperty, wxPGProperty,
-                                wxArrayInt, const wxArrayInt&, TextCtrl )
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvNumbersListProperty, wxPGProperty, wxArrayInt, const wxArrayInt&, TextCtrl )
 #endif
 
-prvNumbersListProperty::prvNumbersListProperty( const wxString& label,
-                                                const wxString& name,
-                                                const wxArrayString& value )
-                                                  : wxPGProperty(label,name)
+  prvNumbersListProperty::prvNumbersListProperty( const wxString& label, const wxString& name, const wxArrayString& value )
+  : wxPGProperty( label, name )
 {
   // Get local chars for decimal and thousand separators
   // Actually having problems to read numbers with thousands sep like 60.000.001, so not allowed
   char decimalChar;
   try
   {
-    decimalChar =  use_facet< numpunct< char > >( std::locale( "" ) ).decimal_point();
+    decimalChar = use_facet< numpunct< char > >( std::locale( "" ) ).decimal_point();
   }
-  catch(...)
+  catch( ... )
   {
-    decimalChar =  use_facet< numpunct< char > >( std::locale::classic() ).decimal_point();
+    decimalChar = use_facet< numpunct< char > >( std::locale::classic() ).decimal_point();
   }
 
-  wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
-                              _("5"), _("6"), _("7"), _("8"), _("9"),
-                              _(","),
-                              _(";"),
-                              _("-") };
-  if ( decimalChar == '.' )
+  wxString allowedChars[] = { _( "0" ), _( "1" ), _( "2" ), _( "3" ), _( "4" ), _( "5" ), _( "6" ),
+                              _( "7" ), _( "8" ), _( "9" ), _( "," ), _( ";" ), _( "-" ) };
+  if( decimalChar == '.' )
   {
-    allowedChars[ 10 ] = _(".");
+    allowedChars[ 10 ] = _( "." );
   }
 
   // Set numeric validator
@@ -908,7 +842,7 @@ void prvNumbersListProperty::OnSetValue()
   GenerateValueAsString();
 }
 
-wxString prvNumbersListProperty::ValueToString( wxVariant & value, int argFlags ) const
+wxString prvNumbersListProperty::ValueToString( wxVariant& value, int argFlags ) const
 {
   return value.GetString();
 }
@@ -916,20 +850,18 @@ wxString prvNumbersListProperty::ValueToString( wxVariant & value, int argFlags 
 
 void prvNumbersListProperty::GenerateValueAsString()
 {
-  wxString &tempStr = m_display;
-  tempStr = GetValue().GetString();
+  wxString& tempStr = m_display;
+  tempStr           = GetValue().GetString();
 }
 
 
-bool prvNumbersListProperty::StringToValue( wxVariant& variant, 
-                                            const wxString& text,
-                                            int ) const
+bool prvNumbersListProperty::StringToValue( wxVariant& variant, const wxString& text, int ) const
 {
   wxArrayString arr;
   bool error = false;
 
-  WX_PG_TOKENIZER1_BEGIN(text,wxT(';'))
-    arr.Add(token);
+  WX_PG_TOKENIZER1_BEGIN( text, wxT( ';' ) )
+  arr.Add( token );
   WX_PG_TOKENIZER1_END()
 
   if( !( wxString( GetLabel() ).Trim( false ).IsSameAs( wxT( "Translation List" ) ) ) )
@@ -940,19 +872,19 @@ bool prvNumbersListProperty::StringToValue( wxVariant& variant,
     map< double, wxString > sortedValues;
     for( unsigned int i = 0; i < arr.GetCount(); ++i )
     {
-      if ( arr[i].ToDouble( &tmpValue ) )
+      if( arr[ i ].ToDouble( &tmpValue ) )
         sortedValues[ tmpValue ] = arr[ i ];
       else
       {
         sortedValues[ 0 ] = arr[ i ];
-        error = true;
+        error             = true;
       }
     }
 
     wxArrayString tmpArr;
     for( map< double, wxString >::iterator it = sortedValues.begin(); it != sortedValues.end(); ++it )
     {
-      tmpArr.Add( (*it).second );
+      tmpArr.Add( ( *it ).second );
     }
 
     arr = tmpArr;
@@ -966,15 +898,15 @@ bool prvNumbersListProperty::StringToValue( wxVariant& variant,
     vector< wxString > labels;
     for( unsigned int i = 0; i < arr.GetCount(); ++i )
     {
-      if( arr[i].ToDouble( &tmpValue ) )
+      if( arr[ i ].ToDouble( &tmpValue ) )
       {
         values.push_back( tmpValue );
-        labels.push_back( arr[i] );
+        labels.push_back( arr[ i ] );
       }
       else
       {
         values.push_back( 0 );
-        labels.push_back( arr[i] );
+        labels.push_back( arr[ i ] );
         error = true;
       }
     }
@@ -982,28 +914,26 @@ bool prvNumbersListProperty::StringToValue( wxVariant& variant,
     wxArrayString tmpArr;
     for( vector< wxString >::iterator it = labels.begin(); it != labels.end(); ++it )
     {
-      tmpArr.Add( (*it) );
+      tmpArr.Add( ( *it ) );
     }
 
     arr = tmpArr;
   }
 
-  wxVariant v( WXVARIANT(arr) );
+  wxVariant v( WXVARIANT( arr ) );
   variant = v;
 
   if( error )
   {
-    wxMessageDialog tmpDialog( wxparaverApp::mainWindow, wxT( "Invalid parameters." ), wxT( " Warning " ), wxOK|wxICON_EXCLAMATION );
+    wxMessageDialog tmpDialog( wxparaverApp::mainWindow, wxT( "Invalid parameters." ), wxT( " Warning " ), wxOK | wxICON_EXCLAMATION );
     tmpDialog.ShowModal();
   }
-  
+
   return !error;
 }
 
 
-bool prvNumbersListProperty::OnEvent( wxPropertyGrid* propgrid,
-                                      wxWindow* WXUNUSED(primary),
-                                      wxEvent& event )
+bool prvNumbersListProperty::OnEvent( wxPropertyGrid* propgrid, wxWindow* WXUNUSED( primary ), wxEvent& event )
 {
   return false;
 }
@@ -1013,24 +943,20 @@ bool prvNumbersListProperty::OnEvent( wxPropertyGrid* propgrid,
  **        prvTimelineTreeProperty
  **********************************************************/
 #if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
-wxPG_IMPLEMENT_PROPERTY_CLASS( prvTimelineTreeProperty, wxPGProperty,
-                               TextCtrlAndButton )
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvTimelineTreeProperty, wxPGProperty, TextCtrlAndButton )
 #else
-WX_PG_IMPLEMENT_PROPERTY_CLASS( prvTimelineTreeProperty, wxPGProperty,
-                                wxString, wxString&, TextCtrlAndButton )
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvTimelineTreeProperty, wxPGProperty, wxString, wxString&, TextCtrlAndButton )
 #endif
 
-constexpr wxWindowID ID_TIMELINETREE = 10001;
+  constexpr wxWindowID ID_TIMELINETREE = 10001;
 
 prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
                                                   const wxString& name,
-                                                  Timeline *currentWindow,
-                                                  const Trace *currentTrace,
+                                                  Timeline* currentWindow,
+                                                  const Trace* currentTrace,
                                                   bool needNoneElement,
-                                                  std::vector<TWindowID> windows )
-                                                    : wxPGProperty(label,name), 
-                                                      myWindows( windows ),
-                                                      myCurrentTrace( currentTrace )
+                                                  std::vector< TWindowID > windows )
+  : wxPGProperty( label, name ), myWindows( windows ), myCurrentTrace( currentTrace )
 {
   wxString valueStr;
   if( currentWindow == nullptr )
@@ -1039,7 +965,7 @@ prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
     valueStr = wxString( currentWindow->getName().c_str(), wxConvUTF8 );
 
   SetValue( valueStr );
-  selectedWindow = currentWindow;
+  selectedWindow    = currentWindow;
   myNeedNoneElement = needNoneElement;
 }
 
@@ -1047,24 +973,17 @@ prvTimelineTreeProperty::~prvTimelineTreeProperty()
 {
 }
 
-bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
-                                       wxWindow* WXUNUSED(primary),
-                                       wxEvent& event )
+bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid, wxWindow* WXUNUSED( primary ), wxEvent& event )
 {
-  if( propgrid->IsMainButtonEvent(event) )
+  if( propgrid->IsMainButtonEvent( event ) )
   {
-    TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow,
-                                           ID_TIMELINETREE,
-                                           GetLabel(),
-                                           myWindows,
-                                           selectedWindow,
-                                           myCurrentTrace,
-                                           myNeedNoneElement );
-    
+    TimelineTreeSelector
+      timelineSelector( wxparaverApp::mainWindow, ID_TIMELINETREE, GetLabel(), myWindows, selectedWindow, myCurrentTrace, myNeedNoneElement );
+
     wxparaverApp::mainWindow->SetOpenedPropertyDialog( &timelineSelector );
 
     timelineSelector.Move( wxGetMousePosition() );
-    
+
     int retCode = timelineSelector.ShowModal();
     if( retCode == wxID_OK )
     {
@@ -1083,19 +1002,19 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
     {
       wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
       return false;
-    }    
+    }
   }
 
   wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
   return true;
 }
 
-wxString prvTimelineTreeProperty::ValueToString( wxVariant & value, int argFlags ) const
+wxString prvTimelineTreeProperty::ValueToString( wxVariant& value, int argFlags ) const
 {
   return value.GetString();
 }
 
-Timeline *prvTimelineTreeProperty::getSelectedWindow() const
+Timeline* prvTimelineTreeProperty::getSelectedWindow() const
 {
   return selectedWindow;
 }

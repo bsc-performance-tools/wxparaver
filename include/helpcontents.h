@@ -27,28 +27,30 @@
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 #include "wx/html/htmlwin.h"
 #include "wx/statline.h"
 ////@end includes
+// clang-format on
 
-#include "wx/help.h"    // pruebas wxHelpController
-#include "wx/fs_zip.h"  // pruebas wxHelpController
+#include "wx/fs_zip.h" // pruebas wxHelpController
+#include "wx/help.h"   // pruebas wxHelpController
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class wxHtmlWindow;
 class wxStaticLine;
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_HELPCONTENTS 10192
 #define ID_HTMLWINDOW 10193
@@ -63,65 +65,66 @@ class wxStaticLine;
 #define SYMBOL_HELPCONTENTS_SIZE wxSize(600, 600)
 #define SYMBOL_HELPCONTENTS_POSITION wxDefaultPosition
 ////@end control identifiers
+// clang-format on
 
-#define SYMBOL_TUTORIALSBROWSER_TITLE _("Tutorials")
+#define SYMBOL_TUTORIALSBROWSER_TITLE _( "Tutorials" )
 
 
 /*!
  * HelpContents class declaration
  */
 
-enum class TContents 
+enum class TContents
 {
   HELP,
   TUTORIAL
 };
 
-class HelpContents: public wxDialog
+class HelpContents : public wxDialog
 {
-  DECLARE_DYNAMIC_CLASS( HelpContents )
-  DECLARE_EVENT_TABLE()
+    DECLARE_DYNAMIC_CLASS( HelpContents )
+    DECLARE_EVENT_TABLE()
 
-public:
+  public:
+    /// Constructors
+    HelpContents();
+    HelpContents( wxWindow* parent,
+                  const wxString& whichHelpContentsRoot,
+                  const bool whichLookForContents = true,
+                  wxWindowID id                   = SYMBOL_HELPCONTENTS_IDNAME,
+                  const wxString& caption         = SYMBOL_HELPCONTENTS_TITLE,
+                  const wxPoint& pos              = SYMBOL_HELPCONTENTS_POSITION,
+                  const wxSize& size              = SYMBOL_HELPCONTENTS_SIZE,
+                  long style                      = SYMBOL_HELPCONTENTS_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_HELPCONTENTS_IDNAME,
+                 const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
+                 const wxPoint& pos      = SYMBOL_HELPCONTENTS_POSITION,
+                 const wxSize& size      = SYMBOL_HELPCONTENTS_SIZE,
+                 long style              = SYMBOL_HELPCONTENTS_STYLE );
 
-  /// Constructors
-  HelpContents();
-  HelpContents( wxWindow* parent,
-                const wxString& whichHelpContentsRoot,
-                const bool whichLookForContents = true,
-                wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
-                const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
-                const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
-                const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
-                long style = SYMBOL_HELPCONTENTS_STYLE );
-  /// Creation
-  bool Create( wxWindow* parent,
-               wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
-               const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
-               const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
-               const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
-               long style = SYMBOL_HELPCONTENTS_STYLE );
+    static HelpContents* createObject( TContents whichObject,
+                                       wxWindow* parent,
+                                       const wxString& whichHelpContentsRoot,
+                                       const bool whichLookForContents = true,
+                                       wxWindowID id                   = SYMBOL_HELPCONTENTS_IDNAME,
+                                       const wxString& caption         = SYMBOL_HELPCONTENTS_TITLE,
+                                       const wxPoint& pos              = SYMBOL_HELPCONTENTS_POSITION,
+                                       const wxSize& size              = SYMBOL_HELPCONTENTS_SIZE,
+                                       long style                      = SYMBOL_HELPCONTENTS_STYLE );
 
-  static HelpContents* createObject( TContents whichObject,
-                                     wxWindow* parent,
-                                     const wxString& whichHelpContentsRoot,
-                                     const bool whichLookForContents = true,
-                                     wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
-                                     const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
-                                     const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
-                                     const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
-                                     long style = SYMBOL_HELPCONTENTS_STYLE);
+    /// Destructor
+    ~HelpContents();
 
-  /// Destructor
-  ~HelpContents();
+    /// Initialises member variables
+    void Init();
 
-  /// Initialises member variables
-  void Init();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-  /// Creates the controls and sizers
-  void CreateControls();
-
-////@begin HelpContents event handler declarations
+    // clang-format off
+  ////@begin HelpContents event handler declarations
 
   /// wxEVT_COMMAND_HTML_LINK_CLICKED event handler for ID_HTMLWINDOW
   void OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event );
@@ -144,92 +147,96 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLOSE
   void OnButtonCloseClick( wxCommandEvent& event );
 
-////@end HelpContents event handler declarations
+  ////@end HelpContents event handler declarations
+    // clang-format on
 
-////@begin HelpContents member function declarations
+    // clang-format off
+  ////@begin HelpContents member function declarations
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end HelpContents member function declarations
+  ////@end HelpContents member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-////@begin HelpContents member variables
+    // clang-format off
+  ////@begin HelpContents member variables
   wxHtmlWindow* htmlWindow;
   wxBitmapButton* buttonIndex;
   wxBitmapButton* buttonHistoryBack;
   wxBitmapButton* buttonHistoryForward;
   wxStaticLine* staticLineDownloadSeparator;
   wxBitmapButton* buttonDownloadTutorial;
-////@end HelpContents member variables
+  ////@end HelpContents member variables
+    // clang-format on
 
-  bool SetHelpContentsRoot( const std::string& whichRoot );
-  bool SetHelpContentsRoot( const wxString& whichRoot );
+    bool SetHelpContentsRoot( const std::string& whichRoot );
+    bool SetHelpContentsRoot( const wxString& whichRoot );
 
-  const std::string GetHelpContentsRootStr();
-  const wxString GetHelpContentsRoot();
+    const std::string GetHelpContentsRootStr();
+    const wxString GetHelpContentsRoot();
 
-  void LoadHtml( const wxString& htmlFile );
-  bool SetHelpContents( const wxString& whichHelpContents );
+    void LoadHtml( const wxString& htmlFile );
+    bool SetHelpContents( const wxString& whichHelpContents );
 
-  static bool isHtmlDoc( const wxString& whichPath );
-  static bool isHtmlReferenceInDoc( const wxString& whichPath );
+    static bool isHtmlDoc( const wxString& whichPath );
+    static bool isHtmlReferenceInDoc( const wxString& whichPath );
 
-protected:
-  wxString helpContentsRoot;
-  bool lookForContents;
-  wxString currentHelpContentsDir;
-  wxString indexFileName;
-  wxString subindexLink;
-  wxString dialogCaption;
+  protected:
+    wxString helpContentsRoot;
+    bool lookForContents;
+    wxString currentHelpContentsDir;
+    wxString indexFileName;
+    wxString subindexLink;
+    wxString dialogCaption;
 
-  std::string getCurrentHelpContentsFullPath();
-  std::string getHrefFullPath( wxHtmlLinkEvent &event );
-  bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
+    std::string getCurrentHelpContentsFullPath();
+    std::string getHrefFullPath( wxHtmlLinkEvent& event );
+    bool matchHrefExtension( wxHtmlLinkEvent& event, const wxString extension );
 
-  const wxString appendIndexHtmlToURL( const wxString& path );
-  void appendHelpContents( const wxString& title, const wxString& path, wxString& htmlDoc );
-  bool helpContentsFound( wxArrayString & tutorials );
-  bool DetectHelpContentsIndexInPath( const wxString& whichTutorial );
+    const wxString appendIndexHtmlToURL( const wxString& path );
+    void appendHelpContents( const wxString& title, const wxString& path, wxString& htmlDoc );
+    bool helpContentsFound( wxArrayString& tutorials );
+    bool DetectHelpContentsIndexInPath( const wxString& whichTutorial );
 
-  virtual const wxString getTitle( int numTutorial, const wxString& path );
-  virtual void buildIndexTemplate( wxString title, wxString filePrefix );
-  virtual void buildIndex();
-  virtual void linkToWebPage( wxString& htmlDoc );
-  virtual void helpMessage( wxString& htmlDoc );
+    virtual const wxString getTitle( int numTutorial, const wxString& path );
+    virtual void buildIndexTemplate( wxString title, wxString filePrefix );
+    virtual void buildIndex();
+    virtual void linkToWebPage( wxString& htmlDoc );
+    virtual void helpMessage( wxString& htmlDoc );
 };
 
 
-class TutorialsBrowser: public HelpContents
+class TutorialsBrowser : public HelpContents
 {
-  DECLARE_DYNAMIC_CLASS( TutorialsBrowser )
-  DECLARE_EVENT_TABLE()
+    DECLARE_DYNAMIC_CLASS( TutorialsBrowser )
+    DECLARE_EVENT_TABLE()
 
   public:
     TutorialsBrowser()
-    {}
+    {
+    }
     TutorialsBrowser( wxWindow* parent,
                       const wxString& whichHelpContentsRoot,
-                      wxWindowID id = wxID_ANY,
+                      wxWindowID id           = wxID_ANY,
                       const wxString& caption = SYMBOL_TUTORIALSBROWSER_TITLE,
-                      const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
-                      const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
-                      long style = SYMBOL_HELPCONTENTS_STYLE );
+                      const wxPoint& pos      = SYMBOL_HELPCONTENTS_POSITION,
+                      const wxSize& size      = SYMBOL_HELPCONTENTS_SIZE,
+                      long style              = SYMBOL_HELPCONTENTS_STYLE );
     ~TutorialsBrowser();
 
     void OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event );
 
-    void OnButtonDownloadClick(  wxCommandEvent& event );
-    
+    void OnButtonDownloadClick( wxCommandEvent& event );
+
   protected:
     const wxString getTitle( int numTutorial, const wxString& path );
     void linkToWebPage( wxString& htmlDoc );
     void buildIndex();
     void helpMessage( wxString& htmlDoc );
 };
-
-

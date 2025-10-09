@@ -58,24 +58,24 @@ using namespace std;
 
 typedef  wxPGProperty* wxPGId;
 
-static bool filterCatCollapsed           = true;
-static bool commFilterCatCollapsed       = true;
-static bool commFilterFromCollapsed      = true;
-static bool commFilterToCollapsed        = true;
-static bool commFilterTagCollapsed       = true;
-static bool commFilterSizeCollapsed      = true;
-static bool commFilterBWCollapsed        = true;
-static bool eventFilterCatCollapsed      = true;
-static bool eventFilterTypeCollapsed     = true;
-static bool eventFilterValueCollapsed    = true;
-static bool semanticCatCollapsed         = true;
+static bool filterCatCollapsed        = true;
+static bool commFilterCatCollapsed    = true;
+static bool commFilterFromCollapsed   = true;
+static bool commFilterToCollapsed     = true;
+static bool commFilterTagCollapsed    = true;
+static bool commFilterSizeCollapsed   = true;
+static bool commFilterBWCollapsed     = true;
+static bool eventFilterCatCollapsed   = true;
+static bool eventFilterTypeCollapsed  = true;
+static bool eventFilterValueCollapsed = true;
+static bool semanticCatCollapsed      = true;
 
-static bool statCatCollapsed             = true;
-static bool ctrlCatCollapsed             = true;
-static bool dataCatCollapsed             = true;
-static bool thirdWinCatCollapsed         = true;
+static bool statCatCollapsed          = true;
+static bool ctrlCatCollapsed          = true;
+static bool dataCatCollapsed          = true;
+static bool thirdWinCatCollapsed      = true;
 static bool derivedHistogramCatCollapsed = true;
-static unsigned int propNameCounter      = 0;
+static unsigned int propNameCounter   = 0;
 
 /*
 class wxSpinButtonsEditor : public wxPGTextCtrlEditor
@@ -705,23 +705,23 @@ inline void updateStateOf( wxPropertyGrid *windowProperties, bool& categoryStat,
 
 inline void updateCategoriesState( wxPropertyGrid *windowProperties )
 {
-  updateStateOf( windowProperties, filterCatCollapsed,           wxT( "Filter" ) );
-  updateStateOf( windowProperties, commFilterCatCollapsed,       wxT( "Communications" ) );
-  updateStateOf( windowProperties, commFilterFromCollapsed,      wxT( "Comm from" ) );
-  updateStateOf( windowProperties, commFilterToCollapsed,        wxT( "Comm to" ) );
-  updateStateOf( windowProperties, commFilterTagCollapsed,       wxT( "Comm tag" ) );
-  updateStateOf( windowProperties, commFilterSizeCollapsed,      wxT( "Comm size" ) );
-  updateStateOf( windowProperties, commFilterBWCollapsed,        wxT( "Comm bandwidth" ) );
-  updateStateOf( windowProperties, eventFilterCatCollapsed,      wxT( "Events" ) );
-  updateStateOf( windowProperties, eventFilterTypeCollapsed,     wxT( "Event type" ) );
-  updateStateOf( windowProperties, eventFilterValueCollapsed,    wxT( "Event value" ) );
-  updateStateOf( windowProperties, semanticCatCollapsed,         wxT( "Semantic" ) );
-   
-  updateStateOf( windowProperties, statCatCollapsed,             wxT( "Statistics" ) );
-  updateStateOf( windowProperties, ctrlCatCollapsed,             wxT( "Control" ) );
-  updateStateOf( windowProperties, dataCatCollapsed,             wxT( "Data" ) );
-  updateStateOf( windowProperties, thirdWinCatCollapsed,         wxT( "3D" ) );
-  
+  updateStateOf( windowProperties, filterCatCollapsed,        wxT( "Filter" ) );
+  updateStateOf( windowProperties, commFilterCatCollapsed,    wxT( "Communications" ) );
+  updateStateOf( windowProperties, commFilterFromCollapsed,   wxT( "Comm from" ) );
+  updateStateOf( windowProperties, commFilterToCollapsed,     wxT( "Comm to" ) );
+  updateStateOf( windowProperties, commFilterTagCollapsed,    wxT( "Comm tag" ) );
+  updateStateOf( windowProperties, commFilterSizeCollapsed,   wxT( "Comm size" ) );
+  updateStateOf( windowProperties, commFilterBWCollapsed,     wxT( "Comm bandwidth" ) );
+  updateStateOf( windowProperties, eventFilterCatCollapsed,   wxT( "Events" ) );
+  updateStateOf( windowProperties, eventFilterTypeCollapsed,  wxT( "Event type" ) );
+  updateStateOf( windowProperties, eventFilterValueCollapsed, wxT( "Event value" ) );
+  updateStateOf( windowProperties, semanticCatCollapsed,      wxT( "Semantic" ) );
+
+  updateStateOf( windowProperties, statCatCollapsed,      wxT( "Statistics" ) );
+  updateStateOf( windowProperties, ctrlCatCollapsed,      wxT( "Control" ) );
+  updateStateOf( windowProperties, dataCatCollapsed,      wxT( "Data" ) );
+  updateStateOf( windowProperties, thirdWinCatCollapsed,  wxT( "3D" ) );
+
   updateStateOf( windowProperties, derivedHistogramCatCollapsed, wxT( "Derived" ) );
 }
 
@@ -821,8 +821,8 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
 
   wxPGId dummyPGId = (wxPGId)nullptr; // used to append always to windowProperties
 
-  AppendCFG4DProperty( (wxStringProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,
-                       dummyPGId, wxT("Name"), SINGLE_NAME, CFG4DPropertyCustomOptions(), whichWindow->getName() );
+  AppendCFG4DProperty ((wxStringProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,
+                       dummyPGId, wxT ("Name"), SINGLE_NAME, CFG4DPropertyCustomOptions (), whichWindow->getName ());
 
   AppendCFG4DProperty( (wxStringProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,
                        dummyPGId, wxT("Begin time"), SINGLE_BEGINTIME, CFG4DPropertyCustomOptions(),
@@ -971,6 +971,21 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
 
     AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,commFilterCat,
                          wxT("Physical"), SINGLE_COMMPHYSICAL, CFG4DPropertyCustomOptions(), filter->getPhysical() );
+
+    wxPGId tmpIntraCommId = AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, commFilterCat,
+                                                 wxT("Intra node comms"), SINGLE_COMMINTRA, CFG4DPropertyCustomOptions(), filter->getIntraCommsFilter() );
+
+    wxPGId tmpInterCommId = AppendCFG4DProperty( (wxBoolProperty *)nullptr, windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,commFilterCat,
+                                                 wxT("Inter node comms"), SINGLE_COMMINTER, CFG4DPropertyCustomOptions(), filter->getInterCommsFilter() );
+
+    if( !whichWindow->getTrace()->existResourceInfo() )
+    {
+      if ( tmpIntraCommId != (wxPGId)nullptr )
+        tmpIntraCommId->Enable( false );
+
+      if ( tmpInterCommId != (wxPGId)nullptr )
+        tmpInterCommId->Enable( false );
+    }
 
     // Comm From
     wxPGId commFilterFrom = ( wxPGId )nullptr;
@@ -2016,6 +2031,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
   // Data Window related properties (not applied in communication histograms or derived histograms )
   if( !whichHisto->isCommunicationStat( whichHisto->getCurrentStat() ) && !whichHisto->isDerivedHistogram() )
   {
+    // Data Window related properties
     wxPGId dataCat = (wxPGId)nullptr;
     if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
     {
@@ -2024,14 +2040,14 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
         dataCat->SetFlagsFromString( _( "COLLAPSED" ) );
     }
 
-    validWin.clear();
+    validWin.clear();  //  vector<TWindowID> validWin;
     LoadedWindows::getInstance()->getValidDataWindow( whichHisto->getControlWindow(),
                                                       whichHisto->getExtraControlWindow(),
                                                       validWin );
 
     tmpOptions = { NO_BUTTON, nullptr, false, whichHisto->getDataWindow() };
     AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, dataCat,
-                         wxT("Window"), HISTOGRAM_DATAWINDOW, tmpOptions, validWin );
+                        wxT("Window"), HISTOGRAM_DATAWINDOW, tmpOptions, validWin );
   }
 
   if ( whichHisto->isDerivedHistogram() )
@@ -2154,16 +2170,16 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
     if ( whichHisto->getCFG4DEnabled() && whichHisto->getCFG4DMode() )
     {
       updateTimelinePropertiesRecursive( windowProperties,
-                                        whichHisto->getControlWindow(),
-                                        whichPropertiesClientData,
-                                        linkedPropertiesShown );
+                                         whichHisto->getControlWindow(),
+                                         whichPropertiesClientData,
+                                         linkedPropertiesShown );
       if( whichHisto->getDataWindow() != nullptr &&
           whichHisto->getDataWindow() != whichHisto->getControlWindow() )
       {
         updateTimelinePropertiesRecursive( windowProperties,
-                                          whichHisto->getDataWindow(),
-                                          whichPropertiesClientData,
-                                          linkedPropertiesShown );
+                                           whichHisto->getDataWindow(),
+                                           whichPropertiesClientData,
+                                           linkedPropertiesShown );
       }
 
       if( whichHisto->getThreeDimensions() &&
@@ -2171,9 +2187,9 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
           whichHisto->getExtraControlWindow() != whichHisto->getDataWindow() )
       {
         updateTimelinePropertiesRecursive( windowProperties,
-                                          whichHisto->getExtraControlWindow(),
-                                          whichPropertiesClientData,
-                                          linkedPropertiesShown );
+                                           whichHisto->getExtraControlWindow(),
+                                           whichPropertiesClientData,
+                                           linkedPropertiesShown );
       }
     }
   }

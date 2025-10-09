@@ -21,51 +21,62 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#include "wx/grid.h"
+#pragma once
+
+#include <wx/string.h>
+#include <array>
 #include <vector>
-#include <string>
+
 #include "paraverkerneltypes.h"
-#include "paravertypes.h"
+#include "trace.h"
 
-class gHistogram;
+class trace;
 
-using std::vector;
-using std::string;
+enum class TExternalAppID
+{
+  // --- Called through RunScript choice selector widget --- 
+  DIMEMAS = 0,  // Dimemas
+  PRVSTATS,     // prvstats
+  CLUSTERING,   // Clustering
+  FOLDING,      // Folding
+  MESS,       // Mess
+    // <-- add new apps here at most
+  USER_COMMAND, // User command
 
+  // --- Called by different widget ---
+  DIMEMAS_GUI,  // DimemasGui   invoked through button
 
-class HistoTableBase : public wxGridTableBase
+  NUMBER_APPS
+};
+
+class ExternalApps
 {
   public:
-    HistoTableBase();
-    HistoTableBase( gHistogram* whichHisto );
-    virtual ~HistoTableBase();
+    ExternalApps() = delete;
 
-    virtual int GetNumberRows();
-    virtual int GetNumberCols();
+    static wxString getApplicationLabel( TExternalAppID whichApp );
+    static wxString getApplicationBin( TExternalAppID whichApp );
+    static wxString getApplicationCheckBin( TExternalAppID whichApp );
 
-    virtual wxString GetRowLabelValue( int row );
-    virtual wxString GetColLabelValue( int col );
+    static bool existCommand( const wxString& program );
+    static bool existCommand( TExternalAppID programID );
 
-    virtual wxString GetValue( int row, int col );
-    virtual void SetValue( int row, int col, const wxString &value );
-    virtual bool IsEmptyCell( int row, int col );
+    static bool isSuitableAppForTrace( TExternalAppID programID, const Trace& whichTrace );
 
-    virtual wxGridCellAttr *GetAttr( int row, int col, wxGridCellAttr::wxAttrKind kind );
-
-    void setSelectedRows( vector< TObjectOrder > *whichRows );
-    void setNoVoidSemRanges( vector< THistogramColumn > *whichCols );
-    void setDefaultFontBold( wxFont& whichFont );
+    static std::vector< bool > suitableAppsForTrace( const Trace& whichTrace );
 
   private:
-    gHistogram *myHisto;
-    vector< TObjectOrder > *selectedRows;
-    vector< THistogramColumn > *noVoidSemRanges;
-    wxFont cellFontBold;
+    // Labels to construct selector & warning dialogs
+    static const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > applicationLabel;
 
-    string tmpStr;
-    wxString label;
+    // Application binary names
+    static const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > applicationBin;
 
-    int getNumSemanticColumns() const;
-    const wxColour *getTextColorFromLuminance( rgb fromColour ) const;
-    int getIndexTotal( int kernelRow, int kernelCol ) const;
+    // Application binary check names
+    static const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > applicationCheckBin;
+
+    // Functions to verify if app is suitable for trace
+    static const std::array< std::function< bool( const Trace& ) >, (int)TExternalAppID::NUMBER_APPS > applicationVerifyFunctions;
+
+    static bool verifySuitableEvents( TExternalAppID programID, const Trace& whichTrace );
 };

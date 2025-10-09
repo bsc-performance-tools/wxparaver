@@ -8,6 +8,7 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.cpp \
                     derivedtimelinedialog.cpp \
                     eventsselectiondialog.cpp \
                     exitdialog.cpp \
+                    externalapps.cpp \
                     filebrowserbutton.cpp \
                     filedialogext.cpp \
                     finddialog.cpp \

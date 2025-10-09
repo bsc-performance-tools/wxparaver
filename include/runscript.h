@@ -23,12 +23,10 @@
 
 #pragma once
 
-
-
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 #include "filebrowserbutton.h"
 #include "wx/notebook.h"
@@ -36,11 +34,13 @@
 #include "wx/statline.h"
 #include "wx/html/htmlwin.h"
 ////@end includes
-#include <wx/filename.h>
+// clang-format on
+#include "externalapps.h"
 
-#include <string>
+#include <functional>
 #include <map>
-
+#include <string>
+#include <wx/filename.h>
 #include <wx/process.h>
 
 class RunScript;
@@ -49,11 +49,10 @@ class RunScript;
 
 class RunningProcess : public wxProcess
 {
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 
   public:
-    RunningProcess( RunScript *whichParent, const wxString& whichCommand )
-      : wxProcess( (wxDialog *)whichParent ), command( whichCommand )
+    RunningProcess( RunScript* whichParent, const wxString& whichCommand ) : wxProcess( (wxDialog*)whichParent ), command( whichCommand )
     {
       parent = whichParent;
       Redirect();
@@ -67,7 +66,7 @@ class RunningProcess : public wxProcess
     virtual void OnTimerMessage( wxTimerEvent& event );
 
   protected:
-    RunScript *parent;
+    RunScript* parent;
     wxString command;
 
     wxString outMsg;
@@ -82,7 +81,7 @@ class RunningProcess : public wxProcess
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class FileBrowserButton;
 class wxBoxSizer;
@@ -90,11 +89,12 @@ class wxSpinCtrl;
 class wxStaticLine;
 class wxHtmlWindow;
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_RUN_APPLICATION 10110
 #define ID_CHOICE_APPLICATION 10200
@@ -152,11 +152,10 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_FOLDING_REUSE_FILES 10006
 #define ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE 10153
 #define ID_COMBOBOX_FOLDING_MODEL 10284
-#define ID_TEXTCTRL_PROFET_OUTPUT_TRACE 10010
-#define ID_TEXTCTRL_PROFET_CONFIG_FILE 10011
-#define ID_BUTTON_PROFET_CONFIG_FILE 10012
-#define ID_RADIOBUTTON_PROFET_BY_SOCKET 10014
-#define ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER 10013
+#define ID_TEXTCTRL_MESS_OUTPUT_TRACE 10010
+#define ID_TEXTCTRL_MESS_CONFIG_FILE 10011
+#define ID_BUTTON_MESS_CONFIG_FILE 10012
+#define ID_MESS_ADDITIONAL_PLOTS 10013
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
@@ -170,24 +169,7 @@ class wxHtmlWindow;
 #define SYMBOL_RUNSCRIPT_SIZE wxSize(600, -1)
 #define SYMBOL_RUNSCRIPT_POSITION wxDefaultPosition
 ////@end control identifiers
-
-enum class TExternalApp
-{
-  DEFAULT = -1,
-
-  // --- Called through choice selector widget --- 
-  DIMEMAS_WRAPPER,     // Dimemas      selected in choice widget
-  PRVSTATS_WRAPPER,    // prvstats        selected in choice widget
-  CLUSTERING,          // Clustering   selected in choice widget
-  FOLDING,             // Folding      selected in choice widget
-  PROFET,
-                        // <-- add new apps here at most
-  USER_COMMAND,        // User command selected in choice widget
-
-  // --- Called by different widget ---
-  DIMEMAS_GUI,         // DimemasGui   invoked through button
-  PRVSTATS                // prvstats binary invoked by help
-};
+// clang-format on
 
 /*!
  * RunScript class declaration
@@ -208,41 +190,56 @@ enum class TTagPosition
 
 struct TOutputLink
 {
-  std::string tag;
-  TTagPosition position;
-  std::function<bool(const wxString&, wxString&, wxString& )> makeLink;
+    std::string tag;
+    TTagPosition position;
+    std::function< bool( const wxString&, wxString&, wxString& ) > makeLink;
 };
 
 
-class RunScript: public wxDialog
+class RunScript : public wxDialog
 {
-  DECLARE_DYNAMIC_CLASS( RunScript )
-  DECLARE_EVENT_TABLE()
+    DECLARE_DYNAMIC_CLASS( RunScript )
+    DECLARE_EVENT_TABLE()
 
-public:
+  public:
+    /// Constructors
+    RunScript();
+    RunScript( wxWindow* parent,
+               std::vector< bool > whichAcceptableApps,
+               wxWindowID id           = SYMBOL_RUNSCRIPT_IDNAME,
+               const wxString& caption = SYMBOL_RUNSCRIPT_TITLE,
+               const wxPoint& pos      = SYMBOL_RUNSCRIPT_POSITION,
+               const wxSize& size      = SYMBOL_RUNSCRIPT_SIZE,
+               long style              = SYMBOL_RUNSCRIPT_STYLE );
+    RunScript( wxWindow* parent,
+               wxString whichTrace,
+               wxWindowID id           = SYMBOL_RUNSCRIPT_IDNAME,
+               const wxString& caption = SYMBOL_RUNSCRIPT_TITLE,
+               const wxPoint& pos      = SYMBOL_RUNSCRIPT_POSITION,
+               const wxSize& size      = SYMBOL_RUNSCRIPT_SIZE,
+               long style              = SYMBOL_RUNSCRIPT_STYLE );
 
-  /// Constructors
-  RunScript();
-  RunScript( wxWindow* parent,
-             wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
-  RunScript( wxWindow* parent,
-             wxString whichTrace,
-             wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 std::vector< bool > whichAcceptableApps,
+                 wxWindowID id           = SYMBOL_RUNSCRIPT_IDNAME,
+                 const wxString& caption = SYMBOL_RUNSCRIPT_TITLE,
+                 const wxPoint& pos      = SYMBOL_RUNSCRIPT_POSITION,
+                 const wxSize& size      = SYMBOL_RUNSCRIPT_SIZE,
+                 long style              = SYMBOL_RUNSCRIPT_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
+    /// Destructor
+    ~RunScript();
 
-  /// Destructor
-  ~RunScript();
+    /// Initialises member variables
+    void InitOutputLinks();
+    void Init();
 
-  /// Initialises member variables
-  void InitOutputLinks();
-  void Init();
+    /// Creates the controls and sizers
+    void CreateControls( std::vector< bool > whichAcceptableApps );
 
-  /// Creates the controls and sizers
-  void CreateControls();
-
-////@begin RunScript event handler declarations
+    // clang-format off
+  ////@begin RunScript event handler declarations
 
   /// wxEVT_CLOSE_WINDOW event handler for ID_RUN_APPLICATION
   void OnCloseWindow( wxCloseEvent& event );
@@ -295,11 +292,8 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE
   void OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_SOCKET
-  void OnRadiobuttonProfetBySocketSelected( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER
-  void OnRadiobuttonProfetByMemoryControllerSelected( wxCommandEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_MESS_ADDITIONAL_PLOTS
+  void OnMessAdditionalPlotsUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
   void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
@@ -328,9 +322,11 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_EXIT
   void OnButtonExitUpdate( wxUpdateUIEvent& event );
 
-////@end RunScript event handler declarations
+  ////@end RunScript event handler declarations
+    // clang-format on
 
-////@begin RunScript member function declarations
+    // clang-format off
+  ////@begin RunScript member function declarations
 
   RunningProcess * GetMyProcess() const { return myProcess ; }
   void SetMyProcess(RunningProcess * value) { myProcess = value ; }
@@ -343,29 +339,30 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end RunScript member function declarations
+  ////@end RunScript member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-  void OnProcessTerminated( int pid );
+    void OnProcessTerminated( int pid );
 
-  void AppendToLog( wxString msg, bool formatOutput = true );
+    void AppendToLog( wxString msg, bool formatOutput = true );
 
-  void setTrace( wxString whichTrace );
+    void setTrace( wxString whichTrace );
 
-  void setDimemas();
-  void setStats();
-  void setClustering( wxString whichClusteringCSV );
-  void setFolding( wxString whichFoldingCSV );
-  void setProfet();
-  void setUserCommand();
+    void setDimemas();
+    void setStats();
+    void setClustering( wxString whichClusteringCSV );
+    void setFolding( wxString whichFoldingCSV );
+    void setMess();
+    void setUserCommand();
 
-  void closeWindow();
-  void killRunningProcess( std::function<void(const wxString&)> messageLog );
+    void closeWindow();
+    void killRunningProcess( std::function< void( const wxString& ) > messageLog );
 
-  
-////@begin RunScript member variables
+    // clang-format off
+  ////@begin RunScript member variables
   wxChoice* choiceApplication;
   wxButton* buttonEditApplication;
   wxTextCtrl* textCtrlTrace;
@@ -435,12 +432,11 @@ public:
   wxCheckBox* checkboxFoldingReuseFiles;
   wxCheckBox* checkboxFoldingUseSemanticValues;
   wxComboBox* comboboxFoldingModel;
-  wxBoxSizer* profetSection;
-  wxTextCtrl* textCtrlProfetOutputTrace;
-  wxTextCtrl* textCtrlProfetCFG;
-  FileBrowserButton* fileBrowserButtonProfetCFG;
-  wxRadioButton* radioButtonProfetBySocket;
-  wxRadioButton* radioButtonProfetByMemoryController;
+  wxBoxSizer* messSection;
+  wxTextCtrl* textCtrlMessOutputTrace;
+  wxTextCtrl* textCtrlMessCFG;
+  FileBrowserButton* fileBrowserButtonMessCFG;
+  wxCheckBox* checkMessAdditionalPlots;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
@@ -451,93 +447,78 @@ public:
 private:
   RunningProcess * myProcess;
   long myProcessPid;
-////@end RunScript member variables
-  int pidDimemasGUI;
-/*
-public:
-  int executionStatus;
+  ////@end RunScript member variables
+    // clang-format on
+    int pidDimemasGUI;
 
-private:
-*/
+    static wxString clusteringXML;
 
-  static wxString clusteringXML;
+    TExternalAppID currentApp;
 
-  TExternalApp currentApp;
+    using TMakeLinkFunction = std::function< bool( const wxString&, const wxString&, wxString&, wxString& ) >;
+    std::map< TExternalAppID, TMakeLinkFunction > applicationLinkMaker;
+    TMakeLinkFunction defaultLinkMaker;
 
-  // Application list: labels and names
-  std::map< TExternalApp, wxString > applicationLabel;
-  std::map< TExternalApp, wxString > application;
+    std::map< int, bool > appIsFound;
 
-  using TMakeLinkFunction = std::function< bool( const wxString&, const wxString&, wxString&, wxString& ) >;
-  std::map< TExternalApp, TMakeLinkFunction > applicationLinkMaker;
-  TMakeLinkFunction defaultLinkMaker;
-  
-  std::map< int, bool > appIsFound;
+    // extensions to detect in log
+    wxArrayString extensions;
 
-  // extensions to detect in log
-  wxArrayString extensions;
+    std::vector< TOutputLink > outputLinks;
 
-  std::vector< TOutputLink > outputLinks;
+    // Tags to detect times
+    wxString iterationTag;
+    wxString punctualTimeTag;
+    wxString rangeTimeTag;
+    wxArrayString timeMarkTags;
 
-  // Tags to detect times
-  wxString iterationTag;
-  wxString punctualTimeTag;
-  wxString rangeTimeTag;
-  wxArrayString timeMarkTags;
+    // Hidden app parameters
+    wxString clusteringCSV;
+    wxString foldingCSV;
 
-  // Hidden app parameters
-  wxString clusteringCSV;
-  wxString foldingCSV;
+    bool helpOption; // delete?
 
-  bool helpOption; // delete?
+    wxString tagFoldingOutputDirectory;
+    wxString foldingOutputDirectory;
 
-  wxString tagFoldingOutputDirectory;
-  wxString foldingOutputDirectory;
+    std::map< TEnvironmentVar, wxString > environmentVariable;
 
-  std::map< TEnvironmentVar, wxString > environmentVariable;
+    // MESS
+    wxString lastProcessedTrace;
 
-  wxProgressDialog *progressBar;
+    wxProgressDialog* progressBar;
 
-  // Selection
-  void setApp( TExternalApp whichApp );
-  void adaptClusteringAlgorithmParameters();
-  void adaptWindowToApplicationSelection();
+    // Selection
+    void setApp( TExternalAppID whichApp );
+    void adaptClusteringAlgorithmParameters();
+    void adaptWindowToApplicationSelection();
+    TExternalAppID getSelectedApp() const;
 
-  // Command check and build
-  void ShowWarning( wxString message );
-  void ShowWarningUnreachableProgram( wxString program, TEnvironmentVar envVar, bool alsoPrintPath = false );
-  wxString getEnvironmentPath( TEnvironmentVar envVar, wxString command = wxString( wxT("") ) );
-  wxString doubleQuote( const wxString& path );
-  wxString expandVariables( wxString command );
+    // Command check and build
+    void ShowWarning( wxString message );
+    void ShowWarningUnreachableProgram( wxString program, TEnvironmentVar envVar, bool alsoPrintPath = false );
+    wxString getEnvironmentPath( TEnvironmentVar envVar, wxString command = wxString( wxT( "" ) ) );
+    wxString doubleQuote( const wxString& path );
+    wxString expandVariables( wxString command );
 
-  wxString GetCommand( wxString &command, wxString &parameters, TExternalApp selectedApp = TExternalApp::DEFAULT );
-  wxString GetReachableCommand( TExternalApp selectedApp = TExternalApp::DEFAULT ); // adds path to the binary
+    wxString GetCommand( wxString& command, wxString& parameters, TExternalAppID selectedApp );
+    wxString GetReachableCommand( TExternalAppID selectedApp ); // adds path to the binary
 
-  // Log related
-  bool readFoldingTag( wxString rawLine );
-  wxString rawFormat( wxString rawLine );
-  bool timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  &tagPosition );
-  wxString insertTimeMarkLink( wxString rawLine, std::pair< int, wxString > tagPosition );
-  //wxString insertLinks( wxString rawLine, wxArrayString extensions );
-  wxString insertLinks( wxString rawLine );
+    // Log related
+    bool readFoldingTag( wxString rawLine );
+    wxString rawFormat( wxString rawLine );
+    bool timeMarkTagFound( wxString rawLine, std::pair< int, wxString >& tagPosition );
+    wxString insertTimeMarkLink( wxString rawLine, std::pair< int, wxString > tagPosition );
+    wxString insertLinks( wxString rawLine );
 
-  wxString insertLog( wxString rawLine, wxArrayString extensions );
+    wxString insertLog( wxString rawLine, wxArrayString extensions );
 
-  // TODO: This method's been copied from HelpContents; consider write new class
-  std::string getHrefFullPath( wxHtmlLinkEvent &event, wxString whichSuffixToErase = wxT("") );
-  bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension ) const;
-  bool matchHrefPrefix( wxHtmlLinkEvent &event, const wxString extension ) const;
+    // TODO: This method's been copied from HelpContents; consider write new class
+    std::string getHrefFullPath( wxHtmlLinkEvent& event, wxString whichSuffixToErase = wxT( "" ) );
+    bool matchHrefExtension( wxHtmlLinkEvent& event, const wxString extension ) const;
+    bool matchHrefPrefix( wxHtmlLinkEvent& event, const wxString extension ) const;
 
-  // Execution
-  //void OnTerminateShellCommand( int pid, int status );
-
-  //bool shellCommand( const wxString& program, const wxString& whichFile );
-  bool existCommand( const wxString& program );
-  void runCommandAsync( const wxString& program, const wxString& parameter );
-  void runDetachedProcess( wxString command, bool checkPidDimemasGUI = false );
+    // Execution
+    void runCommandAsync( const wxString& program, const wxString& parameter );
+    void runDetachedProcess( wxString command, bool checkPidDimemasGUI = false );
 };
-
-
-
-
-

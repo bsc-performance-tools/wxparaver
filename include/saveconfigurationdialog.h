@@ -28,26 +28,28 @@
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 #include "wx/statline.h"
 ////@end includes
+// clang-format on
 #include "cfg.h"
-#include "window.h"
-#include "histogram.h"
 #include "cfgs4d.h"
+#include "histogram.h"
+#include "window.h"
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_SAVECONFIGURATIONDIALOG 10012
 #define ID_CHOICE_TRACE_SELECTOR 10191
@@ -71,35 +73,46 @@
 #define SYMBOL_SAVECONFIGURATIONDIALOG_SIZE wxDefaultSize
 #define SYMBOL_SAVECONFIGURATIONDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
-
+// clang-format on
 
 /*!
  * SaveConfigurationDialog class declaration
  */
 
-class SaveConfigurationDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( SaveConfigurationDialog )
-  DECLARE_EVENT_TABLE()
+class SaveConfigurationDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( SaveConfigurationDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  SaveConfigurationDialog();
-  SaveConfigurationDialog( wxWindow* parent, wxWindowID id = SYMBOL_SAVECONFIGURATIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVECONFIGURATIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVECONFIGURATIONDIALOG_POSITION, const wxSize& size = SYMBOL_SAVECONFIGURATIONDIALOG_SIZE, long style = SYMBOL_SAVECONFIGURATIONDIALOG_STYLE );
+  public:
+    /// Constructors
+    SaveConfigurationDialog();
+    SaveConfigurationDialog( wxWindow* parent,
+                             wxWindowID id           = SYMBOL_SAVECONFIGURATIONDIALOG_IDNAME,
+                             const wxString& caption = SYMBOL_SAVECONFIGURATIONDIALOG_TITLE,
+                             const wxPoint& pos      = SYMBOL_SAVECONFIGURATIONDIALOG_POSITION,
+                             const wxSize& size      = SYMBOL_SAVECONFIGURATIONDIALOG_SIZE,
+                             long style              = SYMBOL_SAVECONFIGURATIONDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_SAVECONFIGURATIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVECONFIGURATIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVECONFIGURATIONDIALOG_POSITION, const wxSize& size = SYMBOL_SAVECONFIGURATIONDIALOG_SIZE, long style = SYMBOL_SAVECONFIGURATIONDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_SAVECONFIGURATIONDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_SAVECONFIGURATIONDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_SAVECONFIGURATIONDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_SAVECONFIGURATIONDIALOG_SIZE,
+                 long style              = SYMBOL_SAVECONFIGURATIONDIALOG_STYLE );
 
-  /// Destructor
-  ~SaveConfigurationDialog();
+    /// Destructor
+    ~SaveConfigurationDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-////@begin SaveConfigurationDialog event handler declarations
+    // clang-format off
+  ////@begin SaveConfigurationDialog event handler declarations
 
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_TRACE_SELECTOR
   void OnChoiceTraceSelectorSelected( wxCommandEvent& event );
@@ -119,9 +132,11 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_SAVE
   void OnSaveClick( wxCommandEvent& event );
 
-////@end SaveConfigurationDialog event handler declarations
+  ////@end SaveConfigurationDialog event handler declarations
+    // clang-format on
 
-////@begin SaveConfigurationDialog member function declarations
+    // clang-format off
+  ////@begin SaveConfigurationDialog member function declarations
 
   std::vector<Histogram *> GetHistograms() const { return histograms ; }
   void SetHistograms(std::vector<Histogram *> value) { histograms = value ; }
@@ -146,17 +161,19 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end SaveConfigurationDialog member function declarations
+  ////@end SaveConfigurationDialog member function declarations
+    // clang-format on
 
-  const CFGS4DLinkedPropertiesManager& getLinkedPropertiesManager() const;
+    const CFGS4DLinkedPropertiesManager& getLinkedPropertiesManager() const;
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-  bool TransferDataToWindow();
-  bool TransferDataFromWindow();
-  
-////@begin SaveConfigurationDialog member variables
+    bool TransferDataToWindow();
+    bool TransferDataFromWindow();
+
+    // clang-format off
+  ////@begin SaveConfigurationDialog member variables
   wxChoice* choiceTraceSelector;
   wxCheckListBox* listTimelines;
   wxButton* buttonSetAllTimelines;
@@ -179,10 +196,10 @@ private:
   std::vector< Histogram * > selectedHistograms;
   std::vector< Timeline * > selectedTimelines;
   std::vector<Timeline *> timelines;
-////@end SaveConfigurationDialog member variables
-  std::vector< std::string > traces;
-  std::vector< Timeline * > displayedTimelines;
-  std::vector< Histogram * > displayedHistograms;
-  CFGS4DLinkedPropertiesManager linkedProperties;
-
+  ////@end SaveConfigurationDialog member variables
+    // clang-format on
+    std::vector< std::string > traces;
+    std::vector< Timeline* > displayedTimelines;
+    std::vector< Histogram* > displayedHistograms;
+    CFGS4DLinkedPropertiesManager linkedProperties;
 };

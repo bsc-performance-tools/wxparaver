@@ -24,20 +24,21 @@
 #pragma once
 
 
-
 /*!
  * Includes
  */
 
-#include <vector>
+#include <optional>
 #include <queue>
 #include <string>
-#include <wx/progdlg.h>
-#include <wx/treectrl.h>
+#include <vector>
 #include <wx/cmdline.h>
 #include <wx/imaglist.h>
+#include <wx/progdlg.h>
 #include <wx/snglinst.h>
+#include <wx/treectrl.h>
 
+// clang-format off
 ////@begin includes
 #include "wx/aui/framemanager.h"
 #include "wx/frame.h"
@@ -46,28 +47,31 @@
 #include "wx/toolbook.h"
 #include "wx/dirctrl.h"
 ////@end includes
-#include "trace.h"
+// clang-format on
+
+#include "cfg.h" // SaveOptions
+#include "connection.h"
+#include "loadcfgdialog.h"
 #include "localkernel.h"
 #include "paraverconfig.h"
 #include "preferencesdialog.h"
 #include "previousfiles.h"
-#include "cfg.h" // SaveOptions
+#include "trace.h"
 #include "workspacemanager.h"
-#include "loadcfgdialog.h"
-#include "connection.h"
 
 // DATE TIME INCLUDES
-//#include <boost/date_time/gregorian/gregorian.hpp>
+// #include <boost/date_time/gregorian/gregorian.hpp>
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 #ifdef _WIN32
-#undef VERSION
-#define VERSION "4.11.2"
+#  undef VERSION
+#  define VERSION "4.12.0"
 #endif
 /*!
  * Forward declarations
  */
 
+// clang-format off
 ////@begin forward declarations
 class wxMenu;
 class wxChoicebook;
@@ -75,6 +79,8 @@ class wxToolbook;
 class wxGenericDirCtrl;
 class wxPropertyGrid;
 ////@end forward declarations
+// clang-format on
+
 class wxPGProperty;
 class wxCheckBox;
 class ProgressController;
@@ -92,12 +98,13 @@ inline double rint( double nr )
 }
 #endif
 
-constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits<PRV_INT16>::max();
+constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits< PRV_INT16 >::max();
 
 /*!
  * Control identifiers
  */
 
+// clang-format off
 ////@begin control identifiers
 #define ID_PARAVERMAIN 10000
 #define ID_RECENTTRACES 10008
@@ -135,78 +142,89 @@ constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits<PRV_INT16>::max
 #define SYMBOL_PARAVERMAIN_SIZE wxSize(300, 600)
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, -1)
 ////@end control identifiers
+// clang-format on
 #define ID_TIMER_MAIN 40010
 
+#define ID_CTRL_1           wxID_HIGHEST + 101
+#define ID_CTRL_2           wxID_HIGHEST + 102
+#define ID_CTRL_3           wxID_HIGHEST + 103
+#define ID_CTRL_4           wxID_HIGHEST + 104
+#define ID_CTRL_5           wxID_HIGHEST + 105
+#define ID_CTRL_6           wxID_HIGHEST + 106
+#define ID_CTRL_7           wxID_HIGHEST + 107
+#define ID_CTRL_8           wxID_HIGHEST + 108
+#define ID_CTRL_9           wxID_HIGHEST + 109
+#define ID_CREATE_NEW_GROUP wxID_HIGHEST + 110
 
 
 class gTimeline;
 class gHistogram;
 class HelpContents;
 
-class TreeBrowserItemData: public wxTreeItemData
+class TreeBrowserItemData : public wxTreeItemData
 {
   public:
-    TreeBrowserItemData( const wxString& whichDesc, gTimeline* whichWin ) :
-      desc( whichDesc ), myTimeline( whichWin ), myHisto( nullptr )
-    {}
-    TreeBrowserItemData( const wxString& whichDesc, gHistogram* whichHisto ) :
-      desc( whichDesc ), myTimeline( nullptr ), myHisto( whichHisto )
-    {}
-    
+    TreeBrowserItemData( const wxString& whichDesc, gTimeline* whichWin ) : desc( whichDesc ), myTimeline( whichWin ), myHisto( nullptr )
+    {
+    }
+    TreeBrowserItemData( const wxString& whichDesc, gHistogram* whichHisto ) : desc( whichDesc ), myTimeline( nullptr ), myHisto( whichHisto )
+    {
+    }
+
     const wxString& GetDesc() const
     {
       return desc;
     }
-    
-    gTimeline *getTimeline() const
+
+    gTimeline* getTimeline() const
     {
       return myTimeline;
     }
-    
-    gHistogram *getHistogram() const
+
+    gHistogram* getHistogram() const
     {
       return myHisto;
     }
-    
+
   private:
     wxString desc;
-    gTimeline* myTimeline;
-    gHistogram* myHisto;
+    gTimeline* myTimeline = nullptr;
+    gHistogram* myHisto = nullptr;
 };
 
 
 struct SignalItem
 {
-  bool goodFile;
-  bool badTimes;
-  bool signal1;
-  std::string cfgFileName;
-  TRecordTime beginTime;
-  TRecordTime endTime;
-  std::string traceFileName;
-  std::string imageFileName;
-  
-  bool isSignal1() const
-  {
-    return signal1;
-  }
-  
-  bool isSignal2() const
-  {
-    return !signal1;
-  }
+    bool goodFile;
+    bool badTimes;
+    bool signal1;
+    std::string cfgFileName;
+    TRecordTime beginTime;
+    TRecordTime endTime;
+    std::string traceFileName;
+    std::string imageFileName;
+
+    bool isSignal1() const
+    {
+      return signal1;
+    }
+
+    bool isSignal2() const
+    {
+      return !signal1;
+    }
 };
 
 
 // wxPropertyGrid 1.4.15 + wxWidgets 2.8.12 does not support SetClientObject
 struct PropertyClientData
 {
-  Timeline *ownerTimeline;
-  Histogram *ownerHistogram;
-  std::string propName;
-  size_t extraTopComposeLevel;
-  TWindowLevel semanticLevel;
-  TParamIndex numParameter;
+    Timeline* ownerTimeline;
+    Histogram* ownerHistogram;
+    std::string propName;
+    size_t extraTopComposeLevel;
+    TWindowLevel semanticLevel;
+    TParamIndex numParameter;
 };
 
 
@@ -215,52 +233,53 @@ enum class StatusID
   OPEN   = 0,
   CLOSED = 1
 };
-  
+
 struct SessionInfo
-{    
-  unsigned int pid;
-  StatusID status;
-  std::string sessionDate;
+{
+    unsigned int pid;
+    StatusID status;
+    std::string sessionDate;
 };
 
 /*!
  * paraverMain class declaration
  */
 
-class paraverMain: public wxFrame
-{    
-  DECLARE_CLASS( paraverMain )
-  DECLARE_EVENT_TABLE()
+class paraverMain : public wxFrame
+{
+    DECLARE_CLASS( paraverMain )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  paraverMain();
-  paraverMain( wxWindow* parent, 
-               wxWindowID id = SYMBOL_PARAVERMAIN_IDNAME, 
-               const wxString& caption = SYMBOL_PARAVERMAIN_TITLE, 
-               const wxPoint& pos = SYMBOL_PARAVERMAIN_POSITION, 
-               const wxSize& size = SYMBOL_PARAVERMAIN_SIZE, 
-               long style = SYMBOL_PARAVERMAIN_STYLE );
+  public:
+    /// Constructors
+    paraverMain();
+    paraverMain( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_PARAVERMAIN_IDNAME,
+                 const wxString& caption = SYMBOL_PARAVERMAIN_TITLE,
+                 const wxPoint& pos      = SYMBOL_PARAVERMAIN_POSITION,
+                 const wxSize& size      = SYMBOL_PARAVERMAIN_SIZE,
+                 long style              = SYMBOL_PARAVERMAIN_STYLE );
 
-  bool Create( wxWindow* parent, 
-               wxWindowID id = SYMBOL_PARAVERMAIN_IDNAME, 
-               const wxString& caption = SYMBOL_PARAVERMAIN_TITLE, 
-               const wxPoint& pos = SYMBOL_PARAVERMAIN_POSITION, 
-               const wxSize& size = SYMBOL_PARAVERMAIN_SIZE, 
-               long style = SYMBOL_PARAVERMAIN_STYLE );
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_PARAVERMAIN_IDNAME,
+                 const wxString& caption = SYMBOL_PARAVERMAIN_TITLE,
+                 const wxPoint& pos      = SYMBOL_PARAVERMAIN_POSITION,
+                 const wxSize& size      = SYMBOL_PARAVERMAIN_SIZE,
+                 long style              = SYMBOL_PARAVERMAIN_STYLE );
 
-  /// Destructor
-  ~paraverMain();
+    /// Destructor
+    ~paraverMain();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
-  void initSessionInfo();
-  void filterExternalApps();
+    /// Creates the controls and sizers
+    void CreateControls();
+    void initSessionInfo();
+    void filterExternalApps();
 
-////@begin paraverMain event handler declarations
+    // clang-format off
+    ////@begin paraverMain event handler declarations
 
   /// wxEVT_CLOSE_WINDOW event handler for ID_PARAVERMAIN
   void OnCloseWindow( wxCloseEvent& event );
@@ -385,39 +404,42 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ACTIVE_WORKSPACES
   void OnButtonActiveWorkspacesClick( wxCommandEvent& event );
 
-////@end paraverMain event handler declarations
+    ////@end paraverMain event handler declarations
+    // clang-format on
 
-  /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
-  void OnTreeSelChanged( wxTreeEvent& event );
-  
-  void OnMenuLoadAutoSavedSession( wxCommandEvent& event );
-  void OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event );
-  
-  /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
-  void OnTreeItemActivated( wxTreeEvent& event );
-  void OnTreeRightClick( wxTreeEvent& event );
-  void OnTreeEndLabelRename( wxTreeEvent& event );
-  void OnTreeKeyPress( wxKeyEvent& event );
-  
-  void renameTreeItem( );
+    /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
+    void OnTreeSelChanged( wxTreeEvent& event );
 
-  void OnTreeBeginDrag( wxTreeEvent& event );
-  void OnTreeEndDrag( wxTreeEvent& event );
-  
-  void spreadSetChangedRecursive( Timeline *whichWindow );
-  void spreadSetRedrawRecursive( Timeline *whichWindow );
-  void spreadSetChanged( Timeline *whichWindow );
-  void spreadSetRedraw( Timeline *whichWindow );
-  /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
-  void OnPropertyGridChange( wxPropertyGridEvent& event );
-  void OnPropertyGridChanging( wxPropertyGridEvent& event );
+    void OnMenuLoadAutoSavedSession( wxCommandEvent& event );
+    void OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event );
 
-  void OnPreviousTracesClick( wxCommandEvent& event );
-  void OnPreviousCFGsClick( wxCommandEvent& event );
-  void OnPreviousSessionsClick( wxCommandEvent& event );
+    /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
+    void OnTreeItemActivated( wxTreeEvent& event );
+    void OnTreeRightClick( wxTreeEvent& event );
+    void OnTreeEndLabelRename( wxTreeEvent& event );
+    void OnTreeKeyPress( wxKeyEvent& event );
 
-  void OnActivate( wxActivateEvent& event );
-////@begin paraverMain member function declarations
+    void renameTreeItem();
+
+    void OnTreeBeginDrag( wxTreeEvent& event );
+    void OnTreeEndDrag( wxTreeEvent& event );
+
+    void spreadSetChangedRecursive( Timeline* whichWindow );
+    void spreadSetRedrawRecursive( Timeline* whichWindow );
+    void spreadSetChanged( Timeline* whichWindow );
+    void spreadSetRedraw( Timeline* whichWindow );
+    /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
+    void OnPropertyGridChange( wxPropertyGridEvent& event );
+    void OnPropertyGridChanging( wxPropertyGridEvent& event );
+
+    void OnPreviousTracesClick( wxCommandEvent& event );
+    void OnPreviousCFGsClick( wxCommandEvent& event );
+    void OnPreviousSessionsClick( wxCommandEvent& event );
+
+    void OnActivate( wxActivateEvent& event );
+
+    // clang-format off
+    ////@begin paraverMain member function declarations
 
   /// Returns the AUI manager object
   wxAuiManager& GetAuiManager() { return m_auiManager; }
@@ -544,115 +566,114 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end paraverMain member function declarations
-  
-  gTimeline  * GetSelectedTimeline();
-  gHistogram * GetSelectedHistogram();
+    ////@end paraverMain member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  bool ShowToolTips();
-  void refreshTree( gTimeline *whichTimeline, Timeline *window );
-  
-  int GetNextPosX();
-  int GetNextPosY();
-  int GetDefaultTitleBarHeight();
-  void selectTrace( Trace *trace );
-  PRV_UINT16 getTracePosition( Trace *trace );
+    gTimeline* GetSelectedTimeline();
+    gHistogram* GetSelectedHistogram();
 
-  void commandLineLoadings( wxCmdLineParser &parser );
-  
-  void clearProperties();
-  
-  void enqueueFile( std::string whichFile );
-  
+    /// Should we show tooltips?
+    bool ShowToolTips();
+    void refreshTree( gTimeline* whichTimeline, Timeline* window );
+
+    int GetNextPosX();
+    int GetNextPosY();
+    int GetDefaultTitleBarHeight();
+    void selectTrace( Trace* trace );
+    PRV_UINT16 getTracePosition( Trace* trace );
+
+    void commandLineLoadings( wxCmdLineParser& parser );
+
+    void clearProperties();
+
+    void enqueueFile( std::string whichFile );
+
 #if !defined _MSC_VER && !defined __MINGW32__
-  void OnSignal();
-  bool matchTraceNames( const std::string &fileName1, 
-                        const std::string &traceName1,
-                        const std::string &fileName2 );
-  void insertSignalItem( bool isSig1 );
+    void OnSignal();
+    bool matchTraceNames( const std::string& fileName1, const std::string& traceName1, const std::string& fileName2 );
+    void insertSignalItem( bool isSig1 );
 #endif
 
 #ifdef _WIN32
-  void OnKeyCopy();
-  void OnKeyPaste();
+    void OnKeyCopy();
+    void OnKeyPaste();
 #endif // _WIN32
-  void OnFindDialog();
-  
-  void DoLoadSession( const std::string &whichFileName );
-  bool DoLoadTrace( const std::string &path );
-  void UnloadTrace( int whichTrace );
-  bool DoLoadCFG( const std::string &path );
-  
-  void SaveConfigurationFile( wxWindow *parent,
-                              SaveOptions options,
-                              std::vector< Timeline * > timelines,
-                              std::vector< Histogram * > histograms,
-                              const std::vector< CFGS4DLinkedPropertiesManager >& linkedProperties );
-                               
+    void OnFindDialog();
 
-  void ShowPreferences( wxWindowID whichPanelID = ID_PREFERENCES_GLOBAL );
-  
-  void MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,
-                                    const std::string& filename,
-                                    bool loadTrace );
-  void OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialog,
-                                      TraceOptions *traceOptions,
-                                      const std::string& xmlFile,
-                                      std::vector< std::string > &filterToolOrder );
-  void OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog );
-  void ShowCutTraceWindow( const std::string& filename = "",
-                           bool loadTrace = true,
-                           const std::string& xmlFile = "" );
-  
-  bool getAutoRedraw() const;
-  bool isCFG4DModeDisabled() const;
+    void OnSyncWindows( int groupId );
+    void OnSyncNewGroup();
 
-  void checkIfPrevSessionLoad( bool prevSessionWasComplete );
-  void LastSessionLoad( bool isSessionInitialized );
-  
-  // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
-  void ShowRunCommand( wxString traceFile );
+    void DoLoadSession( const std::string& whichFileName );
+    std::optional< Trace* > DoLoadTrace( const std::string& path );
+    void UnloadTrace( int whichTrace );
+    bool DoLoadCFG( const std::string& path, std::optional< Trace* > whichTrace = {} );
 
-  Timeline *createBaseWindow( wxString whichName = wxString( wxT("") ) );
-  void insertInTree( Timeline *whichWindow );
+    void SaveConfigurationFile( wxWindow* parent,
+                                SaveOptions options,
+                                std::vector< Timeline* > timelines,
+                                std::vector< Histogram* > histograms,
+                                const std::vector< CFGS4DLinkedPropertiesManager >& linkedProperties );
 
-  void createHelpContentsWindow( const wxString &helpContentsBaseRelativePath,
-                                 const wxString &helpFile = wxString( wxT("") ),
-                                 const wxString &hRef = wxString( wxT("") ),
-                                 bool  isModal = false );
-  bool getParaverHome( wxString &paraverHome );
-  std::string buildCfgFullPath( const std::string& cfgStr ) const;
 
-  static wxString getHintComposed( const std::pair< std::string, std::string >& hint );
-  static wxString buildFormattedFileName( std::string windowName, const std::string& traceName );
+    void ShowPreferences( wxWindowID whichPanelID = ID_PREFERENCES_GLOBAL );
 
-  static wxProgressDialog *dialogProgress;
-  static paraverMain* myParaverMain;  // for update tree of windows
-  static wxSize defaultTitleBarSize; // solves the problem of properly get timeline window height
-  static wxSize defaultWindowSize;
-  static int initialPosX;
-  static int initialPosY;
-  static Timeline *beginDragWindow;
-  static Timeline *endDragWindow;
-  static Histogram *beginDragHistogram;
-  static Histogram *endDragHistogram;
-  static bool disableUserMessages;
-  static bool stopOnIdle;
+    void MainSettingsCutFilterDialog( CutFilterDialog* cutFilterDialog, const std::string& filename, bool loadTrace );
+    void OptionsSettingCutFilterDialog( CutFilterDialog* cutFilterDialog,
+                                        TraceOptions* traceOptions,
+                                        const std::string& xmlFile,
+                                        std::vector< std::string >& filterToolOrder );
+    void OnOKCutFilterDialog( CutFilterDialog* cutFilterDialog );
+    void ShowCutTraceWindow( const std::string& filename = "", bool loadTrace = true, const std::string& xmlFile = "", bool modalDialog = false );
 
-  static bool IsSessionValid();
-  static void ValidateSession( bool setValidate );
+    bool getAutoRedraw() const;
+    bool isCFG4DModeDisabled() const;
 
-  static wxArrayString FromVectorStringToWxArray( std::vector< std::string > vec, std::string fileType = "txt" );
-  static std::vector< std::string > FromWxArrayToVectorString( wxArrayString arr );
+    void checkIfPrevSessionLoad( bool prevSessionWasComplete );
+    void LastSessionLoad( bool isSessionInitialized );
 
-  bool cutFilterFinished;
-  
-  bool OnMenusavesession( );
-  void helpQuestion();
-  void exitManager();
+    // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
+    void ShowRunCommand( wxString traceFile );
 
-////@begin paraverMain member variables
+    Timeline* createBaseWindow( wxString whichName = wxString( wxT( "" ) ) );
+    void insertInTree( Timeline* whichWindow );
+
+    void createHelpContentsWindow( const wxString& helpContentsBaseRelativePath,
+                                   const wxString& helpFile = wxString( wxT( "" ) ),
+                                   const wxString& hRef     = wxString( wxT( "" ) ),
+                                   bool isModal             = false );
+    bool getParaverHome( wxString& paraverHome );
+    std::string buildCfgFullPath( const std::string& cfgStr ) const;
+
+    static wxString getHintComposed( const std::pair< std::string, std::string >& hint );
+    static wxString buildFormattedFileName( std::string windowName, const std::string& traceName );
+
+    static wxProgressDialog* dialogProgress;
+    static paraverMain* myParaverMain; // for update tree of windows
+    static wxSize defaultTitleBarSize; // solves the problem of properly get timeline window height
+    static wxSize defaultWindowSize;
+    static int initialPosX;
+    static int initialPosY;
+    static Timeline* beginDragWindow;
+    static Timeline* endDragWindow;
+    static Histogram* beginDragHistogram;
+    static Histogram* endDragHistogram;
+    static bool disableUserMessages;
+    static bool stopOnIdle;
+
+    static bool IsSessionValid();
+    static void ValidateSession( bool setValidate );
+
+    static wxArrayString FromVectorStringToWxArray( std::vector< std::string > vec, std::string fileType = "txt" );
+    static std::vector< std::string > FromWxArrayToVectorString( wxArrayString arr );
+
+    bool cutFilterFinished;
+
+    bool OnMenusavesession();
+    void helpQuestion();
+    void exitManager();
+
+    // clang-format off
+    ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
   wxMenu* menuFile;
   wxMenu* menuHints;
@@ -707,64 +728,70 @@ private:
   std::map< Trace*, std::vector< std::string > > traceWorkspaces;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
-////@end paraverMain member variables
-  SessionInfo sessionInfo;
-  bool firstSave;
-  PRV_UINT16 numNewDerivedHistogram = 0;
+    ////@end paraverMain member variables
+    //clang-format on
 
-  wxSingleInstanceChecker *instChecker;
-  std::map< std::string, PRV_UINT32 > traceInstance;
+    SessionInfo sessionInfo;
+    bool firstSave;
+    bool selectionChanging = false;
+    PRV_UINT16 numNewDerivedHistogram = 0;
 
-  static const int CUTOFF = 10;
-  static bool validSessions;
+    wxSingleInstanceChecker* instChecker;
+    std::map< std::string, PRV_UINT32 > traceInstance;
 
-  wxVariant propertyPrevValue;
+    static const int CUTOFF = 10;
+    static bool validSessions;
 
-  wxImageList *getImageList();
+    wxVariant propertyPrevValue;
 
-  void ShowDerivedDialog();
-  void ShowHistogramDialog();
+    //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
 
-  std::string DoLoadFilteredTrace( std::string traceFileName,
-                                   std::string traceFilePath,
-                                   TraceOptions *traceOptions,
-                                   std::vector< std::string > &filterToolOrder );
+    wxImageList* getImageList();
 
-  void HandleMaxSessionFiles();
-  void PrepareToExit();
-  
-  void OnSessionTimer( wxTimerEvent& event );
+    /*
+      void BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
+                      wxTreeCtrl *root2, wxTreeItemId idRoot2,
+                      Timeline *window );
+    */
+    void ShowDerivedDialog();
+    void ShowHistogramDialog();
 
-  void refreshMenuHints();
-  void setTraceWorkspaces( Trace *whichTrace );
+    std::string DoLoadFilteredTrace( std::string traceFileName,
+                                     std::string traceFilePath,
+                                     TraceOptions* traceOptions,
+                                     std::vector< std::string >& filterToolOrder );
 
-  void updateActiveWorkspaces( Trace *whichTrace );
-  void OnHintClick( wxCommandEvent& event );
-  void setActiveWorkspacesText();
+    void HandleMaxSessionFiles();
+    void PrepareToExit();
 
-  bool isSessionFile( const std::string& filename );
-  void messageUnknownPath( wxString helpContentsPath, wxString paraverHome );
-  void messageUndefinedParaverHome();
+    void OnSessionTimer( wxTimerEvent& event );
 
-  Trace *getCurrentTrace() const;
-  bool getUsedBySomeHistogram( Timeline *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete );
+    void refreshMenuHints();
+    void setTraceWorkspaces( Trace* whichTrace );
 
-  template< typename T >
-  bool linkedSetPropertyValue( T *whichWindow,
-                               wxPropertyGridEvent& event,
-                               wxPGProperty *property,
-                               const std::string& propName,
-                               PropertyClientData *whichClientData );
-  void SetPropertyValue( wxPropertyGridEvent& event,
-                         wxPGProperty *property,
-                         const std::string& propName,
-                         PropertyClientData *tmpClientData,
-                         Timeline *whichTimeline,
-                         Histogram *whichHistogram );
+    void updateActiveWorkspaces( Trace* whichTrace );
+    void OnHintClick( wxCommandEvent& event );
+    void setActiveWorkspacesText();
 
+    bool isSessionFile( const std::string& filename );
+    void messageUnknownPath( wxString helpContentsPath, wxString paraverHome );
+    void messageUndefinedParaverHome();
+
+    Trace* getCurrentTrace() const;
+    bool getUsedBySomeHistogram( Timeline* whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete );
+
+    template< typename T >
+    bool linkedSetPropertyValue( T* whichWindow,
+                                 wxPropertyGridEvent& event,
+                                 wxPGProperty* property,
+                                 const std::string& propName,
+                                 PropertyClientData* whichClientData );
+    void SetPropertyValue( wxPropertyGridEvent& event,
+                           wxPGProperty* property,
+                           const std::string& propName,
+                           PropertyClientData* tmpClientData,
+                           Timeline* whichTimeline,
+                           Histogram* whichHistogram );
 };
 
-void progressFunction( void *whichProgressDialog, ProgressController *progress );
-  
-
-
+void progressFunction( void* whichProgressDialog, ProgressController* progress );
