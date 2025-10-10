@@ -1079,21 +1079,10 @@ bool paraverMain::DoLoadCFG( const string &path, std::optional< Trace * > whichT
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( ( *it ) );
 
-
         tmpHisto->GetHistogram()->setRecalc( true );
 
-        // Derived histograms: parents execution itself
-        // if ( parentHistograms.find( (*it) ) != parentHistograms.end() )
-        // {
-        //   vector<TObjectOrder> selectedRows;
-        //   TObjectOrder beginRow = (*it)->getControlWindow()->getZoomSecondDimension().first;
-        //   TObjectOrder endRow =  (*it)->getControlWindow()->getZoomSecondDimension().second;
-        //   (*it)->getControlWindow()->getSelectedRows( (*it)->getControlWindow()->getLevel(), selectedRows, beginRow, endRow );
-        //   (*it)->execute( (*it)->getBeginTime(), (*it)->getEndTime(), selectedRows, nullptr );
-        //   std::cout << "LoadCFG Histo executed" << std::endl;
-        // }
-
         tmpHisto->SetClientSize( ( *it )->getWidth(), ( *it )->getHeight() );
+
         if( ( *it )->getShowWindow() )
         {
 #if __WXGTK__
@@ -1141,18 +1130,8 @@ bool paraverMain::DoLoadCFG( const string &path, std::optional< Trace * > whichT
 
         tmpHisto->GetHistogram()->setRecalc( true );
 
-        // Derived histograms: parents execution itself
-        // if ( parentHistograms.find( (*it) ) != parentHistograms.end() )
-        // {
-        //   vector<TObjectOrder> selectedRows;
-        //   TObjectOrder beginRow = (*it)->getControlWindow()->getZoomSecondDimension().first;
-        //   TObjectOrder endRow =  (*it)->getControlWindow()->getZoomSecondDimension().second;
-        //   (*it)->getControlWindow()->getSelectedRows( (*it)->getControlWindow()->getLevel(), selectedRows, beginRow, endRow );
-        //   (*it)->execute( (*it)->getBeginTime(), (*it)->getEndTime(), selectedRows, nullptr );
-        //   std::cout << "LoadCFG Histo executed" << std::endl;
-        // }
-
         tmpHisto->SetClientSize( ( *it )->getWidth(), ( *it )->getHeight() );
+
         if( ( *it )->getShowWindow() )
         {
 #if __WXGTK__
