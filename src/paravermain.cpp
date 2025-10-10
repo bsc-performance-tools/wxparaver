@@ -2223,26 +2223,24 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
   
   }
 
-  
-
-    if( gTimeline *timeline = itemSelected->getTimeline() )
-    {
-      currentTimeline = timeline->GetMyWindow();
-      beginDragWindow = timeline->GetMyWindow();
+  if( gTimeline *timeline = itemSelected->getTimeline() )
+  {
+    currentTimeline = timeline->GetMyWindow();
+    beginDragWindow = timeline->GetMyWindow();
     currentWindow   = (wxWindow *)timeline;
     currentHisto    = nullptr;
 
-      //if( timeline->IsShown() )
-        //timeline->Raise();
+    //if( timeline->IsShown() )
+      //timeline->Raise();
 
-      currentTimeline = timeline->GetMyWindow();
-    }
-    else if( gHistogram *histo = itemSelected->getHistogram() ) // Is a histogram?
-    {
-      currentHisto  = histo->GetHistogram();
-      currentWindow   = (wxWindow *)histo;
+    currentTimeline = timeline->GetMyWindow();
+  }
+  else if( gHistogram *histo = itemSelected->getHistogram() ) // Is a histogram?
+  {
+    currentHisto  = histo->GetHistogram();
+    currentWindow   = (wxWindow *)histo;
 
-      beginDragWindow = nullptr;
+    beginDragWindow = nullptr;
 
     if( histo->IsShown() )
       histo->Raise();
