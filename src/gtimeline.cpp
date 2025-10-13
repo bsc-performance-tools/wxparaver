@@ -3599,8 +3599,8 @@ void gTimeline::resizeDrawZone( int width, int height )
 #endif
     splitter->SetSashPosition( height );
 #ifndef _WIN32
-    drawZone->SetClientSize( width, height );
-    this->SetSize( width, height + infoZoneLastSize + 5 );
+    // drawZone->SetClientSize( width, height );
+    this->SetClientSize( width, height + infoZoneLastSize + 5 );
 #endif
   }
   myWindow->setWidth( width, false );
