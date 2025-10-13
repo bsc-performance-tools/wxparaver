@@ -1539,11 +1539,10 @@ void gHistogram::OnPopUpPasteControlDimensions( wxCommandEvent& event )
 }
 
 
-gHistogram* gHistogram::clone( bool showWindow, const std::vector< Timeline* >& sourceTimelines )
+void gHistogram::OnPopUpClone( wxCommandEvent& event )
 {
   Histogram* clonedHistogram = myHistogram->clone();
-  string clonedName 	     = clonedHistogram->getName();
-  clonedHistogram->setShowWindow( showWindow );
+  string clonedName          = clonedHistogram->getName();
 
   // Create empty gHistogram and assign window with same dimensions.
   // Shifts position right and down.
@@ -1552,31 +1551,27 @@ gHistogram* gHistogram::clone( bool showWindow, const std::vector< Timeline* >& 
     titleBarSize = paraverMain::defaultTitleBarSize;
 
   wxPoint position = wxPoint( this->GetPosition().x + titleBarSize.GetHeight(), this->GetPosition().y + titleBarSize.GetHeight() );
-  wxSize size      = wxSize( myHistogram->getWidth(), myHistogram->getHeight() /* + titleBarSize.GetHeight()*/ );
 
   string composedName = clonedName + " @ " + clonedHistogram->getTrace()->getTraceNameNumbered();
 
   gHistogram* clonedGHistogram  = new gHistogram( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), position );
   clonedGHistogram->myHistogram = clonedHistogram;
-  clonedGHistogram->SetClientSize( size );
+  clonedGHistogram->SetClientSize( myHistogram->getWidth(), myHistogram->getHeight() );
 
   clonedGHistogram->ready = false;
-
-  // LoadedWindows::getInstance()->add( clonedHistogram );
-  // appendHistogram2Tree( clonedGHistogram );
 
   if( !myHistogram->isDerivedHistogram() )
   {
     auto cloneTimeline = [ this ]( const std::string& msgWindowType, Timeline* searchedWindow, Timeline* clonedTimeline )
     {
       bool found                  = false;
-      gTimeline* controlGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), searchedWindow, found );
+      gTimeline* origGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), searchedWindow, found );
       if( found )
       {
-        controlGTimeline->clone( clonedTimeline,
-                                 parent,
-                                 getAllTracesTree()->GetRootItem(),
-                                 getSelectedTraceTree( clonedTimeline->getTrace() )->GetRootItem() );
+        origGTimeline->clone( clonedTimeline,
+                              parent,
+                              getAllTracesTree()->GetRootItem(),
+                              getSelectedTraceTree( clonedTimeline->getTrace() )->GetRootItem() );
       }
       else
       {
@@ -1586,32 +1581,20 @@ gHistogram* gHistogram::clone( bool showWindow, const std::vector< Timeline* >& 
     };
 
     // Window clone
-    if( sourceTimelines.empty() )
-    {
-      cloneTimeline( "CONTROL", GetHistogram()->getControlWindow(), clonedHistogram->getControlWindow() );
+    cloneTimeline( "CONTROL", GetHistogram()->getControlWindow(), clonedHistogram->getControlWindow() );
 
-      if( GetHistogram()->getDataWindow() != GetHistogram()->getControlWindow() )
-        cloneTimeline( "DATA", GetHistogram()->getDataWindow(), clonedHistogram->getDataWindow() );
+    if( GetHistogram()->getDataWindow() != GetHistogram()->getControlWindow() )
+      cloneTimeline( "DATA", GetHistogram()->getDataWindow(), clonedHistogram->getDataWindow() );
 
-      if( GetHistogram()->getExtraControlWindow() != nullptr && GetHistogram()->getExtraControlWindow() != GetHistogram()->getControlWindow() &&
-          GetHistogram()->getExtraControlWindow() != GetHistogram()->getDataWindow() )
-        cloneTimeline( "EXTRA CONTROL", GetHistogram()->getExtraControlWindow(), clonedHistogram->getExtraControlWindow() );
-    }
-    else
-    {
-      cloneTimeline( "CONTROL", sourceTimelines[ 0 ], clonedHistogram->getControlWindow() );
-      if( sourceTimelines[ 1 ] != sourceTimelines[ 0 ] ) // DATA != CONTROL
-        cloneTimeline( "DATA", sourceTimelines[ 1 ], clonedHistogram->getDataWindow() );
-
-      if( sourceTimelines.size() == 3 && sourceTimelines[ 2 ] != nullptr && // not needed
-          sourceTimelines[ 2 ] != sourceTimelines[ 1 ] && sourceTimelines[ 2 ] != sourceTimelines[ 0 ] )
-        cloneTimeline( "EXTRA CONTROL", sourceTimelines[ 2 ], clonedHistogram->getExtraControlWindow() );
-    }
+    if( GetHistogram()->getExtraControlWindow() != nullptr &&
+        GetHistogram()->getExtraControlWindow() != GetHistogram()->getControlWindow() &&
+        GetHistogram()->getExtraControlWindow() != GetHistogram()->getDataWindow() )
+      cloneTimeline( "EXTRA CONTROL", GetHistogram()->getExtraControlWindow(), clonedHistogram->getExtraControlWindow() );
 
     LoadedWindows::getInstance()->add( clonedHistogram );
     appendHistogram2Tree( clonedGHistogram );
   }
-  else // isDerived
+  else // isDerivedHistogram
   {
     clonedGHistogram->myHistogram->setDerivedOperation( clonedHistogram->getDerivedOperation() );
 
@@ -1625,14 +1608,6 @@ gHistogram* gHistogram::clone( bool showWindow, const std::vector< Timeline* >& 
 
   // Finally, execute
   clonedGHistogram->myHistogram->setRecalc( true );
-
-  return clonedGHistogram;
-}
-
-
-void gHistogram::OnPopUpClone( wxCommandEvent& event )
-{
-  clone();
 }
 
 
