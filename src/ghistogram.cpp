@@ -1493,6 +1493,28 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
   LoadedWindows::getInstance()->add( clonedHistogram );
   appendHistogram2Tree( clonedGHistogram );
 
+  TObjectOrder beginRow, endRow;
+  if( clonedGHistogram->myHistogram->isZoomEmpty() )
+  {
+    beginRow = clonedGHistogram->myHistogram->getControlWindow()->getZoomSecondDimension().first;
+    endRow   = clonedGHistogram->myHistogram->getControlWindow()->getZoomSecondDimension().second;
+  }
+  else
+  {
+    beginRow = clonedGHistogram->myHistogram->getZoomSecondDimension().first;
+    endRow   = clonedGHistogram->myHistogram->getZoomSecondDimension().second;
+  }
+
+  clonedGHistogram->selectedRows.clear();
+  myHistogram->getSelectedRows( myHistogram->getLevel(), clonedGHistogram->selectedRows, beginRow, endRow, true );
+  if( selectedRows.size() == 0 )
+    myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
+                                                      clonedGHistogram->selectedRows,
+                                                      beginRow,
+                                                      endRow,
+                                                      true );
+
+
   // Window clone
   bool found                  = false;
   gTimeline* controlGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), GetHistogram()->getControlWindow(), found );
@@ -1532,7 +1554,11 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
   }
 
   // Finally, execute
-  clonedGHistogram->myHistogram->setRecalc( true );
+  clonedGHistogram->myHistogram->setRecalc( false );
+  clonedGHistogram->myHistogram->setForceRecalc( false );
+
+  clonedGHistogram->myHistogram->setRedraw( true );
+  clonedGHistogram->ready = true;
 }
 
 

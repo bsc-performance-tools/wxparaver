@@ -5228,17 +5228,22 @@ bool gTimeline::getEditMode()
 
 void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
+  timerSize->Stop();
+
   if( !splitChanged )
   {
     auto width  = drawZone->GetClientSize().GetWidth();
     auto height = drawZone->GetClientSize().GetHeight();
 
+    if( width == myWindow->getWidth() && height == myWindow->getHeight() )
+      return;
+
     myWindow->setHeight( height, !this->IsMaximized() && !codeChangeSize );
     myWindow->setWidth( width, !this->IsMaximized() && !codeChangeSize );
-  }
-  codeChangeSize = false;
 
-  timerSize->Stop();
+    codeChangeSize = false;
+  }
+
 
   if( myWindow->getReady() )
   {
