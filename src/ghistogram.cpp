@@ -1560,6 +1560,31 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
 
   clonedGHistogram->ready = false;
 
+  LoadedWindows::getInstance()->add( clonedHistogram );
+  appendHistogram2Tree( clonedGHistogram );
+
+  TObjectOrder beginRow, endRow;
+  if( clonedGHistogram->myHistogram->isZoomEmpty() )
+  {
+    beginRow = clonedGHistogram->myHistogram->getControlWindow()->getZoomSecondDimension().first;
+    endRow   = clonedGHistogram->myHistogram->getControlWindow()->getZoomSecondDimension().second;
+  }
+  else
+  {
+    beginRow = clonedGHistogram->myHistogram->getZoomSecondDimension().first;
+    endRow   = clonedGHistogram->myHistogram->getZoomSecondDimension().second;
+  }
+
+  clonedGHistogram->selectedRows.clear();
+  myHistogram->getSelectedRows( myHistogram->getLevel(), clonedGHistogram->selectedRows, beginRow, endRow, true );
+  if( selectedRows.size() == 0 )
+    myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
+                                                      clonedGHistogram->selectedRows,
+                                                      beginRow,
+                                                      endRow,
+                                                      true );
+
+
   if( !myHistogram->isDerivedHistogram() )
   {
     auto cloneTimeline = [ this ]( const std::string& msgWindowType, Timeline* searchedWindow, Timeline* clonedTimeline )
@@ -1580,6 +1605,7 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
       }
     };
 
+
     // Window clone
     cloneTimeline( "CONTROL", GetHistogram()->getControlWindow(), clonedHistogram->getControlWindow() );
 
@@ -1590,24 +1616,19 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
         GetHistogram()->getExtraControlWindow() != GetHistogram()->getControlWindow() &&
         GetHistogram()->getExtraControlWindow() != GetHistogram()->getDataWindow() )
       cloneTimeline( "EXTRA CONTROL", GetHistogram()->getExtraControlWindow(), clonedHistogram->getExtraControlWindow() );
-
-    LoadedWindows::getInstance()->add( clonedHistogram );
-    appendHistogram2Tree( clonedGHistogram );
   }
   else // isDerivedHistogram
   {
     clonedGHistogram->myHistogram->setDerivedOperation( clonedHistogram->getDerivedOperation() );
-
     clonedGHistogram->adaptControlsForDerivedHistogram();
-
-    LoadedWindows::getInstance()->add( clonedHistogram );
-    appendHistogram2Tree( clonedGHistogram );
-
-    clonedGHistogram->myHistogram->setForceRecalc( true );
   }
 
   // Finally, execute
-  clonedGHistogram->myHistogram->setRecalc( true );
+  clonedGHistogram->myHistogram->setRecalc( false );
+  clonedGHistogram->myHistogram->setForceRecalc( false );
+
+  clonedGHistogram->myHistogram->setRedraw( true );
+  clonedGHistogram->ready = true;
 }
 
 
