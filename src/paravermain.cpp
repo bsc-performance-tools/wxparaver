@@ -1129,8 +1129,8 @@ bool paraverMain::DoLoadCFG( const string &path, std::optional< Trace * > whichT
             tmpPos.y += tmpDisplay.GetGeometry().y;
             if( tmpPos.x != ( *it )->getPosX() )
               ( *it )->setPosX( tmpPos.x );
-            if( tmpPos.x != ( *it )->getPosY() )
-              ( *it )->setPosX( tmpPos.y );
+            if( tmpPos.y != ( *it )->getPosY() )
+              ( *it )->setPosY( tmpPos.y );
           }
         }
 #if !__WXGTK__
@@ -1139,8 +1139,8 @@ bool paraverMain::DoLoadCFG( const string &path, std::optional< Trace * > whichT
         gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ) );
 #endif
         tmpHisto->SetHistogram( *it );
+        tmpHisto->InitHistogramCallbacks();
         tmpHisto->adaptControlsForDerivedHistogram();
-
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( ( *it ) );
 
