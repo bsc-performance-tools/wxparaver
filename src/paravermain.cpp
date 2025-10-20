@@ -227,6 +227,33 @@ bool paraverMain::disableUserMessages = false;
 bool paraverMain::validSessions       = true;
 bool paraverMain::stopOnIdle          = false;
 
+std::vector< std::pair< std::string, const char** > > paraverMain::icons =
+    {
+      { "histogram",             table_xpm },
+      { "timeline",              timeline_xpm },
+
+      // Section common to timelines and histograms.
+      // TODO: Get these derived labels from paraver-kernel - semanticderivedfunctions
+      { "add",                   derived_add_xpm },
+      { "product",               derived_product_xpm },
+      { "substract",             derived_substract_xpm },
+      { "divide",                derived_divide_xpm },
+      { "maximum",               derived_maximum_xpm },
+      { "minimum",               derived_minimum_xpm },
+      { "different",             derived_different_xpm },
+
+      // Section only for timelines.
+      // TODO: Get these derived labels from paraver-kernel - semanticderivedfunctions
+      { "controlled: clear by",  derived_controlled_clear_by_xpm },
+      { "controlled: maximum",   derived_controlled_maximum_xpm },
+      { "controlled: add",       derived_controlled_add_xpm },
+      { "controlled: enumerate", derived_controlled_enumerate_xpm },
+      { "controlled: average",   derived_controlled_average_xpm }
+    };
+
+std::map< std::string, size_t > paraverMain::iconPosByName = {}; // filled in getImageList
+
+
 extern volatile bool sig1;
 extern volatile bool sig2;
 extern struct sigaction act;
@@ -247,25 +274,14 @@ static bool userMessage( UserMessageID message )
 
 wxImageList *paraverMain::getImageList()
 {
-  wxImageList *images;
+  wxImageList *images = new wxImageList( 16, 16 );
 
-  images = new wxImageList( 16, 16 );
-  images->Add( wxIcon( table_xpm ) );
-  images->Add( wxIcon( timeline_xpm ) );
-
-  // Derived icons added in same order than kernel returns
-  images->Add( wxIcon( derived_add_xpm ) );
-  images->Add( wxIcon( derived_product_xpm ) );
-  images->Add( wxIcon( derived_substract_xpm ) );
-  images->Add( wxIcon( derived_divide_xpm ) );
-  images->Add( wxIcon( derived_maximum_xpm ) );
-  images->Add( wxIcon( derived_minimum_xpm ) );
-  images->Add( wxIcon( derived_different_xpm ) );
-  images->Add( wxIcon( derived_controlled_clear_by_xpm ) );
-  images->Add( wxIcon( derived_controlled_maximum_xpm ) );
-  images->Add( wxIcon( derived_controlled_add_xpm ) );
-  images->Add( wxIcon( derived_controlled_enumerate_xpm ) );
-  images->Add( wxIcon( derived_controlled_average_xpm ) );
+  auto pos = 0;
+  for( auto icon: paraverMain::icons )
+  {
+    images->Add( wxIcon( icon.second ) );
+    paraverMain::iconPosByName[ icon.first ] = pos++;
+  }
 
   return images;
 }

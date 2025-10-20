@@ -658,6 +658,9 @@ class paraverMain : public wxFrame
     static bool disableUserMessages;
     static bool stopOnIdle;
 
+    static std::vector< std::pair< std::string, const char** > > icons;
+    static std::map< std::string, size_t > iconPosByName;
+
     static bool IsSessionValid();
     static void ValidateSession( bool setValidate );
 

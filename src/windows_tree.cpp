@@ -584,39 +584,23 @@ void getGroupColor( const int &windowGroup, int &r, int &g, int &b )
   }
 }
 
-int getIconNumber( Timeline *whichWindow )
+template< class TWindow >
+int getIconNumber( TWindow *whichWindow )
 {
-  int iconNumber = 1; // number of timeline icon
-  if( whichWindow->isDerivedWindow() )
+  if constexpr( std::is_same_v< TWindow, Timeline > )
   {
-    string derivedFunctionName = whichWindow->getLevelFunction( DERIVED );
-
-    // GUI should'nt know these tags -> add operation to kernel
-    if( derivedFunctionName == "add" )
-      iconNumber = 2;
-    else if( derivedFunctionName == "product" )
-      iconNumber = 3;
-    else if( derivedFunctionName == "substract" )
-      iconNumber = 4;
-    else if( derivedFunctionName == "divide" )
-      iconNumber = 5;
-    else if( derivedFunctionName == "maximum" )
-      iconNumber = 6;
-    else if( derivedFunctionName == "minimum" )
-      iconNumber = 7;
-    else if( derivedFunctionName == "different" )
-      iconNumber = 8;
-    else if( derivedFunctionName == "controlled: clear by" )
-      iconNumber = 9;
-    else if( derivedFunctionName == "controlled: maximum" )
-      iconNumber = 10;
-    else if( derivedFunctionName == "controlled: add" )
-      iconNumber = 11;
-    else if( derivedFunctionName == "controlled: enumerate" )
-      iconNumber = 12;
-    else if( derivedFunctionName == "controlled: average" )
-      iconNumber = 13;
+    if ( whichWindow->isDerivedWindow() )
+      return paraverMain::iconPosByName[ whichWindow->getLevelFunction( DERIVED ) ];
+    else
+      return paraverMain::iconPosByName[ "timeline" ];
+  }
+  else
+  {
+    if ( whichWindow->isDerivedHistogram() )
+      return paraverMain::iconPosByName[ whichWindow->getDerivedOperation() ];
+    else
+      return paraverMain::iconPosByName[ "histogram" ];
   }
 
-  return iconNumber;
+  return paraverMain::myParaverMain->iconPosByName[ "timeline" ];
 }
