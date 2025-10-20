@@ -25,31 +25,32 @@
 #pragma once
 
 
-
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
 ////@end includes
+// clang-format on
 
 #include "window.h"
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class wxSpinCtrl;
 class wxBoxSizer;
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_FINDDIALOG 10171
 #define ID_RADIOOBJECTS 10178
@@ -71,35 +72,47 @@ class wxBoxSizer;
 #define SYMBOL_FINDDIALOG_SIZE wxSize(400, 300)
 #define SYMBOL_FINDDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
+// clang-format on
 
 
 /*!
  * FindDialog class declaration
  */
 
-class FindDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( FindDialog )
-  DECLARE_EVENT_TABLE()
+class FindDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( FindDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  FindDialog();
-  FindDialog( wxWindow* parent, wxWindowID id = SYMBOL_FINDDIALOG_IDNAME, const wxString& caption = SYMBOL_FINDDIALOG_TITLE, const wxPoint& pos = SYMBOL_FINDDIALOG_POSITION, const wxSize& size = SYMBOL_FINDDIALOG_SIZE, long style = SYMBOL_FINDDIALOG_STYLE );
+  public:
+    /// Constructors
+    FindDialog();
+    FindDialog( wxWindow* parent,
+                wxWindowID id           = SYMBOL_FINDDIALOG_IDNAME,
+                const wxString& caption = SYMBOL_FINDDIALOG_TITLE,
+                const wxPoint& pos      = SYMBOL_FINDDIALOG_POSITION,
+                const wxSize& size      = SYMBOL_FINDDIALOG_SIZE,
+                long style              = SYMBOL_FINDDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_FINDDIALOG_IDNAME, const wxString& caption = SYMBOL_FINDDIALOG_TITLE, const wxPoint& pos = SYMBOL_FINDDIALOG_POSITION, const wxSize& size = SYMBOL_FINDDIALOG_SIZE, long style = SYMBOL_FINDDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_FINDDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_FINDDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_FINDDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_FINDDIALOG_SIZE,
+                 long style              = SYMBOL_FINDDIALOG_STYLE );
 
-  /// Destructor
-  ~FindDialog();
+    /// Destructor
+    ~FindDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-////@begin FindDialog event handler declarations
+    // clang-format off
+  ////@begin FindDialog event handler declarations
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKNEXTOBJECT
   void OnChecknextobjectUpdate( wxUpdateUIEvent& event );
@@ -125,9 +138,11 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TEXTSEMANTICDURATION
   void OnTextsemanticdurationUpdate( wxUpdateUIEvent& event );
 
-////@end FindDialog event handler declarations
+  ////@end FindDialog event handler declarations
+    // clang-format on
 
-////@begin FindDialog member function declarations
+    // clang-format off
+  ////@begin FindDialog member function declarations
 
   Timeline * GetMyWindow() const { return myWindow ; }
   void SetMyWindow(Timeline * value) { myWindow = value ; }
@@ -137,14 +152,16 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end FindDialog member function declarations
+  ////@end FindDialog member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-  void InitControlsBeforeShow();
-  
-////@begin FindDialog member variables
+    void InitControlsBeforeShow();
+
+    // clang-format off
+  ////@begin FindDialog member variables
   wxRadioButton* radioObjects;
   wxListBox* choiceObjects;
   wxChoice* choicePosition;
@@ -158,5 +175,6 @@ public:
   wxBoxSizer* boxSizerOperatorsChoice;
 private:
   Timeline * myWindow;
-////@end FindDialog member variables
+  ////@end FindDialog member variables
+    // clang-format on
 };

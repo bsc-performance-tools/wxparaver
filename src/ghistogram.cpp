@@ -56,7 +56,7 @@
 #include <wx/display.h>
 #include <wx/progdlg.h>
 #include <wx/version.h>
-//#include "progresscontroller.h"
+// #include "progresscontroller.h"
 #include "popupmenu.h"
 #include "saveimagedialog.h"
 
@@ -271,6 +271,9 @@ void gHistogram::Init()
   ////@end gHistogram member initialisation
   parent               = nullptr;
   forceAutohideColumns = true;
+  timerSize            = new wxTimer( this, ID_TIMER_SIZE_HISTOGRAM );
+  timerZoom            = new wxTimer( this, ID_TIMER_ZOOM_HISTOGRAM );
+  timerPosition        = new wxTimer( this, ID_TIMER_POSITION_HISTOGRAM );
 }
 
 
@@ -578,7 +581,7 @@ void gHistogram::execute()
   }
 
   selectedRows.clear();
-  selectedRows = myHistogram->getSelectedRows( beginRow, endRow );
+  myHistogram->getSelectedRows( myHistogram->getLevel(), selectedRows, beginRow, endRow, true );
   if( selectedRows.size() == 0 )
     myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(), selectedRows, beginRow, endRow, true );
 
@@ -1025,7 +1028,9 @@ void gHistogram::drawColumn( THistogramColumn beginColumn,
 
 vector< TObjectOrder > gHistogram::getSelectedRows()
 {
-  return myHistogram->getSelectedRows();
+  vector< TObjectOrder > selectedRows;
+  myHistogram->getSelectedRows( selectedRows );
+  return selectedRows;
 }
 
 
@@ -1556,7 +1561,11 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
   }
 
   // Finally, execute
-  clonedGHistogram->myHistogram->setRecalc( true );
+  clonedGHistogram->myHistogram->setRecalc( false );
+  clonedGHistogram->myHistogram->setForceRecalc( false );
+
+  clonedGHistogram->myHistogram->setRedraw( true );
+  clonedGHistogram->ready = true;
 }
 
 
@@ -2939,8 +2948,9 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     THistogramColumn iPlane;
     bool commStat = myHistogram->isCommunicationStat( myHistogram->getCurrentStat() );
 
-    vector< bool > tmpSelectedRows = myHistogram->getSelectedBooleanRows();
-    TObjectOrder maxRow            = tmpSelectedRows.size();
+    vector< bool > tmpSelectedRows;
+    myHistogram->getSelectedRows( myHistogram->getLevel(), tmpSelectedRows );
+    TObjectOrder maxRow = tmpSelectedRows.size();
     vector< bool > present( maxRow, false );
 
     if( columnBegin == columnEnd || delta == 1.0 )
@@ -3021,7 +3031,8 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       for( vector< bool >::iterator it = tmpSelectedRows.begin(); it != tmpSelectedRows.end(); ++it )
         *it = true;
     }
-    openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), tmpSelectedRows );
+    openWindow->GetMyWindow()->setRowSelectionManager( myHistogram->getRowSelectionManager() );
+    openWindow->GetMyWindow()->setSelectedRows( myHistogram->getLevel(), tmpSelectedRows );
 
     openWindow->GetMyWindow()->unsetUsedByHistogram( myHistogram );
     openWindow->GetMyWindow()->setShowWindow( true );
@@ -3795,4 +3806,54 @@ void gHistogram::OnToolFixColumnsSortUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( myHistogram->getSemanticSortColumns() );
   event.Check( myHistogram->getFixedSemanticSort() );
+}
+
+
+void gHistogram::InitHistogramCallbacks()
+{
+  myHistogram->registerResizeFunctionCallback(
+    [ this ]( int w, int h )
+    {
+      codeChangeSize = true;
+      if( !this->IsMaximized() )
+      {
+        this->SetClientSize( w, h );
+        this->myHistogram->setRedraw( true );
+        this->updateHistogram();
+      }
+    } );
+
+  myHistogram->registerPositionFunctionCallback(
+    [ this ]( int x, int y )
+    {
+      if( !this->IsMaximized() )
+      {
+        auto newPosX = myHistogram->getPosX() - x;
+        auto newPosY = myHistogram->getPosY() - y;
+        if( newPosX < 0 )
+          newPosX = 0;
+        if( newPosY < 0 )
+          newPosY = 0;
+        if( !this->IsShown() )
+        {
+          int currentDisplay = wxDisplay::GetFromWindow( this );
+          if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+          {
+            wxDisplay tmpDisplay( currentDisplay );
+            auto posX = myHistogram->getPosX() - x - tmpDisplay.GetGeometry().x;
+            auto posY = myHistogram->getPosY() - y - tmpDisplay.GetGeometry().y;
+            if( posX < 0 )
+              posX = 0;
+            if( posY < 0 )
+              posY = 0;
+            myHistogram->setPosX( posX );
+            myHistogram->setPosY( posY );
+          }
+        }
+        this->Show();
+        wxPoint tmpPos( newPosX, newPosY );
+        this->Move( tmpPos );
+      }
+      newPositionApplied = true;
+    } );
 }

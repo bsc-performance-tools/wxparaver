@@ -29,28 +29,30 @@
  * Includes
  */
 
+#include <wx/dir.h>
 #include <wx/filectrl.h>
 #include <wx/filename.h>
 #include <wx/textfile.h>
-#include <wx/dir.h>
-
+// clang-format off
 ////@begin includes
 #include "wx/notebook.h"
 ////@end includes
+// clang-format on
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class wxBoxSizer;
 class wxFileCtrl;
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_SAVEIMAGEDIALOG 10000
 #define ID_TEXTPATH 10501
@@ -59,34 +61,36 @@ class wxFileCtrl;
 #define ID_SAVEIMAGETEXTCTRL 10505
 #define ID_SAVELEGENDCHECKBOX 10506
 #define ID_SAVELEGENDTEXTCTRL 10507
-#define ID_SAVELEGENDCONTROLCHECKBOX    10012
-#define ID_SAVELEGENDCONTROLTEXTCTRL    10013
-#define ID_NOTEBOOK                     10004
-#define ID_SCROLLEDWINDOW1              10003
-#define ID_SCROLLEDWINDOW_IMAGE         10005
-#define ID_CHECKBOX_SCALEDSIZE          10007
-#define ID_SCROLLEDWINDOW               10001
-#define ID_SCROLLEDWINDOW_SCALE         10006
-#define ID_CHECKBOX_LEGEND              10008
-#define ID_SCROLLEDWINDOW2              10009
+#define ID_SAVELEGENDCONTROLCHECKBOX 10012
+#define ID_SAVELEGENDCONTROLTEXTCTRL 10013
+#define ID_NOTEBOOK 10004
+#define ID_SCROLLEDWINDOW1 10003
+#define ID_SCROLLEDWINDOW_IMAGE 10005
+#define ID_CHECKBOX_SCALEDSIZE 10007
+#define ID_SCROLLEDWINDOW 10001
+#define ID_SCROLLEDWINDOW_SCALE 10006
+#define ID_CHECKBOX_LEGEND 10008
+#define ID_SCROLLEDWINDOW2 10009
 #define ID_SCROLLEDWINDOW_SCALE_CONTROL 10010
-#define ID_CHECKBOX_LEGEND_CONTROL      10011
+#define ID_CHECKBOX 10014
+#define ID_TOPCOMPOSE1 10002
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVEIMAGEDIALOG_TITLE _("Save Image Dialog")
 #define SYMBOL_SAVEIMAGEDIALOG_IDNAME ID_SAVEIMAGEDIALOG
 #define SYMBOL_SAVEIMAGEDIALOG_SIZE wxDefaultSize
 #define SYMBOL_SAVEIMAGEDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
+// clang-format on
 
 
 /*!
  * SaveImageDialog class declaration
  */
 
-class SaveImageDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( SaveImageDialog )
-  DECLARE_EVENT_TABLE()
+class SaveImageDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( SaveImageDialog )
+    DECLARE_EVENT_TABLE()
 
 public:
   /// Constructors
@@ -104,17 +108,22 @@ public:
                    const wxSize& size           = SYMBOL_SAVEIMAGEDIALOG_SIZE,
                    long style                   = SYMBOL_SAVEIMAGEDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_SAVEIMAGEDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_SAVEIMAGEDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_SAVEIMAGEDIALOG_SIZE,
+                 long style              = SYMBOL_SAVEIMAGEDIALOG_STYLE );
 
-  /// Destructor
-  ~SaveImageDialog();
+    /// Destructor
+    ~SaveImageDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
 
   wxString GetImageFilePath();
@@ -126,7 +135,8 @@ public:
   bool DialogSavesControlLegend();
   int GetFilterIndex(); // Should it be TImageFormat ???
 
-////@begin SaveImageDialog event handler declarations
+    // clang-format off
+  ////@begin SaveImageDialog event handler declarations
 
   /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTPATH
   void OnTextpathEnter( wxCommandEvent& event );
@@ -167,12 +177,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_SCALE_CONTROL
   void onPaintScaleControl( wxPaintEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND_CONTROL
-  void OnCheckboxLegendControlClick( wxCommandEvent& event );
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
+  void OnCheckboxClick( wxCommandEvent& event );
 
   ////@end SaveImageDialog event handler declarations
 
-  void OnFileNavigatorChanged( wxFileCtrlEvent& event );
+    void OnFileNavigatorChanged( wxFileCtrlEvent& event );
 
   void updateFileNamesAndPaths();
   void setImageFileName();
@@ -190,12 +200,14 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end SaveImageDialog member function declarations
+  ////@end SaveImageDialog member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-////@begin SaveImageDialog member variables
+    // clang-format off
+  ////@begin SaveImageDialog member variables
   wxBoxSizer* sizerMain;
   wxBoxSizer* sizerPath;
   wxTextCtrl* textPath;
@@ -215,6 +227,7 @@ public:
   wxScrolledWindow* drawWindowSingle;
   wxScrolledWindow* drawScaleSingle;
   wxScrolledWindow* drawScaleControlSingle;
+  wxChoice* widgetTopCompose1;
   ////@end SaveImageDialog member variables
 
   WindowImageGenerator* imageGeneration;

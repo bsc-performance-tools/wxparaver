@@ -23,45 +23,47 @@
 
 #pragma once
 
-
-
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 #include "wx/image.h"
 #include "paravermain.h"
 ////@end includes
-#include <wx/snglinst.h>
+// clang-format on
 #include "wx/dirctrl.h"
 #include "wx/filefn.h"
+
 #include <time.h>
+#include <wx/snglinst.h>
 #ifdef TRACING_ENABLED
-#include "extrae_user_events.h"
+#  include "extrae_user_events.h"
 #endif
 
 // find a common place; moved from paravermain.cpp
 #ifdef _WIN32
-  const char PATH_SEP('\\');
+const char PATH_SEP( '\\' );
 #else
-  const char PATH_SEP('/');
+const char PATH_SEP( '/' );
 #endif
-  
+
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 ////@end forward declarations
+// clang-format on
 class stServer;
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 ////@end control identifiers
+// clang-format on
 
 bool launchBrowser( const wxString& htmlFile );
 
@@ -69,12 +71,12 @@ bool launchBrowser( const wxString& htmlFile );
  * wxparaverApp class declaration
  */
 
-class wxparaverApp: public wxApp
-{    
+class wxparaverApp : public wxApp
+{
     DECLARE_CLASS( wxparaverApp )
     DECLARE_EVENT_TABLE()
 
-public:
+  public:
     /// Constructor
     wxparaverApp();
 
@@ -88,7 +90,7 @@ public:
     /// Called on exit
     virtual int OnExit();
 
-    int FilterEvent(wxEvent& event);
+    int FilterEvent( wxEvent& event );
 
 #if !defined _MSC_VER && !defined __MINGW32__
     // Signal handling
@@ -98,14 +100,18 @@ public:
 
     void ActivateGlobalTiming( wxDialog* whichDialog );
     void DeactivateGlobalTiming();
-    
+
     void ParseCommandLine( wxCmdLineParser& paraverCommandLineParser );
 
-////@begin wxparaverApp event handler declarations
 
-////@end wxparaverApp event handler declarations
+    // clang-format off
+  ////@begin wxparaverApp event handler declarations
 
-////@begin wxparaverApp member function declarations
+  ////@end wxparaverApp event handler declarations
+    // clang-format on
+
+    // clang-format off
+  ////@begin wxparaverApp member function declarations
 
 	TEventType GetEventTypeForCode() const { return eventTypeForCode ; }
 	void SetEventTypeForCode(TEventType value) { eventTypeForCode = value ; }
@@ -125,13 +131,15 @@ public:
 	TTime GetGlobalTimingEnd() const { return globalTimingEnd ; }
 	void SetGlobalTimingEnd(TTime value) { globalTimingEnd = value ; }
 
-////@end wxparaverApp member function declarations
+  ////@end wxparaverApp member function declarations
+    // clang-format on
 
     static paraverMain* mainWindow;
     static wxCmdLineEntryDesc argumentsParseSyntax[];
     void ValidateSession( bool setValidate );
-    
-////@begin wxparaverApp member variables
+
+    // clang-format off
+  ////@begin wxparaverApp member variables
 private:
 	TEventType eventTypeForCode;
 	bool globalTiming;
@@ -139,22 +147,24 @@ private:
 	bool globalTimingBeginIsSet;
 	wxDialog* globalTimingCallDialog;
 	TTime globalTimingEnd;
-////@end wxparaverApp member variables
+  ////@end wxparaverApp member variables
+    // clang-format on
     bool invalidateNoConnect;
 
     wxLocale m_locale;
-    
-    wxSingleInstanceChecker *m_checker;
-    
-    stServer *m_server;
-    
+
+    wxSingleInstanceChecker* m_checker;
+
+    stServer* m_server;
+
     void PrintVersion();
 };
 
 /*!
- * Application instance declaration 
+ * Application instance declaration
  */
-
+// clang-format off
 ////@begin declare app
 DECLARE_APP(wxparaverApp)
 ////@end declare app
+// clang-format on

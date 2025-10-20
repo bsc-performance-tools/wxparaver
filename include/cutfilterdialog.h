@@ -26,12 +26,13 @@
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 #include "wx/notebook.h"
 #include "wx/statline.h"
 #include "wx/spinctrl.h"
 ////@end includes
+// clang-format on
 
 #include <string>
 #include <vector>
@@ -39,26 +40,25 @@
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 class FileBrowserButton;
 class wxBoxSizer;
 class wxNotebook;
 class wxSpinCtrl;
 ////@end forward declarations
-
-#include "traceoptions.h"
+// clang-format on
 
 #include "tracecutter.h"
 #include "tracefilter.h"
+#include "traceoptions.h"
 #include "tracesoftwarecounters.h"
-//#include "paravermain.h"
 #include "wxparaverapp.h"
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_CUTFILTERDIALOG 10103
 #define ID_TEXTCTRL_CUT_FILTER_INPUT_TRACE 10247
@@ -127,42 +127,47 @@ class wxSpinCtrl;
 #define SYMBOL_CUTFILTERDIALOG_SIZE wxSize(400, 300)
 #define SYMBOL_CUTFILTERDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
-
+// clang-format on
 
 /*!
  * CutFilterDialog class declaration
  */
 
-class CutFilterDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( CutFilterDialog )
-  DECLARE_EVENT_TABLE()
+class CutFilterDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( CutFilterDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  CutFilterDialog();
-  CutFilterDialog(
-          wxWindow* parent,
-          const wxString& whichXMLConfigurationFile = wxT( "" ),
-          wxWindowID id = SYMBOL_CUTFILTERDIALOG_IDNAME,
-          const wxString& caption = SYMBOL_CUTFILTERDIALOG_TITLE,
-          const wxPoint& pos = SYMBOL_CUTFILTERDIALOG_POSITION,
-          const wxSize& size = SYMBOL_CUTFILTERDIALOG_SIZE,
-          long style = SYMBOL_CUTFILTERDIALOG_STYLE );
+  public:
+    /// Constructors
+    CutFilterDialog();
+    CutFilterDialog( wxWindow* parent,
+                     const wxString& whichXMLConfigurationFile = wxT( "" ),
+                     wxWindowID id                             = SYMBOL_CUTFILTERDIALOG_IDNAME,
+                     const wxString& caption                   = SYMBOL_CUTFILTERDIALOG_TITLE,
+                     const wxPoint& pos                        = SYMBOL_CUTFILTERDIALOG_POSITION,
+                     const wxSize& size                        = SYMBOL_CUTFILTERDIALOG_SIZE,
+                     long style                                = SYMBOL_CUTFILTERDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_CUTFILTERDIALOG_IDNAME, const wxString& caption = SYMBOL_CUTFILTERDIALOG_TITLE, const wxPoint& pos = SYMBOL_CUTFILTERDIALOG_POSITION, const wxSize& size = SYMBOL_CUTFILTERDIALOG_SIZE, long style = SYMBOL_CUTFILTERDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_CUTFILTERDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_CUTFILTERDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_CUTFILTERDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_CUTFILTERDIALOG_SIZE,
+                 long style              = SYMBOL_CUTFILTERDIALOG_STYLE );
 
-  /// Destructor
-  ~CutFilterDialog();
+    /// Destructor
+    ~CutFilterDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-////@begin CutFilterDialog event handler declarations
+    // clang-format off
+  ////@begin CutFilterDialog event handler declarations
 
   /// wxEVT_INIT_DIALOG event handler for ID_CUTFILTERDIALOG
   void OnInitDialog( wxInitDialogEvent& event );
@@ -278,9 +283,11 @@ public:
   /// wxEVT_UPDATE_UI event handler for wxID_APPLY
   void OnApplyUpdate( wxUpdateUIEvent& event );
 
-////@end CutFilterDialog event handler declarations
+  ////@end CutFilterDialog event handler declarations
+    // clang-format on
 
-////@begin CutFilterDialog member function declarations
+    // clang-format off
+  ////@begin CutFilterDialog member function declarations
 
   bool GetChangedXMLParameters() const { return changedXMLParameters ; }
   void SetChangedXMLParameters(bool value) { changedXMLParameters = value ; }
@@ -320,69 +327,67 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end CutFilterDialog member function declarations
+  ////@end CutFilterDialog member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-  void UpdateExecutionChain();
+    void UpdateExecutionChain();
 
-  TTime formatTime( const wxString whichTime );
-  wxString formatTime( double value );
-  double formatPercent(const wxString whichPercent );
-  wxString formatPercent( double value );
+    TTime formatTime( const wxString whichTime );
+    wxString formatTime( double value );
+    double formatPercent( const wxString whichPercent );
+    wxString formatPercent( double value );
 
-  std::string GetTraceFileName();
-  std::vector< int > GetToolsOrder();
-  bool LoadResultingTrace();
+    std::string GetTraceFileName();
+    std::vector< int > GetToolsOrder();
+    bool LoadResultingTrace();
 
-  void CheckCommonOptions( bool &previousWarning, bool showWarning = false );
-  void CheckCutterOptions( bool &previousWarning );
-  void CheckFilterOptions( bool &previousWarning );
-  void CheckSoftwareCountersOptions( bool &previousWarning );
+    void CheckCommonOptions( bool& previousWarning, bool showWarning = false );
+    void CheckCutterOptions( bool& previousWarning );
+    void CheckFilterOptions( bool& previousWarning );
+    void CheckSoftwareCountersOptions( bool& previousWarning );
 
-  bool CheckStringTasks( wxString taskStr );
-  bool CheckEventsLine( wxString eventsStr );
-  void GetEventsFromLine( wxString eventsStr,
-                          TraceOptions::TFilterTypes &eventTypes,
-                          int &lastType );
-  void SetEventLine( TraceOptions::TFilterTypes eventTypes, int current );
-  void SetEventsList( TraceOptions::TFilterTypes types, int lastType ); 
-  void GetEventsList( TraceOptions::TFilterTypes &types, int &lastType );
-  void CheckStatesList( size_t begin, bool value );
-  void CheckStatesList( TraceOptions::TStateNames statesList );
+    bool CheckStringTasks( wxString taskStr );
+    bool CheckEventsLine( wxString eventsStr );
+    void GetEventsFromLine( wxString eventsStr, TraceOptions::TFilterTypes& eventTypes, int& lastType );
+    void SetEventLine( TraceOptions::TFilterTypes eventTypes, int current );
+    void SetEventsList( TraceOptions::TFilterTypes types, int lastType );
+    void GetEventsList( TraceOptions::TFilterTypes& types, int& lastType );
+    void CheckStatesList( size_t begin, bool value );
+    void CheckStatesList( TraceOptions::TStateNames statesList );
 
 
-  void SetSoftwareCountersEventsListToString( std::function<char *()> whichFunction, wxListBox *selectedEvents );
-  char *GetSoftwareCountersEventsListToString( wxListBox *selectedEvents );
+    void SetSoftwareCountersEventsListToString( std::function< char*() > whichFunction, wxListBox* selectedEvents );
+    char* GetSoftwareCountersEventsListToString( wxListBox* selectedEvents );
 
-  void TransferWindowToCommonData( bool previousWarning );
-  void TransferWindowToCutterData( bool previousWarning );
-  void TransferWindowToFilterData( bool previousWarning );
-  void TransferWindowToSoftwareCountersData( bool previousWarning );
+    void TransferWindowToCommonData( bool previousWarning );
+    void TransferWindowToCutterData( bool previousWarning );
+    void TransferWindowToFilterData( bool previousWarning );
+    void TransferWindowToSoftwareCountersData( bool previousWarning );
 
-  void TransferCommonDataToWindow( std::vector< std::string > order );
-  void readTimes( bool byTime, TTime &whichBeginTime, TTime &whichEndTime );
-  void TransferCutterDataToWindow( TraceOptions *traceOptions );
-  void TransferFilterDataToWindow( TraceOptions *traceOptions );
-  void TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions );
-  void TransferDataToWindow( std::vector< std::string > order, TraceOptions* traceOptions );
+    void TransferCommonDataToWindow( std::vector< std::string > order );
+    void readTimes( bool byTime, TTime& whichBeginTime, TTime& whichEndTime );
+    void TransferCutterDataToWindow( TraceOptions* traceOptions );
+    void TransferFilterDataToWindow( TraceOptions* traceOptions );
+    void TransferSoftwareCountersDataToWindow( TraceOptions* traceOptions );
+    void TransferDataToWindow( std::vector< std::string > order, TraceOptions* traceOptions );
 
-  void TransferXMLDataToWindow( TraceOptions *traceOptions,
-                                 
-                                 std::vector< std::string > &toolIDsOrder );
-  
-  bool GetLoadedXMLPath( std::string &XML );
-  void EnableAllTabsFromToolsList();
-  void ChangePageSelectionFromTabsToToolsOrderList();
-  void SetXMLFile( const wxString& whichXMLFile, bool refresh = true );
-  void TransferTraceOptionsToWindow( TraceOptions *traceOptions, std::vector< std::string > &whichToolIDsOrder );
+    void TransferXMLDataToWindow( TraceOptions* traceOptions,
 
-  void setOutputName( bool enable,
-                      bool saveGeneratedName,
-                      const std::string& sourceTrace = std::string("") );
+                                  std::vector< std::string >& toolIDsOrder );
 
-////@begin CutFilterDialog member variables
+    bool GetLoadedXMLPath( std::string& XML );
+    void EnableAllTabsFromToolsList();
+    void ChangePageSelectionFromTabsToToolsOrderList();
+    void SetXMLFile( const wxString& whichXMLFile, bool refresh = true );
+    void TransferTraceOptionsToWindow( TraceOptions* traceOptions, std::vector< std::string >& whichToolIDsOrder );
+
+    void setOutputName( bool enable, bool saveGeneratedName, const std::string& sourceTrace = std::string( "" ) );
+
+    // clang-format off
+  ////@begin CutFilterDialog member variables
   wxTextCtrl* textCtrlInputTrace;
   FileBrowserButton* fileBrowserButtonInputTrace;
   wxStaticText* txtOutputTrace;
@@ -464,60 +469,59 @@ private:
   bool runAppWithResultingTrace;
   TraceOptions * traceOptions;
   bool waitingGlobalTiming;
-////@end CutFilterDialog member variables
+  ////@end CutFilterDialog member variables
+    // clang-format on
 
-  wxString xmlConfigurationFile;
+    wxString xmlConfigurationFile;
 
-  std::vector< std::string > listToolOrder; // Full list of names of the tools
-  std::map< std::string, int > TABINDEX;   // CONSTANT map ( tool names -> widget tabs index )
-  std::string outputPath;
+    std::vector< std::string > listToolOrder; // Full list of names of the tools
+    std::map< std::string, int > TABINDEX;    // CONSTANT map ( tool names -> widget tabs index )
+    std::string outputPath;
 
-  // Constants for regular expressions
-  wxString reAnySpaces;
-  wxString reSomeNumbers;
-  wxString reType;
-  wxString reNegativeSign;
+    // Constants for regular expressions
+    wxString reAnySpaces;
+    wxString reSomeNumbers;
+    wxString reType;
+    wxString reNegativeSign;
 
-  wxString reSingleType;
-  wxString reRangeOfTypes;
+    wxString reSingleType;
+    wxString reRangeOfTypes;
 
-  wxString reIntegerValue;
-  wxString reSomeIntegersSepByComma;
-  wxString reValuesSepByComma;
+    wxString reIntegerValue;
+    wxString reSomeIntegersSepByComma;
+    wxString reValuesSepByComma;
 
-  wxString reValuesSepByCommaForType;
+    wxString reValuesSepByCommaForType;
 
-  bool cutterByTimePreviouslyChecked;
+    bool cutterByTimePreviouslyChecked;
 
 
-  bool isFileSelected( FileBrowserButton *fpc );
-  bool isFileSelected( const std::string& fpc );
+    bool isFileSelected( FileBrowserButton* fpc );
+    bool isFileSelected( const std::string& fpc );
 
-  bool isExecutionChainEmpty();
-  const std::vector< std::string > changeToolsNameToID( const std::vector< std::string >& listToolWithNames );
-  const std::vector< std::string > changeToolsIDsToNames( const std::vector< std::string >& listToolIDs );
-  bool globalEnable();
-  bool globalEnable( const std::string& auxInputTrace );
+    bool isExecutionChainEmpty();
+    const std::vector< std::string > changeToolsNameToID( const std::vector< std::string >& listToolWithNames );
+    const std::vector< std::string > changeToolsIDsToNames( const std::vector< std::string >& listToolIDs );
+    bool globalEnable();
+    bool globalEnable( const std::string& auxInputTrace );
 
-  void swapTimeAndPercent();
+    void swapTimeAndPercent();
 
-  void UpdateOutputTraceName();
+    void UpdateOutputTraceName();
 
-  void enableOutputTraceWidgets( bool enable );
+    void enableOutputTraceWidgets( bool enable );
 
-  void EnableSingleTab( int selected );
+    void EnableSingleTab( int selected );
 
-  void ChangePageSelectionFromToolsOrderListToTabs( int selected );
-  // void ChangePageSelectionFromTabsToToolsOrderList(); -->public
+    void ChangePageSelectionFromToolsOrderListToTabs( int selected );
 
-  void TransferToolOrderToCommonData();
-  void EnableToolTab( int i );
-  
-  void UpdateGuiXMLSectionFromFile( TraceOptions *traceOptions, 
-                                     std::vector< std::string > &toolIDsOrder );
-  void UpdateGlobalXMLPath( const wxString& whichPath );
-  
-  void TransferXMLFileToWindow(  const wxString& whichXMLFile );
-  
-  Trace *getTrace();
+    void TransferToolOrderToCommonData();
+    void EnableToolTab( int i );
+
+    void UpdateGuiXMLSectionFromFile( TraceOptions* traceOptions, std::vector< std::string >& toolIDsOrder );
+    void UpdateGlobalXMLPath( const wxString& whichPath );
+
+    void TransferXMLFileToWindow( const wxString& whichXMLFile );
+
+    Trace* getTrace();
 };

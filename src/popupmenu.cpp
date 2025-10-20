@@ -821,6 +821,22 @@ void gPopUpMenu ::buildPopUpMenuDrawMode()
       { popUpMenuDrawModeBoth,
         _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
         wxITEM_CHECK,
+        &gPopUpMenu::OnPopUpDrawModeBothAbsoluteMinimumNotZero,
+        ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MINIMUM_NOT_ZERO,
+        ( drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO ) &&
+          ( drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO ) },
+
+      { popUpMenuDrawModeBoth,
+        _( GUI_DRAWMODE_RANDOM ),
+        wxITEM_CHECK,
+        &gPopUpMenu::OnPopUpDrawModeBothRandom,
+        ID_MENU_DRAWMODE_BOTH_RANDOM,
+        ( drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_RANDOM ) &&
+          ( drawModeTimeSync && drawModeTime == DrawModeMethod::DRAW_RANDOM ) },
+
+      { popUpMenuDrawModeBoth,
+        _( GUI_DRAWMODE_RANDOM_NOT_ZERO ),
+        wxITEM_CHECK,
         &gPopUpMenu::OnPopUpDrawModeBothRandomNotZero,
         ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO,
         ( drawModeObjectSync && drawModeObject == DrawModeMethod::DRAW_RANDNOTZERO ) &&
@@ -1273,7 +1289,7 @@ void gPopUpMenu ::buildPopUpMenuSync()
                      wxString::Format( _( "%u" ), *itGroup + 1 ),
                      wxITEM_NORMAL,
                      &gPopUpMenu::OnPopUpSynchronizeProperties,
-                     ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
+                     ID_MENU_SYNC_PROPERTIES_GROUP_BASE + i );
     ++i;
   }
 
@@ -1400,12 +1416,12 @@ wxMenuItem *gPopUpMenu::buildItem( wxMenu *baseMenuContainer,
     newMenuItem->Check( isChecked );
   }
 
-#ifdef _WIN32
-  Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
-#else
+//#ifdef _WIN32
+//  Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
+//#else
   baseMenuContainer->Bind( wxEVT_COMMAND_MENU_SELECTED, callbackFunctionMenuItem, this, windowId );
 
-#endif
+//#endif
 
   return newMenuItem;
 }
@@ -1881,18 +1897,18 @@ void gPopUpMenu ::createRowSelectionDialog()
 
   auto visitorSelectedRows = overloads{ []( gHistogram *histogram )
                                         {
-                                          return histogram->GetHistogram()->getRowSelectionManagement();
+                                          return histogram->GetHistogram()->getRowSelectionManager();
                                         },
                                         []( gTimeline *timeline )
                                         {
-                                          return timeline->GetMyWindow()->getSelectedRows();
+                                          return timeline->GetMyWindow()->getRowSelectionManager();
                                         }
 
   };
 
   auto dataWindow   = std::visit( visitor, *windowGenericList.begin() );
   auto selectedRows = std::visit( visitorSelectedRows, *windowGenericList.begin() );
-  selectedRows->getAllSelected( intersectedSelection );
+  selectedRows.getAllSelected( intersectedSelection );
 
   isProcessModel = ( ( dataWindow->getLevel() >= TTraceLevel::WORKLOAD ) && ( dataWindow->getLevel() <= TTraceLevel::THREAD ) );
   trace          = dataWindow->getTrace();
@@ -1900,7 +1916,7 @@ void gPopUpMenu ::createRowSelectionDialog()
   for( auto &window : windowGenericList )
   {
     dataWindow = std::visit( visitor, window );
-    dataWindow->getSelectedRows()->getAllSelected( tmpWindowSelection );
+    dataWindow->getRowSelectionManager().getAllSelected( tmpWindowSelection );
 
     intersectedSelection = matrix_intersection( tmpWindowSelection, intersectedSelection );
   }
@@ -1912,7 +1928,7 @@ void gPopUpMenu ::createRowSelectionDialog()
 
   intersectionSelectedRows.setAllSelected( intersectedSelection );
 
-  RowsSelectionDialog *myDialog = new RowsSelectionDialog( trace, isProcessModel, &intersectionSelectedRows );
+  RowsSelectionDialog *myDialog = new RowsSelectionDialog( trace, isProcessModel, intersectionSelectedRows );
 
   if( myDialog->ShowModal() == wxID_OK )
   {
@@ -2060,8 +2076,7 @@ void gPopUpMenu ::transferDataSelectionToObjects( RowsSelectionDialog *myDialog,
       {
         tmpHistogram = std::get< gHistogram * >( window );
         std::vector< TObjectOrder > selection;
-        tmpHistogram->GetHistogram()->getRowSelectionManagement()->getSelected( selection,
-                                                                                tmpHistogram->GetHistogram()->getDataWindow()->getLevel() );
+        tmpHistogram->GetHistogram()->getRowSelectionManager().getSelected( selection, tmpHistogram->GetHistogram()->getDataWindow()->getLevel() );
 
         auto zoomAware = myDialog->isZoomAwareTransferData( selection );
         if( applyZoom && !zoomAware )
@@ -2081,7 +2096,7 @@ RowsSelectionDialog *gPopUpMenu ::createRowSelectionDialog( gTimeline *whichTime
     ( ( whichTimeline->GetMyWindow()->getLevel() >= TTraceLevel::WORKLOAD ) && ( whichTimeline->GetMyWindow()->getLevel() <= TTraceLevel::THREAD ) );
 
   RowsSelectionDialog *myDialog =
-    new RowsSelectionDialog( whichTimeline->GetMyWindow()->getTrace(), isProcessModel, whichTimeline->GetMyWindow()->getSelectedRows() );
+    new RowsSelectionDialog( whichTimeline->GetMyWindow()->getTrace(), isProcessModel, whichTimeline->GetMyWindow()->getRowSelectionManager() );
 
   return myDialog;
 }
@@ -2092,7 +2107,7 @@ RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gHistogram *histogram
                           ( histogram->GetHistogram()->getDataWindow()->getLevel() <= TTraceLevel::THREAD ) );
 
   RowsSelectionDialog *myDialog =
-    new RowsSelectionDialog( histogram->GetHistogram()->getTrace(), isProcessModel, histogram->GetHistogram()->getRowSelectionManagement() );
+    new RowsSelectionDialog( histogram->GetHistogram()->getTrace(), isProcessModel, histogram->GetHistogram()->getRowSelectionManager() );
 
   return myDialog;
 }
@@ -3034,7 +3049,7 @@ void gPopUpMenu::OnPopUpSynchronize( wxCommandEvent &event )
 
 void gPopUpMenu::OnPopUpSynchronizeProperties( wxCommandEvent &event )
 {
-  TGroupId tmpGroup = event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE;
+  TGroupId tmpGroup = event.GetId() - ID_MENU_SYNC_PROPERTIES_GROUP_BASE;
   openSyncSelection( tmpGroup );
 }
 

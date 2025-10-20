@@ -24,25 +24,26 @@
 #pragma once
 
 
-
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_EXITDIALOG 10000
 #define ID_BUTTON_SAVE_EXIT 10253
@@ -54,35 +55,46 @@
 #define SYMBOL_EXITDIALOG_SIZE wxDefaultSize
 #define SYMBOL_EXITDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
-
+// clang-format on
 
 /*!
  * ExitDialog class declaration
  */
 
-class ExitDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( ExitDialog )
-  DECLARE_EVENT_TABLE()
+class ExitDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( ExitDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  ExitDialog();
-  ExitDialog( wxWindow* parent, wxWindowID id = SYMBOL_EXITDIALOG_IDNAME, const wxString& caption = SYMBOL_EXITDIALOG_TITLE, const wxPoint& pos = SYMBOL_EXITDIALOG_POSITION, const wxSize& size = SYMBOL_EXITDIALOG_SIZE, long style = SYMBOL_EXITDIALOG_STYLE );
+  public:
+    /// Constructors
+    ExitDialog();
+    ExitDialog( wxWindow* parent,
+                wxWindowID id           = SYMBOL_EXITDIALOG_IDNAME,
+                const wxString& caption = SYMBOL_EXITDIALOG_TITLE,
+                const wxPoint& pos      = SYMBOL_EXITDIALOG_POSITION,
+                const wxSize& size      = SYMBOL_EXITDIALOG_SIZE,
+                long style              = SYMBOL_EXITDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_EXITDIALOG_IDNAME, const wxString& caption = SYMBOL_EXITDIALOG_TITLE, const wxPoint& pos = SYMBOL_EXITDIALOG_POSITION, const wxSize& size = SYMBOL_EXITDIALOG_SIZE, long style = SYMBOL_EXITDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_EXITDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_EXITDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_EXITDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_EXITDIALOG_SIZE,
+                 long style              = SYMBOL_EXITDIALOG_STYLE );
 
-  /// Destructor
-  ~ExitDialog();
+    /// Destructor
+    ~ExitDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-////@begin ExitDialog event handler declarations
+    // clang-format off
+  ////@begin ExitDialog event handler declarations
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SAVE_EXIT
   void OnButtonSaveExitClick( wxCommandEvent& event );
@@ -93,23 +105,28 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLOSE_NO_SAVE
   void OnButtonCloseNoSaveClick( wxCommandEvent& event );
 
-////@end ExitDialog event handler declarations
+  ////@end ExitDialog event handler declarations
+    // clang-format on
 
-////@begin ExitDialog member function declarations
+    // clang-format off
+  ////@begin ExitDialog member function declarations
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end ExitDialog member function declarations
+  ////@end ExitDialog member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-////@begin ExitDialog member variables
+    // clang-format off
+  ////@begin ExitDialog member variables
   wxButton* saveExitButton;
   wxButton* cancelButton;
   wxButton* noSaveExitButton;
-////@end ExitDialog member variables
+  ////@end ExitDialog member variables
+    // clang-format on
 };

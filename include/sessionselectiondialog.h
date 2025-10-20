@@ -24,32 +24,34 @@
 #pragma once
 
 
-
 /*!
  * Includes
  */
-
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
+#include "boost/date_time/posix_time/posix_time.hpp"
+
+#include <algorithm>
+#include <map>
+#include <vector>
+#include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/textfile.h>
-#include <wx/dir.h>
-#include <vector>
-#include <map>
-#include <algorithm>
-#include "boost/date_time/posix_time/posix_time.hpp"
 
 /*!
  * Forward declarations
  */
-
+// clang-format off
 ////@begin forward declarations
 ////@end forward declarations
+// clang-format on
 
 /*!
  * Control identifiers
  */
-
+// clang-format off
 ////@begin control identifiers
 #define ID_SESSIONSELECTIONDIALOG 10000
 #define ID_SESSIONBOX 10001
@@ -59,36 +61,51 @@
 #define SYMBOL_SESSIONSELECTIONDIALOG_SIZE wxSize(400, 300)
 #define SYMBOL_SESSIONSELECTIONDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
-
+// clang-format on
 
 /*!
  * SessionSelectionDialog class declaration
  */
 
-class SessionSelectionDialog: public wxDialog
-{    
-  DECLARE_DYNAMIC_CLASS( SessionSelectionDialog )
-  DECLARE_EVENT_TABLE()
+class SessionSelectionDialog : public wxDialog
+{
+    DECLARE_DYNAMIC_CLASS( SessionSelectionDialog )
+    DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  SessionSelectionDialog();
-  SessionSelectionDialog( wxString folderPath, bool isInitialized = false );
-  SessionSelectionDialog( wxWindow* parent, wxString folderPath, bool isInitialized = false, wxWindowID id = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SESSIONSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_SESSIONSELECTIONDIALOG_SIZE, long style = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
+  public:
+    /// Constructors
+    SessionSelectionDialog();
+    SessionSelectionDialog( wxString folderPath, bool isInitialized = false );
+    SessionSelectionDialog( wxWindow* parent,
+                            wxString folderPath,
+                            bool isInitialized      = false,
+                            wxWindowID id           = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME,
+                            const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE,
+                            const wxPoint& pos      = SYMBOL_SESSIONSELECTIONDIALOG_POSITION,
+                            const wxSize& size      = SYMBOL_SESSIONSELECTIONDIALOG_SIZE,
+                            long style              = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
 
-  /// Creation
-  bool Create( wxWindow* parent, wxString folderPath, bool isInitialized, wxWindowID id = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SESSIONSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_SESSIONSELECTIONDIALOG_SIZE, long style = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
+    /// Creation
+    bool Create( wxWindow* parent,
+                 wxString folderPath,
+                 bool isInitialized,
+                 wxWindowID id           = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME,
+                 const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE,
+                 const wxPoint& pos      = SYMBOL_SESSIONSELECTIONDIALOG_POSITION,
+                 const wxSize& size      = SYMBOL_SESSIONSELECTIONDIALOG_SIZE,
+                 long style              = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
 
-  /// Destructor
-  ~SessionSelectionDialog();
+    /// Destructor
+    ~SessionSelectionDialog();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
-  
-////@begin SessionSelectionDialog event handler declarations
+    /// Creates the controls and sizers
+    void CreateControls();
+
+    // clang-format off
+  ////@begin SessionSelectionDialog event handler declarations
 
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_SESSIONBOX
   void OnSessionboxSelected( wxCommandEvent& event );
@@ -105,11 +122,13 @@ public:
   /// wxEVT_UPDATE_UI event handler for wxID_OK
   void OnOkUpdate( wxUpdateUIEvent& event );
 
-////@end SessionSelectionDialog event handler declarations
-  bool OnCreate();
-  bool OnCreateNoDialog();
+  ////@end SessionSelectionDialog event handler declarations
+    // clang-format on
+    bool OnCreate();
+    bool OnCreateNoDialog();
 
-////@begin SessionSelectionDialog member function declarations
+    // clang-format off
+  ////@begin SessionSelectionDialog member function declarations
 
   bool GetIsInitialized() const { return isInitialized ; }
   void SetIsInitialized(bool value) { isInitialized = value ; }
@@ -122,16 +141,18 @@ public:
 
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
-////@end SessionSelectionDialog member function declarations
+  ////@end SessionSelectionDialog member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
-  
-  // Retrieve data
-  wxString GetSessionPath();
-  wxArrayString GetSessionPaths();
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
-////@begin SessionSelectionDialog member variables
+    // Retrieve data
+    wxString GetSessionPath();
+    wxArrayString GetSessionPaths();
+
+    // clang-format off
+  ////@begin SessionSelectionDialog member variables
   wxStaticText* textDialogDescription;
   wxListBox* listSessions;
   wxButton* buttonCancel;
@@ -139,10 +160,11 @@ public:
 private:
   bool isInitialized;
   std::map< wxString, wxString > linksPerFileName;
-////@end SessionSelectionDialog member variables
+  ////@end SessionSelectionDialog member variables
+    // clang-format on
 
-  wxString myPath;
-  wxString folderPath;
-  wxArrayString allFilesInDir;
-  wxString FormatFileName( wxString fileName );
+    wxString myPath;
+    wxString folderPath;
+    wxArrayString allFilesInDir;
+    wxString FormatFileName( wxString fileName );
 };

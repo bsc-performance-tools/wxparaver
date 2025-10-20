@@ -45,12 +45,14 @@ using namespace stdext;
 
 using boost::posix_time::ptime;
 
+// clang-format off
 ////@begin includes
 #include "wx/frame.h"
 #include "wx/notebook.h"
 #include "wx/richtext/richtextctrl.h"
 #include "wx/splitter.h"
 ////@end includes
+// clang-format on
 #include "copypaste.h"
 #include "paraverkerneltypes.h"
 #include "recordlist.h"
@@ -70,12 +72,14 @@ using boost::posix_time::ptime;
  * Forward declarations
  */
 
+// clang-format off
 ////@begin forward declarations
 class wxSplitterWindow;
 class wxNotebook;
 class wxRichTextCtrl;
 class wxBoxSizer;
 ////@end forward declarations
+// clang-format on
 class Timeline;
 class ProgressController;
 
@@ -84,6 +88,7 @@ class ProgressController;
  * Control identifiers
  */
 
+// clang-format off
 ////@begin control identifiers
 #define ID_GTIMELINE                   10001
 #define ID_SPLITTER_TIMELINE           10048
@@ -129,6 +134,7 @@ class ProgressController;
 #define SYMBOL_GTIMELINE_SIZE     wxSize( 400, 300 )
 #define SYMBOL_GTIMELINE_POSITION wxDefaultPosition
 ////@end control identifiers
+// clang-format on
 
 #define ID_TIMER_SIZE     40000
 #define ID_TIMER_MOTION   40001
@@ -158,39 +164,40 @@ enum class TWhatWhereLine
 /*!
  * gTimeline class declaration
  */
-class gTimeline
-  : public wxFrame
-  , public gWindow
+// clang-format off
+class gTimeline : public wxFrame, public gWindow
 {
-  DECLARE_CLASS( gTimeline )
-  DECLARE_EVENT_TABLE()
+    // clang-format on
+    DECLARE_CLASS( gTimeline )
+    DECLARE_EVENT_TABLE()
 
- public:
-  /// Constructors
-  gTimeline();
-  gTimeline( wxWindow* parent,
-             wxWindowID id           = SYMBOL_GTIMELINE_IDNAME,
-             const wxString& caption = SYMBOL_GTIMELINE_TITLE,
-             const wxPoint& pos      = SYMBOL_GTIMELINE_POSITION,
-             const wxSize& size      = SYMBOL_GTIMELINE_SIZE,
-             long style              = SYMBOL_GTIMELINE_STYLE );
-
-  bool Create( wxWindow* parent,
+  public:
+    /// Constructors
+    gTimeline();
+    gTimeline( wxWindow* parent,
                wxWindowID id           = SYMBOL_GTIMELINE_IDNAME,
                const wxString& caption = SYMBOL_GTIMELINE_TITLE,
                const wxPoint& pos      = SYMBOL_GTIMELINE_POSITION,
                const wxSize& size      = SYMBOL_GTIMELINE_SIZE,
                long style              = SYMBOL_GTIMELINE_STYLE );
 
-  /// Destructor
-  ~gTimeline();
+    bool Create( wxWindow* parent,
+                 wxWindowID id           = SYMBOL_GTIMELINE_IDNAME,
+                 const wxString& caption = SYMBOL_GTIMELINE_TITLE,
+                 const wxPoint& pos      = SYMBOL_GTIMELINE_POSITION,
+                 const wxSize& size      = SYMBOL_GTIMELINE_SIZE,
+                 long style              = SYMBOL_GTIMELINE_STYLE );
 
-  /// Initialises member variables
-  void Init();
+    /// Destructor
+    ~gTimeline();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Initialises member variables
+    void Init();
 
+    /// Creates the controls and sizers
+    void CreateControls();
+
+    // clang-format off
   ////@begin gTimeline event handler declarations
 
   /// wxEVT_CLOSE_WINDOW event handler for ID_GTIMELINE
@@ -293,14 +300,16 @@ class gTimeline
 
 
   ////@end gTimeline event handler declarations
+    // clang-format on
 
-  void MousePanMotion();
-  void MousePanLeftUp( wxMouseEvent& event );
+    void MousePanMotion();
+    void MousePanLeftUp( wxMouseEvent& event );
 
-  void OnBackgroundAsZeroCheckClick( wxCommandEvent& event );
+    void OnBackgroundAsZeroCheckClick( wxCommandEvent& event );
 
-  void OnMove( wxMoveEvent& event );
+    void OnMove( wxMoveEvent& event );
 
+    // clang-format off
   ////@begin gTimeline member function declarations
 
   wxColour GetBackgroundColour() const
@@ -535,49 +544,6 @@ class gTimeline
   void SetMyWindow( Timeline* value )
   {
     myWindow = value;
-  }
-
-  void InitMyWindowCallbacks()
-  {
-    myWindow->registerResizeFunctionCallback(
-      [ this ]( int w, int h )
-      {
-        if( !this->IsMaximized() )
-          this->resizeDrawZone( w, h );
-      } );
-    myWindow->registerPositionFunctionCallback(
-      [ this ]( int x, int y )
-      {
-        if( !this->IsMaximized() )
-        {
-          auto newPosX = myWindow->getPosX() - x;
-          auto newPosY = myWindow->getPosY() - y;
-          if( newPosX < 0 )
-            newPosX = 0;
-          if( newPosY < 0 )
-            newPosY = 0;
-          if( !this->IsShown() )
-          {
-            int currentDisplay = wxDisplay::GetFromWindow( this );
-            if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
-            {
-              wxDisplay tmpDisplay( currentDisplay );
-              auto posX = myWindow->getPosX() - x - tmpDisplay.GetGeometry().x;
-              auto posY = myWindow->getPosY() - y - tmpDisplay.GetGeometry().y;
-              if( posX < 0 )
-                posX = 0;
-              if( posY < 0 )
-                posY = 0;
-              myWindow->setPosX( posX );
-              myWindow->setPosY( posY );
-            }
-          }
-          this->Show();
-          wxPoint tmpPos( newPosX, newPosY );
-          this->Move( tmpPos );
-        }
-        newPositionApplied = true;
-      } );
   }
 
   PRV_INT32 GetObjectAxisPos() const
@@ -865,183 +831,227 @@ class gTimeline
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
   ////@end gTimeline member function declarations
+    // clang-format on
 
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    void InitMyWindowCallbacks()
+    {
+      myWindow->registerResizeFunctionCallback(
+        [ this ]( int w, int h )
+        {
+          if( !this->IsMaximized() )
+            this->resizeDrawZone( w, h );
+        } );
+      myWindow->registerPositionFunctionCallback(
+        [ this ]( int x, int y )
+        {
+          if( !this->IsMaximized() )
+          {
+            auto newPosX = myWindow->getPosX() - x;
+            auto newPosY = myWindow->getPosY() - y;
+            if( newPosX < 0 )
+              newPosX = 0;
+            if( newPosY < 0 )
+              newPosY = 0;
+            if( !this->IsShown() )
+            {
+              int currentDisplay = wxDisplay::GetFromWindow( this );
+              if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+              {
+                wxDisplay tmpDisplay( currentDisplay );
+                auto posX = myWindow->getPosX() - x - tmpDisplay.GetGeometry().x;
+                auto posY = myWindow->getPosY() - y - tmpDisplay.GetGeometry().y;
+                if( posX < 0 )
+                  posX = 0;
+                if( posY < 0 )
+                  posY = 0;
+                myWindow->setPosX( posX );
+                myWindow->setPosY( posY );
+              }
+            }
+            this->Show();
+            wxPoint tmpPos( newPosX, newPosY );
+            this->Move( tmpPos );
+          }
+          newPositionApplied = true;
+        } );
+    }
+
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
 #ifdef __WXMAC__
-  void drawStackedImages( wxDC& dc );
+    void drawStackedImages( wxDC& dc );
 #endif
-  void redraw();
-  bool drawAxis( wxDC& dc, std::vector<TObjectOrder>& selected );
-  void drawZeroAxis( wxDC& dc, std::vector<TObjectOrder>& selected );
+    void redraw();
+    bool drawAxis( wxDC& dc, std::vector< TObjectOrder >& selected );
+    void drawZeroAxis( wxDC& dc, std::vector< TObjectOrder >& selected );
 
 #ifdef _MSC_VER
-  template<typename ValuesType>
-  void drawRow( wxDC& dc,
-                TObjectOrder firstRow,
-                vector<ValuesType>& valuesToDraw,
-                std::unordered_set<PRV_INT32>& eventsToDraw,
-                std::unordered_set<commCoord>& commsToDraw,
-                wxMemoryDC& eventdc,
-                wxMemoryDC& eventmaskdc,
-                wxMemoryDC& commdc,
-                wxMemoryDC& commmaskdc );
+    template< typename ValuesType >
+    void drawRow( wxDC& dc,
+                  TObjectOrder firstRow,
+                  vector< ValuesType >& valuesToDraw,
+                  std::unordered_set< PRV_INT32 >& eventsToDraw,
+                  std::unordered_set< commCoord >& commsToDraw,
+                  wxMemoryDC& eventdc,
+                  wxMemoryDC& eventmaskdc,
+                  wxMemoryDC& commdc,
+                  wxMemoryDC& commmaskdc );
 #else
-  template<typename ValuesType>
-  void drawRow( wxDC& dc,
-                TObjectOrder firstRow,
-                std::vector<ValuesType>& valuesToDraw,
-                std::unordered_set<PRV_INT32>& eventsToDraw,
-                std::unordered_set<commCoord, hashCommCoord>& commsToDraw,
-                wxMemoryDC& eventdc,
-                wxMemoryDC& eventmaskdc,
-                wxMemoryDC& commdc,
-                wxMemoryDC& commmaskdc );
+    template< typename ValuesType >
+    void drawRow( wxDC& dc,
+                  TObjectOrder firstRow,
+                  std::vector< ValuesType >& valuesToDraw,
+                  std::unordered_set< PRV_INT32 >& eventsToDraw,
+                  std::unordered_set< commCoord, hashCommCoord >& commsToDraw,
+                  wxMemoryDC& eventdc,
+                  wxMemoryDC& eventmaskdc,
+                  wxMemoryDC& commdc,
+                  wxMemoryDC& commmaskdc );
 #endif
 
-  template<typename ValuesType>
-  void drawRowColor( wxDC& dc, ValuesType valueToDraw, wxCoord objectPos, wxCoord timePos, float magnify );
+    template< typename ValuesType >
+    void drawRowColor( wxDC& dc, ValuesType valueToDraw, wxCoord objectPos, wxCoord timePos, float magnify );
 
-  template<typename ValuesType>
-  void drawRowFunction( wxDC& dc, ValuesType valueToDraw, int& semanticLastPos, wxCoord objectPos, wxCoord timePos, float magnify );
+    template< typename ValuesType >
+    void drawRowFunction( wxDC& dc, ValuesType valueToDraw, int& semanticLastPos, wxCoord objectPos, wxCoord timePos, float magnify );
 
-  template<typename ValuesType>
-  void drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify );
+    template< typename ValuesType >
+    void drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify );
 
-  template<typename ValuesType>
-  void drawRowFusedLines( wxDC& dc,
-                          ValuesType valueToDraw,
-                          int& semanticLastPos,
-                          wxCoord& timeLastPos,
-                          TObjectOrder whichObject,
-                          wxCoord timePos,
-                          bool isLastValue );
+    template< typename ValuesType >
+    void drawRowFusedLines( wxDC& dc,
+                            ValuesType valueToDraw,
+                            int& semanticLastPos,
+                            wxCoord& timeLastPos,
+                            TObjectOrder whichObject,
+                            wxCoord timePos,
+                            bool isLastValue );
 
-  void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, std::unordered_set<PRV_INT32>& eventsToDraw );
+    void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, std::unordered_set< PRV_INT32 >& eventsToDraw );
 #ifdef _MSC_VER
-  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set<commCoord>& commsToDraw );
+    void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set< commCoord >& commsToDraw );
 #else
-  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set<commCoord, hashCommCoord>& commsToDraw );
+    void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set< commCoord, hashCommCoord >& commsToDraw );
 #endif
 
-  void drawCommunicationLines( bool draw );
-  void drawEventFlags( bool draw );
-  void drawFunctionLineColor();
-  void drawFusedLinesColor();
+    void drawCommunicationLines( bool draw );
+    void drawEventFlags( bool draw );
+    void drawFunctionLineColor();
+    void drawFusedLinesColor();
 
-  void OnPopUpRightDown( void );
+    void OnPopUpRightDown( void );
 
-  // Pop Up Menu Methods
-  void OnPopUpCopy( wxCommandEvent& event );
-  void OnPopUpPasteDefaultSpecial( wxCommandEvent& event );
-  void OnPopUpPasteSpecial( wxCommandEvent& event );
-  void OnPopUpPasteTime( wxCommandEvent& event );
-  void OnPopUpPasteObjects( wxCommandEvent& event );
-  void OnPopUpPasteSize( wxCommandEvent& event );
-  void OnPopUpPasteDuration( wxCommandEvent& event );
-  void OnPopUpPasteSemanticScale( wxCommandEvent& event );
-  void OnPopUpPasteCustomPalette( wxCommandEvent& event );
-  void OnPopUpPasteFilterAll( wxCommandEvent& event );
-  void OnPopUpPasteFilterCommunications( wxCommandEvent& event );
-  void OnPopUpPasteFilterEvents( wxCommandEvent& event );
-  void OnPopUpClone( wxCommandEvent& event );
-  void OnPopUpRename( wxCommandEvent& event );
-  void OnPopUpFitTimeScale( wxCommandEvent& event );
-  void OnPopUpFitSemanticScaleMin( wxCommandEvent& event );
-  void OnPopUpFitSemanticScaleMax( wxCommandEvent& event );
-  void OnPopUpFitSemanticScale( wxCommandEvent& event );
-  void OnPopUpFitObjects( wxCommandEvent& event );
-  void OnPopUpViewCommunicationLines( wxCommandEvent& event );
-  void OnPopUpViewEventFlags( wxCommandEvent& event );
-  void OnPopUpFunctionLineColor( wxCommandEvent& event );
-  void OnPopUpFusedLinesColor( wxCommandEvent& event );
-  void OnPopUpPunctualColor( wxCommandEvent& event );
-  void OnPopUpPunctualColorWindow( wxCommandEvent& event );
-  void OnPopUpCodeColor( wxCommandEvent& event );
-  void OnPopUpGradientColor( wxCommandEvent& event );
-  void OnPopUpNotNullGradientColor( wxCommandEvent& event );
-  void OnPopUpAlternativeGradientColor( wxCommandEvent& event );
-  void OnPopUpGradientFunction( wxCommandEvent& event );
-  void OnPopUpSemanticScaleMinAtZero( wxCommandEvent& event );
-  void OnPopUpUndoZoom( wxCommandEvent& event );
-  void OnPopUpRedoZoom( wxCommandEvent& event );
+    // Pop Up Menu Methods
+    void OnPopUpCopy( wxCommandEvent& event );
+    void OnPopUpPasteDefaultSpecial( wxCommandEvent& event );
+    void OnPopUpPasteSpecial( wxCommandEvent& event );
+    void OnPopUpPasteTime( wxCommandEvent& event );
+    void OnPopUpPasteObjects( wxCommandEvent& event );
+    void OnPopUpPasteSize( wxCommandEvent& event );
+    void OnPopUpPasteDuration( wxCommandEvent& event );
+    void OnPopUpPasteSemanticScale( wxCommandEvent& event );
+    void OnPopUpPasteCustomPalette( wxCommandEvent& event );
+    void OnPopUpPasteFilterAll( wxCommandEvent& event );
+    void OnPopUpPasteFilterCommunications( wxCommandEvent& event );
+    void OnPopUpPasteFilterEvents( wxCommandEvent& event );
+    void OnPopUpClone( wxCommandEvent& event );
+    void OnPopUpRename( wxCommandEvent& event );
+    void OnPopUpFitTimeScale( wxCommandEvent& event );
+    void OnPopUpFitSemanticScaleMin( wxCommandEvent& event );
+    void OnPopUpFitSemanticScaleMax( wxCommandEvent& event );
+    void OnPopUpFitSemanticScale( wxCommandEvent& event );
+    void OnPopUpFitObjects( wxCommandEvent& event );
+    void OnPopUpViewCommunicationLines( wxCommandEvent& event );
+    void OnPopUpViewEventFlags( wxCommandEvent& event );
+    void OnPopUpFunctionLineColor( wxCommandEvent& event );
+    void OnPopUpFusedLinesColor( wxCommandEvent& event );
+    void OnPopUpPunctualColor( wxCommandEvent& event );
+    void OnPopUpPunctualColorWindow( wxCommandEvent& event );
+    void OnPopUpCodeColor( wxCommandEvent& event );
+    void OnPopUpGradientColor( wxCommandEvent& event );
+    void OnPopUpNotNullGradientColor( wxCommandEvent& event );
+    void OnPopUpAlternativeGradientColor( wxCommandEvent& event );
+    void OnPopUpGradientFunction( wxCommandEvent& event );
+    void OnPopUpSemanticScaleMinAtZero( wxCommandEvent& event );
+    void OnPopUpUndoZoom( wxCommandEvent& event );
+    void OnPopUpRedoZoom( wxCommandEvent& event );
 
-  void OnPopUpDrawModeTimeLast( wxCommandEvent& event );
-  void OnPopUpDrawModeTimeRandom( wxCommandEvent& event );
-  void OnPopUpDrawModeTimeRandomNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeTimeMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeTimeMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeTimeAbsoluteMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeTimeAbsoluteMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeTimeAverage( wxCommandEvent& event );
-  void OnPopUpDrawModeTimeAverageNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeTimeMode( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeLast( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeRandom( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeRandomNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeAbsoluteMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeAbsoluteMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeAverage( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeAverageNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeTimeMode( wxCommandEvent& event );
 
-  void OnPopUpDrawModeObjectsLast( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsRandom( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsRandomNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsAverage( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsAverageNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsMode( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsLast( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsRandom( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsRandomNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsAverage( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsAverageNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsMode( wxCommandEvent& event );
 
-  void OnPopUpDrawModeBothLast( wxCommandEvent& event );
-  void OnPopUpDrawModeBothRandom( wxCommandEvent& event );
-  void OnPopUpDrawModeBothRandomNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeBothMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeBothMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeBothAbsoluteMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeBothAverage( wxCommandEvent& event );
-  void OnPopUpDrawModeBothAverageNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeBothMode( wxCommandEvent& event );
+    void OnPopUpDrawModeBothLast( wxCommandEvent& event );
+    void OnPopUpDrawModeBothRandom( wxCommandEvent& event );
+    void OnPopUpDrawModeBothRandomNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeBothMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeBothMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeBothAbsoluteMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeBothAverage( wxCommandEvent& event );
+    void OnPopUpDrawModeBothAverageNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeBothMode( wxCommandEvent& event );
 
-  void OnPopUpPixelSize( wxCommandEvent& event );
+    void OnPopUpPixelSize( wxCommandEvent& event );
 
-  void OnPopUpLabels( wxCommandEvent& event );
+    void OnPopUpLabels( wxCommandEvent& event );
 
-  void OnPopUpObjectAxis( wxCommandEvent& event );
+    void OnPopUpObjectAxis( wxCommandEvent& event );
 
-  void OnPopUpRunApp( wxCommandEvent& event );
+    void OnPopUpRunApp( wxCommandEvent& event );
 
-  void OnPopUpSynchronize( wxCommandEvent& event );
-  void OnPopUpSynchronizeById( TGroupId wichGroup );
-  void OnPopUpSynchronizeById( TGroupId& wichGroup, bool isSynchronized );
+    void OnPopUpSynchronize( wxCommandEvent& event );
+    void OnPopUpSynchronizeById( TGroupId wichGroup );
+    void OnPopUpSynchronizeById( TGroupId& wichGroup, bool isSynchronized );
 
-  void OnPopUpRemoveGroup( wxCommandEvent& event );
-  void OnPopUpRemoveAllGroups( wxCommandEvent& event );
+    void OnPopUpRemoveGroup( wxCommandEvent& event );
+    void OnPopUpRemoveAllGroups( wxCommandEvent& event );
 
-  void OnPopUpRowSelection( wxCommandEvent& event );
+    void OnPopUpRowSelection( wxCommandEvent& event );
 
-  void OnPopUpInfoPanel( wxCommandEvent& event );
+    void OnPopUpInfoPanel( wxCommandEvent& event );
 
-  void OnPopUpSaveCFG( wxCommandEvent& event );
-  void OnPopUpSaveImageDialog( wxCommandEvent& event );
-  void OnPopUpSaveText( wxCommandEvent& event );
+    void OnPopUpSaveCFG( wxCommandEvent& event );
+    void OnPopUpSaveImageDialog( wxCommandEvent& event );
+    void OnPopUpSaveText( wxCommandEvent& event );
 
-  void OnMenuGradientFunction( TGradientFunction function );
+    void OnMenuGradientFunction( TGradientFunction function );
 
-  void drawTimeMarks( std::vector<TRecordTime> times,
-                      std::vector<TObjectOrder>& selectedObjects,
-                      bool drawXCross              = false,
-                      bool allObjects              = true,
-                      TObjectOrder lastFoundObject = TObjectOrder( 0 ) );
-  void OnFindDialog();
+    void drawTimeMarks( std::vector< TRecordTime > times,
+                        std::vector< TObjectOrder >& selectedObjects,
+                        bool drawXCross              = false,
+                        bool allObjects              = true,
+                        TObjectOrder lastFoundObject = TObjectOrder( 0 ) );
+    void OnFindDialog();
 
-  gTimeline* clone( Timeline* clonedWindow, wxWindow* parent, wxTreeItemId idRoot1, wxTreeItemId idRoot2, bool mustRedraw = true );
+    gTimeline* clone( Timeline* clonedWindow, wxWindow* parent, wxTreeItemId idRoot1, wxTreeItemId idRoot2, bool mustRedraw = true );
 
-  void rightDownManager();
+    void rightDownManager();
 
-  void resizeDrawZone( int width, int height );
+    void resizeDrawZone( int width, int height );
 
-  bool IsSplit() const;
-  void OnPopUpTiming( wxCommandEvent& event );
-  void EnableTiming( bool state );
-  void OnItemColorLeftUp( wxMouseEvent& event );
+    bool IsSplit() const;
+    void OnPopUpTiming( wxCommandEvent& event );
+    void EnableTiming( bool state );
+    void OnItemColorLeftUp( wxMouseEvent& event );
 
 
   void saveImageWindows( wxString whichFileName );
@@ -1049,19 +1059,19 @@ class gTimeline
 
   void openSaveImageDialog( wxString whichFileName = _( "" ) );
 
-  void saveText();
-  void saveCFG();
+    void saveText();
+    void saveCFG();
 
-  void setEnableDestroyButton( bool value );
+    void setEnableDestroyButton( bool value );
 
-  void setEditMode( bool value );
-  bool getEditMode();
+    void setEditMode( bool value );
+    bool getEditMode();
 
-  static wxProgressDialog* dialogProgress;
-  static int numberOfProgressDialogUsers;
+    static wxProgressDialog* dialogProgress;
+    static int numberOfProgressDialogUsers;
 
 
-  //  void OnRightClick(wxMouseEvent& event);
+    // clang-format off
   ////@begin gTimeline member variables
   wxSplitterWindow* splitter;
   wxScrolledWindow* drawZone;
@@ -1163,120 +1173,122 @@ class gTimeline
   bool zooming;
   wxTimer* timerPosition;
   ////@end gTimeline member variables
+    // clang-format on
 
-  class CustomColorSemValue : public wxObject
-  {
-   public:
-    enum class ColorType
+    class CustomColorSemValue : public wxObject
     {
-      BACKGROUND,
-      AXIS,
-      PUNCTUAL,
-      SEMANTIC_VALUE
+      public:
+        enum class ColorType
+        {
+          BACKGROUND,
+          AXIS,
+          PUNCTUAL,
+          SEMANTIC_VALUE
+        };
+
+        ColorType myColorType;
+        TSemanticValue myValue;
+        wxPanel* myPanel;
+        wxStaticText* myText;
+        wxFont originalFont;
     };
 
-    ColorType myColorType;
-    TSemanticValue myValue;
-    wxPanel* myPanel;
-    wxStaticText* myText;
-    wxFont originalFont;
-  };
+    // colorsPanel update info
+    bool forceRedoColorsPanel;
+    bool enableApplyButton;
+    bool codeChangeSize = true;
+    SemanticInfoType lastType;
+    TSemanticValue lastMin;
+    TSemanticValue lastMax;
+    size_t lastValuesSize;
+    bool codeColorSet;
+    TGradientFunction gradientFunc;
+    CustomColorSemValue* selectedCustomColor;
+    wxStaticText* lastSelectedItemText = nullptr;
+    wxFont originalUnselectectItemTextFont;
+    wxPanel* backgroundColorPanel = nullptr;
+    wxPanel* zeroColorPanel       = nullptr;
 
-  // colorsPanel update info
-  bool forceRedoColorsPanel;
-  bool enableApplyButton;
-  SemanticInfoType lastType;
-  TSemanticValue lastMin;
-  TSemanticValue lastMax;
-  size_t lastValuesSize;
-  bool codeColorSet;
-  TGradientFunction gradientFunc;
-  CustomColorSemValue* selectedCustomColor;
-  wxStaticText* lastSelectedItemText = nullptr;
-  wxFont originalUnselectectItemTextFont;
-  wxPanel* backgroundColorPanel = nullptr;
-  wxPanel* zeroColorPanel       = nullptr;
-
-  bool enabledAutoRedrawIcon;
+    bool enabledAutoRedrawIcon;
 
 #ifdef __WXMAC__
-  wxBitmap zoomBMP;
+    wxBitmap zoomBMP;
 #endif
 #ifdef _WIN32
-  bool wheelZoomObjects;
+    bool wheelZoomObjects;
 #endif
 
-  wxWindow* parent;
+    wxWindow* parent;
 
-  static const wxCoord drawBorder = 5;
+    static const wxCoord drawBorder = 5;
 
-  std::vector<std::pair<TWhatWhereLine, wxString>> whatWhereLines;
-  int whatWhereSelectedTimeEventLines;
-  int whatWhereSelectedTimeCommunicationLines;
-  TRecordTime whatWhereTime;
-  TObjectOrder whatWhereRow;
-  TSemanticValue whatWhereSemantic;
+    std::vector< std::pair< TWhatWhereLine, wxString > > whatWhereLines;
+    int whatWhereSelectedTimeEventLines;
+    int whatWhereSelectedTimeCommunicationLines;
+    TRecordTime whatWhereTime;
+    TObjectOrder whatWhereRow;
+    TSemanticValue whatWhereSemantic;
 
-  wxString formatTime( TRecordTime whichTime, bool showDate );
-  void computeWhatWhere( std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
-                         TRecordTime whichTime,
+    wxString formatTime( TRecordTime whichTime, bool showDate );
+    void computeWhatWhere( std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
+                           TRecordTime whichTime,
+                           TObjectOrder whichRow,
+                           TSemanticValue whichSemantic,
+                           bool textMode,
+                           bool showDate,
+                           bool hexMode );
+    void printWhatWhere();
+    void printWWSemantic( Timeline* temporalWindow,
+                          std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
+                          TObjectOrder whichRow,
+                          bool clickedValue,
+                          bool textMode,
+                          bool hexMode );
+    void printWWRecords( Timeline* temporalWindow,
+                         std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
                          TObjectOrder whichRow,
-                         TSemanticValue whichSemantic,
+                         bool clickedValue,
                          bool textMode,
-                         bool showDate,
-                         bool hexMode );
-  void printWhatWhere();
-  void printWWSemantic( Timeline* temporalWindow,
-                        std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
-                        TObjectOrder whichRow,
-                        bool clickedValue,
-                        bool textMode,
-                        bool hexMode );
-  void printWWRecords( Timeline* temporalWindow,
-                       std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
-                       TObjectOrder whichRow,
-                       bool clickedValue,
-                       bool textMode,
-                       bool showDate );
+                         bool showDate );
 
-  TSemanticValue getSemanticValueFromFusedLines( int whichY );
-  bool getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder whichObject, int& whichPixelPos );
+    TSemanticValue getSemanticValueFromFusedLines( int whichY );
+    bool getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder whichObject, int& whichPixelPos );
 
 
-  // Returns: window_name_with_spaces_underscored@traceName (without extension PRV)
-  wxString buildFormattedFileName() const;
+    // Returns: window_name_with_spaces_underscored@traceName (without extension PRV)
+    wxString buildFormattedFileName() const;
 
-  void Unsplit();
-  void Split();
-  void OnTimerSize( wxTimerEvent& event );
-  void OnTimerMotion( wxTimerEvent& event );
-  void OnTimerWheel( wxTimerEvent& event );
-  void OnTimerPosition( wxTimerEvent& event );
+    void Unsplit();
+    void Split();
+    void OnTimerSize( wxTimerEvent& event );
+    void OnTimerMotion( wxTimerEvent& event );
+    void OnTimerWheel( wxTimerEvent& event );
+    void OnTimerPosition( wxTimerEvent& event );
 
-  bool pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& onObject );
+    bool pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& onObject );
 
-  void doDrawCaution( wxDC& whichDC );
+    void doDrawCaution( wxDC& whichDC );
 
-  // Called by saveLabelsImage
-  void drawRectangle( wxMemoryDC& labelDC,
-                      wxMemoryDC& scaleDC,
-                      wxColour foregroundColour,
-                      wxColour backgroundColour,
-                      rgb semanticColour,
-                      wxString semanticValueLabel,
-                      int titleMargin,
-                      int widthRect,
-                      int heightRect,
-                      bool tryHorizontal,
-                      int& xdst,
-                      int& ydst,
-                      int xsrc,
-                      int ysrc,
-                      int imageWidth,
-                      int imageHeight,
-                      int imageStepY,
-                      int imageStepXRectangle,
-                      bool drawLabel );
+    // Called by saveLabelsImage
+    void drawRectangle( wxMemoryDC& labelDC,
+                        wxMemoryDC& scaleDC,
+                        wxColour foregroundColour,
+                        wxColour backgroundColour,
+                        rgb semanticColour,
+                        wxString semanticValueLabel,
+                        int titleMargin,
+                        int widthRect,
+                        int heightRect,
+                        bool tryHorizontal,
+                        int& xdst,
+                        int& ydst,
+                        int xsrc,
+                        int ysrc,
+                        int imageWidth,
+                        int imageHeight,
+                        int imageStepY,
+                        int imageStepXRectangle,
+                        bool drawLabel );
 
   void setEnableDestroyParents( bool value );
 };
