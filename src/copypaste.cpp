@@ -39,9 +39,9 @@ gPasteWindowProperties *gPasteWindowProperties::pasteWindowProperties = nullptr;
 
 void gPasteWindowProperties::commonMenuSettings()
 {
-  for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
-    for( int origin = TIMELINE; origin <= HISTOGRAM; origin++ )
-      for( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
+  for( auto trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+    for( auto origin = TIMELINE; origin <= HISTOGRAM; origin++ )
+      for( auto destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
       {
         allowed[ STR_PASTE ][ trace ][ origin ][ destiny ]                 = true;
         allowed[ STR_PASTE_DEFAULT_SPECIAL ][ trace ][ origin ][ destiny ] = true;
@@ -68,14 +68,14 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
 
   if( sourceBeginTime > destinyEndTime )
   {
-    for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
-      for( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
+    for( auto trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+      for( auto destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
         allowed[ STR_TIME ][ trace ][ source ][ destiny ] = false;
   }
   else
   {
-    for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
-      for( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
+    for( auto trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+      for( auto destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
         allowed[ STR_TIME ][ trace ][ source ][ destiny ] = true;
   }
 }
@@ -86,7 +86,7 @@ void gPasteWindowProperties::commonFilterSettings( gTimeline *destinyTimeline )
   {
     if( sourceTimeline->GetMyWindow()->isDerivedWindow() || destinyTimeline->GetMyWindow()->isDerivedWindow() )
     {
-      for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+      for( auto trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
       {
         allowed[ STR_FILTER ][ trace ][ TIMELINE ][ TIMELINE ]        = false;
         allowed[ STR_FILTER_ALL ][ trace ][ TIMELINE ][ TIMELINE ]    = false;
@@ -96,7 +96,7 @@ void gPasteWindowProperties::commonFilterSettings( gTimeline *destinyTimeline )
     }
     else
     {
-      for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+      for( auto trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
       {
         allowed[ STR_FILTER ][ trace ][ TIMELINE ][ TIMELINE ]        = true;
         allowed[ STR_FILTER_ALL ][ trace ][ TIMELINE ][ TIMELINE ]    = true;
@@ -178,9 +178,9 @@ gPasteWindowProperties::gPasteWindowProperties()
   vector< vector< vector< bool > > > option( 2, source );
 
   // Policy : Allow paste option between different kind of windows and different traces
-  for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
-    for( int copy = TIMELINE; copy <= HISTOGRAM; copy++ )
-      for( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
+  for( auto trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+    for( auto copy = TIMELINE; copy <= HISTOGRAM; copy++ )
+      for( auto paste = TIMELINE; paste <= HISTOGRAM; paste++ )
         option[ trace ][ copy ][ paste ] = true;
 
   allowed[ STR_TIME ]           = option;
@@ -190,9 +190,9 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed[ STR_SEMANTIC_SCALE ] = option;
 
   // Policy : Only same trace
-  for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
-    for( int copy = TIMELINE; copy <= HISTOGRAM; copy++ )
-      for( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
+  for( auto trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+    for( auto copy = TIMELINE; copy <= HISTOGRAM; copy++ )
+      for( auto paste = TIMELINE; paste <= HISTOGRAM; paste++ )
         if( trace == SAME_TRACE )
           option[ trace ][ copy ][ paste ] = true;
         else
@@ -200,9 +200,9 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed[ STR_OBJECTS ] = option;
 
   // Policy : Don't allow initial paste
-  for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
-    for( int copy = TIMELINE; copy <= HISTOGRAM; copy++ )
-      for( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
+  for( auto trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+    for( auto copy = TIMELINE; copy <= HISTOGRAM; copy++ )
+      for( auto paste = TIMELINE; paste <= HISTOGRAM; paste++ )
         option[ trace ][ copy ][ paste ] = false;
   allowed[ STR_PASTE ]                 = option;
   allowed[ STR_PASTE_DEFAULT_SPECIAL ] = option;
