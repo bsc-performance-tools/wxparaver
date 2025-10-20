@@ -65,27 +65,56 @@ wxTreeCtrl *getSelectedTraceTree( Trace *trace )
 }
 
 
-void appendHistogram2Tree( gHistogram *ghistogram )
+void appendHistogram2Tree( gHistogram *ghistogram,
+                           wxTreeCtrl *rootAllTraces,
+                           wxTreeItemId idRootAllTraces,
+                           wxTreeCtrl *rootCurrentPage,
+                           wxTreeItemId idRootCurrentPage )
 {
   // Refresh tree in current page and always in global page
-  wxTreeCtrl *allTracesPage = getAllTracesTree();
-  wxTreeCtrl *currentPage   = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
+  if ( rootAllTraces == nullptr && rootCurrentPage == nullptr )
+  {
+    rootAllTraces = getAllTracesTree();
+    idRootAllTraces = rootAllTraces->GetRootItem();
 
-  currentPage->UnselectAll();
+    rootCurrentPage = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
+    idRootCurrentPage = rootCurrentPage->GetRootItem();
+  }
+
+  rootCurrentPage->UnselectAll();
 
   TreeBrowserItemData *currentData = new TreeBrowserItemData( wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), ghistogram );
 
-  wxTreeItemId tmpCurrentWindowId;
-  tmpCurrentWindowId = allTracesPage->AppendItem( allTracesPage->GetRootItem(),
-                                                  wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
-                                                  0,
-                                                  -1,
-                                                  currentData );
-  tmpCurrentWindowId = currentPage->AppendItem( currentPage->GetRootItem(),
-                                                wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
-                                                0,
-                                                -1,
-                                                new TreeBrowserItemData( *currentData ) );
+  int iconNumber = getIconNumber( ghistogram->GetHistogram() );
+  wxTreeItemId tmpCurrentWindowId1 = rootAllTraces->AppendItem( idRootAllTraces,
+                                                                wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
+                                                                iconNumber,
+                                                                -1,
+                                                                currentData );
+  wxTreeItemId tmpCurrentWindowId2 = rootCurrentPage->AppendItem( idRootCurrentPage,
+                                                                  wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
+                                                                  iconNumber,
+                                                                  -1,
+                                                                  new TreeBrowserItemData( *currentData ) );
+  if (ghistogram->GetHistogram()->isDerivedHistogram())
+      std::cout << "Derived " << std::endl;
+  
+  else
+      std::cout << "Single " << std::endl;
+  
+  for( auto parent : ghistogram->GetHistogram()->getParents() )
+  {
+    gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), parent );
+    if( tmpHistogram != nullptr )
+    {
+      appendHistogram2Tree( tmpHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
+      std::cout << parent->getName() << std::endl;
+    }
+    else
+    {
+      std::cout << "nullptr!" << std::endl;
+    }
+  }
 }
 
 

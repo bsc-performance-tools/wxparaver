@@ -59,7 +59,11 @@ wxTreeCtrl * createTree( wxImageList *imageList );
 wxTreeCtrl *getAllTracesTree();
 wxTreeCtrl *getSelectedTraceTree( Trace *trace );
 
-void appendHistogram2Tree( gHistogram *ghistogram );
+void appendHistogram2Tree( gHistogram *ghistogram,
+                           wxTreeCtrl *root1 = nullptr,
+                           wxTreeItemId idRoot1 = nullptr,
+                           wxTreeCtrl *root2 = nullptr,
+                           wxTreeItemId idRoot2 = nullptr );
 
 wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Timeline *wanted, bool &found );
 wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found );

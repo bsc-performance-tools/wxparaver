@@ -1050,118 +1050,75 @@ bool paraverMain::DoLoadCFG( const string &path, std::optional< Trace * > whichT
         }
       }
 
-      // Derived histograms: check which histograms are parents to execute them to let derived histograms have data
-      std::set< Histogram * > parentHistograms;
-      for( vector< Histogram * >::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
+      // Derived histograms: check which histograms are single parents to load/execute them to let derived histograms have data
+      // std::set< Histogram * > parentHistograms;
+      // auto selectParentHistograms = [&parentHistograms]( auto it )
+      // {
+      //   if( it->isDerivedHistogram() )
+      //   {
+      //     parentHistograms.insert( it ); // ONLY LEAFS
+      //   }
+      // };
+      // std::for_each( newHistograms.begin(), newHistograms.end(), selectParentHistograms );
+
+
+      auto loadHistograms = [&]( auto skipHistogram )
       {
-        if( ( *it )->isDerivedHistogram() )
+        int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
+        for( vector< Histogram * >::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
         {
-          for( PRV_UINT16 i = 0; i < ( *it )->getNumParents(); ++i )
+          if ( skipHistogram( *it ) )
+            continue;
+
+          wxPoint tmpPos( ( *it )->getPosX(), ( *it )->getPosY() );
+          if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
           {
-            if( !( *it )->getParent( i )->isDerivedHistogram() )
-              parentHistograms.insert( ( *it )->getParent( i ) );
+            if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+            {
+              wxDisplay tmpDisplay( currentDisplay );
+              tmpPos.x += tmpDisplay.GetGeometry().x;
+              tmpPos.y += tmpDisplay.GetGeometry().y;
+              if( tmpPos.x != ( *it )->getPosX() )
+                ( *it )->setPosX( tmpPos.x );
+              if( tmpPos.y != ( *it )->getPosY() )
+                ( *it )->setPosY( tmpPos.y );
+            }
+          }
+  #if !__WXGTK__
+          gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ), tmpPos );
+  #else
+          gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ) );
+  #endif
+          tmpHisto->SetHistogram( *it );
+          tmpHisto->InitHistogramCallbacks();
+          tmpHisto->adaptControlsForDerivedHistogram();
+          appendHistogram2Tree( tmpHisto );
+          LoadedWindows::getInstance()->add( ( *it ) );
+
+          tmpHisto->GetHistogram()->setRecalc( true );
+
+          tmpHisto->SetClientSize( ( *it )->getWidth(), ( *it )->getHeight() );
+
+          if( ( *it )->getShowWindow() )
+          {
+  #if __WXGTK__
+            tmpHisto->Move( tmpPos );
+  #endif
+            tmpHisto->Show();
+          }
+
+          if( it + 1 == newHistograms.end() )
+          {
+            currentTimeline = nullptr;
+            currentHisto    = *it;
           }
         }
-      }
+      };
 
-      int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
-      for( vector< Histogram * >::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
-      {
-        if( parentHistograms.find( ( *it ) ) != parentHistograms.end() )
-          continue;
-
-        wxPoint tmpPos( ( *it )->getPosX(), ( *it )->getPosY() );
-        if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
-        {
-          if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
-          {
-            wxDisplay tmpDisplay( currentDisplay );
-            tmpPos.x += tmpDisplay.GetGeometry().x;
-            tmpPos.y += tmpDisplay.GetGeometry().y;
-            if( tmpPos.x != ( *it )->getPosX() )
-              ( *it )->setPosX( tmpPos.x );
-            if( tmpPos.y != ( *it )->getPosY() )
-              ( *it )->setPosY( tmpPos.y );
-          }
-        }
-#if !__WXGTK__
-        gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ), tmpPos );
-#else
-        gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ) );
-#endif
-        tmpHisto->SetHistogram( *it );
-        tmpHisto->InitHistogramCallbacks();
-        tmpHisto->adaptControlsForDerivedHistogram();
-        appendHistogram2Tree( tmpHisto );
-        LoadedWindows::getInstance()->add( ( *it ) );
-
-        tmpHisto->GetHistogram()->setRecalc( true );
-
-        tmpHisto->SetClientSize( ( *it )->getWidth(), ( *it )->getHeight() );
-
-        if( ( *it )->getShowWindow() )
-        {
-#if __WXGTK__
-          tmpHisto->Move( tmpPos );
-#endif
-          tmpHisto->Show();
-        }
-
-        if( it + 1 == newHistograms.end() )
-        {
-          currentTimeline = nullptr;
-          currentHisto    = *it;
-        }
-      }
-
-      for( vector< Histogram * >::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
-      {
-        if( parentHistograms.find( ( *it ) ) == parentHistograms.end() )
-          continue;
-
-        wxPoint tmpPos( ( *it )->getPosX(), ( *it )->getPosY() );
-        if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
-        {
-          if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
-          {
-            wxDisplay tmpDisplay( currentDisplay );
-            tmpPos.x += tmpDisplay.GetGeometry().x;
-            tmpPos.y += tmpDisplay.GetGeometry().y;
-            if( tmpPos.x != ( *it )->getPosX() )
-              ( *it )->setPosX( tmpPos.x );
-            if( tmpPos.y != ( *it )->getPosY() )
-              ( *it )->setPosY( tmpPos.y );
-          }
-        }
-#if !__WXGTK__
-        gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ), tmpPos );
-#else
-        gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ) );
-#endif
-        tmpHisto->SetHistogram( *it );
-        tmpHisto->InitHistogramCallbacks();
-        tmpHisto->adaptControlsForDerivedHistogram();
-        appendHistogram2Tree( tmpHisto );
-        LoadedWindows::getInstance()->add( ( *it ) );
-
-        tmpHisto->GetHistogram()->setRecalc( true );
-
-        tmpHisto->SetClientSize( ( *it )->getWidth(), ( *it )->getHeight() );
-
-        if( ( *it )->getShowWindow() )
-        {
-#if __WXGTK__
-          tmpHisto->Move( tmpPos );
-#endif
-          tmpHisto->Show();
-        }
-
-        if( it + 1 == newHistograms.end() )
-        {
-          currentTimeline = nullptr;
-          currentHisto    = *it;
-        }
-      }
+      // Load first single histograms, after that derived ones.
+      // loadHistograms( [&]( auto itCurrent ){ return parentHistograms.find( itCurrent ) != parentHistograms.end(); } );
+      // loadHistograms( [&]( auto itCurrent ){ return parentHistograms.find( itCurrent ) == parentHistograms.end(); } );
+      loadHistograms( [&]( auto itCurrent ){ return false; } ); // as they come. Not crashing!
 
       previousCFGs->add( path );
     }
