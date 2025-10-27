@@ -4044,10 +4044,7 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
   {
     newWindowImage->generatescaleImageDataWindows( semanticValuesToColor, myWindow );
 
-    if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
-    {
-      newWindowImage->generateScaleWindowsImage( semanticValuesToColor, myWindow );
-    }
+    newWindowImage->generateScaleWindowsImage( semanticValuesToColor, myWindow );
   }
 
   SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, false, newWindowImage->getLegendSuffix() );
@@ -4065,11 +4062,13 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
   {
     imageName = saveDialog.GetImageFilePath();
     newWindowImage->saveImageWindows( imageName );
+  }
 
-    if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
-    {
-      newWindowImage->saveImageWindowScale( imageName );
-    }
+  if( saveDialog.DialogSavesImageScale() )
+  {
+    imageName = saveDialog.GetImageScaleFilePath();
+
+    newWindowImage->saveImageWindowScale( imageName );
   }
 
   if( saveDialog.DialogSavesLegend() )

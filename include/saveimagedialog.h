@@ -63,17 +63,20 @@ class wxFileCtrl;
 #define ID_SAVELEGENDTEXTCTRL 10507
 #define ID_SAVELEGENDCONTROLCHECKBOX 10012
 #define ID_SAVELEGENDCONTROLTEXTCTRL 10013
+#define ID_CHECKBOX1 10011
+#define ID_TEXTCTRL 10015
 #define ID_NOTEBOOK 10004
 #define ID_SCROLLEDWINDOW1 10003
 #define ID_SCROLLEDWINDOW_IMAGE 10005
-#define ID_CHECKBOX_SCALEDSIZE 10007
 #define ID_SCROLLEDWINDOW 10001
 #define ID_SCROLLEDWINDOW_SCALE 10006
-#define ID_CHECKBOX_LEGEND 10008
 #define ID_SCROLLEDWINDOW2 10009
 #define ID_SCROLLEDWINDOW_SCALE_CONTROL 10010
+#define ID_SCROLLEDWINDOW3 10007
+#define ID_SCROLLEDWINDOWANDCALE 10008
 #define ID_CHECKBOX 10014
-#define ID_TOPCOMPOSE1 10002
+#define ID_ORIENTATION_LEGEND_CONTROL 10002
+#define ID_CHECKBOX_SHRINK_LABEL 10016
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVEIMAGEDIALOG_TITLE _("Save Image Dialog")
 #define SYMBOL_SAVEIMAGEDIALOG_IDNAME ID_SAVEIMAGEDIALOG
@@ -127,12 +130,15 @@ public:
 
 
   wxString GetImageFilePath();
+  wxString GetImageScaleFilePath();
   wxString GetLegendFilePath();
   wxString GetLegendControlFilePath();
 
   bool DialogSavesImage();
   bool DialogSavesLegend();
   bool DialogSavesControlLegend();
+  bool DialogSavesImageScale();
+
   int GetFilterIndex(); // Should it be TImageFormat ???
 
     // clang-format off
@@ -153,6 +159,9 @@ public:
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SAVELEGENDCONTROLCHECKBOX
   void OnSavelegendcontrolcheckboxClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX1
+  void OnCheckbox1Click( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
 
@@ -163,22 +172,25 @@ public:
   void OnCancelClick( wxCommandEvent& event );
 
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE
-  void OnPaintWindow( wxPaintEvent& event );
-
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SCALEDSIZE
-  void OnCheckboxScaledsizeClick( wxCommandEvent& event );
+  void OnPaintWindowSingle( wxPaintEvent& event );
 
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_SCALE
   void onPaintScale( wxPaintEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND
-  void OnCheckboxLegendClick( wxCommandEvent& event );
-
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_SCALE_CONTROL
   void onPaintScaleControl( wxPaintEvent& event );
 
+  /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOWANDCALE
+  void OnPaintWindowScale( wxPaintEvent& event );
+
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
   void OnCheckboxClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_ORIENTATION_LEGEND_CONTROL
+  void OnOrientationLegendControlSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SHRINK_LABEL
+  void OnCheckboxShrinkLabelClick( wxCommandEvent& event );
 
   ////@end SaveImageDialog event handler declarations
 
@@ -192,6 +204,8 @@ public:
                             int scrollContainerHeight,
                             int& newWidth,
                             int& newHeight );
+
+  void adjustPanelSize(bool resizePanel );
 
   ////@begin SaveImageDialog member function declarations
 
@@ -222,11 +236,15 @@ public:
   wxBoxSizer* legendControlSizer;
   wxCheckBox* legendControlCheckbox;
   wxTextCtrl* legendControlFileName;
+  wxBoxSizer* imageScaleControlSizer;
+  wxCheckBox* imageAndScaleCheckbox;
+  wxTextCtrl* imageScaleFileName;
   wxButton* buttonSave;
   wxButton* buttonCancel;
   wxScrolledWindow* drawWindowSingle;
   wxScrolledWindow* drawScaleSingle;
   wxScrolledWindow* drawScaleControlSingle;
+  wxScrolledWindow* drawWindowAndScale;
   wxChoice* widgetTopCompose1;
   ////@end SaveImageDialog member variables
 
@@ -237,6 +255,7 @@ public:
   wxString selectedImageFilePath;
   wxString selectedLegendFilePath;
   wxString selectedLegendControlFilePath;
+  wxString selectedImageScaleFilePath;
 
   wxString fileTypeText;
   bool isHistogram;

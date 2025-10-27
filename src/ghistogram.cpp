@@ -3330,8 +3330,12 @@ void gHistogram::saveImageDialog( wxString whichFileName )
     {
       newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
       newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+      newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+
       if( myHistogram->getFirstRowColored() )
+      {
         newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow() );
+      }
     }
     else
     {
@@ -3360,6 +3364,13 @@ void gHistogram::saveImageDialog( wxString whichFileName )
       imageName = saveDialog.GetImageFilePath();
       newWindowImage->saveImageWindows( imageName );
     }
+
+    if( saveDialog.DialogSavesImageScale() )
+    {
+      imageName = saveDialog.GetImageScaleFilePath();
+      newWindowImage->saveImageWindowScale( imageName );
+    }
+
     if( GetHistogram()->getZoom() )
     {
       if( saveDialog.DialogSavesLegend() )

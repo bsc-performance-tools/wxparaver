@@ -98,11 +98,27 @@ class ScaleImageGenerator
       return bitmapImageContent;
     }
 
+    bool setTrasformToShort( bool a_shortLabel )
+    {
+      if( shortLabel == a_shortLabel )
+        return false;
+      else
+      {
+        semanticValuesLabels = a_shortLabel ? semanticValuesLabelsShorts : semanticValuesLabelsLong;
+      }
+      shortLabel = a_shortLabel;
+
+      return true;
+    }
+
+
     wxString getLegendSuffix();
 
     void updateLegendSuffix();
 
     void initializeConfiguration();
+
+    void setImageOrientation( TScaleImageOrientation orientation );
 
     void computeGeneratedImageSize( int whichWantedWidth = 0 );
     void computeMaxSemanticLabelsSize();
@@ -135,6 +151,9 @@ class ScaleImageGenerator
 
     std::map< TSemanticValue, rgb > semanticValuesColors;
     std::map< TSemanticValue, wxString > semanticValuesLabels;
+    std::map< TSemanticValue, wxString > semanticValuesLabelsShorts;
+    std::map< TSemanticValue, wxString > semanticValuesLabelsLong;
+
 
     wxBitmap* bitmapImageContent = nullptr;
     wxMemoryDC* memoryImageContent;
@@ -153,6 +172,7 @@ class ScaleImageGenerator
     wxSize maxLabelSize;
 
     bool mergedImages;
+    bool shortLabel = false;
     int totalSquaresGradientColor;
 
     wxString legendSuffix;
@@ -179,14 +199,19 @@ class WindowImageGenerator
     wxString getLegendSuffix();
 
     TImageFormat getImageFormat();
+
     void setImageFormat( TImageFormat filterIndex );
+    void setImageOrientation( TScaleImageOrientation orientation );
+
+    void transformToShort( bool isShort );
 
     void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow );
     void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram );
 
     void generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName );
     void generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName );
-    void generateScaleWindowsImage( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow );
+    void generateScaleWindowsImage( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram = nullptr );
+    void generateScaleWindowsImage();
 
     void saveImageWindows( wxString whichFileName );
     void saveImageWindowScale( wxString whichFileName );
@@ -205,6 +230,10 @@ class WindowImageGenerator
     ScaleImageGenerator* scaleImage     = nullptr;
     ScaleImageGenerator* scaleImageData = nullptr;
 
+    ScaleImageGenerator* scaleWindowsImage = nullptr;
+
+    TScaleImageOrientation orientation = TScaleImageOrientation::TScaleImageOrientationHorizontal;
+
     TImageFormat filterIndex;
 
     wxColour imageBackground;
@@ -213,7 +242,7 @@ class WindowImageGenerator
     wxFont imageTextFont;
 
     TScaleImageType typeScale;
-    TScaleImageOrientation orientationScale;
+    TScaleImageOrientation orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
 };
 
 
