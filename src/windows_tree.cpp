@@ -385,7 +385,6 @@ bool updateTreeItem( wxTreeCtrl *tree,
 
       groupName = "[#" + std::to_string( windowGroup ) + "] ";
       tmpName = groupName + wxString::FromUTF8( tmpWindow->getName().c_str() );
-
       if( !isEditMode && tmpName != tree->GetItemText( id ) )
       {
         tree->SetItemBold( id, true );
@@ -482,6 +481,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
       {
         tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
         tree->SetItemBold( id, false );
+        tree->SetItemText( id, tmpName );
       }
     }
 
