@@ -1384,13 +1384,6 @@ void SaveImageDialog::OnShowLegend( wxCommandEvent& event )
     tmpIt += 1;
   }
 
-  Sync saveDialog();
-
-  if( saveDialog.ShowModal() != wxID_OK )
-  {
-    return;
-  }
-
   wxMultiChoiceDialog* dialog = new wxMultiChoiceDialog( nullptr, "Select the element of the legend you want:", "Legend Group Selector", choices );
 
   std::vector< int > stdSelections = imageGeneration->getScaleImage()->getSelectedSemanticValues();
