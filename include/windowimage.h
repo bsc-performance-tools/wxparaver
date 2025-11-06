@@ -102,13 +102,16 @@ class ScaleImageGenerator
     {
       if( shortLabel == a_shortLabel )
         return false;
-      else
-      {
-        semanticValuesLabels = a_shortLabel ? semanticValuesLabelsShorts : semanticValuesLabelsLong;
-      }
+
+
       shortLabel = a_shortLabel;
 
       return true;
+    }
+
+    TScaleImageType getLegendType()
+    {
+      return scaleType;
     }
 
 
@@ -118,10 +121,29 @@ class ScaleImageGenerator
 
     void initializeConfiguration();
 
+    std::map< TSemanticValue, wxString > getSemanticValues()
+    {
+      if( shortLabel )
+        return semanticValuesLabelsShort;
+      else
+        return semanticValuesLabelsLong;
+    }
+
+    void setSelectedSemanticValues( std::vector< int > selectedValues )
+    {
+      semanticValuesSelectedPositions = selectedValues;
+    }
+
+    std::vector< int > getSelectedSemanticValues()
+    {
+      return semanticValuesSelectedPositions;
+    }
+
     void setImageOrientation( TScaleImageOrientation orientation );
 
     void computeGeneratedImageSize( int whichWantedWidth = 0 );
     void computeMaxSemanticLabelsSize();
+    void computeSemanticLabels();
 
     void sortSemanticValuesGradientColors();
 
@@ -151,8 +173,11 @@ class ScaleImageGenerator
 
     std::map< TSemanticValue, rgb > semanticValuesColors;
     std::map< TSemanticValue, wxString > semanticValuesLabels;
-    std::map< TSemanticValue, wxString > semanticValuesLabelsShorts;
+    std::map< TSemanticValue, wxString > semanticValuesLabelsShort;
     std::map< TSemanticValue, wxString > semanticValuesLabelsLong;
+
+
+    std::vector< int > semanticValuesSelectedPositions;
 
 
     wxBitmap* bitmapImageContent = nullptr;
@@ -192,16 +217,23 @@ class WindowImageGenerator
     ~WindowImageGenerator();
 
   public:
-    wxBitmap* getWindowsImage();
+    wxBitmap* getWindowsImageBitmap();
     wxBitmap* getTimelineScaleImage();
-    wxBitmap* getScaleImage();
-    wxBitmap* getScaleDataImage();
+    wxBitmap* getScaleImageBitmap();
+
+    ScaleImageGenerator* getScaleWindowsImage();
+    ScaleImageGenerator* getScaleImage();
+
+    wxBitmap* getScaleDataImageBitmap();
+    ScaleImageGenerator* getScaleDataImage();
+
     wxString getLegendSuffix();
 
     TImageFormat getImageFormat();
 
     void setImageFormat( TImageFormat filterIndex );
     void setImageOrientation( TScaleImageOrientation orientation );
+
 
     void transformToShort( bool isShort );
 

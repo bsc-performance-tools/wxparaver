@@ -77,6 +77,7 @@ class wxFileCtrl;
 #define ID_CHECKBOX 10014
 #define ID_ORIENTATION_LEGEND_CONTROL 10002
 #define ID_CHECKBOX_SHRINK_LABEL 10016
+#define ID_SELECT_LEGEND 10017
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVEIMAGEDIALOG_TITLE _("Save Image Dialog")
 #define SYMBOL_SAVEIMAGEDIALOG_IDNAME ID_SAVEIMAGEDIALOG
@@ -192,6 +193,9 @@ public:
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SHRINK_LABEL
   void OnCheckboxShrinkLabelClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SELECT_LEGEND
+  void OnShowLegend( wxCommandEvent& event );
+
   ////@end SaveImageDialog event handler declarations
 
     void OnFileNavigatorChanged( wxFileCtrlEvent& event );
@@ -246,6 +250,7 @@ public:
   wxScrolledWindow* drawScaleControlSingle;
   wxScrolledWindow* drawWindowAndScale;
   wxChoice* widgetTopCompose1;
+  wxButton* buttonSelectLegendValues;
   ////@end SaveImageDialog member variables
 
   WindowImageGenerator* imageGeneration;
