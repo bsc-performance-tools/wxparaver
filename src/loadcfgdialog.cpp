@@ -25,21 +25,25 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
 #include "loadcfgdialog.h"
+#include "paravermain.h"
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
-#include "paravermain.h"
+// clang-format on
 
 
 /*!
@@ -55,6 +59,7 @@ IMPLEMENT_DYNAMIC_CLASS( LoadCFGDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( LoadCFGDialog, wxDialog )
 
+// clang-format off
 ////@begin LoadCFGDialog event table entries
   EVT_TEXT_ENTER( ID_SEARCHCTRL, LoadCFGDialog::OnSearchctrlEnter )
   EVT_UPDATE_UI( ID_TEXTLOADDESCRIPTION, LoadCFGDialog::OnTextloaddescriptionUpdate )
@@ -62,8 +67,9 @@ BEGIN_EVENT_TABLE( LoadCFGDialog, wxDialog )
   EVT_BUTTON( wxID_OK, LoadCFGDialog::OnOkClick )
   EVT_UPDATE_UI( wxID_OK, LoadCFGDialog::OnOkUpdate )
 ////@end LoadCFGDialog event table entries
+// clang-format on
 
-  EVT_FILECTRL_FILEACTIVATED( ID_FILE_NAVIGATOR, LoadCFGDialog::OnFileNavigatorDoubleClick )
+EVT_FILECTRL_FILEACTIVATED( ID_FILE_NAVIGATOR, LoadCFGDialog::OnFileNavigatorDoubleClick )
 
 END_EVENT_TABLE()
 
@@ -78,11 +84,17 @@ LoadCFGDialog::LoadCFGDialog()
 }
 
 
-LoadCFGDialog::LoadCFGDialog( wxWindow* parent, wxString directoryStartingPath, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style ):
-   directoryStartingPath( directoryStartingPath )
+LoadCFGDialog::LoadCFGDialog( wxWindow* parent,
+                              wxString directoryStartingPath,
+                              wxWindowID id,
+                              const wxString& caption,
+                              const wxPoint& pos,
+                              const wxSize& size,
+                              long style )
+  : directoryStartingPath( directoryStartingPath )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
 }
 
 
@@ -92,6 +104,7 @@ LoadCFGDialog::LoadCFGDialog( wxWindow* parent, wxString directoryStartingPath, 
 
 bool LoadCFGDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin LoadCFGDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -99,6 +112,7 @@ bool LoadCFGDialog::Create( wxWindow* parent, wxWindowID id, const wxString& cap
   CreateControls();
   Centre();
 ////@end LoadCFGDialog creation
+  // clang-format on
 
   searchBar->ChangeValue( directoryStartingPath );
   fileNavigator->SetDirectory( directoryStartingPath );
@@ -113,8 +127,10 @@ bool LoadCFGDialog::Create( wxWindow* parent, wxWindowID id, const wxString& cap
 
 LoadCFGDialog::~LoadCFGDialog()
 {
+  // clang-format off
 ////@begin LoadCFGDialog destruction
 ////@end LoadCFGDialog destruction
+  // clang-format on
 }
 
 
@@ -124,6 +140,7 @@ LoadCFGDialog::~LoadCFGDialog()
 
 void LoadCFGDialog::Init()
 {
+  // clang-format off
 ////@begin LoadCFGDialog member initialisation
   searchBar = NULL;
   fileNavigator = NULL;
@@ -131,6 +148,7 @@ void LoadCFGDialog::Init()
   buttonCancel = NULL;
   buttonLoad = NULL;
 ////@end LoadCFGDialog member initialisation
+  // clang-format on
 }
 
 
@@ -139,7 +157,8 @@ void LoadCFGDialog::Init()
  */
 
 void LoadCFGDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin LoadCFGDialog content construction
   LoadCFGDialog* itemDialog1 = this;
 
@@ -173,6 +192,7 @@ void LoadCFGDialog::CreateControls()
   itemStdDialogButtonSizer8->Realize();
 
 ////@end LoadCFGDialog content construction
+  // clang-format on
 
 #if !defined( __WXGTK3__ ) && !defined( __WXOSX__ ) && !defined( __WXMSW__ )
   searchBar->Hide();
@@ -193,24 +213,28 @@ bool LoadCFGDialog::ShowToolTips()
 
 wxBitmap LoadCFGDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin LoadCFGDialog bitmap retrieval
   wxUnusedVar(name);
   return wxNullBitmap;
 ////@end LoadCFGDialog bitmap retrieval
+  // clang-format on
 }
 
-/*!DoLoad
+/*!
  * Get icon resources
  */
 
 wxIcon LoadCFGDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin LoadCFGDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end LoadCFGDialog icon retrieval
+  // clang-format on
 }
 
 
@@ -220,10 +244,12 @@ wxIcon LoadCFGDialog::GetIconResource( const wxString& name )
 
 void LoadCFGDialog::OnCancelClick( wxCommandEvent& event )
 {
+  // clang-format off
 ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in LoadCFGDialog.
   // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in LoadCFGDialog. 
+////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in LoadCFGDialog.
+  // clang-format on
 }
 
 
@@ -243,8 +269,7 @@ void LoadCFGDialog::OnOkClick( wxCommandEvent& event )
 
 void LoadCFGDialog::OnOkUpdate( wxUpdateUIEvent& event )
 {
-  buttonLoad->Enable( !fileNavigator->GetFilename().IsEmpty() &&
-                      CFGLoader::isCFGFile( std::string( fileNavigator->GetPath().mb_str() ) ) );
+  buttonLoad->Enable( !fileNavigator->GetFilename().IsEmpty() && CFGLoader::isCFGFile( std::string( fileNavigator->GetPath().mb_str() ) ) );
 }
 
 
@@ -261,7 +286,7 @@ wxString LoadCFGDialog::GetFilePath()
 void LoadCFGDialog::OnSearchctrlEnter( wxCommandEvent& event )
 {
   wxString myPath = searchBar->GetValue();
-  if ( wxDirExists( myPath ) ) 
+  if( wxDirExists( myPath ) )
   {
     fileNavigator->SetDirectory( myPath );
     textDescription->Clear();
@@ -275,13 +300,13 @@ void LoadCFGDialog::OnSearchctrlEnter( wxCommandEvent& event )
 
 void LoadCFGDialog::OnTextloaddescriptionUpdate( wxUpdateUIEvent& event )
 {
-  wxString myPath = fileNavigator->GetPath();
+  wxString myPath     = fileNavigator->GetPath();
   selectedCfgFilePath = myPath;
-  
+
   std::string description = "";
-  if ( !fileNavigator->GetFilename().IsEmpty() )
+  if( !fileNavigator->GetFilename().IsEmpty() )
   {
-    if ( !CFGLoader::isCFGFile( std::string( myPath.mb_str() ) ) )
+    if( !CFGLoader::isCFGFile( std::string( myPath.mb_str() ) ) )
       description = "*Not a Paraver CFG file!*";
     else if( !CFGLoader::loadDescription( std::string( myPath.mb_str() ), description ) )
       description = "*No description available*";

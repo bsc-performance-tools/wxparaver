@@ -34,9 +34,11 @@
 #include <wx/dcgraph.h>
 #include <wx/version.h>
 
+// clang-format off
 ////@begin includes
 #include "wx/imaglist.h"
 ////@end includes
+// clang-format on
 #include "config_traits.h"
 #include "drawmode.h"
 #include "finddialog.h"
@@ -52,7 +54,7 @@
 #include <wx/filename.h>
 #include <wx/statline.h>
 #include <wx/valnum.h>
-//#include "windows_tree.h" --> to .gtimeline.h
+// #include "windows_tree.h" --> to .gtimeline.h
 #include "autoredraw_refresh.xpm"
 #include "caution.xpm"
 #include "caution_yellow.xpm"
@@ -91,8 +93,10 @@ constexpr int TIMER_SIZE_DURATION = 250;
 
 constexpr size_t MAX_LEGEND_COLORS = 512;
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 
 /*!
@@ -108,6 +112,7 @@ IMPLEMENT_CLASS( gTimeline, wxFrame )
 
 BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 EVT_MOVE( gTimeline::OnMove )
+// clang-format off
 ////@begin gTimeline event table entries
 EVT_CLOSE( gTimeline::OnCloseWindow )
 EVT_IDLE( gTimeline::OnIdle )
@@ -147,6 +152,7 @@ EVT_TEXT( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdated )
 EVT_UPDATE_UI( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdate )
 EVT_ACTIVATE( gTimeline::OnActivateWindow )
 ////@end gTimeline event table entries
+// clang-format on
 
 EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
 EVT_TIMER( ID_TIMER_MOTION, gTimeline::OnTimerMotion )
@@ -183,11 +189,13 @@ gTimeline::gTimeline( wxWindow* whichParent, wxWindowID id, const wxString& capt
 
 bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
   ////@begin gTimeline creation
   wxFrame::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
   ////@end gTimeline creation
+  // clang-format on
   splitter->Unsplit();
   redrawStopWatch->Pause();
   return true;
@@ -200,8 +208,10 @@ bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption
 
 gTimeline::~gTimeline()
 {
+  // clang-format off
   ////@begin gTimeline destruction
   ////@end gTimeline destruction
+  // clang-format on
   gPasteWindowProperties::getInstance()->verifyRemove( this );
 
   delete timerMotion;
@@ -219,6 +229,7 @@ gTimeline::~gTimeline()
 
 void gTimeline::Init()
 {
+  // clang-format off
   ////@begin gTimeline member initialisation
   canRedraw                = false;
   drawCaution              = false;
@@ -288,6 +299,7 @@ void gTimeline::Init()
   sliderSelectedBlue       = NULL;
   textSelectedBlue         = NULL;
   ////@end gTimeline member initialisation
+  // clang-format on
 
   zoomXY = false;
   bufferImage.Create( 1, 1 );
@@ -329,6 +341,7 @@ void gTimeline::Init()
 
 void gTimeline::CreateControls()
 {
+  // clang-format off
   ////@begin gTimeline content construction
   gTimeline* itemFrame1 = this;
 
@@ -566,6 +579,7 @@ void gTimeline::CreateControls()
   drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler( gTimeline::OnScrolledWindowMouseWheel ), NULL, this );
   drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler( gTimeline::OnScrolledWindowKeyDown ), NULL, this );
   ////@end gTimeline content construction
+  // clang-format on
 
   SetMinSize( wxSize( 100, 50 ) );
 
@@ -578,7 +592,7 @@ void gTimeline::CreateControls()
   checkWWText->SetValue( paraverConfig->getTimelineWhatWhereText() );
   // checkWWShowDate->SetValue( paraverConfig->getTimelineWhatWhereShowDate() );
 
-  wxIntegerValidator<unsigned short> tmpVal;
+  wxIntegerValidator< unsigned short > tmpVal;
   tmpVal.SetRange( 0, 255 );
   textSelectedRed->SetValidator( tmpVal );
   textSelectedGreen->SetValidator( tmpVal );
@@ -601,11 +615,13 @@ bool gTimeline::ShowToolTips()
 
 wxBitmap gTimeline::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
   ////@begin gTimeline bitmap retrieval
   wxUnusedVar( name );
   return wxNullBitmap;
   ////@end gTimeline bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -614,11 +630,13 @@ wxBitmap gTimeline::GetBitmapResource( const wxString& name )
 
 wxIcon gTimeline::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
   ////@begin gTimeline icon retrieval
   wxUnusedVar( name );
   return wxNullIcon;
   ////@end gTimeline icon retrieval
+  // clang-format on
 }
 
 
@@ -711,8 +729,8 @@ void gTimeline::redraw()
 #endif // _WIN32
   }
   // Get selected rows
-  vector<bool> selected;
-  vector<TObjectOrder> selectedSet;
+  vector< bool > selected;
+  vector< TObjectOrder > selectedSet;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, true );
@@ -801,15 +819,15 @@ void gTimeline::redraw()
                    ( drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder - magnify );
   PRV_INT32 timePos = objectAxisPos + 1;
 
-  vector<vector<TSemanticValue>> valuesToDraw;
-  vector<unordered_set<PRV_INT32>> eventsToDraw;
+  vector< vector< TSemanticValue > > valuesToDraw;
+  vector< unordered_set< PRV_INT32 > > eventsToDraw;
 #ifdef _MSC_VER
-  vector<unordered_set<commCoord>> commsToDraw;
+  vector< unordered_set< commCoord > > commsToDraw;
 #else
-  vector<unordered_set<commCoord, hashCommCoord>> commsToDraw;
+  vector< unordered_set< commCoord, hashCommCoord > > commsToDraw;
 #endif
 
-  vector<vector<vector<pair<TSemanticValue, TSemanticValue>>>> valuesToDrawPunctual;
+  vector< vector< vector< pair< TSemanticValue, TSemanticValue > > > > valuesToDrawPunctual;
   if( myWindow->isPunctualColorSet() )
   {
     if( myWindow->getPunctualColorWindow() != nullptr )
@@ -851,7 +869,7 @@ void gTimeline::redraw()
   PRV_UINT32 rowToDraw = 0;
   if( myWindow->getWindowBeginTime() != myWindow->getWindowEndTime() )
   {
-    for( vector<TObjectOrder>::iterator obj = selectedSet.begin(); obj != selectedSet.end(); ++obj )
+    for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != selectedSet.end(); ++obj )
     {
       TObjectOrder firstObj = *obj;
       TObjectOrder lastObj  = firstObj;
@@ -964,7 +982,7 @@ void gTimeline::redraw()
 }
 
 
-bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
+bool gTimeline::drawAxis( wxDC& dc, vector< TObjectOrder >& selected )
 {
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   PRV_UINT32 precision = 0;
@@ -1121,8 +1139,8 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 
     objectPosList.clear();
     objectPosList.insert( objectPosList.begin(), myWindow->getWindowLevelObjects(), 0 );
-    objectHeight                      = 1;
-    vector<TObjectOrder>::iterator it = selected.begin();
+    objectHeight                        = 1;
+    vector< TObjectOrder >::iterator it = selected.begin();
 
     wxCoord accumHeight = 0;
     wxCoord stepHeight  = objectExt.GetHeight();
@@ -1215,7 +1233,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     {
       if( ( inc * 0.25 ) < 1.0 && magnify > objectHeight )
       {
-        for( vector<wxCoord>::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
+        for( vector< wxCoord >::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
           *it = ( floor( ( *it - drawBorder ) / magnify ) * magnify ) + drawBorder;
         objectHeight = magnify;
       }
@@ -1248,7 +1266,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   return true;
 }
 
-void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
+void gTimeline::drawZeroAxis( wxDC& dc, vector< TObjectOrder >& selected )
 {
   if( myWindow->getMaximumY() > 0.0 && myWindow->getMinimumY() < 0.0 )
   {
@@ -1272,7 +1290,7 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
     {
       wxCoord lastPos     = 0;
       wxCoord relativePos = ( 1.0 - relativeZero ) * objectHeight;
-      for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+      for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
       {
         wxCoord tmpObjPos = objectPosList[ *it ];
         if( tmpObjPos != lastPos )
@@ -1286,23 +1304,23 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
 }
 
 #ifdef _MSC_VER
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
-                         vector<ValuesType>& valuesToDraw,
-                         unordered_set<PRV_INT32>& eventsToDraw,
-                         unordered_set<commCoord>& commsToDraw,
+                         vector< ValuesType >& valuesToDraw,
+                         unordered_set< PRV_INT32 >& eventsToDraw,
+                         unordered_set< commCoord >& commsToDraw,
                          wxMemoryDC& eventdc,
                          wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc,
                          wxMemoryDC& commmaskdc )
 #else
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
-                         vector<ValuesType>& valuesToDraw,
-                         unordered_set<PRV_INT32>& eventsToDraw,
-                         unordered_set<commCoord, hashCommCoord>& commsToDraw,
+                         vector< ValuesType >& valuesToDraw,
+                         unordered_set< PRV_INT32 >& eventsToDraw,
+                         unordered_set< commCoord, hashCommCoord >& commsToDraw,
                          wxMemoryDC& eventdc,
                          wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc,
@@ -1328,7 +1346,7 @@ void gTimeline::drawRow( wxDC& dc,
   int semanticLastPos = 0;
 
   auto itLast = --valuesToDraw.end();
-  for( typename vector<ValuesType>::iterator it = valuesToDraw.begin(); it != valuesToDraw.end(); ++it )
+  for( typename vector< ValuesType >::iterator it = valuesToDraw.begin(); it != valuesToDraw.end(); ++it )
   {
     if( myWindow->isPunctualColorSet() )
     {
@@ -1359,7 +1377,7 @@ void gTimeline::drawRow( wxDC& dc,
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowColor( wxDC& dc, ValuesType valueToDraw, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
@@ -1396,7 +1414,7 @@ void gTimeline::drawRowColor( wxDC& dc, TSemanticValue valueToDraw, wxCoord obje
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowFunction( wxDC& dc, ValuesType valueToDraw, int& semanticLastPos, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
@@ -1445,7 +1463,7 @@ void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& sema
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowFusedLines( wxDC& dc,
                                    ValuesType valueToDraw,
                                    int& semanticLastPos,
@@ -1511,7 +1529,7 @@ void gTimeline::drawRowFusedLines( wxDC& dc,
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
@@ -1520,7 +1538,7 @@ void gTimeline::drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord
 
 template<>
 void gTimeline::drawRowPunctual( wxDC& dc,
-                                 vector<pair<TSemanticValue, TSemanticValue>>& valuesToDrawList,
+                                 vector< pair< TSemanticValue, TSemanticValue > >& valuesToDrawList,
                                  wxCoord objectPos,
                                  wxCoord timePos,
                                  float magnify )
@@ -1531,7 +1549,8 @@ void gTimeline::drawRowPunctual( wxDC& dc,
     realMin = 0.0;
 
   TSemanticValue valueToDraw;
-  for( vector<pair<TSemanticValue, TSemanticValue>>::iterator itValues = valuesToDrawList.begin(); itValues != valuesToDrawList.end(); ++itValues )
+  for( vector< pair< TSemanticValue, TSemanticValue > >::iterator itValues = valuesToDrawList.begin(); itValues != valuesToDrawList.end();
+       ++itValues )
   {
     valueToDraw = ( *itValues ).first;
 
@@ -1565,9 +1584,9 @@ void gTimeline::drawRowPunctual( wxDC& dc,
 }
 
 
-void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, unordered_set<PRV_INT32>& eventsToDraw )
+void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, unordered_set< PRV_INT32 >& eventsToDraw )
 {
-  for( unordered_set<PRV_INT32>::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
+  for( unordered_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
   {
     eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
     eventdc.DrawLine( *it + 1, rowPos - 6, *it + 1, rowPos - 3 );
@@ -1585,15 +1604,15 @@ void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder ro
 
 
 #ifdef _MSC_VER
-void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set<commCoord>& commsToDraw )
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set< commCoord >& commsToDraw )
 #else
-void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set<commCoord, hashCommCoord>& commsToDraw )
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set< commCoord, hashCommCoord >& commsToDraw )
 #endif
 {
 #ifdef _MSC_VER
-  for( unordered_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set< commCoord >::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
-  for( unordered_set<commCoord, hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set< commCoord, hashCommCoord >::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #endif
   {
     if( it->recType & LOG )
@@ -1911,7 +1930,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     outOfDraw = true;
   }
 
-  vector<TObjectOrder> selected;
+  vector< TObjectOrder > selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
 
   if( selected.empty() )
@@ -2203,7 +2222,7 @@ void gTimeline::OnPopUpPunctualColor( wxCommandEvent& event )
 
 void gTimeline::OnPopUpPunctualColorWindow( wxCommandEvent& event )
 {
-  vector<Timeline*> compatWindows;
+  vector< Timeline* > compatWindows;
   int selIndex = 0;
 
   setEnableDestroyButton( false );
@@ -2214,7 +2233,7 @@ void gTimeline::OnPopUpPunctualColorWindow( wxCommandEvent& event )
   wxArrayString choices;
   choices.Add( _( "None" ) );
   int tmpIndex = 1;
-  for( vector<Timeline*>::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
+  for( vector< Timeline* >::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
   {
     choices.Add( wxString::FromUTF8( ( *it )->getName().c_str() ) );
     if( ( *it ) == myWindow->getPunctualColorWindow() )
@@ -2750,7 +2769,7 @@ void gTimeline::OnPopUpSynchronize( wxCommandEvent& event )
   }
   else
   {
-    vector<TGroupId> tmpGroups;
+    vector< TGroupId > tmpGroups;
     SyncWindows::getInstance()->getGroups( tmpGroups );
 
     TGroupId group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
@@ -2803,7 +2822,7 @@ void gTimeline::OnPopUpSynchronizeById( TGroupId& wichGroup, bool setSynchronize
 
 void gTimeline::OnPopUpRemoveGroup( wxCommandEvent& event )
 {
-  vector<TGroupId> tmpGroups;
+  vector< TGroupId > tmpGroups;
   SyncWindows::getInstance()->getGroups( tmpGroups );
   SyncWindows::getInstance()->removeAllWindows( tmpGroups[ event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE ] );
 }
@@ -2821,7 +2840,7 @@ void gTimeline::OnPopUpUndoZoom( wxCommandEvent& event )
   {
     TObjectOrder prevZoomBegin = myWindow->getPrevZoomSecondDimension().first;
     TObjectOrder prevZoomEnd   = myWindow->getPrevZoomSecondDimension().second;
-    vector<TObjectOrder> selectedSet;
+    vector< TObjectOrder > selectedSet;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, prevZoomBegin, prevZoomEnd, true );
 
     if( selectedSet.size() > 0 )
@@ -2853,7 +2872,7 @@ void gTimeline::OnPopUpRedoZoom( wxCommandEvent& event )
   {
     TObjectOrder nextZoomBegin = myWindow->getNextZoomSecondDimension().first;
     TObjectOrder nextZoomEnd   = myWindow->getNextZoomSecondDimension().second;
-    vector<TObjectOrder> selectedSet;
+    vector< TObjectOrder > selectedSet;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, nextZoomBegin, nextZoomEnd, true );
 
     if( selectedSet.size() > 0 )
@@ -3017,7 +3036,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
       wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime ), myWindow->getTimeUnit(), precision ).c_str() ) );
     durationText->SetValue( wxString::FromUTF8(
       LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime - beginTime ), myWindow->getTimeUnit(), precision ).c_str() ) );
-    vector<TObjectOrder> selectedSet;
+    vector< TObjectOrder > selectedSet;
     TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
     TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
@@ -3143,7 +3162,7 @@ wxString gTimeline::formatTime( TRecordTime whichTime, bool showDate )
 
 
 // Computes What/Where, filling whatWhereLines vector. Doesn't show it --> printWhatWhere.
-void gTimeline::computeWhatWhere( std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
+void gTimeline::computeWhatWhere( std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
                                   TRecordTime whichTime,
                                   TObjectOrder whichRow,
                                   TSemanticValue whichSemantic,
@@ -3185,7 +3204,7 @@ void gTimeline::computeWhatWhere( std::vector<std::pair<TWhatWhereLine, wxString
 
   if( myWindow->isFusedLinesColorSet() )
     return;
-  std::vector<Timeline*> groupWindows;
+  std::vector< Timeline* > groupWindows;
   if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_INFO_PANEL ) )
   {
     groupWindows = SyncWindows::getInstance()->getGroupTimelineWindows( myWindow->getSyncGroup() );
@@ -3279,7 +3298,7 @@ void gTimeline::printWhatWhere()
   whatWhereText->BeginFontSize( fontSize );
   fontSizeOpen = true;
 
-  for( vector<pair<TWhatWhereLine, wxString>>::iterator it = whatWhereLines.begin(); it != whatWhereLines.end(); ++it )
+  for( vector< pair< TWhatWhereLine, wxString > >::iterator it = whatWhereLines.begin(); it != whatWhereLines.end(); ++it )
   {
     // Is that section allowed?
     switch( it->first )
@@ -3412,7 +3431,7 @@ void gTimeline::printWhatWhere()
 
 // If some tags changes here, please read printWhatWhere function.
 void gTimeline::printWWSemantic( Timeline* temporalWindow,
-                                 std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
+                                 std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
                                  TObjectOrder whichRow,
                                  bool clickedValue,
                                  bool textMode,
@@ -3455,7 +3474,7 @@ void gTimeline::printWWSemantic( Timeline* temporalWindow,
 
 // If some tags changes here, please read printWhatWhere function.
 void gTimeline::printWWRecords( Timeline* temporalWindow,
-                                std::vector<std::pair<TWhatWhereLine, wxString>>& tmpWhatWhereLines,
+                                std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
                                 TObjectOrder whichRow,
                                 bool clickedValue,
                                 bool textMode,
@@ -3579,16 +3598,16 @@ void gTimeline::printWWRecords( Timeline* temporalWindow,
 void gTimeline::resizeDrawZone( int width, int height )
 {
   codeChangeSize = true;
-  canRedraw = false;
+  canRedraw      = false;
 
   if( !splitter->IsSplit() )
   {
     drawZone->SetClientSize( width, height );
-    #ifndef _WIN32
-      this->SetClientSize( width, height );
-    #else
-      this->SetSize( width, height );
-    #endif
+#ifndef _WIN32
+    this->SetClientSize( width, height );
+#else
+    this->SetSize( width, height );
+#endif
     canRedraw    = true;
     splitChanged = true;
   }
@@ -3656,7 +3675,7 @@ void gTimeline::Unsplit()
                                                            infoZone->GetClientSize().GetHeight() );
   #else*/
   this->SetClientSize( this->GetClientSize().GetWidth(), myWindow->getHeight() );
-  //#endif
+  // #endif
 
   drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
   this->Thaw();
@@ -3705,7 +3724,7 @@ void gTimeline::OnItemColorLeftUp( wxMouseEvent& event )
   textSelectedGreen->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Green() ) );
   textSelectedBlue->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Blue() ) );
 
-  selectedCustomColor = static_cast<CustomColorSemValue*>( event.m_callbackUserData );
+  selectedCustomColor = static_cast< CustomColorSemValue* >( event.m_callbackUserData );
 
   if( lastSelectedItemText != nullptr )
     lastSelectedItemText->SetFont( originalUnselectectItemTextFont );
@@ -3829,11 +3848,11 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
     {
       TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
       TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
-      vector<TObjectOrder> selected;
+      vector< TObjectOrder > selected;
       myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
 
       size_t i = 0;
-      for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+      for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
       {
         if( i > MAX_LEGEND_COLORS )
           break;
@@ -4349,14 +4368,14 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
   }
   else if( myWindow->isFusedLinesColorSet() )
   {
-    std::map<TSemanticValue, rgb> tmpObjects;
+    std::map< TSemanticValue, rgb > tmpObjects;
 
     TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
     TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
-    vector<TObjectOrder> selected;
+    vector< TObjectOrder > selected;
     myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
 
-    for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+    for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
     {
       rgb tmprgb = myWindow->getSemanticColor().calcColor( ( *it ) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1 );
       tmpObjects[ (TSemanticValue)( *it ) ] = tmprgb;
@@ -4387,7 +4406,7 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
 // ScaleImage
 //
 gTimeline::ScaleImageVertical::ScaleImageVertical( Timeline* whichMyWindow,
-                                                   const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                                                   const std::map< TSemanticValue, rgb >& whichSemanticValues,
                                                    wxColour whichBackground,
                                                    wxColour whichForeground,
                                                    int whichBackgroundMode,
@@ -4659,7 +4678,7 @@ void gTimeline::ScaleImageVertical::destroyDC()
 // ScaleImageVerticalCodeColor
 //
 gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor( Timeline* whichMyWindow,
-                                                                     const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                                                                     const std::map< TSemanticValue, rgb >& whichSemanticValues,
                                                                      wxColour whichBackground,
                                                                      wxColour whichForeground,
                                                                      int whichBackgroundMode,
@@ -4694,7 +4713,7 @@ void gTimeline::ScaleImageVerticalCodeColor::init()
 // ScaleImageVerticalGradientColor
 //
 gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor( Timeline* whichMyWindow,
-                                                                             const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                                                                             const std::map< TSemanticValue, rgb >& whichSemanticValues,
                                                                              wxColour whichBackground,
                                                                              wxColour whichForeground,
                                                                              int whichBackgroundMode,
@@ -4777,7 +4796,7 @@ void gTimeline::ScaleImageVerticalGradientColor::draw()
 // ScaleImageVerticalFusedLines
 //
 gTimeline::ScaleImageVerticalFusedLines::ScaleImageVerticalFusedLines( Timeline* whichMyWindow,
-                                                                       const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                                                                       const std::map< TSemanticValue, rgb >& whichSemanticValues,
                                                                        wxColour whichBackground,
                                                                        wxColour whichForeground,
                                                                        int whichBackgroundMode,
@@ -4840,7 +4859,7 @@ void gTimeline::ScaleImageVerticalFusedLines::computeMaxLabelSize()
 // ScaleImageHorizontalGradientColor
 //
 gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor( Timeline* whichMyWindow,
-                                                                                 const std::map<TSemanticValue, rgb>& whichSemanticValues,
+                                                                                 const std::map< TSemanticValue, rgb >& whichSemanticValues,
                                                                                  wxColour whichBackground,
                                                                                  wxColour whichForeground,
                                                                                  int whichBackgroundMode,
@@ -5084,7 +5103,7 @@ void gTimeline::saveText()
   // Builds following wildcard: _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" )
   // Also fills extension
   wxString tmpWildcard;
-  vector<wxString> extensions;
+  vector< wxString > extensions;
   for( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
     wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ) ).c_str() );
@@ -5105,7 +5124,7 @@ void gTimeline::saveText()
                                   _( "filedlg" ),
                                   extensions );
 
-  saveDialog.SetFilterIndex( static_cast<int>( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ) );
+  saveDialog.SetFilterIndex( static_cast< int >( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ) );
 
   if( saveDialog.ShowModal() == wxID_OK )
   {
@@ -5170,16 +5189,16 @@ void gTimeline::saveText()
 
 void gTimeline::saveCFG()
 {
-  vector<Timeline*> timelines;
+  vector< Timeline* > timelines;
   timelines.push_back( GetMyWindow() );
 
   setEnableDestroyButton( false );
 
   // TODO: use the window linked properties manager if any
   CFGS4DLinkedPropertiesManager dummyManager;
-  vector<CFGS4DLinkedPropertiesManager> dummyList;
+  vector< CFGS4DLinkedPropertiesManager > dummyList;
   dummyList.push_back( dummyManager );
-  paraverMain::myParaverMain->SaveConfigurationFile( (wxWindow*)this, SaveOptions(), timelines, vector<Histogram*>(), dummyList );
+  paraverMain::myParaverMain->SaveConfigurationFile( (wxWindow*)this, SaveOptions(), timelines, vector< Histogram* >(), dummyList );
 
   setEnableDestroyButton( true );
 }
@@ -5516,9 +5535,9 @@ void gTimeline::OnCheckWhatWhereText( wxCommandEvent& event )
   checkWWText->Enable( false );
   checkWWShowDate->Enable( false );
   checkWWHex->Enable( false );
-  std::vector<std::pair<TWhatWhereLine, wxString>> tmpWhatWhereLines;
+  std::vector< std::pair< TWhatWhereLine, wxString > > tmpWhatWhereLines;
 
-  std::vector<Timeline*> groupTimelines;
+  std::vector< Timeline* > groupTimelines;
 
   computeWhatWhere( tmpWhatWhereLines,
                     whatWhereTime,
@@ -5592,7 +5611,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
-  vector<TObjectOrder> selected;
+  vector< TObjectOrder > selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
   double heightPerRow     = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
@@ -5605,7 +5624,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
   TEventType type;
   TEventValue value;
-  vector<TEventType> events;
+  vector< TEventType > events;
   wxString command;
 
   wxString alienApp;
@@ -5778,7 +5797,7 @@ bool gTimeline::pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& 
 
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
-  vector<TObjectOrder> selected;
+  vector< TObjectOrder > selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
   double heightPerRow     = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
@@ -5801,7 +5820,7 @@ bool gTimeline::getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder w
   wxMemoryDC dc( bufferImage );
 
   // Get 3 pixels  (top/center/bottom)
-  std::vector<wxColour> nearbyPixels;
+  std::vector< wxColour > nearbyPixels;
   int tmpY;
   for( int i = -1; i <= 1; ++i )
   {
@@ -5881,7 +5900,7 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   whatWhereText->AppendText( _( "Working..." ) );
   Update();
 
-  std::vector<std::pair<TWhatWhereLine, wxString>> tmpWhatWhereLines;
+  std::vector< std::pair< TWhatWhereLine, wxString > > tmpWhatWhereLines;
 
   computeWhatWhere( tmpWhatWhereLines, time, object, tmpSemantic, checkWWText->IsChecked(), checkWWShowDate->IsChecked(), checkWWHex->IsChecked() );
 
@@ -5892,8 +5911,8 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
 }
 
 
-void gTimeline::drawTimeMarks( std::vector<TRecordTime> times,
-                               vector<TObjectOrder>& selectedObjects,
+void gTimeline::drawTimeMarks( std::vector< TRecordTime > times,
+                               vector< TObjectOrder >& selectedObjects,
                                bool drawXCross,
                                bool allObjects,
                                TObjectOrder lastFoundObject )
@@ -5921,7 +5940,7 @@ void gTimeline::drawTimeMarks( std::vector<TRecordTime> times,
   if( myWindow->getDrawCommLines() )
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
 
-  for( std::vector<TRecordTime>::iterator it = times.begin(); it != times.end(); ++it )
+  for( std::vector< TRecordTime >::iterator it = times.begin(); it != times.end(); ++it )
   {
     if( *it >= myWindow->getWindowBeginTime() && *it <= myWindow->getWindowEndTime() )
     {
@@ -5957,7 +5976,7 @@ void gTimeline::OnFindDialog()
   {
     TRecordTime beginTime, endTime;
     unsigned int objectSelection = dialog.choiceObjects->GetSelection();
-    vector<TObjectOrder> selectedObjects;
+    vector< TObjectOrder > selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
 
     if( dialog.radioObjects->GetValue() )
@@ -5969,9 +5988,9 @@ void gTimeline::OnFindDialog()
     {
       bool found = false;
       TRecordTime newFoundTime, timeToSearch;
-      set<TEventType> events          = myWindow->getTrace()->getLoadedEvents();
-      set<TEventType>::iterator itEvt = events.begin();
-      int i                           = 0;
+      set< TEventType > events          = myWindow->getTrace()->getLoadedEvents();
+      set< TEventType >::iterator itEvt = events.begin();
+      int i                             = 0;
       while( i < dialog.choiceEventType->GetSelection() )
       {
         ++i;
@@ -6167,7 +6186,7 @@ void gTimeline::OnFindDialog()
     findLastObject  = last;
     lastFoundObject = objectSelection;
 
-    std::vector<TRecordTime> tmpTimes;
+    std::vector< TRecordTime > tmpTimes;
     tmpTimes.push_back( lastSemanticFoundTime );
     bool drawXCross = true;
     bool allObjects = false;
@@ -6210,7 +6229,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
           newWheelFactor -= 0.01;
         else*/
     newWheelFactor -= 0.1;
-    if( newWheelFactor <= std::numeric_limits<double>::epsilon() )
+    if( newWheelFactor <= std::numeric_limits< double >::epsilon() )
       return;
   }
   else
@@ -6262,7 +6281,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   if( event.ControlDown() )
 #endif
   {
-    vector<TObjectOrder> selectedObjects;
+    vector< TObjectOrder > selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(),
                                selectedObjects,
                                myWindow->getZoomSecondDimension().first,
@@ -6478,7 +6497,7 @@ void gTimeline::MousePanLeftUp( wxMouseEvent& event )
 
   if( event.ControlDown() )
   {
-    vector<TObjectOrder> selectedObjects;
+    vector< TObjectOrder > selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(),
                                selectedObjects,
                                myWindow->getZoomSecondDimension().first,

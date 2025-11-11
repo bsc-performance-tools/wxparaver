@@ -32,9 +32,11 @@
 #  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 #include "wx/bookctrl.h"
 ////@end includes
+// clang-format on
 #include "gtimeline.h"
 #include "histogram.h"
 #include "labelconstructor.h"
@@ -47,8 +49,10 @@
 
 using namespace std;
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 #include "../icons/help.xpm"
 
 /*!

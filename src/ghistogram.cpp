@@ -32,8 +32,10 @@
 #  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
 #include "config_traits.h"
 #include "filedialogext.h"
@@ -84,6 +86,7 @@ using namespace std;
 
 constexpr char STR_SORT_CUSTOM[] = "Custom";
 
+// clang-format off
 ////@begin XPM images
 #include "../icons/arrow_reverse.xpm"
 #include "../icons/autoredraw_refresh.xpm"
@@ -103,6 +106,7 @@ constexpr char STR_SORT_CUSTOM[] = "Custom";
 #include "../icons/semantic_color.xpm"
 #include "../icons/short_labels.xpm"
 ////@end XPM images
+// clang-format on
 
 constexpr unsigned int MAX_CELLS_AUTOHIDE_COLUMNS = 1 << 18;
 
@@ -119,6 +123,7 @@ IMPLEMENT_CLASS( gHistogram, wxFrame )
 
 BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 EVT_MOVE( gHistogram::OnMove )
+// clang-format off
 ////@begin gHistogram event table entries
 EVT_CLOSE( gHistogram::OnCloseWindow )
 EVT_SIZE( gHistogram::OnSize )
@@ -161,6 +166,7 @@ EVT_UPDATE_UI( wxID_CONTROLWARNING, gHistogram::OnControlWarningUpdate )
 EVT_UPDATE_UI( wxID_3DWARNING, gHistogram::On3dWarningUpdate )
 EVT_UPDATE_UI( ID_AUTOREDRAW, gHistogram::OnAutoredrawUpdate )
 ////@end gHistogram event table entries
+// clang-format on
 #if wxCHECK_VERSION( 3, 1, 5 )
 EVT_GRID_CMD_RANGE_SELECTED( ID_GRIDHISTO, gHistogram::OnRangeSelect )
 #else
@@ -199,11 +205,13 @@ gHistogram::gHistogram( wxWindow* parent, wxWindowID id, const wxString& caption
 
 bool gHistogram::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
   ////@begin gHistogram creation
   wxFrame::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
   ////@end gHistogram creation
+  // clang-format on
 
   return true;
 }
@@ -215,8 +223,10 @@ bool gHistogram::Create( wxWindow* parent, wxWindowID id, const wxString& captio
 
 gHistogram::~gHistogram()
 {
+  // clang-format off
   ////@begin gHistogram destruction
   ////@end gHistogram destruction
+  // clang-format on
   gPasteWindowProperties::getInstance()->verifyRemove( this );
 
   if( tableBase != nullptr )
@@ -243,6 +253,7 @@ gHistogram::~gHistogram()
 
 void gHistogram::Init()
 {
+  // clang-format off
   ////@begin gHistogram member initialisation
   escapePressed        = false;
   lastPosZoomX         = 0;
@@ -266,6 +277,8 @@ void gHistogram::Init()
   autoRedrawIcon       = NULL;
   histoStatus          = NULL;
   ////@end gHistogram member initialisation
+  // clang-format on
+
   parent               = nullptr;
   forceAutohideColumns = true;
   timerSize            = new wxTimer( this, ID_TIMER_SIZE_HISTOGRAM );
@@ -280,6 +293,7 @@ void gHistogram::Init()
 
 void gHistogram::CreateControls()
 {
+  // clang-format off
   ////@begin gHistogram content construction
   gHistogram* itemFrame1 = this;
 
@@ -508,6 +522,7 @@ void gHistogram::CreateControls()
   zoomHisto->Connect( ID_ZOOMHISTO, wxEVT_KEY_DOWN, wxKeyEventHandler( gHistogram::OnZoomHistoKeyDown ), NULL, this );
   autoRedrawIcon->Connect( ID_AUTOREDRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler( gHistogram::OnAutoredrawLeftDown ), NULL, this );
   ////@end gHistogram content construction
+  // clang-format on
 
 #ifdef __WXGTK__
   SetToolBar( tbarHisto );
@@ -1040,6 +1055,7 @@ bool gHistogram::ShowToolTips()
 
 wxBitmap gHistogram::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
   ////@begin gHistogram bitmap retrieval
   wxUnusedVar( name );
@@ -1130,6 +1146,7 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   }
   return wxNullBitmap;
   ////@end gHistogram bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -1138,11 +1155,13 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
 
 wxIcon gHistogram::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
   ////@begin gHistogram icon retrieval
   wxUnusedVar( name );
   return wxNullIcon;
   ////@end gHistogram icon retrieval
+  // clang-format on
 }
 
 
