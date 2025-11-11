@@ -25,33 +25,36 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
-#include <wx/file.h>
-#include <wx/choicdlg.h>
-#include "wx/filesys.h"
-#include <wx/mimetype.h>
-
-#include <string>
-
+// clang-format on
 #include "helpcontents.h"
 #include "paravermain.h"
 #include "tutorialsdownload.h"
+#include "wx/filesys.h"
 #include "wxparaverapp.h"
 
+#include <string>
+#include <wx/choicdlg.h>
+#include <wx/file.h>
+#include <wx/mimetype.h>
+
+// clang-format off
 ////@begin XPM images
 #include "../icons/index.xpm"
 #include "../icons/arrow_left.xpm"
 #include "../icons/arrow_right.xpm"
 #include "../icons/download.xpm"
 ////@end XPM images
+// clang-format on
 
 /*!
  * HelpContents type definition
@@ -67,6 +70,7 @@ IMPLEMENT_DYNAMIC_CLASS( TutorialsBrowser, HelpContents )
 
 BEGIN_EVENT_TABLE( HelpContents, wxDialog )
 
+// clang-format off
 ////@begin HelpContents event table entries
   EVT_HTML_LINK_CLICKED( ID_HTMLWINDOW, HelpContents::OnHtmlwindowLinkClicked )
   EVT_BUTTON( ID_BUTTON_INDEX, HelpContents::OnButtonIndexClick )
@@ -76,20 +80,21 @@ BEGIN_EVENT_TABLE( HelpContents, wxDialog )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardUpdate )
   EVT_BUTTON( ID_BUTTON_CLOSE, HelpContents::OnButtonCloseClick )
 ////@end HelpContents event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
 
 BEGIN_EVENT_TABLE( TutorialsBrowser, wxDialog )
 
-  EVT_HTML_LINK_CLICKED( ID_HTMLWINDOW, TutorialsBrowser::OnHtmlwindowLinkClicked )
-  EVT_BUTTON( ID_BUTTON_INDEX, TutorialsBrowser::OnButtonIndexClick )
-  EVT_BUTTON( ID_BITMAPBUTTON_BACK, TutorialsBrowser::OnBitmapbuttonBackClick )
-  EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, TutorialsBrowser::OnBitmapbuttonBackUpdate )
-  EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardClick )
-  EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardUpdate )
-  EVT_BUTTON( ID_BUTTON_CLOSE, TutorialsBrowser::OnButtonCloseClick )
-  EVT_BUTTON( ID_BITMAPBUTTON_DOWNLOAD, TutorialsBrowser::OnButtonDownloadClick )
+EVT_HTML_LINK_CLICKED( ID_HTMLWINDOW, TutorialsBrowser::OnHtmlwindowLinkClicked )
+EVT_BUTTON( ID_BUTTON_INDEX, TutorialsBrowser::OnButtonIndexClick )
+EVT_BUTTON( ID_BITMAPBUTTON_BACK, TutorialsBrowser::OnBitmapbuttonBackClick )
+EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, TutorialsBrowser::OnBitmapbuttonBackUpdate )
+EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardClick )
+EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardUpdate )
+EVT_BUTTON( ID_BUTTON_CLOSE, TutorialsBrowser::OnButtonCloseClick )
+EVT_BUTTON( ID_BITMAPBUTTON_DOWNLOAD, TutorialsBrowser::OnButtonDownloadClick )
 
 END_EVENT_TABLE()
 
@@ -104,40 +109,31 @@ HelpContents::HelpContents()
 
 /*
   Factory that manages both HelpContents and its child TutorialsBrowser
-  to 
+  to
 */
 HelpContents* HelpContents::createObject( TContents whichObject,
-                                     wxWindow* parent,
-                                     const wxString& whichHelpContentsRoot,
-                                     const bool whichLookForContents,
-                                     wxWindowID id,
-                                     const wxString& caption,
-                                     const wxPoint& pos,
-                                     const wxSize& size,
-                                     long style)
+                                          wxWindow* parent,
+                                          const wxString& whichHelpContentsRoot,
+                                          const bool whichLookForContents,
+                                          wxWindowID id,
+                                          const wxString& caption,
+                                          const wxPoint& pos,
+                                          const wxSize& size,
+                                          long style )
 {
   HelpContents* item = nullptr;
   switch( whichObject )
   {
     case TContents::HELP:
-      item = new HelpContents( parent,
-                           whichHelpContentsRoot,
-                           whichLookForContents,
-                           id, SYMBOL_HELPCONTENTS_TITLE, 
-                           pos, size, style );
+      item = new HelpContents( parent, whichHelpContentsRoot, whichLookForContents, id, SYMBOL_HELPCONTENTS_TITLE, pos, size, style );
       break;
-    case TContents::TUTORIAL: 
-      item = new TutorialsBrowser( parent,
-                               whichHelpContentsRoot,
-                               id, SYMBOL_TUTORIALSBROWSER_TITLE, 
-                               pos, 
-                               size, 
-                               style );
+    case TContents::TUTORIAL:
+      item = new TutorialsBrowser( parent, whichHelpContentsRoot, id, SYMBOL_TUTORIALSBROWSER_TITLE, pos, size, style );
       break;
     default:
       break;
   }
-  if ( item != nullptr && whichLookForContents )
+  if( item != nullptr && whichLookForContents )
     item->buildIndex();
   return item;
 }
@@ -150,14 +146,12 @@ HelpContents::HelpContents( wxWindow* parent,
                             const wxString& caption,
                             const wxPoint& pos,
                             const wxSize& size,
-                            long style ) :
-        helpContentsRoot( whichHelpContentsRoot ),
-        lookForContents( whichLookForContents ),
-        dialogCaption( caption )
+                            long style )
+  : helpContentsRoot( whichHelpContentsRoot ), lookForContents( whichLookForContents ), dialogCaption( caption )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
-  
+  Create( parent, id, caption, pos, size, style );
+
   buttonDownloadTutorial->Hide();
   staticLineDownloadSeparator->Hide();
 }
@@ -166,13 +160,9 @@ HelpContents::HelpContents( wxWindow* parent,
 /*!
  * HelpContents creator
  */
-bool HelpContents::Create( wxWindow* parent,
-                            wxWindowID id,
-                            const wxString& caption,
-                            const wxPoint& pos,
-                            const wxSize& size,
-                            long style )
+bool HelpContents::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin HelpContents creation
   SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -180,7 +170,8 @@ bool HelpContents::Create( wxWindow* parent,
   CreateControls();
   Centre();
 ////@end HelpContents creation
-  
+  // clang-format on
+
   return true;
 }
 
@@ -192,18 +183,18 @@ HelpContents::~HelpContents()
 
 void HelpContents::Init()
 {
-  currentHelpContentsDir = wxT("");
-  indexFileName = wxT( "" );
-  subindexLink = wxT( "" );
+  currentHelpContentsDir = wxT( "" );
+  indexFileName          = wxT( "" );
+  subindexLink           = wxT( "" );
 }
 
 
 const wxString HelpContents::appendIndexHtmlToURL( const wxString& path )
 {
   wxString htmlIndex;
-  wxFileName index( path + wxFileName::GetPathSeparator() + wxT("index.html") );
+  wxFileName index( path + wxFileName::GetPathSeparator() + wxT( "index.html" ) );
 
-  if ( index.FileExists() )
+  if( index.FileExists() )
   {
     htmlIndex = index.GetFullPath();
   }
@@ -218,11 +209,11 @@ const wxString HelpContents::getTitle( int numTutorial, const wxString& path )
   wxString helpContentsTitle;
 
   wxHtmlWindow auxHtml( this );
-  auxHtml.LoadPage( path  + wxFileName::GetPathSeparator() + wxT("index.html") );
+  auxHtml.LoadPage( path + wxFileName::GetPathSeparator() + wxT( "index.html" ) );
   helpContentsTitle = auxHtml.GetOpenedPageTitle();
-  if ( helpContentsTitle.empty() || helpContentsTitle == wxT("index.html") )
+  if( helpContentsTitle.empty() || helpContentsTitle == wxT( "index.html" ) )
   {
-    helpContentsTitle = wxT("Section");
+    helpContentsTitle = wxT( "Section" );
     helpContentsTitle << numTutorial;
   }
 
@@ -230,23 +221,21 @@ const wxString HelpContents::getTitle( int numTutorial, const wxString& path )
 }
 
 
-void HelpContents::appendHelpContents( const wxString& title,
-                                       const wxString& path,
-                                       wxString& htmlDoc )
+void HelpContents::appendHelpContents( const wxString& title, const wxString& path, wxString& htmlDoc )
 {
-  //htmlDoc += wxT("<LI><P><A HREF=\"") + path + wxT("\">") + title + wxT("</A></P></LI>");
-  htmlDoc += wxT("<LI><P><A HREF=\"") + path + wxT("\">") + title + wxT("</A></P></LI>");
+  // htmlDoc += wxT("<LI><P><A HREF=\"") + path + wxT("\">") + title + wxT("</A></P></LI>");
+  htmlDoc += wxT( "<LI><P><A HREF=\"" ) + path + wxT( "\">" ) + title + wxT( "</A></P></LI>" );
 }
 
 
 void HelpContents::helpMessage( wxString& htmlDoc )
 {
-  htmlDoc += wxT("<P><H3>No Help Contents found!?</H3></P>");
-  htmlDoc += wxT("<P>Please check that a <B>root directory</B> to Help Contents exists.</P>");
-  htmlDoc += wxT("<P>The current one is ");
+  htmlDoc += wxT( "<P><H3>No Help Contents found!?</H3></P>" );
+  htmlDoc += wxT( "<P>Please check that a <B>root directory</B> to Help Contents exists.</P>" );
+  htmlDoc += wxT( "<P>The current one is " );
   htmlDoc += GetHelpContentsRoot();
-  htmlDoc += wxT("</P>");
-  htmlDoc += wxT("<P>If missing, try to download a newer wxparaver version, or please contact us at paraver@bsc.es.</P>");
+  htmlDoc += wxT( "</P>" );
+  htmlDoc += wxT( "<P>If missing, try to download a newer wxparaver version, or please contact us at paraver@bsc.es.</P>" );
 }
 
 
@@ -255,17 +244,15 @@ void HelpContents::linkToWebPage( wxString& htmlDoc )
 }
 
 
-bool HelpContents::helpContentsFound( wxArrayString & contentsList )
+bool HelpContents::helpContentsFound( wxArrayString& contentsList )
 {
   // Get contents directory
   wxFileName helpContentsGlobalPath( GetHelpContentsRoot() );
 
-  wxString currentDir = wxFindFirstFile(
-          helpContentsGlobalPath.GetLongPath() + wxFileName::GetPathSeparator() + wxT("*"),
-          wxDIR );
+  wxString currentDir = wxFindFirstFile( helpContentsGlobalPath.GetLongPath() + wxFileName::GetPathSeparator() + wxT( "*" ), wxDIR );
   while( !currentDir.empty() )
   {
-    if ( appendIndexHtmlToURL( currentDir ) != wxT("")  )
+    if( appendIndexHtmlToURL( currentDir ) != wxT( "" ) )
     {
       // Full path to index.html found! => we consider this is a tutorial
       contentsList.Add( currentDir );
@@ -282,20 +269,21 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
 {
   // Write html index
   wxString contentsHtmlIndex;
-  wxString contentsList = wxT("<UL>");
+  wxString contentsList = wxT( "<UL>" );
 
-  contentsHtmlIndex += wxT("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
-  contentsHtmlIndex += wxT("<HTML>");
-  contentsHtmlIndex += wxT("<HEAD>");
-  contentsHtmlIndex += wxT("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=us-ascii\" />");
-  contentsHtmlIndex += wxT("<TITLE>" ) + title + wxT( "</TITLE>");
-  contentsHtmlIndex += wxT("</HEAD>");
-  contentsHtmlIndex += wxT("<BODY>");
+  contentsHtmlIndex += wxT( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">" );
+  contentsHtmlIndex += wxT( "<HTML>" );
+  contentsHtmlIndex += wxT( "<HEAD>" );
+  contentsHtmlIndex += wxT( "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=us-ascii\" />" );
+  contentsHtmlIndex += wxT( "<TITLE>" ) + title + wxT( "</TITLE>" );
+  contentsHtmlIndex += wxT( "</HEAD>" );
+  contentsHtmlIndex += wxT( "<BODY>" );
 
-  contentsHtmlIndex += wxT("<P ALIGN=LEFT><A HREF=\"https://tools.bsc.es/paraver\"><IMG SRC=\"memory:logoBSC.xpm\" NAME=\"logoBSC\" ALT=\"Barcelona Supercomputing Center (BSC-CNS) | Paraver\" ALIGN=BOTTOM BORDER=0></A></P>" );
+  contentsHtmlIndex += wxT( "<P ALIGN=LEFT><A HREF=\"https://tools.bsc.es/paraver\"><IMG SRC=\"memory:logoBSC.xpm\" NAME=\"logoBSC\" ALT=\"Barcelona "
+                            "Supercomputing Center (BSC-CNS) | Paraver\" ALIGN=BOTTOM BORDER=0></A></P>" );
 
   wxArrayString contents;
-  if ( helpContentsFound( contents ) )
+  if( helpContentsFound( contents ) )
   {
     // Sort them: every content dir must have a numbered prefix
     //   tutorialsPath/ #_title_bla_bla /index.html
@@ -304,14 +292,12 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
 
     for( int i = 0; i < numSections; ++i )
     {
-      appendHelpContents( getTitle( numSections, contents[ i ] ),
-                          appendIndexHtmlToURL( contents[ i ] ),
-                          contentsList );
+      appendHelpContents( getTitle( numSections, contents[ i ] ), appendIndexHtmlToURL( contents[ i ] ), contentsList );
     }
 
-    contentsList += wxT("</UL>");
+    contentsList += wxT( "</UL>" );
 
-    contentsHtmlIndex += wxT("<P><H3><B>Index</B></H3></P>");
+    contentsHtmlIndex += wxT( "<P><H3><B>Index</B></H3></P>" );
     contentsHtmlIndex += contentsList;
   }
   else
@@ -321,23 +307,20 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
   }
 
   // Close html index
-  contentsHtmlIndex += wxT("</BODY></HTML>");
+  contentsHtmlIndex += wxT( "</BODY></HTML>" );
 
   // Load /home/user/.paraver/<file_prefix>_index.html if exist, create otherwise.
-  indexFileName =
-        wxString::FromUTF8( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) +
-        wxString( wxFileName::GetPathSeparator() ) +
-        filePrefix +
-        wxT( "_index.html" );
+  indexFileName = wxString::FromUTF8( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) +
+                  wxString( wxFileName::GetPathSeparator() ) + filePrefix + wxT( "_index.html" );
 
   wxFile indexFile( indexFileName, wxFile::write );
-  if ( indexFile.IsOpened() )
+  if( indexFile.IsOpened() )
   {
     // Write it in /home/user/.paraver as <file_prefix>_index.html
     indexFile.Write( contentsHtmlIndex );
     indexFile.Close();
     htmlWindow->LoadPage( indexFileName );
-    //LoadHtml( indexFileName );
+    // LoadHtml( indexFileName );
   }
   else
   {
@@ -357,6 +340,7 @@ void HelpContents::buildIndex()
  */
 void HelpContents::CreateControls()
 {
+  // clang-format off
 ////@begin HelpContents content construction
   HelpContents* itemDialog1 = this;
 
@@ -398,6 +382,7 @@ void HelpContents::CreateControls()
   itemBoxSizer4->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
 ////@end HelpContents content construction
+  // clang-format on
 }
 
 
@@ -415,6 +400,7 @@ bool HelpContents::ShowToolTips()
  */
 wxBitmap HelpContents::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin HelpContents bitmap retrieval
   wxUnusedVar(name);
@@ -440,6 +426,7 @@ wxBitmap HelpContents::GetBitmapResource( const wxString& name )
   }
   return wxNullBitmap;
 ////@end HelpContents bitmap retrieval
+  // clang-format on
 }
 
 
@@ -448,11 +435,13 @@ wxBitmap HelpContents::GetBitmapResource( const wxString& name )
  */
 wxIcon HelpContents::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin HelpContents icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end HelpContents icon retrieval
+  // clang-format on
 }
 
 
@@ -467,7 +456,7 @@ std::string HelpContents::getCurrentHelpContentsFullPath()
 }
 
 
-std::string HelpContents::getHrefFullPath( wxHtmlLinkEvent &event )
+std::string HelpContents::getHrefFullPath( wxHtmlLinkEvent& event )
 {
   std::string hrefFullPath = getCurrentHelpContentsFullPath();
   hrefFullPath += std::string( event.GetLinkInfo().GetHref().mb_str() );
@@ -476,7 +465,7 @@ std::string HelpContents::getHrefFullPath( wxHtmlLinkEvent &event )
 }
 
 
-bool HelpContents::matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension )
+bool HelpContents::matchHrefExtension( wxHtmlLinkEvent& event, const wxString extension )
 {
   return ( event.GetLinkInfo().GetHref().Right( extension.Len() ).Cmp( extension ) == 0 );
 }
@@ -488,16 +477,13 @@ bool HelpContents::isHtmlDoc( const wxString& whichPath )
 
   wxFileName tmpPath( whichPath );
 
-  if ( ( tmpPath.GetExt().Cmp( wxT("html") ) == 0 ) ||
-       ( tmpPath.GetExt().Cmp( wxT("htm") ) == 0  ) ||
-       ( tmpPath.GetExt().Cmp( wxT("HTML") ) == 0 ) ||
-       ( tmpPath.GetExt().Cmp( wxT("HTM") ) == 0 ) )
+  if( ( tmpPath.GetExt().Cmp( wxT( "html" ) ) == 0 ) || ( tmpPath.GetExt().Cmp( wxT( "htm" ) ) == 0 ) ||
+      ( tmpPath.GetExt().Cmp( wxT( "HTML" ) ) == 0 ) || ( tmpPath.GetExt().Cmp( wxT( "HTM" ) ) == 0 ) )
   {
     // Ends with html extension
 
     // Avoid weird match of 'index.html#ref.html'. Is that possible?
-    isHtml = ( tmpPath.GetFullName().Find( wxT("#") ) == wxNOT_FOUND ) &&
-             tmpPath.FileExists();
+    isHtml = ( tmpPath.GetFullName().Find( wxT( "#" ) ) == wxNOT_FOUND ) && tmpPath.FileExists();
   }
   return isHtml;
 }
@@ -507,17 +493,14 @@ bool HelpContents::isHtmlReferenceInDoc( const wxString& whichPath )
 {
   bool isHtmlReference = false;
 
-  if ( ( !isHtmlDoc( whichPath ) ) &&
-       ( ( whichPath.Find( wxT(".html#") ) !=  wxNOT_FOUND ) ||
-         ( whichPath.Find( wxT(".htm#") )  !=  wxNOT_FOUND ) ||
-         ( whichPath.Find( wxT(".HTML#") ) !=  wxNOT_FOUND ) ||
-         ( whichPath.Find( wxT(".HTM#") )  !=  wxNOT_FOUND ) ) )
+  if( ( !isHtmlDoc( whichPath ) ) && ( ( whichPath.Find( wxT( ".html#" ) ) != wxNOT_FOUND ) || ( whichPath.Find( wxT( ".htm#" ) ) != wxNOT_FOUND ) ||
+                                       ( whichPath.Find( wxT( ".HTML#" ) ) != wxNOT_FOUND ) || ( whichPath.Find( wxT( ".HTM#" ) ) != wxNOT_FOUND ) ) )
   {
-    bool fromEnd = true;
-    size_t untilHash = whichPath.Find( wxChar('#'), fromEnd );
-    size_t firstPos = 0;
+    bool fromEnd          = true;
+    size_t untilHash      = whichPath.Find( wxChar( '#' ), fromEnd );
+    size_t firstPos       = 0;
     wxString tmpCandidate = whichPath.Mid( firstPos, untilHash );
-    isHtmlReference = wxFileName( tmpCandidate ).FileExists(); // So we assume section referenced exists in html
+    isHtmlReference       = wxFileName( tmpCandidate ).FileExists(); // So we assume section referenced exists in html
   }
 
   return isHtmlReference;
@@ -526,12 +509,11 @@ bool HelpContents::isHtmlReferenceInDoc( const wxString& whichPath )
 
 void HelpContents::LoadHtml( const wxString& htmlFile )
 {
-  if ( paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsUsesBrowser() && 
-       dialogCaption == SYMBOL_HELPCONTENTS_TITLE )
+  if( paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsUsesBrowser() && dialogCaption == SYMBOL_HELPCONTENTS_TITLE )
   {
     if( !launchBrowser( htmlFile ) )
       htmlWindow->LoadPage( htmlFile );
-    else if ( IsModal() )
+    else if( IsModal() )
       EndModal( wxID_OK );
     else
       Close();
@@ -547,14 +529,14 @@ bool HelpContents::SetHelpContents( const wxString& whichPath )
 {
   bool htmlFound = false;
   wxFileName candidate( whichPath );
-  if ( isHtmlDoc( whichPath ) )
+  if( isHtmlDoc( whichPath ) )
   {
     // relativepath/index.html
     SetHelpContentsRoot( candidate.GetPathWithSep() );
     LoadHtml( indexFileName );
     htmlFound = true;
   }
-  else if ( isHtmlReferenceInDoc( whichPath ) )
+  else if( isHtmlReferenceInDoc( whichPath ) )
   {
     // TODO: merge with upper
     // relativepath/index.html#reference
@@ -562,11 +544,11 @@ bool HelpContents::SetHelpContents( const wxString& whichPath )
     LoadHtml( indexFileName );
     htmlFound = true;
   }
-  else if ( candidate.IsDirReadable() )
+  else if( candidate.IsDirReadable() )
   {
     // relativepath
     wxString tmpTutorial = appendIndexHtmlToURL( candidate.GetPathWithSep() );
-    if ( !tmpTutorial.IsEmpty() )
+    if( !tmpTutorial.IsEmpty() )
     {
       LoadHtml( indexFileName );
       htmlFound = true;
@@ -581,10 +563,10 @@ bool HelpContents::SetHelpContentsRoot( const wxString& whichRoot )
 {
   bool changedRoot = false;
 
-  if ( wxFileName::IsDirReadable( whichRoot ) )
+  if( wxFileName::IsDirReadable( whichRoot ) )
   {
     helpContentsRoot = whichRoot;
-    changedRoot = true;
+    changedRoot      = true;
   }
 
   return changedRoot;
@@ -613,8 +595,8 @@ const std::string HelpContents::GetHelpContentsRootStr()
 bool HelpContents::DetectHelpContentsIndexInPath( const wxString& whichPath )
 {
   bool indexFound = false;
-  subindexLink = wxT( "" );
-  if ( whichPath[0] == '#' )
+  subindexLink    = wxT( "" );
+  if( whichPath[ 0 ] == '#' )
     subindexLink = whichPath;
   // Idea to detect tutorial:
   //   /home/user/root-tutorials/ => dir depth tutorials = 3
@@ -622,7 +604,7 @@ bool HelpContents::DetectHelpContentsIndexInPath( const wxString& whichPath )
   //   /home/user/root-tutorials/tutorial1/index.html => dir depth current = 4
   //   /home/user/root-tutorials/tutorial1/html/.../anyotherpage.html => dir depth current > 4
   wxString anyHelpContentsPath = GetHelpContentsRoot();
-  if ( anyHelpContentsPath[ anyHelpContentsPath.Len() - 1 ] != wxString( wxFileName::GetPathSeparator() ))
+  if( anyHelpContentsPath[ anyHelpContentsPath.Len() - 1 ] != wxString( wxFileName::GetPathSeparator() ) )
   {
     // last separator needed to count properly
     anyHelpContentsPath += wxString( wxFileName::GetPathSeparator() );
@@ -635,10 +617,9 @@ bool HelpContents::DetectHelpContentsIndexInPath( const wxString& whichPath )
   wxFileName currentLink( whichPath );
   size_t dirsDepthCurrentLink = currentLink.GetDirCount();
 
-  if (( dirsDepthCurrentLink == dirsDepthHelpContents + 1 ) && // naive comparison!
+  if( ( dirsDepthCurrentLink == dirsDepthHelpContents + 1 ) && // naive comparison!
                                                                // path may differ?
-      ( ( currentLink.GetFullName().Cmp( wxT("index.html") ) == 0 ) ||
-        isHtmlReferenceInDoc( whichPath ) ) )
+      ( ( currentLink.GetFullName().Cmp( wxT( "index.html" ) ) == 0 ) || isHtmlReferenceInDoc( whichPath ) ) )
   {
     wxArrayString dirs = currentLink.GetDirs();
     // From /home/user/root-tutorials/tutorial1/index.html GetDirs returns:
@@ -647,7 +628,7 @@ bool HelpContents::DetectHelpContentsIndexInPath( const wxString& whichPath )
     //   root-tutorials
     //   tutorial1 --> currentHelpContentsDir
     currentHelpContentsDir = dirs[ dirsDepthCurrentLink - 1 ];
-    indexFound = true;
+    indexFound             = true;
   }
 
   return indexFound;
@@ -659,8 +640,7 @@ bool HelpContents::DetectHelpContentsIndexInPath( const wxString& whichPath )
  */
 void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 {
-  if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
-       event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
+  if( event.GetLinkInfo().GetHref().SubString( 0, 4 ) == wxT( "https" ) || event.GetLinkInfo().GetHref().SubString( 0, 5 ) == wxT( "mailto" ) )
   {
     if( !launchBrowser( event.GetLinkInfo().GetHref() ) )
     {
@@ -686,7 +666,7 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 
 void HelpContents::OnButtonCloseClick( wxCommandEvent& event )
 {
-  if ( IsModal() )
+  if( IsModal() )
   {
     EndModal( wxID_OK );
   }
@@ -756,11 +736,11 @@ TutorialsBrowser::TutorialsBrowser( wxWindow* parent,
                                     const wxString& caption,
                                     const wxPoint& pos,
                                     const wxSize& size,
-                                    long style) :
-        HelpContents( parent, whichHelpContentsRoot, true, id, caption, pos, size, style )
+                                    long style )
+  : HelpContents( parent, whichHelpContentsRoot, true, id, caption, pos, size, style )
 {
-//  Init();
-//  Create(parent, id, caption, pos, size, style);
+  //  Init();
+  //  Create(parent, id, caption, pos, size, style);
 
   buttonDownloadTutorial->Show();
   staticLineDownloadSeparator->Show();
@@ -777,34 +757,33 @@ const wxString TutorialsBrowser::getTitle( int numTutorial, const wxString& path
   wxString helpContentsTitle;
 
   wxHtmlWindow auxHtml( this );
-  auxHtml.LoadPage( path  + wxFileName::GetPathSeparator() + wxT("index.html") );
+  auxHtml.LoadPage( path + wxFileName::GetPathSeparator() + wxT( "index.html" ) );
   helpContentsTitle = auxHtml.GetOpenedPageTitle();
-  if ( helpContentsTitle.empty() || helpContentsTitle == wxT("index.html") )
+  if( helpContentsTitle.empty() || helpContentsTitle == wxT( "index.html" ) )
   {
     // Deprecated feature: if "tutorial_title" exists in directory, takes it
-    std::string auxStrTitleFileName(
-            ( path + wxFileName::GetPathSeparator() + wxT("tutorial_title") ).mb_str() );
+    std::string auxStrTitleFileName( ( path + wxFileName::GetPathSeparator() + wxT( "tutorial_title" ) ).mb_str() );
     std::string auxLine;
 
     std::ifstream titleFile;
     titleFile.open( auxStrTitleFileName.c_str() );
-    if ( titleFile.good() )
+    if( titleFile.good() )
     {
       std::getline( titleFile, auxLine );
 
-      if ( auxLine.size() > 0 )
+      if( auxLine.size() > 0 )
       {
         helpContentsTitle = wxString::FromUTF8( auxLine.c_str() );
       }
       else
       {
-        helpContentsTitle = wxT("Tutorial ");
+        helpContentsTitle = wxT( "Tutorial " );
         helpContentsTitle << numTutorial;
       }
     }
     else
     {
-      helpContentsTitle = wxT("Tutorial ");
+      helpContentsTitle = wxT( "Tutorial " );
       helpContentsTitle << numTutorial;
     }
 
@@ -821,8 +800,10 @@ void TutorialsBrowser::linkToWebPage( wxString& htmlDoc )
 
   htmlDoc += wxT( "<P>Find them available at <A HREF=\"https://tools.bsc.es/paraver-tutorials\">https://tools.bsc.es/paraver-tutorials</A></P>" );
   htmlDoc += wxT( "<UL>" );
-  htmlDoc += wxT( "<LI>As single <A HREF=\"https://tools.bsc.es/sites/default/files/documentation/paraver-tutorials-20150526.tar.gz\">.tar.gz</A> package (127 MB).</LI>" );
-  htmlDoc += wxT( "<LI>As single <A HREF=\"https://tools.bsc.es/sites/default/files/documentation/paraver-tutorials-20150526.zip\">.zip</A> package (127 MB).</LI>" );
+  htmlDoc += wxT( "<LI>As single <A HREF=\"https://tools.bsc.es/sites/default/files/documentation/paraver-tutorials-20150526.tar.gz\">.tar.gz</A> "
+                  "package (127 MB).</LI>" );
+  htmlDoc += wxT( "<LI>As single <A HREF=\"https://tools.bsc.es/sites/default/files/documentation/paraver-tutorials-20150526.zip\">.zip</A> package "
+                  "(127 MB).</LI>" );
   htmlDoc += wxT( "</UL>" );
 }
 
@@ -831,7 +812,8 @@ void TutorialsBrowser::helpMessage( wxString& htmlDoc )
 {
   htmlDoc += wxT( "<P><H2>No tutorials found!?</H2></P>" );
   htmlDoc += wxT( "<P><H3>Install using the download dialog</H3></P>" );
-  htmlDoc += wxT( "<P>You can automatically download and install any of the available tutorials by clicking the <B>\"Download and Install\"</B> button.</P>" );
+  htmlDoc +=
+    wxT( "<P>You can automatically download and install any of the available tutorials by clicking the <B>\"Download and Install\"</B> button.</P>" );
   htmlDoc += wxT( "<P>Just check in the desired tutorials and press the <B>\"OK\"</B> button.</P>" );
 
   htmlDoc += wxT( "<P><H3>Manual installation</H3></P>" );
@@ -856,11 +838,10 @@ void TutorialsBrowser::helpMessage( wxString& htmlDoc )
   htmlDoc += wxT( "<LI>Every tutorial has a main <B>index.html</B> (i.e: /home/myuser/mytutorials/tut1/index.html ).</LI>" );
   htmlDoc += wxT( "</UL>" );
 
-  //htmlDoc += wxT( "<P>If you still get this help after checking these steps again, please contact us at paraver@bsc.es.</P>" );
+  // htmlDoc += wxT( "<P>If you still get this help after checking these steps again, please contact us at paraver@bsc.es.</P>" );
   htmlDoc += wxT( "<P>If you still get this help after checking these steps again, please contact us at " );
   htmlDoc += wxT( "<A HREF=\"mailto:paraver@bsc.es\">paraver@bsc.es</A>.</P>" );
 }
-
 
 
 /*!
@@ -870,35 +851,33 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 {
   wxString auxCommand;
 
-  if ( event.GetLinkInfo().GetHref().StartsWith( wxT("init_command:"), &auxCommand ) )
+  if( event.GetLinkInfo().GetHref().StartsWith( wxT( "init_command:" ), &auxCommand ) )
   {
-  /*
-    wxString app("");
-    wxString trace("");
-    wxString command( auxCommand );
-    bool runNow = false;
-    paraverMain::myParaverMain->ShowRunCommand( app, trace, command, runNow );
-    */
+    /*
+      wxString app("");
+      wxString trace("");
+      wxString command( auxCommand );
+      bool runNow = false;
+      paraverMain::myParaverMain->ShowRunCommand( app, trace, command, runNow );
+      */
   }
-  else if ( event.GetLinkInfo().GetHref().Cmp( wxT("init_preferences") ) == 0 )
+  else if( event.GetLinkInfo().GetHref().Cmp( wxT( "init_preferences" ) ) == 0 )
   {
     std::string oldTutorialsPath = GetHelpContentsRootStr();
 
     paraverMain::myParaverMain->ShowPreferences();
 
-    std::string newTutorialsPath =
-            paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
+    std::string newTutorialsPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
 
     SetHelpContentsRoot( newTutorialsPath );
 
-    if ( newTutorialsPath.compare( oldTutorialsPath ) != 0 )
+    if( newTutorialsPath.compare( oldTutorialsPath ) != 0 )
     {
       // We rebuild the index
       buildIndex();
     }
   }
-  else if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
-            event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
+  else if( event.GetLinkInfo().GetHref().SubString( 0, 4 ) == wxT( "https" ) || event.GetLinkInfo().GetHref().SubString( 0, 5 ) == wxT( "mailto" ) )
   {
     if( !launchBrowser( event.GetLinkInfo().GetHref() ) )
     {
@@ -907,27 +886,26 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
     }
   }
 
-  else if ( matchHrefExtension( event, wxT(".prv") ) ||
-            matchHrefExtension( event, wxT(".prv.gz")))
+  else if( matchHrefExtension( event, wxT( ".prv" ) ) || matchHrefExtension( event, wxT( ".prv.gz" ) ) )
   {
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
-  else if ( matchHrefExtension( event, wxT(".cfg")))
+  else if( matchHrefExtension( event, wxT( ".cfg" ) ) )
   {
-    if ( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
+    if( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
     {
-      paraverMain::myParaverMain->DoLoadCFG( getHrefFullPath( event )  );
+      paraverMain::myParaverMain->DoLoadCFG( getHrefFullPath( event ) );
     }
     else
     {
-      wxMessageDialog message( this, wxT("No trace loaded."), wxT( "Warning" ), wxOK );
+      wxMessageDialog message( this, wxT( "No trace loaded." ), wxT( "Warning" ), wxOK );
       message.ShowModal();
     }
   }
-  else if ( matchHrefExtension( event, wxT(".xml")))
+  else if( matchHrefExtension( event, wxT( ".xml" ) ) )
   {
     std::string traceName;
-    if ( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
+    if( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
     {
       traceName = paraverMain::myParaverMain->GetLoadedTraces().front()->getFileName();
     }
@@ -936,7 +914,7 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
       traceName = getCurrentHelpContentsFullPath();
     }
 
-    bool loadTrace = true;
+    bool loadTrace         = true;
     std::string strXmlFile = getHrefFullPath( event );
 
     paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
@@ -945,9 +923,9 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   {
     // If current clicked link points to a tutorial index.html file, keep its
     //   tutorial directory name to allow relative references.
-    if ( DetectHelpContentsIndexInPath( event.GetLinkInfo().GetHref() ) )
+    if( DetectHelpContentsIndexInPath( event.GetLinkInfo().GetHref() ) )
     {
-//      std::cout << "CONTENT DETECTED" << std::endl;
+      //      std::cout << "CONTENT DETECTED" << std::endl;
     }
 
     // and let the html window browse it.
@@ -962,16 +940,16 @@ void TutorialsBrowser::buildIndex()
 }
 
 
-void TutorialsBrowser::OnButtonDownloadClick(  wxCommandEvent& event )
+void TutorialsBrowser::OnButtonDownloadClick( wxCommandEvent& event )
 {
-  vector<TutorialData> tutorialsData;
-  
+  vector< TutorialData > tutorialsData;
+
   tutorialsData = TutorialsDownload::getInstance()->getTutorialsList();
-  if ( tutorialsData.empty() )
+  if( tutorialsData.empty() )
     return;
 
   wxArrayString tutorialChoices;
-  
+
   for( auto it : tutorialsData )
     tutorialChoices.Add( wxString::FromUTF8( it.getName().c_str() ) );
 
@@ -979,11 +957,11 @@ void TutorialsBrowser::OnButtonDownloadClick(  wxCommandEvent& event )
   if( selDialog.ShowModal() == wxID_OK )
   {
     wxArrayInt selection = selDialog.GetSelections();
-    vector<PRV_UINT16> tutorialsIndex;
-    
+    vector< PRV_UINT16 > tutorialsIndex;
+
     for( size_t i = 0; i < selection.GetCount(); ++i )
       tutorialsIndex.push_back( tutorialsData[ selection.Item( i ) ].getId() );
-    
+
     if( tutorialsIndex.size() > 0 )
       TutorialsDownload::getInstance()->downloadInstall( tutorialsIndex );
 

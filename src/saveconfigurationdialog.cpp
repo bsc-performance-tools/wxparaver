@@ -26,21 +26,25 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
-#include "saveconfigurationdialog.h"
 #include "advancedsaveconfiguration.h"
+#include "saveconfigurationdialog.h"
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 using namespace std;
 
@@ -57,6 +61,7 @@ IMPLEMENT_DYNAMIC_CLASS( SaveConfigurationDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( SaveConfigurationDialog, wxDialog )
 
+// clang-format off
 ////@begin SaveConfigurationDialog event table entries
   EVT_CHOICE( ID_CHOICE_TRACE_SELECTOR, SaveConfigurationDialog::OnChoiceTraceSelectorSelected )
   EVT_BUTTON( ID_BUTTON_SET_ALL_TIMELINES, SaveConfigurationDialog::OnButtonSetAllTimelinesClick )
@@ -65,6 +70,7 @@ BEGIN_EVENT_TABLE( SaveConfigurationDialog, wxDialog )
   EVT_BUTTON( ID_BUTTON_UNSET_ALL_HISTOGRAMS, SaveConfigurationDialog::OnButtonUnsetAllHistogramsClick )
   EVT_BUTTON( wxID_SAVE, SaveConfigurationDialog::OnSaveClick )
 ////@end SaveConfigurationDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -78,10 +84,15 @@ SaveConfigurationDialog::SaveConfigurationDialog()
   Init();
 }
 
-SaveConfigurationDialog::SaveConfigurationDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+SaveConfigurationDialog::SaveConfigurationDialog( wxWindow* parent,
+                                                  wxWindowID id,
+                                                  const wxString& caption,
+                                                  const wxPoint& pos,
+                                                  const wxSize& size,
+                                                  long style )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
 }
 
 
@@ -91,6 +102,7 @@ SaveConfigurationDialog::SaveConfigurationDialog( wxWindow* parent, wxWindowID i
 
 bool SaveConfigurationDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin SaveConfigurationDialog creation
   SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -102,6 +114,8 @@ bool SaveConfigurationDialog::Create( wxWindow* parent, wxWindowID id, const wxS
   }
   Centre();
 ////@end SaveConfigurationDialog creation
+  // clang-format on
+
   return true;
 }
 
@@ -112,8 +126,10 @@ bool SaveConfigurationDialog::Create( wxWindow* parent, wxWindowID id, const wxS
 
 SaveConfigurationDialog::~SaveConfigurationDialog()
 {
+  // clang-format off
 ////@begin SaveConfigurationDialog destruction
 ////@end SaveConfigurationDialog destruction
+  // clang-format on
 }
 
 
@@ -123,6 +139,7 @@ SaveConfigurationDialog::~SaveConfigurationDialog()
 
 void SaveConfigurationDialog::Init()
 {
+  // clang-format off
 ////@begin SaveConfigurationDialog member initialisation
   initialTrace = nullptr;
   choiceTraceSelector = NULL;
@@ -141,6 +158,7 @@ void SaveConfigurationDialog::Init()
   textDescription = NULL;
   checkboxSaveCFGBasicMode = NULL;
 ////@end SaveConfigurationDialog member initialisation
+  // clang-format on
 }
 
 
@@ -149,7 +167,8 @@ void SaveConfigurationDialog::Init()
  */
 
 void SaveConfigurationDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin SaveConfigurationDialog content construction
   SaveConfigurationDialog* itemDialog1 = this;
 
@@ -276,6 +295,7 @@ void SaveConfigurationDialog::CreateControls()
   itemStdDialogButtonSizer35->Realize();
 
 ////@end SaveConfigurationDialog content construction
+  // clang-format on
 }
 
 
@@ -294,11 +314,13 @@ bool SaveConfigurationDialog::ShowToolTips()
 
 wxBitmap SaveConfigurationDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin SaveConfigurationDialog bitmap retrieval
   wxUnusedVar(name);
   return wxNullBitmap;
 ////@end SaveConfigurationDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -307,11 +329,13 @@ wxBitmap SaveConfigurationDialog::GetBitmapResource( const wxString& name )
 
 wxIcon SaveConfigurationDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin SaveConfigurationDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end SaveConfigurationDialog icon retrieval
+  // clang-format on
 }
 
 
@@ -325,34 +349,34 @@ bool SaveConfigurationDialog::TransferDataToWindow()
 {
   // Build selector of traces from list of windows/histograms ( we can have loaded traces without windows )
   set< string > auxTraces;
-  
-  for( vector<Timeline *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+
+  for( vector< Timeline* >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
-    auxTraces.insert( (*it)->getTrace()->getTraceNameNumbered() );
+    auxTraces.insert( ( *it )->getTrace()->getTraceNameNumbered() );
   }
 
-  for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  for( vector< Histogram* >::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
-    auxTraces.insert( (*it)->getTrace()->getTraceNameNumbered() );
+    auxTraces.insert( ( *it )->getTrace()->getTraceNameNumbered() );
   }
 
   traces.push_back( "All traces" );
   traces.insert( ++traces.begin(), auxTraces.begin(), auxTraces.end() );
-  
+
   wxString aux;
   int firstSelection = 0;
-  int pos = 0;
+  int pos            = 0;
   for( vector< string >::iterator it = traces.begin(); it != traces.end(); ++it )
   {
     // Append trace to widget
-    aux << wxString::FromUTF8( (*it).c_str() );
+    aux << wxString::FromUTF8( ( *it ).c_str() );
     choiceTraceSelector->Append( aux );
     aux.clear();
 
     // Autoselection
-    if ( initialTrace != nullptr )
+    if( initialTrace != nullptr )
     {
-      if( initialTrace->getTraceNameNumbered() != (*it) )
+      if( initialTrace->getTraceNameNumbered() != ( *it ) )
       {
         pos++;
       }
@@ -368,17 +392,14 @@ bool SaveConfigurationDialog::TransferDataToWindow()
   // Timelines
   wxArrayString items;
   displayedTimelines.clear();
-  for( vector<Timeline *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  for( vector< Timeline* >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
-    if ( firstSelection == 0 ||
-         initialTrace->getTraceNameNumbered() == (*it)->getTrace()->getTraceNameNumbered()  )
+    if( firstSelection == 0 || initialTrace->getTraceNameNumbered() == ( *it )->getTrace()->getTraceNameNumbered() )
     {
-      items.Add( wxString::FromUTF8(
-              (*it)->getName().c_str() ) +
-              _( " @ " ) +
-              wxString::FromUTF8( (*it)->getTrace()->getTraceNameNumbered().c_str() ) );
+      items.Add( wxString::FromUTF8( ( *it )->getName().c_str() ) + _( " @ " ) +
+                 wxString::FromUTF8( ( *it )->getTrace()->getTraceNameNumbered().c_str() ) );
 
-      displayedTimelines.push_back( *it ); 
+      displayedTimelines.push_back( *it );
     }
   }
   if( !items.empty() )
@@ -387,17 +408,14 @@ bool SaveConfigurationDialog::TransferDataToWindow()
   // Histograms
   items.Clear();
   displayedHistograms.clear();
-  for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  for( vector< Histogram* >::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
-    if ( firstSelection == 0 ||
-         initialTrace->getTraceNameNumbered() == (*it)->getTrace()->getTraceNameNumbered()  )
+    if( firstSelection == 0 || initialTrace->getTraceNameNumbered() == ( *it )->getTrace()->getTraceNameNumbered() )
     {
-      items.Add( wxString::FromUTF8(
-              (*it)->getName().c_str() ) +
-              _( " @ " ) +
-              wxString::FromUTF8( (*it)->getTrace()->getTraceNameNumbered().c_str() ) );
+      items.Add( wxString::FromUTF8( ( *it )->getName().c_str() ) + _( " @ " ) +
+                 wxString::FromUTF8( ( *it )->getTrace()->getTraceNameNumbered().c_str() ) );
 
-      displayedHistograms.push_back( *it ); 
+      displayedHistograms.push_back( *it );
     }
   }
   if( !items.empty() )
@@ -418,7 +436,7 @@ bool SaveConfigurationDialog::TransferDataToWindow()
 
 bool SaveConfigurationDialog::TransferDataFromWindow()
 {
-  vector<Timeline *> tmpTimelines;
+  vector< Timeline* > tmpTimelines;
   for( size_t i = 0; i < listTimelines->GetCount(); ++i )
   {
     if( listTimelines->IsChecked( i ) )
@@ -426,8 +444,8 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   }
   selectedTimelines.clear();
   selectedTimelines = tmpTimelines;
-  
-  vector<Histogram *> tmpHistograms;
+
+  vector< Histogram* > tmpHistograms;
   for( size_t i = 0; i < listHistograms->GetCount(); ++i )
   {
     if( listHistograms->IsChecked( i ) )
@@ -435,13 +453,13 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   }
   selectedHistograms.clear();
   selectedHistograms = tmpHistograms;
-  
+
   options.windowBeginTimeRelative = optRelativeBegin->GetValue();
-  options.windowScaleRelative = optRelativeEnd->GetValue();
+  options.windowScaleRelative     = optRelativeEnd->GetValue();
   options.windowComputeYMaxOnLoad = optComputeSemantic->GetValue();
-  options.histoAllTrace = radioAllTrace->GetValue();
-  options.histoComputeGradient = optComputeGradient->GetValue();
-  options.description = std::string( textDescription->GetValue().mb_str() );
+  options.histoAllTrace           = radioAllTrace->GetValue();
+  options.histoComputeGradient    = optComputeGradient->GetValue();
+  options.description             = std::string( textDescription->GetValue().mb_str() );
 
   // CFG4D
   options.enabledCFG4DMode = checkboxSaveCFGBasicMode->GetValue();
@@ -457,20 +475,19 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
 void SaveConfigurationDialog::OnSaveClick( wxCommandEvent& event )
 {
   TransferDataFromWindow();
-  if( selectedTimelines.begin() == selectedTimelines.end() && 
-      selectedHistograms.begin() == selectedHistograms.end() )
+  if( selectedTimelines.begin() == selectedTimelines.end() && selectedHistograms.begin() == selectedHistograms.end() )
   {
     wxMessageDialog message( this, _( "No timeline or histogram selected." ), _( "Warning" ), wxOK );
     message.ShowModal();
-    //EndModal( wxID_OK );//EndModal( wxID_CANCEL );
+    // EndModal( wxID_OK );//EndModal( wxID_CANCEL );
   }
   else
   {
     // CFG4D mode?
-    if ( options.enabledCFG4DMode )
+    if( options.enabledCFG4DMode )
     {
-      AdvancedSaveConfiguration tagEditorDialog( (wxWindow *)this, selectedTimelines, selectedHistograms );
-      if ( tagEditorDialog.ShowModal() == wxID_OK )
+      AdvancedSaveConfiguration tagEditorDialog( (wxWindow*)this, selectedTimelines, selectedHistograms );
+      if( tagEditorDialog.ShowModal() == wxID_OK )
       {
         linkedProperties = tagEditorDialog.getLinkedPropertiesManager();
         EndModal( wxID_OK );
@@ -516,7 +533,7 @@ void SaveConfigurationDialog::OnButtonUnsetAllTimelinesClick( wxCommandEvent& ev
 
 void SaveConfigurationDialog::OnButtonSetAllHistogramsClick( wxCommandEvent& event )
 {
-  for( unsigned  int i = 0; i <= listHistograms->GetCount(); ++i )
+  for( unsigned int i = 0; i <= listHistograms->GetCount(); ++i )
   {
     listHistograms->Check( i, true );
   }
@@ -544,7 +561,7 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
 {
   int index = choiceTraceSelector->GetSelection();
   string selectedTrace;
-  if ( index > 0 )
+  if( index > 0 )
     selectedTrace = traces[ index ];
 
   wxArrayString items;
@@ -552,14 +569,12 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
   // Timelines
   listTimelines->Clear();
   displayedTimelines.clear();
-  for( vector< Timeline * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  for( vector< Timeline* >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
-    string currentTrace = (*it)->getTrace()->getTraceNameNumbered();
-    if ( index == 0 || selectedTrace == currentTrace )
+    string currentTrace = ( *it )->getTrace()->getTraceNameNumbered();
+    if( index == 0 || selectedTrace == currentTrace )
     {
-      items.Add( wxString::FromUTF8( (*it)->getName().c_str() ) +
-                                      _( " @ " ) +
-                                      wxString::FromUTF8( currentTrace.c_str() ) );
+      items.Add( wxString::FromUTF8( ( *it )->getName().c_str() ) + _( " @ " ) + wxString::FromUTF8( currentTrace.c_str() ) );
       displayedTimelines.push_back( *it );
     }
   }
@@ -571,14 +586,12 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
   listHistograms->Clear();
   items.Clear();
   displayedHistograms.clear();
-  for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  for( vector< Histogram* >::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
-    string currentTrace = (*it)->getTrace()->getTraceNameNumbered();
-    if ( index == 0 || selectedTrace == currentTrace )
+    string currentTrace = ( *it )->getTrace()->getTraceNameNumbered();
+    if( index == 0 || selectedTrace == currentTrace )
     {
-      items.Add( wxString::FromUTF8( (*it)->getName().c_str() ) +
-                                      _( " @ " ) +
-                                      wxString::FromUTF8( currentTrace.c_str() ) );
+      items.Add( wxString::FromUTF8( ( *it )->getName().c_str() ) + _( " @ " ) + wxString::FromUTF8( currentTrace.c_str() ) );
       displayedHistograms.push_back( *it );
     }
   }
@@ -586,4 +599,3 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
   if( !items.IsEmpty() )
     listHistograms->InsertItems( items, 0 );
 }
-

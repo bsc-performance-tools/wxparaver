@@ -26,23 +26,28 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
 #include "derivedtimelinedialog.h"
-#include <wx/tokenzr.h>
 #include "timelinetreeselector.h"
 
+#include <wx/tokenzr.h>
+
+// clang-format off
 ////@begin XPM images
 #include "../icons/three_dots.xpm"
 ////@end XPM images
+// clang-format on
 
 using namespace std;
 
@@ -59,6 +64,7 @@ IMPLEMENT_DYNAMIC_CLASS( DerivedTimelineDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( DerivedTimelineDialog, wxDialog )
 
+// clang-format off
 ////@begin DerivedTimelineDialog event table entries
   EVT_CHOICE( ID_TOPCOMPOSE1, DerivedTimelineDialog::OnTopcompose1Selected )
   EVT_CHOICE( ID_TOPCOMPOSE2, DerivedTimelineDialog::OnTopcompose2Selected )
@@ -68,6 +74,7 @@ BEGIN_EVENT_TABLE( DerivedTimelineDialog, wxDialog )
   EVT_BUTTON( ID_SWAP_WINDOWS, DerivedTimelineDialog::OnSwapWindowsClick )
   EVT_BUTTON( wxID_OK, DerivedTimelineDialog::OnOkClick )
 ////@end DerivedTimelineDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -81,10 +88,15 @@ DerivedTimelineDialog::DerivedTimelineDialog()
   Init();
 }
 
-DerivedTimelineDialog::DerivedTimelineDialog(wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style)
+DerivedTimelineDialog::DerivedTimelineDialog( wxWindow* parent,
+                                              wxWindowID id,
+                                              const wxString& caption,
+                                              const wxPoint& pos,
+                                              const wxSize& size,
+                                              long style )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
   Fit();
 }
 
@@ -93,8 +105,9 @@ DerivedTimelineDialog::DerivedTimelineDialog(wxWindow* parent, wxWindowID id, co
  * derivedTimelineDialog creator
  */
 
-bool DerivedTimelineDialog::Create(wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style)
+bool DerivedTimelineDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin DerivedTimelineDialog creation
   SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -106,6 +119,7 @@ bool DerivedTimelineDialog::Create(wxWindow* parent, wxWindowID id, const wxStri
   }
   Centre();
 ////@end DerivedTimelineDialog creation
+  // clang-format on
 
   Fit();
 
@@ -119,8 +133,10 @@ bool DerivedTimelineDialog::Create(wxWindow* parent, wxWindowID id, const wxStri
 
 DerivedTimelineDialog::~DerivedTimelineDialog()
 {
+  // clang-format off
 ////@begin DerivedTimelineDialog destruction
 ////@end DerivedTimelineDialog destruction
+  // clang-format on
 }
 
 
@@ -130,6 +146,7 @@ DerivedTimelineDialog::~DerivedTimelineDialog()
 
 void DerivedTimelineDialog::Init()
 {
+  // clang-format off
 ////@begin DerivedTimelineDialog member initialisation
   currentWindow1 = nullptr;
   currentWindow2 = nullptr;
@@ -163,6 +180,7 @@ void DerivedTimelineDialog::Init()
   widgetFactorTimeline2 = NULL;
   swapWindowsButton = NULL;
 ////@end DerivedTimelineDialog member initialisation
+  // clang-format on
 }
 
 
@@ -171,7 +189,8 @@ void DerivedTimelineDialog::Init()
  */
 
 void DerivedTimelineDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin DerivedTimelineDialog content construction
   DerivedTimelineDialog* itemDialog1 = this;
 
@@ -398,6 +417,7 @@ void DerivedTimelineDialog::CreateControls()
   itemStdDialogButtonSizer50->Realize();
 
 ////@end DerivedTimelineDialog content construction
+  // clang-format on
 
   widgetLabelMinCompose1->Show( false );
   widgetMinCompose1->Show( false );
@@ -424,11 +444,11 @@ bool DerivedTimelineDialog::ShowToolTips()
 
 bool DerivedTimelineDialog::TransferDataToWindow()
 {
-  if ( currentWindow1 == nullptr )
+  if( currentWindow1 == nullptr )
     currentWindow1 = LoadedWindows::getInstance()->getWindow( timelines1[ 0 ] );
-  if ( currentWindow2 == nullptr )
+  if( currentWindow2 == nullptr )
   {
-    for( vector<TWindowID>::const_iterator it = timelines2.begin(); it != timelines2.end(); ++it )
+    for( vector< TWindowID >::const_iterator it = timelines2.begin(); it != timelines2.end(); ++it )
     {
       if( Timeline::compatibleLevels( currentWindow1, LoadedWindows::getInstance()->getWindow( *it ) ) )
       {
@@ -447,8 +467,8 @@ bool DerivedTimelineDialog::TransferDataToWindow()
   presetStringChoiceBox( topCompose2, widgetTopCompose2 );
 
   // Build lists of timelines and set the selected ones
-  //presetTimelineComboBox( timelines1, currentWindow1, widgetTimelines1, lastTimeline1 );
-  //presetTimelineComboBox( timelines2, currentWindow2, widgetTimelines2, lastTimeline2 );
+  // presetTimelineComboBox( timelines1, currentWindow1, widgetTimelines1, lastTimeline1 );
+  // presetTimelineComboBox( timelines2, currentWindow2, widgetTimelines2, lastTimeline2 );
   txtTimelines1->SetValue( wxString( currentWindow1->getName().c_str(), wxConvUTF8 ) );
   txtTimelines2->SetValue( wxString( currentWindow2->getName().c_str(), wxConvUTF8 ) );
 
@@ -465,18 +485,13 @@ bool DerivedTimelineDialog::TransferDataToWindow()
 }
 
 
-bool DerivedTimelineDialog::getParameterCompose( wxTextCtrl *field,
-                                                 TParamValue &parameter,
-                                                 wxString prefixMessage )
+bool DerivedTimelineDialog::getParameterCompose( wxTextCtrl* field, TParamValue& parameter, wxString prefixMessage )
 {
-  if ( field->IsShown() )
-    if ( !getParameterComposeField( field, parameter ) )
+  if( field->IsShown() )
+    if( !getParameterComposeField( field, parameter ) )
     {
-      wxString fullMessage = prefixMessage +
-                             _(" parameter void or type mismatch.\nPlease use decimal format." );
-      wxMessageDialog message( this, 
-                               fullMessage,
-                               _( "Error in Field" ), wxOK );
+      wxString fullMessage = prefixMessage + _( " parameter void or type mismatch.\nPlease use decimal format." );
+      wxMessageDialog message( this, fullMessage, _( "Error in Field" ), wxOK );
       message.ShowModal();
       return false;
     }
@@ -490,40 +505,40 @@ bool DerivedTimelineDialog::TransferDataFromWindow()
   TParamValue paramsMinCompose1, paramsMaxCompose1;
   TParamValue paramsMinCompose2, paramsMaxCompose2;
 
-  if ( !getParameterCompose( widgetMinCompose1, paramsMinCompose1, _( "Compose 1" )))
+  if( !getParameterCompose( widgetMinCompose1, paramsMinCompose1, _( "Compose 1" ) ) )
     return false;
 
-  if ( !getParameterCompose( widgetMaxCompose1, paramsMaxCompose1, _( "Compose 1" )))
+  if( !getParameterCompose( widgetMaxCompose1, paramsMaxCompose1, _( "Compose 1" ) ) )
     return false;
 
-  if ( !getParameterCompose( widgetMinCompose2, paramsMinCompose2, _( "Compose 2" )))
+  if( !getParameterCompose( widgetMinCompose2, paramsMinCompose2, _( "Compose 2" ) ) )
     return false;
 
-  if ( !getParameterCompose( widgetMaxCompose2, paramsMaxCompose2, _( "Compose 2" )))
+  if( !getParameterCompose( widgetMaxCompose2, paramsMaxCompose2, _( "Compose 2" ) ) )
     return false;
 
-  if ( !getFactorFields( factorTimeline1, factorTimeline2 ) )
+  if( !getFactorFields( factorTimeline1, factorTimeline2 ) )
     return false;
-  else 
+  else
   {
-      // If factors are ok, then retrieve all the other data
+    // If factors are ok, then retrieve all the other data
     getName( widgetName, timelineName );
 
     getSelectedString( widgetTopCompose1, topCompose1 );
     getSelectedString( widgetTopCompose2, topCompose2 );
     getSelectedString( widgetOperations, operations );
 
-    //getSelectedWindow( widgetTimelines1, timelines1 );
-    //getSelectedWindow( widgetTimelines2, timelines2 );
+    // getSelectedWindow( widgetTimelines1, timelines1 );
+    // getSelectedWindow( widgetTimelines2, timelines2 );
 
     // and then assign previous gathered parameters of composes
-    if ( widgetMinCompose1->IsShown() )
+    if( widgetMinCompose1->IsShown() )
       minCompose1 = paramsMinCompose1;
-    else if ( widgetMaxCompose1->IsShown() )
+    else if( widgetMaxCompose1->IsShown() )
       maxCompose1 = paramsMaxCompose1;
-    else if ( widgetMinCompose2->IsShown() )
+    else if( widgetMinCompose2->IsShown() )
       minCompose2 = paramsMinCompose2;
-    else if ( widgetMaxCompose2->IsShown() )
+    else if( widgetMaxCompose2->IsShown() )
       maxCompose2 = paramsMaxCompose2;
 
     shiftTimeline1 = spinShiftTimeline1->GetValue();
@@ -540,6 +555,7 @@ bool DerivedTimelineDialog::TransferDataFromWindow()
 
 wxBitmap DerivedTimelineDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin DerivedTimelineDialog bitmap retrieval
   wxUnusedVar(name);
@@ -550,6 +566,7 @@ wxBitmap DerivedTimelineDialog::GetBitmapResource( const wxString& name )
   }
   return wxNullBitmap;
 ////@end DerivedTimelineDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -558,11 +575,13 @@ wxBitmap DerivedTimelineDialog::GetBitmapResource( const wxString& name )
 
 wxIcon DerivedTimelineDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin DerivedTimelineDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end DerivedTimelineDialog icon retrieval
+  // clang-format on
 }
 
 
@@ -572,7 +591,7 @@ wxIcon DerivedTimelineDialog::GetIconResource( const wxString& name )
 
 void DerivedTimelineDialog::OnOkClick( wxCommandEvent& event )
 {
-  if ( TransferDataFromWindow() )
+  if( TransferDataFromWindow() )
     EndModal( wxID_OK );
 }
 
@@ -583,40 +602,40 @@ void DerivedTimelineDialog::OnOkClick( wxCommandEvent& event )
 
 void DerivedTimelineDialog::OnSwapWindowsClick( wxCommandEvent& event )
 {
-  if ( getFactorFields( factorTimeline2, factorTimeline1 ) ) // Change performed through parameter order 
+  if( getFactorFields( factorTimeline2, factorTimeline1 ) ) // Change performed through parameter order
   {
     // Swap factors
     presetFactorField( factorTimeline1, widgetFactorTimeline1 );
     presetFactorField( factorTimeline2, widgetFactorTimeline2 );
 
     // Swap window vectors
-    vector<TWindowID> auxIDs = timelines1;
-    timelines1 = timelines2;
-    timelines2 = auxIDs;
+    vector< TWindowID > auxIDs = timelines1;
+    timelines1                 = timelines2;
+    timelines2                 = auxIDs;
 
     txtTimelines2->SetValue( wxString( currentWindow1->getName().c_str(), wxConvUTF8 ) );
     txtTimelines1->SetValue( wxString( currentWindow2->getName().c_str(), wxConvUTF8 ) );
-    
-    Timeline *auxWin = currentWindow1;
-    currentWindow1 = currentWindow2;
-    currentWindow2 = auxWin;
+
+    Timeline* auxWin = currentWindow1;
+    currentWindow1   = currentWindow2;
+    currentWindow2   = auxWin;
   }
 }
 
 
 // Build first list of timelines and set the selected one
-void DerivedTimelineDialog::presetTimelineComboBox( vector< Timeline * > timelines,
-                                                    Timeline *currentWindow,
-                                                    wxComboBox *comboBox,
+void DerivedTimelineDialog::presetTimelineComboBox( vector< Timeline* > timelines,
+                                                    Timeline* currentWindow,
+                                                    wxComboBox* comboBox,
                                                     int& currentSelection )
 {
-  for( vector<Timeline *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
-    comboBox->Append( wxString::FromUTF8( (*it)->getName().c_str() ) );
+  for( vector< Timeline* >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+    comboBox->Append( wxString::FromUTF8( ( *it )->getName().c_str() ) );
 
   currentSelection = 0;
-  for( vector<Timeline *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  for( vector< Timeline* >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
-    if ( *it != currentWindow )
+    if( *it != currentWindow )
       ++currentSelection;
     else
       break;
@@ -626,15 +645,14 @@ void DerivedTimelineDialog::presetTimelineComboBox( vector< Timeline * > timelin
 }
 
 
-void DerivedTimelineDialog::presetStringChoiceBox( vector< string > list,
-                                                   wxChoice *choiceBox )
+void DerivedTimelineDialog::presetStringChoiceBox( vector< string > list, wxChoice* choiceBox )
 {
   wxString aux;
   choiceBox->Clear();
-  
+
   for( vector< string >::iterator it = list.begin(); it != list.end(); ++it )
   {
-    aux << wxString::FromUTF8( (*it).c_str() );
+    aux << wxString::FromUTF8( ( *it ).c_str() );
     choiceBox->Append( aux );
     aux.clear();
   }
@@ -642,7 +660,7 @@ void DerivedTimelineDialog::presetStringChoiceBox( vector< string > list,
   choiceBox->Select( 0 );
 }
 
-void DerivedTimelineDialog::presetFactorField( double value, wxTextCtrl *field )
+void DerivedTimelineDialog::presetFactorField( double value, wxTextCtrl* field )
 {
   wxString auxFactor;
 
@@ -650,7 +668,7 @@ void DerivedTimelineDialog::presetFactorField( double value, wxTextCtrl *field )
   field->SetValue( auxFactor );
 }
 
-void DerivedTimelineDialog::presetNameField( string whichName, wxTextCtrl *field )
+void DerivedTimelineDialog::presetNameField( string whichName, wxTextCtrl* field )
 {
   wxString auxName;
 
@@ -658,8 +676,7 @@ void DerivedTimelineDialog::presetNameField( string whichName, wxTextCtrl *field
   field->SetValue( auxName );
 }
 
-void DerivedTimelineDialog::getSelectedString( wxChoice *choiceBox,
-                                               vector< string > &selection ) const
+void DerivedTimelineDialog::getSelectedString( wxChoice* choiceBox, vector< string >& selection ) const
 {
   string tmp = selection[ choiceBox->GetCurrentSelection() ];
   selection.clear();
@@ -667,40 +684,33 @@ void DerivedTimelineDialog::getSelectedString( wxChoice *choiceBox,
 }
 
 
-void DerivedTimelineDialog::getSelectedWindow( wxComboBox *comboBox,
-                                               vector< Timeline * > &selection ) const
+void DerivedTimelineDialog::getSelectedWindow( wxComboBox* comboBox, vector< Timeline* >& selection ) const
 {
-  Timeline * tmp = selection[ comboBox->GetCurrentSelection() ];
+  Timeline* tmp = selection[ comboBox->GetCurrentSelection() ];
   selection.clear();
   selection.push_back( tmp );
 }
 
-void DerivedTimelineDialog::getName( wxTextCtrl *field,
-                                     string &whichName ) const
+void DerivedTimelineDialog::getName( wxTextCtrl* field, string& whichName ) const
 {
   whichName = string( field->GetValue().mb_str() );
 }
 
 
-bool DerivedTimelineDialog::getFactorFields( double &whichFactor1,
-                                             double &whichFactor2 )
+bool DerivedTimelineDialog::getFactorFields( double& whichFactor1, double& whichFactor2 )
 {
   double auxFactor1, auxFactor2;
-  
+
   // Checks both factors for mismatch
-  if ( !widgetFactorTimeline1->GetValue().ToDouble( &auxFactor1 ))
+  if( !widgetFactorTimeline1->GetValue().ToDouble( &auxFactor1 ) )
   {
-    wxMessageDialog message( this, 
-                             _( "Factor 1 void or type mismatch.\nPlease use decimal format." ),
-                             _( "Error in Field" ), wxOK );
+    wxMessageDialog message( this, _( "Factor 1 void or type mismatch.\nPlease use decimal format." ), _( "Error in Field" ), wxOK );
     message.ShowModal();
     return false;
   }
-  else if ( !widgetFactorTimeline2->GetValue().ToDouble( &auxFactor2 ))
+  else if( !widgetFactorTimeline2->GetValue().ToDouble( &auxFactor2 ) )
   {
-    wxMessageDialog message( this, 
-                             _( "Factor 2 void or type mismatch.\nPlease use decimal format." ),
-                             _( "Error in Field" ), wxOK );
+    wxMessageDialog message( this, _( "Factor 2 void or type mismatch.\nPlease use decimal format." ), _( "Error in Field" ), wxOK );
     message.ShowModal();
     return false;
   }
@@ -719,21 +729,21 @@ void DerivedTimelineDialog::setParametersCompose( PRV_UINT32 compose,
                                                   vector< string > namesParameters,
                                                   vector< TParamValue > defaultValues )
 {
-  if ( compose == 0 )
+  if( compose == 0 )
   {
-    if ( numParameters == 0 )
+    if( numParameters == 0 )
     {
       widgetLabelMinCompose1->Show( false );
       widgetMinCompose1->Show( false );
       widgetLabelMaxCompose1->Show( false );
       widgetMaxCompose1->Show( false );
-      
+
       widgetLabelMinCompose1->Enable( false );
       widgetMinCompose1->Enable( false );
       widgetLabelMaxCompose1->Enable( false );
       widgetMaxCompose1->Enable( false );
     }
-    else if ( numParameters == 1 )
+    else if( numParameters == 1 )
     {
       widgetLabelMinCompose1->Show( true );
       widgetMinCompose1->Show( true );
@@ -777,7 +787,7 @@ void DerivedTimelineDialog::setParametersCompose( PRV_UINT32 compose,
   }
   else
   {
-    if ( numParameters == 0 )
+    if( numParameters == 0 )
     {
       widgetLabelMinCompose2->Show( false );
       widgetMinCompose2->Show( false );
@@ -789,7 +799,7 @@ void DerivedTimelineDialog::setParametersCompose( PRV_UINT32 compose,
       widgetLabelMaxCompose2->Enable( false );
       widgetMaxCompose2->Enable( false );
     }
-    else if ( numParameters == 1 )
+    else if( numParameters == 1 )
     {
       widgetLabelMinCompose2->Show( true );
       widgetMinCompose2->Show( true );
@@ -837,24 +847,24 @@ void DerivedTimelineDialog::setParametersCompose( PRV_UINT32 compose,
 }
 
 
-void DerivedTimelineDialog::setParameterComposeField( TParamValue defaultValues, wxTextCtrl *field )
+void DerivedTimelineDialog::setParameterComposeField( TParamValue defaultValues, wxTextCtrl* field )
 {
   wxString aux;
 
   PRV_UINT32 maxValues = PRV_UINT32( defaultValues.size() );
 
   aux << defaultValues[ 0 ];
-  for ( PRV_UINT32 i = 1; i < maxValues; ++i  )
+  for( PRV_UINT32 i = 1; i < maxValues; ++i )
   {
     aux << _( "; " );
     aux << defaultValues[ i ];
   }
-  
+
   field->SetValue( aux );
 }
 
 
-bool DerivedTimelineDialog::getParameterComposeField( wxTextCtrl *field, TParamValue &values )
+bool DerivedTimelineDialog::getParameterComposeField( wxTextCtrl* field, TParamValue& values )
 {
   double tmpDouble;
 
@@ -862,10 +872,10 @@ bool DerivedTimelineDialog::getParameterComposeField( wxTextCtrl *field, TParamV
 
   wxStringTokenizer tkz( field->GetValue(), wxT( ";" ) );
 
-  while ( allTokensAreDouble && tkz.HasMoreTokens() )
+  while( allTokensAreDouble && tkz.HasMoreTokens() )
   {
     wxString token = tkz.GetNextToken();
-    if ( token.ToDouble( &tmpDouble ) )
+    if( token.ToDouble( &tmpDouble ) )
       values.push_back( tmpDouble );
     else
       allTokensAreDouble = false;
@@ -883,16 +893,13 @@ void DerivedTimelineDialog::OnTopcompose1Selected( wxCommandEvent& event )
 {
   PRV_UINT32 numParameters;
   vector< string > namesParameters;
-  vector< vector < double > > defaultParameters;
+  vector< vector< double > > defaultParameters;
 
   // Get the Compose 1 function selected
   string nameFunction = topCompose1[ widgetTopCompose1->GetCurrentSelection() ];
 
   // Show widgets for its parameters
-  if ( currentWindow1->getParametersOfFunction( nameFunction, 
-                                                 numParameters,
-                                                 namesParameters,
-                                                 defaultParameters ) )
+  if( currentWindow1->getParametersOfFunction( nameFunction, numParameters, namesParameters, defaultParameters ) )
     setParametersCompose( 0, nameFunction, numParameters, namesParameters, defaultParameters );
 }
 
@@ -905,16 +912,13 @@ void DerivedTimelineDialog::OnTopcompose2Selected( wxCommandEvent& event )
 {
   PRV_UINT32 numParameters;
   vector< string > namesParameters;
-  vector< vector < double > > defaultParameters;
+  vector< vector< double > > defaultParameters;
 
   // Get the Compose 2 function selected
   string nameFunction = topCompose2[ widgetTopCompose2->GetCurrentSelection() ];
 
   // Show widgets for its parameters
-  if ( currentWindow2->getParametersOfFunction( nameFunction, 
-                                                numParameters,
-                                                namesParameters,
-                                                defaultParameters ) )
+  if( currentWindow2->getParametersOfFunction( nameFunction, numParameters, namesParameters, defaultParameters ) )
     setParametersCompose( 1, nameFunction, numParameters, namesParameters, defaultParameters );
 }
 
@@ -929,11 +933,8 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
   string nameOperations = operations[ widgetOperations->GetCurrentSelection() ];
 
   // Changes label
-  if ( nameOperations == "controlled: clear by" ||
-       nameOperations == "controlled: maximum"  ||
-       nameOperations == "controlled: add" ||
-       nameOperations == "controlled: enumerate" ||
-       nameOperations == "controlled: average" )
+  if( nameOperations == "controlled: clear by" || nameOperations == "controlled: maximum" || nameOperations == "controlled: add" ||
+      nameOperations == "controlled: enumerate" || nameOperations == "controlled: average" )
   {
     widgetLabelTimelines1->SetLabel( _( "Data" ) );
     widgetLabelTimelines2->SetLabel( _( "Control" ) );
@@ -956,7 +957,7 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
 {
   Timeline *tmpTimeline1 = timelines1[ event.GetSelection() ];
   Timeline *tmpTimeline2 = timelines2[ widgetTimelines2->GetSelection() ];
-  
+
   if( Timeline::compatibleLevels( tmpTimeline1, tmpTimeline2 ) )
   {
     lastTimeline1 = event.GetSelection();
@@ -978,7 +979,7 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
 {
   Timeline *tmpTimeline1 = timelines1[ widgetTimelines1->GetSelection() ];
   Timeline *tmpTimeline2 = timelines2[ event.GetSelection() ];
-  
+
   if( Timeline::compatibleLevels( tmpTimeline1, tmpTimeline2 ) )
   {
     lastTimeline2 = event.GetSelection();
@@ -999,15 +1000,9 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
 
 void DerivedTimelineDialog::OnTimelinesButton1Click( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( this,
-                                         wxID_ANY,
-                                         wxT( "Timeline" ),
-                                         timelines1,
-                                         currentWindow1,
-                                         currentWindow1->getTrace(),
-                                         false );
+  TimelineTreeSelector timelineSelector( this, wxID_ANY, wxT( "Timeline" ), timelines1, currentWindow1, currentWindow1->getTrace(), false );
   timelineSelector.Move( wxGetMousePosition() );
-  
+
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
@@ -1025,15 +1020,9 @@ void DerivedTimelineDialog::OnTimelinesButton1Click( wxCommandEvent& event )
 
 void DerivedTimelineDialog::OnTimelinesButton2Click( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( this,
-                                         wxID_ANY,
-                                         wxT( "Timeline" ),
-                                         timelines2,
-                                         currentWindow2,
-                                         currentWindow2->getTrace(),
-                                         false );
+  TimelineTreeSelector timelineSelector( this, wxID_ANY, wxT( "Timeline" ), timelines2, currentWindow2, currentWindow2->getTrace(), false );
   timelineSelector.Move( wxGetMousePosition() );
-  
+
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
@@ -1043,4 +1032,3 @@ void DerivedTimelineDialog::OnTimelinesButton2Click( wxCommandEvent& event )
     txtTimelines2->SetValue( wxString( currentWindow2->getName().c_str(), wxConvUTF8 ) );
   }
 }
-

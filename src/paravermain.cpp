@@ -32,9 +32,11 @@
 #  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includesMPI
 #include "wx/imaglist.h"
 ////@end includes
+// clang-format on
 
 #include "cfg.h"
 #include "cfgs4d.h"
@@ -95,6 +97,7 @@
 #  include <CoreFoundation/CoreFoundation.h>
 #endif
 
+// clang-format off
 ////@begin XPM images
 #include "../icons/information.xpm"
 #include "../icons/new_window.xpm"
@@ -108,6 +111,7 @@
 #include "../icons/autoredraw_refresh.xpm"
 #include "../icons/three_dots.xpm"
 ////@end XPM images
+// clang-format on
 
 #include "derived_add.xpm"
 #include "derived_controlled_add.xpm"
@@ -149,6 +153,7 @@ IMPLEMENT_CLASS( paraverMain, wxFrame )
 
 BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
+// clang-format off
 ////@begin paraverMain event table entries
   EVT_CLOSE( paraverMain::OnCloseWindow )
   EVT_ICONIZE( paraverMain::OnIconize )
@@ -195,6 +200,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_UPDATE_UI( ID_BUTTON_FORCE_REDRAW, paraverMain::OnButtonForceRedrawUpdate )
   EVT_BUTTON( ID_BUTTON_ACTIVE_WORKSPACES, paraverMain::OnButtonActiveWorkspacesClick )
 ////@end paraverMain event table entries
+// clang-format on
 
 EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
 EVT_TREE_ITEM_ACTIVATED( wxID_ANY, paraverMain::OnTreeItemActivated )
@@ -229,29 +235,28 @@ bool paraverMain::disableUserMessages = false;
 bool paraverMain::validSessions       = true;
 bool paraverMain::stopOnIdle          = false;
 
-std::vector< std::pair< std::string, const char** > > paraverMain::icons =
-    {
-      { "histogram",             table_xpm },
-      { "timeline",              timeline_xpm },
+std::vector< std::pair< std::string, const char ** > > paraverMain::icons = {
+  { "histogram", table_xpm },
+  { "timeline", timeline_xpm },
 
-      // Section common to timelines and histograms.
-      // TODO: Get these derived labels from paraver-kernel - semanticderivedfunctions
-      { "add",                   derived_add_xpm },
-      { "product",               derived_product_xpm },
-      { "substract",             derived_substract_xpm },
-      { "divide",                derived_divide_xpm },
-      { "maximum",               derived_maximum_xpm },
-      { "minimum",               derived_minimum_xpm },
-      { "different",             derived_different_xpm },
+  // Section common to timelines and histograms.
+  // TODO: Get these derived labels from paraver-kernel - semanticderivedfunctions
+  { "add", derived_add_xpm },
+  { "product", derived_product_xpm },
+  { "substract", derived_substract_xpm },
+  { "divide", derived_divide_xpm },
+  { "maximum", derived_maximum_xpm },
+  { "minimum", derived_minimum_xpm },
+  { "different", derived_different_xpm },
 
-      // Section only for timelines.
-      // TODO: Get these derived labels from paraver-kernel - semanticderivedfunctions
-      { "controlled: clear by",  derived_controlled_clear_by_xpm },
-      { "controlled: maximum",   derived_controlled_maximum_xpm },
-      { "controlled: add",       derived_controlled_add_xpm },
-      { "controlled: enumerate", derived_controlled_enumerate_xpm },
-      { "controlled: average",   derived_controlled_average_xpm }
-    };
+  // Section only for timelines.
+  // TODO: Get these derived labels from paraver-kernel - semanticderivedfunctions
+  { "controlled: clear by", derived_controlled_clear_by_xpm },
+  { "controlled: maximum", derived_controlled_maximum_xpm },
+  { "controlled: add", derived_controlled_add_xpm },
+  { "controlled: enumerate", derived_controlled_enumerate_xpm },
+  { "controlled: average", derived_controlled_average_xpm }
+};
 
 std::map< std::string, size_t > paraverMain::iconPosByName = {}; // filled in getImageList
 
@@ -279,7 +284,7 @@ wxImageList *paraverMain::getImageList()
   wxImageList *images = new wxImageList( 16, 16 );
 
   auto pos = 0;
-  for( auto icon: paraverMain::icons )
+  for( auto icon : paraverMain::icons )
   {
     images->Add( wxIcon( icon.second ) );
     paraverMain::iconPosByName[ icon.first ] = pos++;
@@ -356,11 +361,13 @@ void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
 
 bool paraverMain::Create( wxWindow *parent, wxWindowID id, const wxString &caption, const wxPoint &pos, const wxSize &size, long style )
 {
+  // clang-format off
   ////@begin paraverMain creation
   wxFrame::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
   ////@end paraverMain creation
+  // clang-format on
 
   return true;
 }
@@ -371,9 +378,11 @@ bool paraverMain::Create( wxWindow *parent, wxWindowID id, const wxString &capti
 
 paraverMain::~paraverMain()
 {
+  // clang-format off
   ////@begin paraverMain destruction
   GetAuiManager().UnInit();
   ////@end paraverMain destruction
+  // clang-format on
 
   // DISCONNECTS
   wxMenuItem *tmpItem2       = menuFile->FindItem( ID_RECENTTRACES );
@@ -429,6 +438,7 @@ paraverMain::~paraverMain()
 
 void paraverMain::Init()
 {
+  // clang-format off
   ////@begin paraverMain member initialisation
   CFGLoadedBefore = false;
   XMLLoadedBefore = false;
@@ -471,6 +481,7 @@ void paraverMain::Init()
   txtActiveWorkspaces = NULL;
   btnActiveWorkspaces = NULL;
   ////@end paraverMain member initialisation
+  // clang-format on
 
   cutFilterFinished = false;
 
@@ -517,6 +528,7 @@ void paraverMain::Init()
 
 void paraverMain::CreateControls()
 {
+  // clang-format off
   ////@begin paraverMain content construction
   paraverMain* itemFrame1 = this;
 
@@ -652,6 +664,8 @@ void paraverMain::CreateControls()
   GetAuiManager().Update();
 
   ////@end paraverMain content construction
+  // clang-format on
+
   tbarMain->RemoveTool( ID_TOOL_TRACE_INFORMATION );
 
   wxTreeCtrl *tmpTree = createTree( imageList );
@@ -1288,6 +1302,7 @@ bool paraverMain::ShowToolTips()
 
 wxBitmap paraverMain::GetBitmapResource( const wxString &name )
 {
+  // clang-format off
   // Bitmap retrieval
   ////@begin paraverMain bitmap retrieval
   wxUnusedVar(name);
@@ -1338,6 +1353,7 @@ wxBitmap paraverMain::GetBitmapResource( const wxString &name )
   }
   return wxNullBitmap;
   ////@end paraverMain bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -1346,6 +1362,7 @@ wxBitmap paraverMain::GetBitmapResource( const wxString &name )
 
 wxIcon paraverMain::GetIconResource( const wxString &name )
 {
+  // clang-format off
   // Icon retrieval
   ////@begin paraverMain icon retrieval
   wxUnusedVar(name);
@@ -1361,6 +1378,7 @@ wxIcon paraverMain::GetIconResource( const wxString &name )
   }
   return wxNullIcon;
   ////@end paraverMain icon retrieval
+  // clang-format on
 }
 
 
@@ -2261,7 +2279,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     event.Skip();
     return;
   }
-   if( !event.GetItem().IsOk() )
+  if( !event.GetItem().IsOk() )
   {
     event.Skip();
     return;
@@ -2272,9 +2290,10 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
   if( tmpTree == nullptr )
   {
     return;
-  } 
+  }
   TreeBrowserItemData *itemSelected = dynamic_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
-  if (itemSelected == nullptr) {
+  if( itemSelected == nullptr )
+  {
     return;
   }
   selectionChanging = true;
@@ -2286,9 +2305,8 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     if( selectedItems.GetCount() != 1 )
     {
       tmpTree->UnselectAll();
-      tmpTree->SelectItem( event.GetItem() );  
+      tmpTree->SelectItem( event.GetItem() );
     }
-  
   }
 
   
@@ -2301,15 +2319,15 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     currentHisto    = nullptr;
       beginDragHistogram = nullptr;
 
-      //if( timeline->IsShown() )
-        //timeline->Raise();
+    // if( timeline->IsShown() )
+    // timeline->Raise();
 
-      currentTimeline = timeline->GetMyWindow();
-    }
-    else if( gHistogram *histo = itemSelected->getHistogram() ) // Is a histogram?
-    {
-      currentHisto  = histo->GetHistogram();
-      currentWindow   = (wxWindow *)histo;
+    currentTimeline = timeline->GetMyWindow();
+  }
+  else if( gHistogram *histo = itemSelected->getHistogram() ) // Is a histogram?
+  {
+    currentHisto  = histo->GetHistogram();
+    currentWindow = (wxWindow *)histo;
 
       beginDragWindow = nullptr;
       beginDragHistogram = histo->GetHistogram();
@@ -2327,7 +2345,6 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     refreshMenuHints();
     setActiveWorkspacesText();
   }
-
 }
 
 /*!
@@ -4143,10 +4160,12 @@ void paraverMain::OnPreferencesClick( wxCommandEvent &event )
 
 void paraverMain::OnPreferencesUpdate( wxUpdateUIEvent &event )
 {
+  // clang-format off
   ////@begin wxEVT_UPDATE_UI event handler for ID_PREFERENCES in paraverMain.
   // Before editing this code, remove the block markers.
   event.Skip();
   ////@end wxEVT_UPDATE_UI event handler for ID_PREFERENCES in paraverMain.
+  // clang-format on
 }
 
 void paraverMain::selectTrace( Trace *trace )
@@ -4300,14 +4319,14 @@ void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent &event )
   {
     bool dummyFound;
     gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), currentTimeline, dummyFound );
-    if(tmpTimeline != nullptr)
+    if( tmpTimeline != nullptr )
       tmpEnableButtonDestroy = tmpTimeline->getEnableDestroyButton();
   }
   else if( currentHisto != nullptr )
   {
     gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), currentHisto );
-      if(tmpHistogram != nullptr)
-      tmpEnableButtonDestroy   = tmpHistogram->getEnableDestroyButton();
+    if( tmpHistogram != nullptr )
+      tmpEnableButtonDestroy = tmpHistogram->getEnableDestroyButton();
   }
   else // Both null
   {

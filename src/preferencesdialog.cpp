@@ -25,31 +25,33 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 #include "wx/bookctrl.h"
 ////@end includes
+// clang-format on
 
-#include "preferencesdialog.h"
-#include "paravermain.h"
-#include "semanticcolor.h"
 #include "labelconstructor.h"
+#include "paravermain.h"
+#include "preferencesdialog.h"
+#include "semanticcolor.h"
 
 // Validators
 #include <wx/arrstr.h>
 #include <wx/validate.h>
 
 // Tokenizer
+#include <wx/filename.h>
 #include <wx/tokenzr.h>
 
-#include <wx/filename.h>
-
+// clang-format off
 ////@begin XPM images
 #include "../icons/derived_add.xpm"
 #include "../icons/delete.xpm"
@@ -58,6 +60,7 @@
 #include "../icons/report_add.xpm"
 #include "../icons/report_disk.xpm"
 ////@end XPM images
+// clang-format on
 
 using namespace std;
 
@@ -74,6 +77,7 @@ IMPLEMENT_DYNAMIC_CLASS( PreferencesDialog, wxPropertySheetDialog )
 
 BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
 
+// clang-format off
 ////@begin PreferencesDialog event table entries
   EVT_SPINCTRL( ID_PREFERENCES_GLOBAL_TIME_SESSION, PreferencesDialog::OnPreferencesGlobalTimeSessionUpdated )
   EVT_COLOURPICKER_CHANGED( ID_COLOURPICKER_BACKGROUND, PreferencesDialog::OnColourpickerBackgroundColourPickerChanged )
@@ -133,6 +137,7 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_BUTTON( ID_BUTTON_PDF_DOWN, PreferencesDialog::OnButtonPdfDownClick )
   EVT_UPDATE_UI( ID_BUTTON_PDF_DOWN, PreferencesDialog::OnButtonPdfDownUpdate )
 ////@end PreferencesDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -149,7 +154,7 @@ PreferencesDialog::PreferencesDialog()
 PreferencesDialog::PreferencesDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
 }
 
 
@@ -159,6 +164,7 @@ PreferencesDialog::PreferencesDialog( wxWindow* parent, wxWindowID id, const wxS
 
 bool PreferencesDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin PreferencesDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
   SetSheetStyle(wxPROPSHEET_DEFAULT);
@@ -169,6 +175,7 @@ bool PreferencesDialog::Create( wxWindow* parent, wxWindowID id, const wxString&
   LayoutDialog();
   Centre();
 ////@end PreferencesDialog creation
+  // clang-format on
   return true;
 }
 
@@ -188,6 +195,7 @@ PreferencesDialog::~PreferencesDialog()
 
 void PreferencesDialog::Init()
 {
+  // clang-format off
 ////@begin PreferencesDialog member initialisation
   cfgsPath = "";
   colorUseZero = false;
@@ -362,6 +370,7 @@ void PreferencesDialog::Init()
   buttonDownPDFReader = NULL;
   panelFilters = NULL;
 ////@end PreferencesDialog member initialisation
+  // clang-format on
 }
 
 
@@ -370,7 +379,8 @@ void PreferencesDialog::Init()
  */
 
 void PreferencesDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin PreferencesDialog content construction
   PreferencesDialog* itemPropertySheetDialog1 = this;
 
@@ -1411,37 +1421,36 @@ void PreferencesDialog::CreateControls()
   // Connect events and objects
   txtWorkspaceName->Connect(ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), NULL, this);
 ////@end PreferencesDialog content construction
-    
+  // clang-format on
+
   itemPropertySheetDialog1 = nullptr;
-  
+
   dirBrowserButtonTrace->SetTextBox( textCtrlTrace );
   dirBrowserButtonTrace->SetDialogMessage( wxT( "Select Traces Default Directory" ) );
   dirBrowserButtonTrace->Enable();
-  
+
   dirBrowserButtonCFG->SetTextBox( textCtrlCFG );
   dirBrowserButtonCFG->SetDialogMessage( wxT( "Select Paraver CFGs Default Directory" ) );
   dirBrowserButtonCFG->Enable();
-  
+
   dirBrowserButtonXML->SetTextBox( textCtrlXML );
   dirBrowserButtonXML->SetDialogMessage( wxT( "Select Cut/Filter XMLs Default Directory" ) );
   dirBrowserButtonXML->Enable();
-  
+
   dirBrowserButtonTutorials->SetTextBox( textCtrlTutorials );
   dirBrowserButtonTutorials->SetDialogMessage( wxT( "Select Tutorials Root Directory" ) );
   dirBrowserButtonTutorials->Enable();
-  
+
   dirBrowserButtonTmp->SetTextBox( textCtrlTmp );
   dirBrowserButtonTmp->SetDialogMessage( wxT( "Select TMP Default Directory" ) );
   dirBrowserButtonTmp->Enable();
-  
+
   fileBrowserHintPath->SetTextBox( txtHintPath );
   fileBrowserHintPath->SetFileDialogWildcard( _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ) );
   fileBrowserHintPath->SetDialogMessage( _( "Select Configuration File" ) );
-  
+
   // WORKSPACE PANEL
-  wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
-                              _("5"), _("6"), _("7"), _("8"), _("9"),
-                              _(";") };
+  wxString allowedChars[] = { _( "0" ), _( "1" ), _( "2" ), _( "3" ), _( "4" ), _( "5" ), _( "6" ), _( "7" ), _( "8" ), _( "9" ), _( ";" ) };
   wxTextValidator myValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
   wxArrayString charIncludes( (size_t)11, allowedChars );
   myValidator.SetIncludes( charIncludes );
@@ -1452,11 +1461,11 @@ void PreferencesDialog::CreateControls()
   wxTextValidator validator( wxFILTER_EXCLUDE_CHAR_LIST );
   validator.SetExcludes( forbidden );
   txtWorkspaceName->SetValidator( validator );
-  
-  panelID[ ID_PREFERENCES_GLOBAL ] = 0;
-  panelID[ ID_PREFERENCES_TIMELINE ] = 1;
-  panelID[ ID_PREFERENCES_HISTOGRAM ] = 2;
-  panelID[ ID_PREFERENCES_COLOR ] = 3;
+
+  panelID[ ID_PREFERENCES_GLOBAL ]     = 0;
+  panelID[ ID_PREFERENCES_TIMELINE ]   = 1;
+  panelID[ ID_PREFERENCES_HISTOGRAM ]  = 2;
+  panelID[ ID_PREFERENCES_COLOR ]      = 3;
   panelID[ ID_PREFERENCES_WORKSPACES ] = 4;
 }
 
@@ -1464,8 +1473,8 @@ void PreferencesDialog::CreateControls()
 bool PreferencesDialog::SetPanel( wxWindowID whichPanelID )
 {
   bool found = false;
-  
-  if ( panelID.find( whichPanelID ) != panelID.end() )
+
+  if( panelID.find( whichPanelID ) != panelID.end() )
   {
     GetBookCtrl()->SetSelection( panelID[ whichPanelID ] );
     found = true;
@@ -1490,6 +1499,7 @@ bool PreferencesDialog::ShowToolTips()
 
 wxBitmap PreferencesDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin PreferencesDialog bitmap retrieval
   wxUnusedVar(name);
@@ -1525,6 +1535,7 @@ wxBitmap PreferencesDialog::GetBitmapResource( const wxString& name )
   }
   return wxNullBitmap;
 ////@end PreferencesDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -1533,11 +1544,13 @@ wxBitmap PreferencesDialog::GetBitmapResource( const wxString& name )
 
 wxIcon PreferencesDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin PreferencesDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end PreferencesDialog icon retrieval
+  // clang-format on
 }
 
 
@@ -1546,10 +1559,10 @@ wxString PreferencesDialog::formatNumber( long value )
   stringstream auxSStr;
   wxString auxNumber;
 
-  locale mylocale("");
+  locale mylocale( "" );
   auxSStr.imbue( mylocale );
-//  auxSStr.precision( ParaverConfig::getInstance()->getPrecision() );
-//  auxSStr << fixed;
+  //  auxSStr.precision( ParaverConfig::getInstance()->getPrecision() );
+  //  auxSStr << fixed;
   auxSStr << value;
   auxNumber << wxString::FromUTF8( auxSStr.str().c_str() );
 
@@ -1557,16 +1570,14 @@ wxString PreferencesDialog::formatNumber( long value )
 }
 
 
-void PreferencesDialog::setLabelsChoiceBox( const vector< string > &list,
-                                             const PRV_UINT32 &selected,
-                                             wxChoice *choiceBox )
+void PreferencesDialog::setLabelsChoiceBox( const vector< string >& list, const PRV_UINT32& selected, wxChoice* choiceBox )
 {
   choiceBox->Clear(); // enters twice
 
   for( vector< string >::const_iterator it = list.begin(); it != list.end(); ++it )
   {
     // add every string of the list to the choice box
-    choiceBox->Append( wxString::FromUTF8( (*it).c_str() ) );
+    choiceBox->Append( wxString::FromUTF8( ( *it ).c_str() ) );
   }
 
   choiceBox->Select( selected );
@@ -1625,14 +1636,14 @@ bool PreferencesDialog::TransferDataToWindow()
   options.clear();
   LabelConstructor::getGUIGroupLabels( TGroupID::OBJECT_AXIS, options );
   setLabelsChoiceBox( options, timelineObjectAxis, choiceTimelineObjectAxis );
-  
+
   checkTimelineWWSemantic->SetValue( timelineWWSemantic );
   checkTimelineWWEvents->SetValue( timelineWWEvents );
   checkTimelineWWCommunications->SetValue( timelineWWCommunications );
   checkTimelineWWPreviousNext->SetValue( timelineWWPreviousNext );
   checkTimelineWWText->SetValue( timelineWWText );
-  txtTimelineWWPrecision->SetValue( ( int )timelineWWPrecision );
-  txtTimelineWWEventPixels->SetValue( ( int ) timelineWWEventPixels );
+  txtTimelineWWPrecision->SetValue( (int)timelineWWPrecision );
+  txtTimelineWWEventPixels->SetValue( (int)timelineWWEventPixels );
 
   options.clear();
   LabelConstructor::getGUIGroupLabels( TGroupID::IMAGE_FORMAT, options );
@@ -1666,13 +1677,13 @@ bool PreferencesDialog::TransferDataToWindow()
   checkHistogramScientificNotation->SetValue( histogramScientificNotation );
   checkHistogramThousandsSeparator->SetValue( histogramThousandSeparator );
   checkHistogramShowUnits->SetValue( histogramShowUnits );
-  txtHistogramPrecision->SetValue( ( int )histogramPrecision );
+  txtHistogramPrecision->SetValue( (int)histogramPrecision );
 
   checkHistogramAutofitControlScale->SetValue( histogramAutofitControlScale );
   checkHistogramAutofitControlScaleZero->SetValue( histogramAutofitControlScaleZero );
   checkHistogramAutofit3DScale->SetValue( histogramAutofit3DScale );
   checkHistogramAutofitDataGradient->SetValue( histogramAutofitDataGradient );
-  txtHistogramNumColumns->SetValue( ( int )histogramNumColumns );
+  txtHistogramNumColumns->SetValue( (int)histogramNumColumns );
 
   options.clear();
   LabelConstructor::getGUIGroupLabels( TGroupID::IMAGE_FORMAT, options );
@@ -1705,20 +1716,22 @@ bool PreferencesDialog::TransferDataToWindow()
   // FILTERS
 
   // EXTERNAL APPS
-  if ( !textEditorOptions.IsEmpty() )
+  if( !textEditorOptions.IsEmpty() )
     listTextEditors->InsertItems( textEditorOptions, 0 );
-  if ( !pdfReaderOptions.IsEmpty() )
+  if( !pdfReaderOptions.IsEmpty() )
     listPDFReaders->InsertItems( pdfReaderOptions, 0 );
 
   // WORKSPACES
-  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->getWorkspaces( TWorkspaceSet::USER_DEFINED );
-  for( std::vector<std::string>::iterator it = tmpWorkspaceList.begin(); it != tmpWorkspaceList.end(); ++it )
+  std::vector< std::string > tmpWorkspaceList =
+    WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->getWorkspaces( TWorkspaceSet::USER_DEFINED );
+  for( std::vector< std::string >::iterator it = tmpWorkspaceList.begin(); it != tmpWorkspaceList.end(); ++it )
   {
     listWorkspaces->Append( wxString::FromUTF8( it->c_str() ) );
-    workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromUTF8( it->c_str() ),
-                                                              WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ) ) );
+    workspaceContainer.insert( std::pair< wxString, Workspace >(
+      wxString::FromUTF8( it->c_str() ),
+      WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ) ) );
   }
-  
+
   fileBrowserHintPath->SetPath( wxString::FromUTF8( cfgsPath.c_str() ) );
 
   checkDiscardedSubmenu->SetValue( workspaceDiscardedSubmenu );
@@ -1732,79 +1745,79 @@ bool PreferencesDialog::TransferDataFromWindow()
   vector< string > options;
 
   // GLOBAL
-  globalFillStateGaps = checkGlobalFillStateGaps->IsChecked();
-  globalFullTracePath = checkGlobalFullTracePath->IsChecked();
-  tracesPath = std::string( dirBrowserButtonTrace->GetPath().mb_str() );
-  cfgsPath = std::string( dirBrowserButtonCFG->GetPath().mb_str() );
-  filtersXMLPath = std::string( dirBrowserButtonXML->GetPath().mb_str() );
-  tutorialsPath = std::string( dirBrowserButtonTutorials->GetPath().mb_str() );
-  tmpPath = std::string( dirBrowserButtonTmp->GetPath().mb_str() );
-  maximumTraceSize = (float)txtMaximumTraceSize->GetValue();
-  singleInstance = checkGlobalSingleInstance->GetValue();
-  sessionSaveTime = spinSessionTime->GetValue();
-  askForPrevSessionLoad = checkGlobalAskForPrevSessionLoad->GetValue();
-  helpContentsUsesBrowser = checkGlobalHelpOnBrowser->GetValue();
+  globalFillStateGaps           = checkGlobalFillStateGaps->IsChecked();
+  globalFullTracePath           = checkGlobalFullTracePath->IsChecked();
+  tracesPath                    = std::string( dirBrowserButtonTrace->GetPath().mb_str() );
+  cfgsPath                      = std::string( dirBrowserButtonCFG->GetPath().mb_str() );
+  filtersXMLPath                = std::string( dirBrowserButtonXML->GetPath().mb_str() );
+  tutorialsPath                 = std::string( dirBrowserButtonTutorials->GetPath().mb_str() );
+  tmpPath                       = std::string( dirBrowserButtonTmp->GetPath().mb_str() );
+  maximumTraceSize              = (float)txtMaximumTraceSize->GetValue();
+  singleInstance                = checkGlobalSingleInstance->GetValue();
+  sessionSaveTime               = spinSessionTime->GetValue();
+  askForPrevSessionLoad         = checkGlobalAskForPrevSessionLoad->GetValue();
+  helpContentsUsesBrowser       = checkGlobalHelpOnBrowser->GetValue();
   disableTimelineZoomMouseWheel = checkDisableTimelineZoomMouseWheel->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );
-  timelineNameFormatFull = std::string( txtTimelineNameFormatFull->GetValue().mb_str() );
+  timelineNameFormatFull   = std::string( txtTimelineNameFormatFull->GetValue().mb_str() );
   // Parse format looking for modifiers %N -> number, %P -> prefix, %T -> trace
 
-  timelineEventLines = checkTimelineEventLines->IsChecked();
-  timelineCommunicationLines = checkTimelineCommunicationLines->IsChecked();
+  timelineEventLines             = checkTimelineEventLines->IsChecked();
+  timelineCommunicationLines     = checkTimelineCommunicationLines->IsChecked();
   timelineSemanticScaleMinAtZero = checkSemanticScaleMinAtZero->IsChecked();
 
-  timelineColor = ( PRV_UINT32 )choiceTimelineColor->GetCurrentSelection();
-  timelineGradientFunction = ( PRV_UINT32 )choiceTimelineGradientFunction->GetCurrentSelection();
-  timelineDrawmodeTime = ( PRV_UINT32 )choiceTimelineDrawmodeTime->GetCurrentSelection();
-  timelineDrawmodeObjects = ( PRV_UINT32 )choiceTimelineDrawmodeObjects->GetCurrentSelection();
-  timelinePixelSize = ( PRV_UINT32 )choiceTimelinePixelSize->GetCurrentSelection();
-  timelineObjectLabels = ( PRV_UINT32 )choiceTimelineLabels->GetCurrentSelection();
-  timelineObjectAxis = ( PRV_UINT32 )choiceTimelineObjectAxis->GetCurrentSelection();
+  timelineColor            = (PRV_UINT32)choiceTimelineColor->GetCurrentSelection();
+  timelineGradientFunction = (PRV_UINT32)choiceTimelineGradientFunction->GetCurrentSelection();
+  timelineDrawmodeTime     = (PRV_UINT32)choiceTimelineDrawmodeTime->GetCurrentSelection();
+  timelineDrawmodeObjects  = (PRV_UINT32)choiceTimelineDrawmodeObjects->GetCurrentSelection();
+  timelinePixelSize        = (PRV_UINT32)choiceTimelinePixelSize->GetCurrentSelection();
+  timelineObjectLabels     = (PRV_UINT32)choiceTimelineLabels->GetCurrentSelection();
+  timelineObjectAxis       = (PRV_UINT32)choiceTimelineObjectAxis->GetCurrentSelection();
 
-  timelineWWSemantic = checkTimelineWWSemantic->IsChecked();
-  timelineWWEvents = checkTimelineWWEvents->IsChecked();
+  timelineWWSemantic       = checkTimelineWWSemantic->IsChecked();
+  timelineWWEvents         = checkTimelineWWEvents->IsChecked();
   timelineWWCommunications = checkTimelineWWCommunications->IsChecked();
-  timelineWWPreviousNext = checkTimelineWWPreviousNext->IsChecked();
-  timelineWWText = checkTimelineWWText->IsChecked();
-  timelineWWPrecision = ( PRV_UINT32 )txtTimelineWWPrecision->GetValue();
-  timelineWWEventPixels = ( PRV_INT16 )txtTimelineWWEventPixels->GetValue();
+  timelineWWPreviousNext   = checkTimelineWWPreviousNext->IsChecked();
+  timelineWWText           = checkTimelineWWText->IsChecked();
+  timelineWWPrecision      = (PRV_UINT32)txtTimelineWWPrecision->GetValue();
+  timelineWWEventPixels    = (PRV_INT16)txtTimelineWWEventPixels->GetValue();
 
-  timelineSaveImageFormat = ( PRV_UINT32 )choiceTimelineSaveImageFormat->GetCurrentSelection();
-  timelineSaveTextFormat = ( PRV_UINT32 )choiceTimelineSaveTextFormat->GetCurrentSelection();
+  timelineSaveImageFormat = (PRV_UINT32)choiceTimelineSaveImageFormat->GetCurrentSelection();
+  timelineSaveTextFormat  = (PRV_UINT32)choiceTimelineSaveTextFormat->GetCurrentSelection();
 
   timelineKeepSyncGroupClone = checkTimelineKeepSyncGroupClone->IsChecked();
 
   // HISTOGRAM
   histogramNameFormatPrefix = std::string( txtHistogramNameFormatPrefix->GetValue().mb_str() );
-  histogramNameFormatFull = std::string( txtHistogramNameFormatFull->GetValue().mb_str() );
+  histogramNameFormatFull   = std::string( txtHistogramNameFormatFull->GetValue().mb_str() );
 
-  histogramZoom = checkHistogramZoom->GetValue();
-  histogramHorizontal = checkHistogramHorizontal->GetValue();
-  histogramHideEmpty = checkHistogramHideEmpty->GetValue();
+  histogramZoom         = checkHistogramZoom->GetValue();
+  histogramHorizontal   = checkHistogramHorizontal->GetValue();
+  histogramHideEmpty    = checkHistogramHideEmpty->GetValue();
   histogramShowGradient = checkHistogramShowGradient->GetValue();
-  histogramLabelsColor = checkHistogramLabelsColor->GetValue();
+  histogramLabelsColor  = checkHistogramLabelsColor->GetValue();
 
-  histogramGradientFunction = ( PRV_UINT32 )choiceHistogramGradientFunction->GetCurrentSelection();
-  histogramDrawmodeSemantic = ( PRV_UINT32 )choiceHistogramDrawmodeSemantic->GetCurrentSelection();
-  histogramDrawmodeObjects = ( PRV_UINT32 )choiceHistogramDrawmodeObjects->GetCurrentSelection();
+  histogramGradientFunction = (PRV_UINT32)choiceHistogramGradientFunction->GetCurrentSelection();
+  histogramDrawmodeSemantic = (PRV_UINT32)choiceHistogramDrawmodeSemantic->GetCurrentSelection();
+  histogramDrawmodeObjects  = (PRV_UINT32)choiceHistogramDrawmodeObjects->GetCurrentSelection();
 
   histogramScientificNotation = checkHistogramScientificNotation->GetValue();
-  histogramThousandSeparator = checkHistogramThousandsSeparator->GetValue();
-  histogramShowUnits = checkHistogramShowUnits->IsChecked();
-  histogramPrecision = ( PRV_UINT32 )txtHistogramPrecision->GetValue();
+  histogramThousandSeparator  = checkHistogramThousandsSeparator->GetValue();
+  histogramShowUnits          = checkHistogramShowUnits->IsChecked();
+  histogramPrecision          = (PRV_UINT32)txtHistogramPrecision->GetValue();
 
-  histogramAutofitControlScale = checkHistogramAutofitControlScale->GetValue();
+  histogramAutofitControlScale     = checkHistogramAutofitControlScale->GetValue();
   histogramAutofitControlScaleZero = checkHistogramAutofitControlScaleZero->GetValue();
-  histogramAutofit3DScale = checkHistogramAutofit3DScale->GetValue();
-  histogramAutofitDataGradient = checkHistogramAutofitDataGradient->GetValue();
-  histogramNumColumns = ( THistogramColumn )txtHistogramNumColumns->GetValue();
+  histogramAutofit3DScale          = checkHistogramAutofit3DScale->GetValue();
+  histogramAutofitDataGradient     = checkHistogramAutofitDataGradient->GetValue();
+  histogramNumColumns              = (THistogramColumn)txtHistogramNumColumns->GetValue();
 
-  histogramSaveImageFormat = ( PRV_UINT32 )choiceHistogramSaveImageFormat->GetCurrentSelection();
-  histogramSaveTextFormat = ( PRV_UINT32 )choiceHistogramSaveTextFormat->GetCurrentSelection();
+  histogramSaveImageFormat = (PRV_UINT32)choiceHistogramSaveImageFormat->GetCurrentSelection();
+  histogramSaveTextFormat  = (PRV_UINT32)choiceHistogramSaveTextFormat->GetCurrentSelection();
 
-  histogramSkipCreateDialog = checkHistogramSkipCreateDialog->GetValue();
+  histogramSkipCreateDialog   = checkHistogramSkipCreateDialog->GetValue();
   histogramKeepSyncGroupClone = checkHistogramKeepSyncGroupClone->IsChecked();
 
   // COLORS
@@ -1825,19 +1838,20 @@ bool PreferencesDialog::TransferDataFromWindow()
 
   // EXTERNAL APPS
   textEditorOptions = listTextEditors->GetStrings();
-  pdfReaderOptions = listPDFReaders->GetStrings();
+  pdfReaderOptions  = listPDFReaders->GetStrings();
 
   // WORKSPACES
   if( wxWindow::FindFocus() == txtWorkspaceName )
   {
-    Disconnect( ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), nullptr, this );
+    Disconnect( ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler( PreferencesDialog::OnTextWorkspaceNameKillFocus ), nullptr, this );
     wxFocusEvent dummyEvent;
     OnTextWorkspaceNameKillFocus( dummyEvent );
   }
 
   WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->clear();
   for( size_t i = 0; i < listWorkspaces->GetCount(); ++i )
-    WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->addWorkspace( workspaceContainer[ listWorkspaces->GetString( i ) ] );
+    WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )
+      ->addWorkspace( workspaceContainer[ listWorkspaces->GetString( i ) ] );
 
   workspaceDiscardedSubmenu = checkDiscardedSubmenu->GetValue();
 
@@ -1859,7 +1873,6 @@ wxColour PreferencesDialog::RGBTowxColour( rgb colour )
 {
   return wxColour( colour.red, colour.green, colour.blue );
 }
-
 
 
 /*!
@@ -1938,8 +1951,7 @@ void PreferencesDialog::OnButtonWorkspacesDeleteUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesUpUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
-                listWorkspaces->GetSelection() > 0 );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND && listWorkspaces->GetSelection() > 0 );
 }
 
 
@@ -1949,8 +1961,7 @@ void PreferencesDialog::OnButtonWorkspacesUpUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesDownUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
-                listWorkspaces->GetSelection() < int(listWorkspaces->GetCount()) - 1 );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND && listWorkspaces->GetSelection() < int( listWorkspaces->GetCount() ) - 1 );
 }
 
 
@@ -1990,8 +2001,7 @@ void PreferencesDialog::OnButtonHintAddUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonHintDeleteUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
-                listHintsWorkspace->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND && listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
 
@@ -2001,8 +2011,7 @@ void PreferencesDialog::OnButtonHintDeleteUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnBitmapHintUpUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
-                listHintsWorkspace->GetSelection() != wxNOT_FOUND &&
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND && listHintsWorkspace->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() > 0 );
 }
 
@@ -2013,8 +2022,7 @@ void PreferencesDialog::OnBitmapHintUpUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonHintDownUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
-                listHintsWorkspace->GetSelection() != wxNOT_FOUND &&
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND && listHintsWorkspace->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() < int( listHintsWorkspace->GetCount() ) - 1 );
 }
 
@@ -2025,8 +2033,7 @@ void PreferencesDialog::OnButtonHintDownUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
-                listHintsWorkspace->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND && listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
 
@@ -2036,8 +2043,7 @@ void PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate( wxUpdateUIEvent& even
 
 void PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
-                listHintsWorkspace->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND && listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
 
@@ -2047,8 +2053,7 @@ void PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate( wxUpdateUIEvent& ev
 
 void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
-                listHintsWorkspace->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND && listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
 
@@ -2058,7 +2063,7 @@ void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionUpdate( wxUpdateUIEven
 
 void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
 {
-  int n = 1;
+  int n                  = 1;
   wxString workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), n );
   while( listWorkspaces->FindString( workspaceName ) != wxNOT_FOUND )
     workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), ++n );
@@ -2068,10 +2073,11 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
     tmpWorkspaceType = WorkspaceType::STATE;
   else
     tmpWorkspaceType = WorkspaceType::EVENT;
-  workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace( std::string( workspaceName.mb_str() ), tmpWorkspaceType ) ) );
-    
-  // Focus in name text control  
-  if ( listWorkspaces->GetCount() > 0 )
+  workspaceContainer.insert(
+    std::pair< wxString, Workspace >( workspaceName, Workspace( std::string( workspaceName.mb_str() ), tmpWorkspaceType ) ) );
+
+  // Focus in name text control
+  if( listWorkspaces->GetCount() > 0 )
     listWorkspaces->Select( listWorkspaces->GetCount() - 1 );
   wxCommandEvent tmpCmdEvent;
   OnListboxWorkspacesSelected( tmpCmdEvent );
@@ -2089,14 +2095,14 @@ void PreferencesDialog::OnButtonWorkspacesDeleteClick( wxCommandEvent& event )
   workspaceContainer.erase( listWorkspaces->GetStringSelection() );
 
   int tmpSel = listWorkspaces->GetSelection();
-  tmpSel = std::max( 0, std::min( tmpSel - 1 , listWorkspaces->GetSelection() - 1 ) );
+  tmpSel     = std::max( 0, std::min( tmpSel - 1, listWorkspaces->GetSelection() - 1 ) );
   listWorkspaces->Delete( listWorkspaces->GetSelection() );
-  if ( listWorkspaces->GetCount() > 0 )
+  if( listWorkspaces->GetCount() > 0 )
   {
     listWorkspaces->SetSelection( tmpSel );
     OnListboxWorkspacesSelected( event );
   }
-  else 
+  else
     listHintsWorkspace->Clear();
 }
 
@@ -2113,26 +2119,25 @@ void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
   }
 
   originalWorkspaceName = listWorkspaces->GetStringSelection();
-  
+
   txtWorkspaceName->ChangeValue( listWorkspaces->GetStringSelection() );
   Workspace& currentWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
-  
+
   if( currentWrk.getType() == WorkspaceType::STATE )
     radioStates->SetValue( true );
   else
     radioEventTypes->SetValue( true );
 
-  std::vector<WorkspaceValue> tmpAutoTypes = currentWrk.getAutoTypes();
+  std::vector< WorkspaceValue > tmpAutoTypes = currentWrk.getAutoTypes();
   wxString formatAutoTypes;
-  for( std::vector<WorkspaceValue>::iterator it = tmpAutoTypes.begin(); it != tmpAutoTypes.end(); ++it )
-    formatAutoTypes<<it->UInfo.eventType<<wxT( ";" );
+  for( std::vector< WorkspaceValue >::iterator it = tmpAutoTypes.begin(); it != tmpAutoTypes.end(); ++it )
+    formatAutoTypes << it->UInfo.eventType << wxT( ";" );
   formatAutoTypes.RemoveLast();
   txtAutoTypes->ChangeValue( formatAutoTypes );
-  
+
   listHintsWorkspace->Clear();
-  std::vector<std::pair<std::string,std::string> > hints = currentWrk.getHintCFGs();
-  for( std::vector<std::pair<std::string,std::string> >::iterator it = hints.begin(); 
-       it != hints.end(); ++it )
+  std::vector< std::pair< std::string, std::string > > hints = currentWrk.getHintCFGs();
+  for( std::vector< std::pair< std::string, std::string > >::iterator it = hints.begin(); it != hints.end(); ++it )
     listHintsWorkspace->Append( paraverMain::getHintComposed( *it ) );
 }
 
@@ -2153,10 +2158,10 @@ void PreferencesDialog::OnTextWorkspaceNameTextUpdated( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesUpClick( wxCommandEvent& event )
 {
-  int tmpSel = listWorkspaces->GetSelection();
+  int tmpSel          = listWorkspaces->GetSelection();
   wxArrayString items = listWorkspaces->GetStrings();
-  wxString tmpStr = items[ tmpSel ];
-  items[ tmpSel ] = items[ tmpSel - 1 ];
+  wxString tmpStr     = items[ tmpSel ];
+  items[ tmpSel ]     = items[ tmpSel - 1 ];
   items[ tmpSel - 1 ] = tmpStr;
   listWorkspaces->Set( items );
   listWorkspaces->SetSelection( tmpSel - 1 );
@@ -2170,10 +2175,10 @@ void PreferencesDialog::OnButtonWorkspacesUpClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesDownClick( wxCommandEvent& event )
 {
-  int tmpSel = listWorkspaces->GetSelection();
+  int tmpSel          = listWorkspaces->GetSelection();
   wxArrayString items = listWorkspaces->GetStrings();
-  wxString tmpStr = items[ tmpSel ];
-  items[ tmpSel ] = items[ tmpSel + 1 ];
+  wxString tmpStr     = items[ tmpSel ];
+  items[ tmpSel ]     = items[ tmpSel + 1 ];
   items[ tmpSel + 1 ] = tmpStr;
   listWorkspaces->Set( items );
   listWorkspaces->SetSelection( tmpSel + 1 );
@@ -2187,15 +2192,15 @@ void PreferencesDialog::OnButtonWorkspacesDownClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonHintAddClick( wxCommandEvent& event )
 {
-
   wxString tmpPath( dirBrowserButtonCFG->GetPath() + wxFileName::GetPathSeparator() + _( "new_hint.cfg" ) );
   wxString tmpDesc( _( "New hint description..." ) );
-  std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( std::string( tmpPath.mb_str() ), std::string( tmpDesc.mb_str() ) );
+  std::pair< std::string, std::string > tmpHint =
+    std::pair< std::string, std::string >( std::string( tmpPath.mb_str() ), std::string( tmpDesc.mb_str() ) );
   workspaceContainer[ listWorkspaces->GetStringSelection() ].addHintCFG( tmpHint );
   listHintsWorkspace->Append( paraverMain::getHintComposed( tmpHint ) );
-  
-  // Focus in description text control  
-  if ( listHintsWorkspace->GetCount() > 0 )
+
+  // Focus in description text control
+  if( listHintsWorkspace->GetCount() > 0 )
     listHintsWorkspace->Select( listHintsWorkspace->GetCount() - 1 );
   wxCommandEvent tmpCmdEvent;
   OnListboxHintsWorkspaceSelected( tmpCmdEvent );
@@ -2213,9 +2218,9 @@ void PreferencesDialog::OnButtonHintDeleteClick( wxCommandEvent& event )
   workspaceContainer[ listWorkspaces->GetStringSelection() ].removeHintCFG( listHintsWorkspace->GetSelection() );
 
   int tmpSel = listHintsWorkspace->GetSelection();
-  tmpSel = std::max( 0, std::min( tmpSel - 1 , listHintsWorkspace->GetSelection() - 1 ) );
+  tmpSel     = std::max( 0, std::min( tmpSel - 1, listHintsWorkspace->GetSelection() - 1 ) );
   listHintsWorkspace->Delete( listHintsWorkspace->GetSelection() );
-  if ( listHintsWorkspace->GetCount() > 0  )
+  if( listHintsWorkspace->GetCount() > 0 )
     listHintsWorkspace->SetSelection( tmpSel );
 }
 
@@ -2226,16 +2231,16 @@ void PreferencesDialog::OnButtonHintDeleteClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnBitmapHintUpClick( wxCommandEvent& event )
 {
-  int tmpSel = listHintsWorkspace->GetSelection();
-  Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
+  int tmpSel          = listHintsWorkspace->GetSelection();
+  Workspace& tmpWrk   = workspaceContainer[ listWorkspaces->GetStringSelection() ];
   wxArrayString items = listHintsWorkspace->GetStrings();
-  wxString tmpStr = items[ tmpSel ];
-  items[ tmpSel ] = items[ tmpSel - 1 ];
+  wxString tmpStr     = items[ tmpSel ];
+  items[ tmpSel ]     = items[ tmpSel - 1 ];
   items[ tmpSel - 1 ] = tmpStr;
   listHintsWorkspace->Set( items );
   listHintsWorkspace->SetSelection( tmpSel - 1 );
-  
-  std::pair< std::string, std::string > tmpHint = tmpWrk.getHintCFG( tmpSel );
+
+  std::pair< std::string, std::string > tmpHint     = tmpWrk.getHintCFG( tmpSel );
   std::pair< std::string, std::string > tmpHintPrev = std::pair< std::string, std::string >( tmpWrk.getHintCFG( tmpSel - 1 ) );
   tmpWrk.modifyHintCFG( tmpSel, tmpHintPrev );
   tmpWrk.modifyHintCFG( tmpSel - 1, tmpHint );
@@ -2248,16 +2253,16 @@ void PreferencesDialog::OnBitmapHintUpClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonHintDownClick( wxCommandEvent& event )
 {
-  int tmpSel = listHintsWorkspace->GetSelection();
-  Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
+  int tmpSel          = listHintsWorkspace->GetSelection();
+  Workspace& tmpWrk   = workspaceContainer[ listWorkspaces->GetStringSelection() ];
   wxArrayString items = listHintsWorkspace->GetStrings();
-  wxString tmpStr = items[ tmpSel ];
-  items[ tmpSel ] = items[ tmpSel + 1 ];
+  wxString tmpStr     = items[ tmpSel ];
+  items[ tmpSel ]     = items[ tmpSel + 1 ];
   items[ tmpSel + 1 ] = tmpStr;
   listHintsWorkspace->Set( items );
   listHintsWorkspace->SetSelection( tmpSel + 1 );
-  
-  std::pair< std::string, std::string > tmpHint = tmpWrk.getHintCFG( tmpSel );
+
+  std::pair< std::string, std::string > tmpHint     = tmpWrk.getHintCFG( tmpSel );
   std::pair< std::string, std::string > tmpHintNext = std::pair< std::string, std::string >( tmpWrk.getHintCFG( tmpSel + 1 ) );
   tmpWrk.modifyHintCFG( tmpSel, tmpHintNext );
   tmpWrk.modifyHintCFG( tmpSel + 1, tmpHint );
@@ -2274,8 +2279,8 @@ void PreferencesDialog::OnListboxHintsWorkspaceSelected( wxCommandEvent& event )
   {
     return;
   }
-  std::pair< std::string, std::string > tmpHint = workspaceContainer[ listWorkspaces->GetStringSelection() ]
-                                                  .getHintCFG( listHintsWorkspace->GetSelection() );
+  std::pair< std::string, std::string > tmpHint =
+    workspaceContainer[ listWorkspaces->GetStringSelection() ].getHintCFG( listHintsWorkspace->GetSelection() );
   txtHintDescription->ChangeValue( wxString::FromUTF8( tmpHint.second.c_str() ) );
   fileBrowserHintPath->ChangePath( wxString::FromUTF8( tmpHint.first.c_str() ) );
 }
@@ -2293,16 +2298,15 @@ void PreferencesDialog::OnTextctrlWorkspaceHintPathTextUpdated( wxCommandEvent& 
 
   wxString tmpCFGsPath = dirBrowserButtonCFG->GetPath();
   wxString tmpHintPath = fileBrowserHintPath->GetPath();
-  if ( tmpHintPath.Len() > tmpCFGsPath.Len() )
+  if( tmpHintPath.Len() > tmpCFGsPath.Len() )
   {
-    wxString tmpPrefixPath = tmpHintPath.Left( tmpCFGsPath.Len() ) ;
-    if ( tmpPrefixPath.Cmp( tmpCFGsPath ) == 0 )
+    wxString tmpPrefixPath = tmpHintPath.Left( tmpCFGsPath.Len() );
+    if( tmpPrefixPath.Cmp( tmpCFGsPath ) == 0 )
       tmpHintPath = tmpHintPath.Right( tmpHintPath.Len() - tmpCFGsPath.Len() - 1 );
   }
 
-  std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( 
-                                                    std::string( tmpHintPath.mb_str() ),
-                                                    std::string( txtHintDescription->GetValue().mb_str() ) );
+  std::pair< std::string, std::string > tmpHint =
+    std::pair< std::string, std::string >( std::string( tmpHintPath.mb_str() ), std::string( txtHintDescription->GetValue().mb_str() ) );
   workspaceContainer[ listWorkspaces->GetStringSelection() ].modifyHintCFG( listHintsWorkspace->GetSelection(), tmpHint );
   listHintsWorkspace->SetString( listHintsWorkspace->GetSelection(), paraverMain::getHintComposed( tmpHint ) );
 }
@@ -2317,14 +2321,11 @@ void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionTextUpdated( wxCommand
   if( listHintsWorkspace->GetSelection() == wxNOT_FOUND )
     return;
 
-  std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( 
-                                                    std::string( fileBrowserHintPath->GetPath().mb_str() ),
-                                                    std::string( txtHintDescription->GetValue().mb_str() ) );
+  std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( std::string( fileBrowserHintPath->GetPath().mb_str() ),
+                                                                                         std::string( txtHintDescription->GetValue().mb_str() ) );
   workspaceContainer[ listWorkspaces->GetStringSelection() ].modifyHintCFG( listHintsWorkspace->GetSelection(), tmpHint );
   listHintsWorkspace->SetString( listHintsWorkspace->GetSelection(), paraverMain::getHintComposed( tmpHint ) );
 }
-
-
 
 
 /*!
@@ -2344,14 +2345,14 @@ void PreferencesDialog::OnTextWorkspaceAutotypesUpdate( wxUpdateUIEvent& event )
 void PreferencesDialog::OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& event )
 {
   Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
-  //std::string tmpTxt = std::string( event.GetString().mb_str() );
-  vector<WorkspaceValue> tmpAutoTypes;
+  // std::string tmpTxt = std::string( event.GetString().mb_str() );
+  vector< WorkspaceValue > tmpAutoTypes;
   wxStringTokenizer tmpTokenTypes( event.GetString(), wxT( ";" ) );
   unsigned long tmpEventType;
   while( tmpTokenTypes.HasMoreTokens() )
   {
     wxString token = tmpTokenTypes.GetNextToken();
-    if ( token.ToULong( &tmpEventType ) )
+    if( token.ToULong( &tmpEventType ) )
     {
       WorkspaceValue tmpWorkSpaceValue;
       if( radioStates->GetValue() )
@@ -2371,19 +2372,16 @@ void PreferencesDialog::workSpaceNameKillFocus( const wxString& whichName )
   if( whichName.empty() )
   {
     txtWorkspaceName->SetValue( originalWorkspaceName );
-    ::wxMessageBox( "Empty name for workspace not allowed.",
-                    "Empty name",
-                    wxICON_ERROR,
-                    this );
+    ::wxMessageBox( "Empty name for workspace not allowed.", "Empty name", wxICON_ERROR, this );
     return;
   }
 
-  if ( whichName == originalWorkspaceName )
+  if( whichName == originalWorkspaceName )
     return;
-  
+
   wxString tmpName = whichName;
-  bool nameEdited = false;
-  while( workspaceContainer.find( tmpName ) != workspaceContainer.end())
+  bool nameEdited  = false;
+  while( workspaceContainer.find( tmpName ) != workspaceContainer.end() )
   {
     nameEdited = true;
     tmpName += wxT( "_" );
@@ -2393,18 +2391,15 @@ void PreferencesDialog::workSpaceNameKillFocus( const wxString& whichName )
   workspaceContainer.erase( originalWorkspaceName );
   string tmpStrName = std::string( tmpName.mb_str() );
   tmpWrk.setName( tmpStrName );
-  workspaceContainer.insert( std::pair<wxString,Workspace>( tmpName, tmpWrk ) );
+  workspaceContainer.insert( std::pair< wxString, Workspace >( tmpName, tmpWrk ) );
 
   listWorkspaces->SetString( listWorkspaces->GetSelection(), tmpName );
-  
+
   originalWorkspaceName = tmpName;
   txtWorkspaceName->ChangeValue( tmpName );
-  
+
   if( nameEdited )
-    ::wxMessageBox( wxT( "Found duplicated workspace name.\nChanged to:\n\n" ) + tmpName,
-                    wxT( "Duplicated name" ),
-                    wxICON_EXCLAMATION,
-                    this );
+    ::wxMessageBox( wxT( "Found duplicated workspace name.\nChanged to:\n\n" ) + tmpName, wxT( "Duplicated name" ), wxICON_EXCLAMATION, this );
 }
 
 
@@ -2478,10 +2473,12 @@ void PreferencesDialog::OnPreferencesGlobalTimeSessionUpdated( wxSpinEvent& even
 
 void PreferencesDialog::OnListboxTextEditorsSelected( wxCommandEvent& event )
 {
+  // clang-format off
 ////@begin wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TEXT_EDITORS in PreferencesDialog.
   // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TEXT_EDITORS in PreferencesDialog. 
+////@end wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TEXT_EDITORS in PreferencesDialog.
+  // clang-format on
 }
 
 
@@ -2492,31 +2489,26 @@ void PreferencesDialog::OnListboxTextEditorsSelected( wxCommandEvent& event )
 void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
 {
 #ifdef _WIN32
-  wxString dialogDefaultDir = wxT( "C:\\Program Files" );  
-  wxString fileDialogWildcard = _( "*.exe" );  
+  wxString dialogDefaultDir   = wxT( "C:\\Program Files" );
+  wxString fileDialogWildcard = _( "*.exe" );
 #else
-  wxString dialogDefaultDir = _( "/usr/bin" );  
-  wxString fileDialogWildcard = _( "*" );  
+  wxString dialogDefaultDir   = _( "/usr/bin" );
+  wxString fileDialogWildcard = _( "*" );
 #endif
   long whichDialogStyle = wxFD_DEFAULT_STYLE | wxFD_MULTIPLE;
-  wxFileDialog myDialog ( this,
-                         wxT( "Select External Text Editors" ),
-                         dialogDefaultDir,
-                         _( "" ),
-                         fileDialogWildcard, 
-                         whichDialogStyle );
-  if ( myDialog.ShowModal() == wxID_OK )
+  wxFileDialog myDialog( this, wxT( "Select External Text Editors" ), dialogDefaultDir, _( "" ), fileDialogWildcard, whichDialogStyle );
+  if( myDialog.ShowModal() == wxID_OK )
   {
     wxArrayString paths;
     myDialog.GetPaths( paths );
-    for ( size_t i = 0 ; i < paths.size() ; ++i )
+    for( size_t i = 0; i < paths.size(); ++i )
     {
       wxFileName tmpFileName = paths[ i ];
-    #ifdef _WIN32
+#ifdef _WIN32
       listTextEditors->Append( tmpFileName.GetFullPath() );
-    #else
+#else
       listTextEditors->Append( tmpFileName.GetFullName() );
-    #endif
+#endif
     }
   }
 }
@@ -2529,10 +2521,10 @@ void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
 void PreferencesDialog::OnButtonTxtDelClick( wxCommandEvent& event )
 {
   int tmpSel = listTextEditors->GetSelection();
-  tmpSel = std::max( 0, std::min( tmpSel - 1 , listTextEditors->GetSelection() - 1 ) );
+  tmpSel     = std::max( 0, std::min( tmpSel - 1, listTextEditors->GetSelection() - 1 ) );
   listTextEditors->Delete( listTextEditors->GetSelection() );
 
-  if ( listTextEditors->GetCount() > 0  )
+  if( listTextEditors->GetCount() > 0 )
     listTextEditors->SetSelection( tmpSel );
 }
 
@@ -2553,10 +2545,10 @@ void PreferencesDialog::OnButtonTxtDelUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonTxtUpClick( wxCommandEvent& event )
 {
-  int tmpSel = listTextEditors->GetSelection();
+  int tmpSel          = listTextEditors->GetSelection();
   wxArrayString items = listTextEditors->GetStrings();
-  wxString tmpStr = items[ tmpSel ];
-  items[ tmpSel ] = items[ tmpSel - 1 ];
+  wxString tmpStr     = items[ tmpSel ];
+  items[ tmpSel ]     = items[ tmpSel - 1 ];
   items[ tmpSel - 1 ] = tmpStr;
   listTextEditors->Set( items );
   listTextEditors->SetSelection( tmpSel - 1 );
@@ -2568,8 +2560,7 @@ void PreferencesDialog::OnButtonTxtUpClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonTxtUpUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listTextEditors->GetSelection() != wxNOT_FOUND &&
-                listTextEditors->GetSelection() > 0 );
+  event.Enable( listTextEditors->GetSelection() != wxNOT_FOUND && listTextEditors->GetSelection() > 0 );
 }
 
 
@@ -2579,10 +2570,10 @@ void PreferencesDialog::OnButtonTxtUpUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonTxtDownClick( wxCommandEvent& event )
 {
-  int tmpSel = listTextEditors->GetSelection();
+  int tmpSel          = listTextEditors->GetSelection();
   wxArrayString items = listTextEditors->GetStrings();
-  wxString tmpStr = items[ tmpSel ];
-  items[ tmpSel ] = items[ tmpSel + 1 ];
+  wxString tmpStr     = items[ tmpSel ];
+  items[ tmpSel ]     = items[ tmpSel + 1 ];
   items[ tmpSel + 1 ] = tmpStr;
   listTextEditors->Set( items );
   listTextEditors->SetSelection( tmpSel + 1 );
@@ -2595,8 +2586,7 @@ void PreferencesDialog::OnButtonTxtDownClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonTxtDownUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listTextEditors->GetSelection() != wxNOT_FOUND &&
-                listTextEditors->GetSelection() < int( listTextEditors->GetCount() ) - 1 );
+  event.Enable( listTextEditors->GetSelection() != wxNOT_FOUND && listTextEditors->GetSelection() < int( listTextEditors->GetCount() ) - 1 );
 }
 
 
@@ -2606,10 +2596,12 @@ void PreferencesDialog::OnButtonTxtDownUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnListboxPdfReadersSelected( wxCommandEvent& event )
 {
+  // clang-format off
 ////@begin wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX1 in PreferencesDialog.
   // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX1 in PreferencesDialog. 
+////@end wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX1 in PreferencesDialog.
+  // clang-format on
 }
 
 
@@ -2620,31 +2612,26 @@ void PreferencesDialog::OnListboxPdfReadersSelected( wxCommandEvent& event )
 void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
 {
 #ifdef _WIN32
-  wxString dialogDefaultDir = wxT( "C:\\Program Files" );  
-  wxString fileDialogWildcard = _( "*.exe" );  
+  wxString dialogDefaultDir   = wxT( "C:\\Program Files" );
+  wxString fileDialogWildcard = _( "*.exe" );
 #else
-  wxString dialogDefaultDir = _( "/usr/bin" );  
-  wxString fileDialogWildcard = _( "*" );  
+  wxString dialogDefaultDir   = _( "/usr/bin" );
+  wxString fileDialogWildcard = _( "*" );
 #endif
   long whichDialogStyle = wxFD_DEFAULT_STYLE | wxFD_MULTIPLE;
-  wxFileDialog myDialog ( this,
-                         wxT( "Select External PDF Readers" ),
-                         dialogDefaultDir,
-                         _( "" ),
-                         fileDialogWildcard, 
-                         whichDialogStyle );
-  if ( myDialog.ShowModal() == wxID_OK )
+  wxFileDialog myDialog( this, wxT( "Select External PDF Readers" ), dialogDefaultDir, _( "" ), fileDialogWildcard, whichDialogStyle );
+  if( myDialog.ShowModal() == wxID_OK )
   {
     wxArrayString paths;
     myDialog.GetPaths( paths );
-    for ( size_t i = 0 ; i < paths.size() ; ++i )
+    for( size_t i = 0; i < paths.size(); ++i )
     {
       wxFileName tmpFileName = paths[ i ];
-    #ifdef _WIN32  
+#ifdef _WIN32
       listPDFReaders->Append( tmpFileName.GetFullPath() );
-    #else
+#else
       listPDFReaders->Append( tmpFileName.GetFullName() );
-    #endif
+#endif
     }
   }
 }
@@ -2657,10 +2644,10 @@ void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
 void PreferencesDialog::OnButtonPdfDelClick( wxCommandEvent& event )
 {
   int tmpSel = listPDFReaders->GetSelection();
-  tmpSel = std::max( 0, std::min( tmpSel - 1 , listPDFReaders->GetSelection() - 1 ) );
+  tmpSel     = std::max( 0, std::min( tmpSel - 1, listPDFReaders->GetSelection() - 1 ) );
   listPDFReaders->Delete( listPDFReaders->GetSelection() );
 
-  if ( listPDFReaders->GetCount() > 0  )
+  if( listPDFReaders->GetCount() > 0 )
     listPDFReaders->SetSelection( tmpSel );
 }
 
@@ -2681,10 +2668,10 @@ void PreferencesDialog::OnButtonPdfDelUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonPdfUpClick( wxCommandEvent& event )
 {
-  int tmpSel = listPDFReaders->GetSelection();
+  int tmpSel          = listPDFReaders->GetSelection();
   wxArrayString items = listPDFReaders->GetStrings();
-  wxString tmpStr = items[ tmpSel ];
-  items[ tmpSel ] = items[ tmpSel - 1 ];
+  wxString tmpStr     = items[ tmpSel ];
+  items[ tmpSel ]     = items[ tmpSel - 1 ];
   items[ tmpSel - 1 ] = tmpStr;
   listPDFReaders->Set( items );
   listPDFReaders->SetSelection( tmpSel - 1 );
@@ -2697,8 +2684,7 @@ void PreferencesDialog::OnButtonPdfUpClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonPdfUpUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND &&
-                listPDFReaders->GetSelection() > 0 );
+  event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND && listPDFReaders->GetSelection() > 0 );
 }
 
 
@@ -2708,10 +2694,10 @@ void PreferencesDialog::OnButtonPdfUpUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonPdfDownClick( wxCommandEvent& event )
 {
-  int tmpSel = listPDFReaders->GetSelection();
+  int tmpSel          = listPDFReaders->GetSelection();
   wxArrayString items = listPDFReaders->GetStrings();
-  wxString tmpStr = items[ tmpSel ];
-  items[ tmpSel ] = items[ tmpSel + 1 ];
+  wxString tmpStr     = items[ tmpSel ];
+  items[ tmpSel ]     = items[ tmpSel + 1 ];
   items[ tmpSel + 1 ] = tmpStr;
   listPDFReaders->Set( items );
   listPDFReaders->SetSelection( tmpSel + 1 );
@@ -2724,8 +2710,7 @@ void PreferencesDialog::OnButtonPdfDownClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonPdfDownUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND &&
-                listPDFReaders->GetSelection() < int( listPDFReaders->GetCount() ) - 1 );
+  event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND && listPDFReaders->GetSelection() < int( listPDFReaders->GetCount() ) - 1 );
 }
 
 
@@ -2735,46 +2720,40 @@ void PreferencesDialog::OnButtonPdfDownUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
 {
-  wxString dialogDefaultDir = _( "" );
-  wxString fileDialogWildcard = _( "Workspace file (*.ws)|*.ws|All files (*.*)|*" );  
+  wxString dialogDefaultDir   = _( "" );
+  wxString fileDialogWildcard = _( "Workspace file (*.ws)|*.ws|All files (*.*)|*" );
 
   long whichDialogStyle = wxFD_DEFAULT_STYLE | wxFD_MULTIPLE;
-  wxFileDialog myDialog ( this,
-                         wxT( "Import workspaces" ),
-                         dialogDefaultDir,
-                         _( "" ),
-                         fileDialogWildcard, 
-                         whichDialogStyle );
-  if ( myDialog.ShowModal() == wxID_OK )
+  wxFileDialog myDialog( this, wxT( "Import workspaces" ), dialogDefaultDir, _( "" ), fileDialogWildcard, whichDialogStyle );
+  if( myDialog.ShowModal() == wxID_OK )
   {
     wxArrayString paths;
     myDialog.GetPaths( paths );
-    for ( size_t i = 0 ; i < paths.size() ; ++i )
+    for( size_t i = 0; i < paths.size(); ++i )
     {
       wxFileName tmpFileName = paths[ i ];
       Workspace ws;
       std::string wsPath( tmpFileName.GetPath().mb_str() );
-    #ifdef _WIN32
+#ifdef _WIN32
       wsPath.append( "\\" );
-    #else
+#else
       wsPath.append( "/" );
-    #endif
+#endif
       wsPath.append( tmpFileName.GetFullName().mb_str() );
       ws.importWSXML( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
 
       wxString wsName( ws.getName().c_str(), wxConvUTF8 );
       if( workspaceContainer.find( wsName ) != workspaceContainer.end() )
       {
-        size_t nameNumber = 1;
+        size_t nameNumber  = 1;
         wxString wsNewName = wsName + "_";
 
         while( workspaceContainer.find( wxString( wsNewName ) << nameNumber ) != workspaceContainer.end() )
           ++nameNumber;
         wsNewName << nameNumber;
 
-        if( ::wxMessageBox( wxT( "Found another " ) + wsName +
-                            wxT( "\n\nDo you want to change it to " ) + wsNewName + wxT( "?" ),
-                            wxT( "Duplicated workspace name" ),   
+        if( ::wxMessageBox( wxT( "Found another " ) + wsName + wxT( "\n\nDo you want to change it to " ) + wsNewName + wxT( "?" ),
+                            wxT( "Duplicated workspace name" ),
                             wxICON_EXCLAMATION | wxOK | wxCANCEL,
                             this ) == wxOK )
         {
@@ -2788,8 +2767,8 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
 
       ws.importWSCFGs( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
 
-      workspaceContainer.insert( std::pair<wxString,Workspace>( wsName, ws ) );
-      
+      workspaceContainer.insert( std::pair< wxString, Workspace >( wsName, ws ) );
+
       listWorkspaces->Append( wsName );
       WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->addWorkspace( ws );
     }
@@ -2807,7 +2786,6 @@ void PreferencesDialog::OnButtonWorkspacesImportUpdate( wxUpdateUIEvent& event )
 }
 
 
-
 /*!
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_EXPORT
  */
@@ -2815,37 +2793,34 @@ void PreferencesDialog::OnButtonWorkspacesImportUpdate( wxUpdateUIEvent& event )
 void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
 {
 #ifdef _WIN32
-  wxString dialogDefaultDir = _(".\\");
+  wxString dialogDefaultDir = _( ".\\" );
 #else
-  wxString dialogDefaultDir = _("./");
+  wxString dialogDefaultDir = _( "./" );
 #endif
 
-  wxString fileDialogWildcard = _( "Workspace file (*.ws)|*.ws" ); 
+  wxString fileDialogWildcard = _( "Workspace file (*.ws)|*.ws" );
 
-  wxString defaultFile = listWorkspaces->GetString( listWorkspaces->GetSelection() );  
+  wxString defaultFile  = listWorkspaces->GetString( listWorkspaces->GetSelection() );
   long whichDialogStyle = wxFD_SAVE | wxFD_CHANGE_DIR;
-  wxFileDialog myDialog ( this,
-                         wxT( "Export workspaces" ),
-                         dialogDefaultDir,
-                         _( "" ),
-                         fileDialogWildcard, 
-                         whichDialogStyle );
-  if ( myDialog.ShowModal() == wxID_OK )
+  wxFileDialog myDialog( this, wxT( "Export workspaces" ), dialogDefaultDir, _( "" ), fileDialogWildcard, whichDialogStyle );
+  if( myDialog.ShowModal() == wxID_OK )
   {
     Workspace ws = workspaceContainer[ defaultFile ];
     std::string chosenPath( myDialog.GetPath().mb_str() );
-    if ( myDialog.GetPath().AfterLast( '.' ) != _( "ws" ) )
+    if( myDialog.GetPath().AfterLast( '.' ) != _( "ws" ) )
       chosenPath.append( ".ws" );
 
-    ws.exportWS( chosenPath, []( const std::string& str )
-                             {
-                               return paraverMain::myParaverMain->buildCfgFullPath( str );
-                             },
-                             []( const std::string& str )
-                             {
-                               wxFileName tmpFilename( str );
-                               return std::string( tmpFilename.GetFullName() );
-                             } );
+    ws.exportWS(
+      chosenPath,
+      []( const std::string& str )
+      {
+        return paraverMain::myParaverMain->buildCfgFullPath( str );
+      },
+      []( const std::string& str )
+      {
+        wxFileName tmpFilename( str );
+        return std::string( tmpFilename.GetFullName() );
+      } );
   }
 }
 
