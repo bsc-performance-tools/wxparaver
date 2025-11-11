@@ -26,22 +26,26 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
 #include "finddialog.h"
 #include "labelconstructor.h"
 #include "paraverconfig.h"
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 using namespace std;
 
@@ -58,6 +62,7 @@ IMPLEMENT_DYNAMIC_CLASS( FindDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( FindDialog, wxDialog )
 
+// clang-format off
 ////@begin FindDialog event table entries
   EVT_UPDATE_UI( ID_CHECKNEXTOBJECT, FindDialog::OnChecknextobjectUpdate )
   EVT_UPDATE_UI( ID_STATICTYPE, FindDialog::OnStatictypeUpdate )
@@ -68,6 +73,7 @@ BEGIN_EVENT_TABLE( FindDialog, wxDialog )
   EVT_UPDATE_UI( ID_CHOICEDURATIONFUNCTION, FindDialog::OnChoicedurationfunctionUpdate )
   EVT_UPDATE_UI( ID_TEXTSEMANTICDURATION, FindDialog::OnTextsemanticdurationUpdate )
 ////@end FindDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -84,7 +90,7 @@ FindDialog::FindDialog()
 FindDialog::FindDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
 }
 
 
@@ -94,6 +100,7 @@ FindDialog::FindDialog( wxWindow* parent, wxWindowID id, const wxString& caption
 
 bool FindDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin FindDialog creation
   SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -105,6 +112,7 @@ bool FindDialog::Create( wxWindow* parent, wxWindowID id, const wxString& captio
   }
   Centre();
 ////@end FindDialog creation
+  // clang-format on
   return true;
 }
 
@@ -115,8 +123,10 @@ bool FindDialog::Create( wxWindow* parent, wxWindowID id, const wxString& captio
 
 FindDialog::~FindDialog()
 {
+  // clang-format off
 ////@begin FindDialog destruction
 ////@end FindDialog destruction
+  // clang-format on
 }
 
 
@@ -126,6 +136,7 @@ FindDialog::~FindDialog()
 
 void FindDialog::Init()
 {
+  // clang-format off
 ////@begin FindDialog member initialisation
   myWindow = nullptr;
   radioObjects = NULL;
@@ -140,6 +151,7 @@ void FindDialog::Init()
   spinSemanticDuration = NULL;
   boxSizerOperatorsChoice = NULL;
 ////@end FindDialog member initialisation
+  // clang-format on
 }
 
 
@@ -148,7 +160,8 @@ void FindDialog::Init()
  */
 
 void FindDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin FindDialog content construction
   FindDialog* itemDialog1 = this;
 
@@ -259,6 +272,7 @@ void FindDialog::CreateControls()
   itemBoxSizer2->Add(boxSizerOperatorsChoice, 0, wxGROW|wxALL, 5);
 
 ////@end FindDialog content construction
+  // clang-format on
 }
 
 
@@ -277,11 +291,13 @@ bool FindDialog::ShowToolTips()
 
 wxBitmap FindDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin FindDialog bitmap retrieval
   wxUnusedVar(name);
   return wxNullBitmap;
 ////@end FindDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -290,11 +306,13 @@ wxBitmap FindDialog::GetBitmapResource( const wxString& name )
 
 wxIcon FindDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin FindDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end FindDialog icon retrieval
+  // clang-format on
 }
 
 
@@ -380,47 +398,38 @@ void FindDialog::OnTextsemanticdurationUpdate( wxUpdateUIEvent& event )
 
 void FindDialog::InitControlsBeforeShow()
 {
-  vector<TObjectOrder> selectedObjects;
+  vector< TObjectOrder > selectedObjects;
   myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
-  
-  for( vector<TObjectOrder>::iterator it = selectedObjects.begin();
-       it != selectedObjects.end(); ++it )
+
+  for( vector< TObjectOrder >::iterator it = selectedObjects.begin(); it != selectedObjects.end(); ++it )
   {
     string strObject;
     if( myWindow->getLevel() == TTraceLevel::CPU )
-      strObject = LabelConstructor::objectLabel( *it + 1,
-                                                 myWindow->getLevel(),
-                                                 myWindow->getTrace() );
+      strObject = LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() );
     else
-      strObject = LabelConstructor::objectLabel( *it,
-                                                 myWindow->getLevel(),
-                                                 myWindow->getTrace() );
+      strObject = LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() );
 
     choiceObjects->Append( wxString::FromUTF8( strObject.c_str() ) );
   }
   choiceObjects->SetSelection( 0 );
 
-  set<TEventType> events = myWindow->getTrace()->getLoadedEvents();
-  
-  for( set<TEventType>::iterator it = events.begin(); it != events.end(); ++it )
+  set< TEventType > events = myWindow->getTrace()->getLoadedEvents();
+
+  for( set< TEventType >::iterator it = events.begin(); it != events.end(); ++it )
   {
     string strEvent = LabelConstructor::eventTypeLabel( myWindow, *it, true );
     choiceEventType->Append( wxString::FromUTF8( strEvent.c_str() ) );
   }
   choiceEventType->SetSelection( 0 );
-  
-  TSemanticValue max = myWindow->getMaximumY() - myWindow->getMinimumY() > 200 ? 
-                       myWindow->getMinimumY() + 200 : myWindow->getMaximumY();
+
+  TSemanticValue max = myWindow->getMaximumY() - myWindow->getMinimumY() > 200 ? myWindow->getMinimumY() + 200 : myWindow->getMaximumY();
   for( TSemanticValue val = myWindow->getMinimumY(); val <= max; ++val )
   {
-    string strSemantic = LabelConstructor::semanticLabel( myWindow, val, true, 
-                                                          ParaverConfig::getInstance()->getTimelinePrecision(), false );
+    string strSemantic = LabelConstructor::semanticLabel( myWindow, val, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
     comboSemanticValue->Append( wxString::FromUTF8( strSemantic.c_str() ) );
   }
   comboSemanticValue->SetSelection( 0 );
-  
-  spinSemanticDuration->SetRange( 0, numeric_limits<int>::max() );
+
+  spinSemanticDuration->SetRange( 0, numeric_limits< int >::max() );
   spinSemanticDuration->SetValue( 0 );
 }
-
-
