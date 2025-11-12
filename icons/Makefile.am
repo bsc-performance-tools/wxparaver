@@ -17,6 +17,7 @@ noinst_HEADERS = \
               derived_controlled_clear_by.xpm\
               derived_controlled_enumerate.xpm\
               derived_controlled_maximum.xpm\
+              derived_controlled_minimum.xpm\
               derived_different.xpm\
               derived_divide.xpm\
               derived_maximum.xpm\
