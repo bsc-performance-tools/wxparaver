@@ -1107,6 +1107,13 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis()
         ( objectAxis == TObjectAxisSize::FIVE_PERC && isSync ) },
 
       { popUpMenuObjectAxis,
+        _( "10%" ),
+        wxITEM_CHECK,
+        &gPopUpMenu::OnPopUpObjectAxis,
+        ID_MENU_OBJECT_AXIS_TEN,
+        ( objectAxis == TObjectAxisSize::TEN_PERC && isSync ) },
+
+      { popUpMenuObjectAxis,
         _( "25%" ),
         wxITEM_CHECK,
         &gPopUpMenu::OnPopUpObjectAxis,
@@ -1416,12 +1423,12 @@ wxMenuItem *gPopUpMenu::buildItem( wxMenu *baseMenuContainer,
     newMenuItem->Check( isChecked );
   }
 
-//#ifdef _WIN32
-//  Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
-//#else
+  // #ifdef _WIN32
+  //   Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
+  // #else
   baseMenuContainer->Bind( wxEVT_COMMAND_MENU_SELECTED, callbackFunctionMenuItem, this, windowId );
 
-//#endif
+  // #endif
 
   return newMenuItem;
 }
