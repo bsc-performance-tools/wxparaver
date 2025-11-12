@@ -119,6 +119,7 @@
 #include "derived_controlled_clear_by.xpm"
 #include "derived_controlled_enumerate.xpm"
 #include "derived_controlled_maximum.xpm"
+#include "derived_controlled_minimum.xpm"
 #include "derived_different.xpm"
 #include "derived_divide.xpm"
 #include "derived_maximum.xpm"
@@ -251,6 +252,7 @@ std::vector< std::pair< std::string, const char ** > > paraverMain::icons = {
   // TODO: Get these derived labels from paraver-kernel - semanticderivedfunctions
   { "controlled: clear by", derived_controlled_clear_by_xpm },
   { "controlled: maximum", derived_controlled_maximum_xpm },
+  { "controlled: minimum != 0", derived_controlled_minimum_xpm },
   { "controlled: add", derived_controlled_add_xpm },
   { "controlled: enumerate", derived_controlled_enumerate_xpm },
   { "controlled: average", derived_controlled_average_xpm }
