@@ -2246,8 +2246,10 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     currentWindow   = (wxWindow *)timeline;
     currentHisto    = nullptr;
 
-    //if( timeline->IsShown() )
-      //timeline->Raise();
+    if( timeline->IsShown() )
+    {
+      timeline->Raise();
+    }
 
     currentTimeline = timeline->GetMyWindow();
   }
