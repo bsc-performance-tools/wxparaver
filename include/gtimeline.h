@@ -1193,7 +1193,7 @@ class gTimeline : public wxFrame, public gWindow
     // colorsPanel update info
     bool forceRedoColorsPanel;
     bool enableApplyButton;
-    bool codeChangeSize = true;
+    bool codeChangeSize = false;
     SemanticInfoType lastType;
     TSemanticValue lastMin;
     TSemanticValue lastMax;
