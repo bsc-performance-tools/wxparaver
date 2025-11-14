@@ -5236,12 +5236,13 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
     auto height = drawZone->GetClientSize().GetHeight();
 
     if( width == myWindow->getWidth() && height == myWindow->getHeight() )
+    {
+      codeChangeSize = false;
       return;
+    }
 
     myWindow->setHeight( height, !this->IsMaximized() && !codeChangeSize );
     myWindow->setWidth( width, !this->IsMaximized() && !codeChangeSize );
-
-    codeChangeSize = false;
   }
 
 
