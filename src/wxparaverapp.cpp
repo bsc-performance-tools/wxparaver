@@ -806,7 +806,8 @@ int wxparaverApp::FilterEvent( wxEvent &event )
     {
       DeactivateGlobalTiming();
     }
-    else if( ( (wxKeyEvent &)event ).ControlDown() )
+    else if( ( (wxKeyEvent &)event ).ControlDown() && !( (wxKeyEvent &)event ).AltDown() && !( (wxKeyEvent &)event ).ShiftDown() &&
+             !( (wxKeyEvent &)event ).MetaDown() )
     {
       if( keyCode == (long)'S' )
       {
