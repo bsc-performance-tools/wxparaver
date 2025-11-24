@@ -188,6 +188,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
+  EVT_CHOICEBOOK_PAGE_CHANGING( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanging )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_AUTO_REDRAW, paraverMain::OnCheckboxAutoRedrawUpdate )
@@ -197,6 +198,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 ////@end paraverMain event table entries
 
 EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
+EVT_TREE_SEL_CHANGING( wxID_ANY, paraverMain::OnTreeSelChanging )
 EVT_TREE_ITEM_ACTIVATED( wxID_ANY, paraverMain::OnTreeItemActivated )
 EVT_TREE_ITEM_RIGHT_CLICK( wxID_ANY, paraverMain::OnTreeRightClick )
 EVT_TREE_END_LABEL_EDIT( wxID_ANY, paraverMain::OnTreeEndLabelRename )
@@ -2200,16 +2202,16 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
 
 /*!
- * wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
+ * wxEVT_TREE_SEL_CHANGING event handler for wxID_ANY
  */
-void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
+void paraverMain::OnTreeSelChanging( wxTreeEvent &event )
 {
   if( selectionChanging )
   {
     event.Skip();
     return;
   }
-   if( !event.GetItem().IsOk() )
+  if( !event.GetItem().IsOk() )
   {
     event.Skip();
     return;
@@ -2220,26 +2222,71 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
   if( tmpTree == nullptr )
   {
     return;
-  } 
+  }
   TreeBrowserItemData *itemSelected = dynamic_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
-  if (itemSelected == nullptr) {
+  if( itemSelected == nullptr )
+  {
     return;
   }
   selectionChanging = true;
 
   if( !wxGetKeyState( WXK_CONTROL ) && !wxGetKeyState( WXK_SHIFT ) )
   {
+    int current = choiceWindowBrowser->GetSelection();
+
+    int pageCount = choiceWindowBrowser->GetPageCount();
     wxArrayTreeItemIds selectedItems;
     tmpTree->GetSelections( selectedItems );
-    if( selectedItems.GetCount() != 1 )
+
+    for( int i = 0; i < pageCount; i++ )
     {
-      tmpTree->UnselectAll();
-      tmpTree->SelectItem( event.GetItem() );  
+      // Page 0 has a single-selection tree. If we call UnselectAll() there,
+      // selecting an item again immediately clears the selection.
+      // To avoid this, we skip UnselectAll() when the page uses single selection.
+      if( current == 0 && current == i && selectedItems.GetCount() < 2 )
+        continue;
+
+      wxTreeCtrl *tree = (wxTreeCtrl *)choiceWindowBrowser->GetPage( i );
+      if( tree )
+        tree->UnselectAll();
     }
-  
+  }
+}
+
+/*!
+ * wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
+ */
+void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
+{
+  if( !event.GetItem().IsOk() )
+  {
+    selectionChanging = false;
+    event.Skip();
+    return;
   }
 
-  if( gTimeline *timeline = itemSelected->getTimeline() )
+  wxTreeCtrl *tmpTree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
+
+  if( tmpTree == nullptr )
+  {
+    selectionChanging = false;
+    return;
+  }
+  TreeBrowserItemData *itemSelected = dynamic_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
+  if( itemSelected == nullptr )
+  {
+    selectionChanging = false;
+    return;
+  }
+  wxArrayTreeItemIds selectedItems;
+  tmpTree->GetSelections( selectedItems );
+
+
+  if( selectedItems.GetCount() > 1 )
+  {
+    clearProperties();
+  }
+  else if( gTimeline *timeline = itemSelected->getTimeline() )
   {
     currentTimeline = timeline->GetMyWindow();
     beginDragWindow = timeline->GetMyWindow();
@@ -2266,14 +2313,13 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     currentTimeline = nullptr;
   }
 
-  selectionChanging = false;
 
   if( choiceWindowBrowser->GetSelection() == 0 )
   {
     refreshMenuHints();
     setActiveWorkspacesText();
   }
-
+  selectionChanging = false;
 }
 
 /*!
@@ -3596,7 +3642,12 @@ void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent &event )
     vector< Timeline * > timelines;
     LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
 
-    event.Enable( ( timelines.size() > 0 ) && ( currentTimeline != nullptr ) );
+    wxTreeCtrl *tmpTree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
+
+    wxArrayTreeItemIds selectedItems;
+    tmpTree->GetSelections( selectedItems );
+
+    event.Enable( ( timelines.size() > 0 ) && ( currentTimeline != nullptr ) && ( selectedItems.GetCount() == 1 ) );
   }
   else
     event.Enable( false );
@@ -3701,7 +3752,13 @@ void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent &event )
       LoadedWindows::getInstance()->getAll( timelines );
     else
       LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
-    tbarMain->EnableTool( ID_NEW_HISTOGRAM, ( timelines.size() > 0 ) && ( currentTimeline != nullptr ) );
+
+    wxTreeCtrl *tmpTree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
+
+    wxArrayTreeItemIds selectedItems;
+    tmpTree->GetSelections( selectedItems );
+
+    tbarMain->EnableTool( ID_NEW_HISTOGRAM, ( timelines.size() > 0 ) && ( currentTimeline != nullptr ) && ( selectedItems.GetCount() == 1 ) );
   }
   else
     tbarMain->EnableTool( ID_NEW_HISTOGRAM, false );
@@ -5828,4 +5885,17 @@ void paraverMain::OnTraceInformationClick( wxCommandEvent &event )
 void paraverMain::OnTraceInformationUpdate( wxUpdateUIEvent &event )
 {
   event.Enable( choiceWindowBrowser->GetSelection() > 0 );
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER
+ */
+
+void paraverMain::OnChoicewinbrowserPageChanging( wxChoicebookEvent &event )
+{
+  ////@begin wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER in paraverMain.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+  ////@end wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER in paraverMain.
 }

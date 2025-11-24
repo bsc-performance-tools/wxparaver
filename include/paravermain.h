@@ -386,6 +386,9 @@ class paraverMain : public wxFrame
   /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserPageChanged( wxChoicebookEvent& event );
 
+  /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER
+  void OnChoicewinbrowserPageChanging( wxChoicebookEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserUpdate( wxUpdateUIEvent& event );
 
@@ -409,6 +412,7 @@ class paraverMain : public wxFrame
 
     /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
     void OnTreeSelChanged( wxTreeEvent& event );
+    void OnTreeSelChanging( wxTreeEvent& event );
 
     void OnMenuLoadAutoSavedSession( wxCommandEvent& event );
     void OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event );

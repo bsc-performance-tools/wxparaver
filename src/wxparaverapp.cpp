@@ -850,14 +850,15 @@ int wxparaverApp::FilterEvent(wxEvent& event)
 {
   int ret = true;
 
-  if ( event.GetEventType() == wxEVT_KEY_DOWN )
+  if( event.GetEventType() == wxEVT_KEY_DOWN )
   {
     long keyCode = ( (wxKeyEvent&) event ).GetKeyCode();
     if ( keyCode == WXK_ESCAPE && GetGlobalTiming() )
     {
       DeactivateGlobalTiming();
     }
-    else if ( ( (wxKeyEvent&) event ).ControlDown() )
+    else if( ( (wxKeyEvent &)event ).ControlDown() && !( (wxKeyEvent &)event ).AltDown() && !( (wxKeyEvent &)event ).ShiftDown() &&
+             !( (wxKeyEvent &)event ).MetaDown() )
     {
       if ( keyCode == (long) 'S' )
       {
