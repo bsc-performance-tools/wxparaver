@@ -151,8 +151,6 @@ void appendHistogram2Tree( gHistogram *ghistogram,
   rootAllTraces->UnselectAll();
   rootCurrentPage->UnselectAll();
   
-  std::cout << std::endl << "******* appendHistogram2Tree (recursive) *** histogram name: " << ghistogram->GetHistogram()->getName() << " ************************" << std::endl;
-
   auto appendToTrees = [&ghistogram, rootAllTraces, idRootAllTraces, rootCurrentPage, idRootCurrentPage]( TreeBrowserItemData *whichCurrentData = nullptr )
   {
     int iconNumber = getIconNumber( ghistogram->GetHistogram() );
@@ -176,8 +174,6 @@ void appendHistogram2Tree( gHistogram *ghistogram,
                                                       -1,
                                                       new TreeBrowserItemData( *whichCurrentData ) );
 
-    std::cout << std::endl << "|-> appendToTrees +--> ghistogram( " << ghistogram->GetHistogram()->getName() << " )= "  << ghistogram << "ids ***-< " << allTracesTreeId << " , " << currentTraceTreeId << ">-*** " << std::endl;
-
     return retIds;
   };
 
@@ -189,12 +185,7 @@ void appendHistogram2Tree( gHistogram *ghistogram,
 
   if( !isFirstAppendOfDerivedGHistogram && isDerived )
   {
-    std::cout << std::endl << "******* 1 : !creation + derived ********" << std::endl;
-    
     auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
-    std::cout << "1: ghistogram =" << ghistogram << std::endl;
-    // TODO: cuando es un clonado de una ventana derivada la primera vez debe entrar por aquí, pero  no está bien.
-    // La búsqueda de abajo no funciona ya que los hijos aún no han sido creados.
 
     for( auto parent : ghistogram->GetHistogram()->getParents() )
     {
@@ -202,7 +193,6 @@ void appendHistogram2Tree( gHistogram *ghistogram,
       gHistogram *tmpGHistogram = getGHistogramFromWindow( rootAllTraces, rootAllTraces->GetRootItem(), parent, found );
       if ( found )
       {
-        std::cout << "1: recursive -> " << parent->getName() << " - " << tmpCurrentWindowId1 << " - " << tmpCurrentWindowId2  << std::endl;
         appendHistogram2Tree( tmpGHistogram, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
       }
       else
@@ -210,7 +200,6 @@ void appendHistogram2Tree( gHistogram *ghistogram,
         gHistogram *tmpGHistogram2 = getGHistogramFromWindow( rootCurrentPage, rootCurrentPage->GetRootItem(), parent, found );
         if ( found )
         {
-          std::cout << "1: recursive -> " << parent->getName() << " - " << tmpCurrentWindowId1 << " - " << tmpCurrentWindowId2  << std::endl;
           appendHistogram2Tree( tmpGHistogram2, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
         }
       }
@@ -218,13 +207,10 @@ void appendHistogram2Tree( gHistogram *ghistogram,
   }
   else if ( !isFirstAppendOfDerivedGHistogram && isSingleOrLeaf )
   {
-    std::cout << std::endl << "******* 2 : !creation + single or leaf ********" << std::endl;
     auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
   }
   else if( isFirstAppendOfDerivedGHistogram && isGHistogramParent )
   {
-    std::cout << std::endl << "******* 3: CREATION & TOP PARENT ********" << std::endl;
-
     auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
 
     // Recursive derived histogram insertion
@@ -235,32 +221,7 @@ void appendHistogram2Tree( gHistogram *ghistogram,
   }
   else if( isFirstAppendOfDerivedGHistogram && isGHistogramFirstChildren )
   {
-    std::cout << std::endl << "******* 4: CREATION + FIRST LEVEL ********" << std::endl;
-
-    // Recursive derived histogram insertion
-    // for( auto children : erasableTreeItems )
-    // {
-    //   if( children.first == ghistogram )
-    //   {
-    //     TreeBrowserItemData *currentData = nullptr;
-    //     if ( children.second.first != nullptr && children.second.first.IsOk() )
-    //       currentData = (TreeBrowserItemData *)rootAllTraces->GetItemData( children.second.first );
-    //     else if ( children.second.second != nullptr && children.second.second.IsOk() )
-    //       currentData = (TreeBrowserItemData *)rootCurrentPage->GetItemData( children.second.second );
-
-    //     if ( currentData != nullptr )
-    //     {
-    //       auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees( new TreeBrowserItemData( *currentData ) );
-    //       if ( children.first->GetHistogram()->isDerivedHistogram() )
-    //       {
-    //         isFirstAppendOfDerivedGHistogram = false;
-    //         appendHistogram2Tree( children.first, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
-    //       }
-    //     }
-    //   }
-    // }    
     auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
-    std::cout << "4: ghistogram =" << ghistogram << std::endl;
     // TODO: cuando es un clonado de una ventana derivada la primera vez debe entrar por aquí, pero  no está bien.
     // La búsqueda de abajo no funciona ya que los hijos aún no han sido creados.
 
@@ -270,7 +231,6 @@ void appendHistogram2Tree( gHistogram *ghistogram,
       gHistogram *tmpGHistogram = getGHistogramFromWindow( rootAllTraces, rootAllTraces->GetRootItem(), parent, found );
       if ( found )
       {
-        std::cout << "1: recursive -> " << parent->getName() << " - " << tmpCurrentWindowId1 << " - " << tmpCurrentWindowId2  << std::endl;
         appendHistogram2Tree( tmpGHistogram, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
       }
       else
@@ -278,7 +238,6 @@ void appendHistogram2Tree( gHistogram *ghistogram,
         gHistogram *tmpGHistogram2 = getGHistogramFromWindow( rootCurrentPage, rootCurrentPage->GetRootItem(), parent, found );
         if ( found )
         {
-          std::cout << "1: recursive -> " << parent->getName() << " - " << tmpCurrentWindowId1 << " - " << tmpCurrentWindowId2  << std::endl;
           appendHistogram2Tree( tmpGHistogram2, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
         }
       }
@@ -286,7 +245,6 @@ void appendHistogram2Tree( gHistogram *ghistogram,
   }
   else if ( isFirstAppendOfDerivedGHistogram && isSingleOrLeaf )
   {
-    std::cout << std::endl << "******* 5: CREATION + LEAF ********" << std::endl;
     auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
   }
 }
@@ -588,7 +546,6 @@ bool updateTreeItem( wxTreeCtrl *tree,
                      wxWindow **currentWindow,
                      bool allTracesTree )
 {
-// std::cout << "updateTreeItem" << std::endl;
 // TODO: pending refactor
   bool destroy                  = false;
   TreeBrowserItemData *itemData = (TreeBrowserItemData *)tree->GetItemData( id );
@@ -748,13 +705,10 @@ bool updateTreeItem( wxTreeCtrl *tree,
   if( tree->ItemHasChildren( id ) )
   {
     wxTreeItemIdValue cookie;
-    //std::cout << "recursive call updateTreeItem: " <<  id << std::endl;
 
     wxTreeItemId currentChild = tree->GetFirstChild( id, cookie );
     while( currentChild.IsOk() )
     {
-    //std::cout << "recursive call updateTreeItem: " <<  currentChild << std::endl;
-
       updateTreeItem( tree, currentChild, allWindows, allHistograms, currentWindow, allTracesTree );
       if( !destroy )
         currentChild = tree->GetNextChild( id, cookie );
