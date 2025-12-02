@@ -1280,6 +1280,7 @@ bool isSyncedWithGroup( Timeline* whichWindow, unsigned int whichGroup )
 void gHistogram::updateHistogram( bool updateParents )
 {
   // rowSelection.getSelected( selectedRows );
+  bool found = false;
 
   if( myHistogram->isDerivedHistogram() )
   {
@@ -1290,19 +1291,26 @@ void gHistogram::updateHistogram( bool updateParents )
         Histogram* parentHistogram = myHistogram->getParent( parentId );
         if( parentHistogram != nullptr )
         {
-          auto parentGHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), parentHistogram );
-          if( !parentGHistogram->GetReady() )
+          for( auto& tmpTree : { getAllTracesTree(), getSelectedTraceTree( GetHistogram()->getControlWindow()->getTrace() ) } )
           {
-            parentGHistogram->updateHistogram( updateParents );
-            parentHistogram->setReady( true );
+            // auto parentGHistogram = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), parentHistogram, found );
+            auto parentGHistogram = getGHistogramFromWindow( tmpTree, tmpTree->GetRootItem(), parentHistogram, found );
+            if( parentGHistogram != nullptr && !parentGHistogram->GetReady() )
+            {
+              parentGHistogram->updateHistogram( updateParents );
+              parentHistogram->setReady( true );
+            }
           }
         }
       }
     }
 
     for( auto parentId = 0; parentId < myHistogram->getNumParents(); ++parentId )
-      if( !getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), myHistogram->getParent( parentId ) )->GetReady() )
+    {
+      auto tmpGHistogram = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), myHistogram->getParent( parentId ), found );
+      if( tmpGHistogram != nullptr && !getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), myHistogram->getParent( parentId ), found )->GetReady() )
         return;
+    }
   }
 
   if( myHistogram->getForceRecalc() ||
