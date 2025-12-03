@@ -76,9 +76,11 @@ void appendHistogram2Tree( gHistogram *ghistogram,
 
 wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Timeline *wanted, bool &found );
 wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found );
+wxTreeItemId getItemIdFromHistogram( wxTreeCtrl *baseRoot, wxTreeItemId root, Histogram *wanted, bool &found );
+wxTreeItemId getItemIdFromGHistogram( wxTreeCtrl *baseRoot, wxTreeItemId root, gHistogram *wanted, bool &found );
 gTimeline *getGTimelineFromWindow( wxTreeItemId root, Timeline *wanted, bool &found );
 gHistogram *getGHistogramFromWindow( wxTreeCtrl *baseRoot, wxTreeItemId root, Histogram *wanted, bool &found );
-wxTreeItemId getItemIdFromGHistogram( wxTreeCtrl *baseRoot, wxTreeItemId root, gHistogram *wanted, bool &found );
+
 void getParentGTimeline( gTimeline *current, std::vector< gTimeline * > & children );
 
 void BuildTree( paraverMain *parent,

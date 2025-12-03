@@ -420,6 +420,47 @@ gHistogram *getGHistogramFromWindow( wxTreeCtrl *baseRoot, wxTreeItemId root, Hi
 }
 
 
+wxTreeItemId getItemIdFromHistogram( wxTreeCtrl *baseRoot, wxTreeItemId root, Histogram *wanted, bool &found )
+{
+  wxTreeItemId retItemId;
+  wxTreeItemIdValue cookie;
+
+  found = false;
+
+  wxTreeItemId itemCurrent = baseRoot->GetFirstChild( root, cookie );
+  wxTreeItemId itemLast    = baseRoot->GetLastChild( root );
+
+  while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  {
+    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( baseRoot->GetItemData( itemCurrent ) ) )->getHistogram();
+    if( tmpHistogram != nullptr && tmpHistogram->GetHistogram() == wanted )
+    {
+      retItemId = itemCurrent;
+      found = true;
+    }
+    else if ( tmpHistogram != nullptr )
+    {
+      retItemId = getItemIdFromHistogram( baseRoot, itemCurrent, wanted, found );
+    }
+
+    if( !found )
+      itemCurrent = baseRoot->GetNextChild( root, cookie );
+  }
+
+  if( !found && itemLast.IsOk() )
+  {
+    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( baseRoot->GetItemData( itemLast ) ) )->getHistogram();
+    if( tmpHistogram != nullptr && tmpHistogram->GetHistogram() == wanted )
+    {
+      retItemId = itemLast;
+      found = true;
+    }
+  }
+
+  return retItemId;
+}
+
+
 wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Timeline *wanted, bool &found )
 {
   wxTreeItemId retItemId;
