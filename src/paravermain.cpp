@@ -1810,6 +1810,21 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     if( getOriginalList )
     {
       whichHistogram->setDerivedOperation( std::string( property->GetDisplayedString().mb_str() ) );
+
+      // Change Derived operation Icon: find icon in list
+      int iconNumber = getIconNumber( whichHistogram );
+
+      // Change Derived operation Icon: set both trees, global and trace tree
+      wxTreeCtrl *globalTreePage       = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
+      wxTreeCtrl *currentTraceTreePage = (wxTreeCtrl *)choiceWindowBrowser->GetPage( currentTrace + 1 );
+      bool found;
+      wxTreeItemId idInGlobalTree = getItemIdFromHistogram( globalTreePage, globalTreePage->GetRootItem(), whichHistogram, found );
+      globalTreePage->SetItemImage( idInGlobalTree, iconNumber );
+      wxTreeItemId idInCurrentTraceTree = getItemIdFromHistogram( currentTraceTreePage, currentTraceTreePage->GetRootItem(), whichHistogram, found );
+      currentTraceTreePage->SetItemImage( idInCurrentTraceTree, iconNumber );
+
+      // spreadSetRedraw( whichHistogram );
+      // spreadSetChanged( whichHistogram );
     }
     // TODO: cfg4d pending
     // else
