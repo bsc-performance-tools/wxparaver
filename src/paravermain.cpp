@@ -2381,8 +2381,10 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     currentHisto    = nullptr;
     beginDragHistogram = nullptr;
 
-    // if( timeline->IsShown() )
-    // timeline->Raise();
+    if( timeline->IsShown() )
+    {
+      timeline->Raise();
+    }
 
     currentTimeline = timeline->GetMyWindow();
   }
@@ -2394,8 +2396,8 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     beginDragWindow = nullptr;
     beginDragHistogram = histo->GetHistogram();
 
-    // if( histo->IsShown() )
-    //   histo->Raise();
+    if( histo->IsShown() )
+      histo->Raise();
 
     currentTimeline = nullptr;
   }
