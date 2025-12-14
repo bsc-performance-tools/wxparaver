@@ -4528,7 +4528,8 @@ void paraverMain::UnloadTrace( int whichTrace )
     ( *it )->clearDataWindow();
     ( *it )->clearExtraControlWindow();
     ( *it )->setShowWindow( false );
-    ( *it )->setDestroy( true );
+    if( !( *it )->haveChildren() )
+      ( *it )->setDestroy( true );
   }
 
   traceWorkspaces.erase( loadedTraces[ whichTrace ] );
