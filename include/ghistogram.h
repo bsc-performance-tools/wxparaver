@@ -457,6 +457,8 @@ class gHistogram: public wxFrame, public gWindow
     void fillGrid();
     void fillZoom();
 
+    gHistogram* clone( Histogram *clonedHistogram = nullptr, bool showWindow = true );
+
     /// Should we show tooltips?
     static bool ShowToolTips();
 

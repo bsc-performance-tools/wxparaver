@@ -1565,11 +1565,16 @@ void gHistogram::OnPopUpPasteControlDimensions( wxCommandEvent& event )
   myHistogram->setRecalc( true );
 }
 
-
-void gHistogram::OnPopUpClone( wxCommandEvent& event )
+// Single ghistograms must call this method passing a nullptr Histogram.
+// Derived ghistograms at top level need nullptr as well (further recursive calls pass new created clonedHistogram)
+gHistogram* gHistogram::clone( Histogram *clonedHistogram, bool showWindow )
 {
-  Histogram* clonedHistogram = myHistogram->clone();
-  string clonedName          = clonedHistogram->getName();
+  if( clonedHistogram == nullptr )
+    clonedHistogram = myHistogram->clone(); // recursive clone
+
+  clonedHistogram->setShowWindow( showWindow );
+
+  string clonedName = clonedHistogram->getName();
 
   // Create empty gHistogram and assign window with same dimensions.
   // Shifts position right and down.
@@ -1586,9 +1591,6 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
   clonedGHistogram->SetClientSize( myHistogram->getWidth(), myHistogram->getHeight() );
 
   clonedGHistogram->ready = false;
-
-  LoadedWindows::getInstance()->add( clonedHistogram );
-  appendHistogram2Tree( clonedGHistogram );
 
   TObjectOrder beginRow, endRow;
   if( clonedGHistogram->myHistogram->isZoomEmpty() )
@@ -1643,19 +1645,60 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
         GetHistogram()->getExtraControlWindow() != GetHistogram()->getControlWindow() &&
         GetHistogram()->getExtraControlWindow() != GetHistogram()->getDataWindow() )
       cloneTimeline( "EXTRA CONTROL", GetHistogram()->getExtraControlWindow(), clonedHistogram->getExtraControlWindow() );
+  
+    LoadedWindows::getInstance()->add( clonedHistogram );
+    appendHistogram2Tree( clonedGHistogram );
   }
-  else // isDerivedHistogram
+  else // isDerived
   {
+    auto myParents = GetHistogram()->getParents();
+    auto clonedParents = clonedHistogram->getParents();
+    std::vector< std::pair< Histogram *, Histogram * > > parentsByPairs;
+    std::transform( myParents.cbegin(), myParents.cend(),
+                    clonedParents.cbegin(),
+                    std::back_inserter( parentsByPairs ),
+                    []( Histogram *current, Histogram *cloned )
+                    {
+                      return std::make_pair( current, cloned ); } );
+                    } );
+    std::vector< gHistogram * > tmpParents;
+    auto recursiveClone = [this]( auto& whichParentsPair )
+                          {
+                            bool found = false;
+                            gHistogram *tmpParent = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), whichParentsPair.first, found );
+                            if ( found )
+                            {
+                              bool showWindow = false;
+                              return tmpParent->clone( whichParentsPair.second, showWindow );
+                            }
+                            else
+                              throw std::logic_error( "gHistogram clone: Original and cloned Histograms not properly paired off." );
+
+                            return (gHistogram *)nullptr;
+                          };
+    std::transform( parentsByPairs.cbegin(), parentsByPairs.cend(), std::back_inserter( tmpParents ), recursiveClone );
+
     clonedGHistogram->myHistogram->setDerivedOperation( clonedHistogram->getDerivedOperation() );
     clonedGHistogram->adaptControlsForDerivedHistogram();
+
+    LoadedWindows::getInstance()->add( clonedHistogram );
+    appendHistogram2Tree( clonedGHistogram, true );  
   }
 
   // Finally, execute
   clonedGHistogram->myHistogram->setRecalc( false );
-  clonedGHistogram->myHistogram->setForceRecalc( false );
+//  clonedGHistogram->myHistogram->setForceRecalc( false );
 
   clonedGHistogram->myHistogram->setRedraw( true );
   clonedGHistogram->ready = true;
+
+  return clonedGHistogram;
+}
+
+
+void gHistogram::OnPopUpClone( wxCommandEvent& event )
+{
+  clone();
 }
 
 
