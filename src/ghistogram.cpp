@@ -1659,7 +1659,7 @@ gHistogram* gHistogram::clone( Histogram *clonedHistogram, bool showWindow )
                     std::back_inserter( parentsByPairs ),
                     []( Histogram *current, Histogram *cloned )
                     {
-                      return std::make_pair( current, cloned ); } );
+                      return std::make_pair( current, cloned );
                     } );
     std::vector< gHistogram * > tmpParents;
     auto recursiveClone = [this]( auto& whichParentsPair )
