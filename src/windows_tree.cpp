@@ -414,6 +414,10 @@ gHistogram *getGHistogramFromWindow( wxTreeCtrl *baseRoot, wxTreeItemId root, Hi
       retgh = tmpHistogram;
       found = true;
     }
+    else if ( tmpHistogram != nullptr )
+    {
+      retgh = getGHistogramFromWindow( baseRoot, itemLast, wanted, found );
+    }
   }
 
   return retgh;
@@ -454,6 +458,10 @@ wxTreeItemId getItemIdFromHistogram( wxTreeCtrl *baseRoot, wxTreeItemId root, Hi
     {
       retItemId = itemLast;
       found = true;
+    }
+    else if ( tmpHistogram != nullptr )
+    {
+      retItemId = getItemIdFromHistogram( baseRoot, itemLast, wanted, found );
     }
   }
 
@@ -673,72 +681,74 @@ bool updateTreeItem( wxTreeCtrl *tree,
   }
   else if( gHistogram *tmpHistogram = itemData->getHistogram() )
   {
-    isEditMode            = tmpHistogram->getEditMode();
-    Histogram *tmpHisto   = tmpHistogram->GetHistogram();
-
-    std::string groupName = "";
-
-    if( tmpHisto->isSync() )
+    if( Histogram *tmpHisto   = tmpHistogram->GetHistogram() )
     {
-      int windowGroup = tmpHisto->getSyncGroup() + 1;
+      isEditMode            = tmpHistogram->getEditMode();
 
-      groupName = "[#" + std::to_string( windowGroup ) + "] ";
-      tmpName   = groupName + wxString::FromUTF8( tmpHisto->getName().c_str() );
+      std::string groupName = "";
 
-      if( !isEditMode && tmpName != tree->GetItemText( id ) )
+      if( tmpHisto->isSync() )
       {
-        tree->SetItemBold( id, true );
+        int windowGroup = tmpHisto->getSyncGroup() + 1;
 
-        int r = 0, g = 0, b = 0;
+        groupName = "[#" + std::to_string( windowGroup ) + "] ";
+        tmpName   = groupName + wxString::FromUTF8( tmpHisto->getName().c_str() );
 
-        getGroupColor( windowGroup, r, g, b );
+        if( !isEditMode && tmpName != tree->GetItemText( id ) )
+        {
+          tree->SetItemBold( id, true );
 
-        tree->SetItemTextColour( id, wxColour( r, g, b ) );
-        tree->SetItemText( id, tmpName );
+          int r = 0, g = 0, b = 0;
+
+          getGroupColor( windowGroup, r, g, b );
+
+          tree->SetItemTextColour( id, wxColour( r, g, b ) );
+          tree->SetItemText( id, tmpName );
+        }
       }
-    }
-    else
-    {
-      tmpName = wxString::FromUTF8( tmpHisto->getName().c_str() );
-      if( !isEditMode && tmpName != tree->GetItemText( id ) )
+      else
       {
-        tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
-        tree->SetItemBold( id, false );
-        tree->SetItemText( id, tmpName );
-      }
-    }
-
-    if( tmpHistogram->IsActive() && !tmpHisto->getDestroy() )
-    {
-      *currentWindow = tmpHistogram;
-      tree->SelectItem( id );
-    }
-
-    for( vector< Histogram * >::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
-    {
-      if( *it == tmpHisto )
-      {
-        allHistograms.erase( it );
-        break;
-      }
-    }
-
-    if( tmpHisto->getDestroy() )
-    {
-      if( paraverMain::myParaverMain->GetCurrentHisto() == tmpHisto )
-      {
-        paraverMain::myParaverMain->SetCurrentHisto( nullptr );
-        paraverMain::myParaverMain->clearProperties();
+        tmpName = wxString::FromUTF8( tmpHisto->getName().c_str() );
+        if( !isEditMode && tmpName != tree->GetItemText( id ) )
+        {
+          tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
+          tree->SetItemBold( id, false );
+          tree->SetItemText( id, tmpName );
+        }
       }
 
-      if( !allTracesTree )
-        tmpHistogram->Destroy();
-      for( auto parent: tmpHisto->getParents() )
+      if( tmpHistogram->IsActive() && !tmpHisto->getDestroy() )
       {
-        parent->removeChild( tmpHisto );
-        parent->setDestroy( true );
+        *currentWindow = tmpHistogram;
+        tree->SelectItem( id );
       }
-      destroy = true;
+
+      for( vector< Histogram * >::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
+      {
+        if( *it == tmpHisto )
+        {
+          allHistograms.erase( it );
+          break;
+        }
+      }
+
+      if( tmpHisto->getDestroy() )
+      {
+        if( paraverMain::myParaverMain->GetCurrentHisto() == tmpHisto )
+        {
+          paraverMain::myParaverMain->SetCurrentHisto( nullptr );
+          paraverMain::myParaverMain->clearProperties();
+        }
+
+        if( !allTracesTree )
+          tmpHistogram->Destroy();
+        for( auto parent: tmpHisto->getParents() )
+        {
+          parent->removeChild( tmpHisto );
+          parent->setDestroy( true );
+        }
+        destroy = true;
+      }
     }
   }
 
