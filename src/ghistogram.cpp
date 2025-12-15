@@ -533,8 +533,30 @@ void gHistogram::CreateControls()
   gridHisto->EnableEditing( false );
   gridHisto->SetDefaultCellAlignment( wxALIGN_RIGHT, wxALIGN_CENTRE );
   gridHisto->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
+
+  // TODO: Needs to give myHistogram to the constructor so it is known here.
+  //       But a better and clean option would be to do it in setHistogram method,
+  //       maybe copying whole adaptControlsForDerivedHistogram code there.
+  //
+  // adaptControlsForDerivedHistogram();
 }
 
+void gHistogram::adaptControlsForDerivedHistogram()
+{
+  if( myHistogram != nullptr && myHistogram->isDerivedHistogram() )
+  {
+    tbarHisto->EnableTool( ID_TOOL_OPEN_CONTROL_WINDOW, false );
+    tbarHisto->EnableTool( ID_TOOL_OPEN_DATA_WINDOW, false );
+    tbarHisto->EnableTool( ID_TOOL_OPEN_EXTRA_WINDOW, false );
+    tbarHisto->EnableTool( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, false );
+    tbarHisto->EnableTool( ID_TOOL_INCLUSIVE, false );
+
+    // TODO: synchronize on creation?
+    // if ( tbarHisto->GetHistogram()->getParent( 0 )->isSync() && tbarHisto->GetHistogram()->getParent( 1 )->isSync() &&
+    //     ( tbarHisto->GetHistogram()->getParent( 0 )->getSyncGroup() == tbarHisto->GetHistogram()->getParent( 1 )->getSyncGroup() ) )
+    //   tbarHisto->addToSyncGroup( whichHistogram->GetHistogram()->getParent( 0 )->getSyncGroup() );
+  }
+}
 
 void gHistogram::execute()
 {
@@ -1040,6 +1062,27 @@ bool gHistogram::getEditMode()
   return isEditMode;
 }
 
+vector< TObjectOrder > gHistogram::getSelectedRows()
+{
+  vector< TObjectOrder > tmpSelectedRows {};
+  myHistogram->getSelectedRows( tmpSelectedRows );
+
+  return tmpSelectedRows;
+}
+
+
+void gHistogram::setSelectedRows( vector< bool >& selected )
+{
+  myHistogram->setSelectedRows( selected );
+}
+
+
+void gHistogram::setSelectedRows( vector< TObjectOrder >& selected )
+{
+  myHistogram->setSelectedRows( selected );
+}
+
+
 /*!
  * Should we show tooltips?
  */
@@ -1234,9 +1277,41 @@ bool isSyncedWithGroup( Timeline* whichWindow, unsigned int whichGroup )
 }
 
 
-void gHistogram::updateHistogram()
+void gHistogram::updateHistogram( bool updateParents )
 {
   // rowSelection.getSelected( selectedRows );
+  bool found = false;
+
+  if( myHistogram->isDerivedHistogram() )
+  {
+    if( updateParents )
+    {
+      for( auto parentId = 0; parentId < myHistogram->getNumParents(); ++parentId )
+      {
+        Histogram* parentHistogram = myHistogram->getParent( parentId );
+        if( parentHistogram != nullptr )
+        {
+          for( auto& tmpTree : { getAllTracesTree(), getSelectedTraceTree( GetHistogram()->getControlWindow()->getTrace() ) } )
+          {
+            // auto parentGHistogram = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), parentHistogram, found );
+            auto parentGHistogram = getGHistogramFromWindow( tmpTree, tmpTree->GetRootItem(), parentHistogram, found );
+            if( parentGHistogram != nullptr && !parentGHistogram->GetReady() )
+            {
+              parentGHistogram->updateHistogram( updateParents );
+              parentHistogram->setReady( true );
+            }
+          }
+        }
+      }
+    }
+
+    for( auto parentId = 0; parentId < myHistogram->getNumParents(); ++parentId )
+    {
+      auto tmpGHistogram = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), myHistogram->getParent( parentId ), found );
+      if( tmpGHistogram != nullptr && !getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), myHistogram->getParent( parentId ), found )->GetReady() )
+        return;
+    }
+  }
 
   if( myHistogram->getForceRecalc() ||
       ( wxparaverApp::mainWindow->getAutoRedraw() && myHistogram->getRecalc() && !wxparaverApp::mainWindow->GetSomeWinIsRedraw() ) )
@@ -1258,6 +1333,9 @@ void gHistogram::updateHistogram()
   }
   else if( this->IsShown() )
   {
+    // TODO check already solved bug in devel
+    // if( ready && myHistogram->getRedraw() )
+    // if( myHistogram->getRedraw() && myHistogram->isReady() )
     if( ready && myHistogram->getRedraw() )
     {
       wxString winTitle = GetTitle();
@@ -1487,11 +1565,16 @@ void gHistogram::OnPopUpPasteControlDimensions( wxCommandEvent& event )
   myHistogram->setRecalc( true );
 }
 
-
-void gHistogram::OnPopUpClone( wxCommandEvent& event )
+// Single ghistograms must call this method passing a nullptr Histogram.
+// Derived ghistograms at top level need nullptr as well (further recursive calls pass new created clonedHistogram)
+gHistogram* gHistogram::clone( Histogram *clonedHistogram, bool showWindow )
 {
-  Histogram* clonedHistogram = myHistogram->clone();
-  string clonedName          = clonedHistogram->getName();
+  if( clonedHistogram == nullptr )
+    clonedHistogram = myHistogram->clone(); // recursive clone
+
+  clonedHistogram->setShowWindow( showWindow );
+
+  string clonedName = clonedHistogram->getName();
 
   // Create empty gHistogram and assign window with same dimensions.
   // Shifts position right and down.
@@ -1508,9 +1591,6 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
   clonedGHistogram->SetClientSize( myHistogram->getWidth(), myHistogram->getHeight() );
 
   clonedGHistogram->ready = false;
-
-  LoadedWindows::getInstance()->add( clonedHistogram );
-  appendHistogram2Tree( clonedGHistogram );
 
   TObjectOrder beginRow, endRow;
   if( clonedGHistogram->myHistogram->isZoomEmpty() )
@@ -1534,50 +1614,91 @@ void gHistogram::OnPopUpClone( wxCommandEvent& event )
                                                       true );
 
 
-  // Window clone
-  bool found                  = false;
-  gTimeline* controlGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), GetHistogram()->getControlWindow(), found );
-  if( found )
-    controlGTimeline->clone( clonedHistogram->getControlWindow(),
-                             parent,
-                             getAllTracesTree()->GetRootItem(),
-                             getSelectedTraceTree( clonedHistogram->getControlWindow()->getTrace() )->GetRootItem() );
-  else
-    throw new ParaverKernelException( TErrorCode::undefined, "ERROR! NOT FOUND ORIGINAL CONTROL WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
-
-  if( GetHistogram()->getDataWindow() != GetHistogram()->getControlWindow() )
+  if( !myHistogram->isDerivedHistogram() )
   {
-    found                    = false;
-    gTimeline* dataGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), GetHistogram()->getDataWindow(), found );
-    if( found )
-      dataGTimeline->clone( clonedHistogram->getDataWindow(),
-                            parent,
-                            getAllTracesTree()->GetRootItem(),
-                            getSelectedTraceTree( clonedHistogram->getDataWindow()->getTrace() )->GetRootItem() );
-    else
-      throw new ParaverKernelException( TErrorCode::undefined, "ERROR! NOT FOUND ORIGINAL DATA WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
+    auto cloneTimeline = [ this ]( const std::string& msgWindowType, Timeline* searchedWindow, Timeline* clonedTimeline )
+    {
+      bool found                  = false;
+      gTimeline* origGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), searchedWindow, found );
+      if( found )
+      {
+        origGTimeline->clone( clonedTimeline,
+                              parent,
+                              getAllTracesTree()->GetRootItem(),
+                              getSelectedTraceTree( clonedTimeline->getTrace() )->GetRootItem() );
+      }
+      else
+      {
+        std::string msg = "ERROR! NOT FOUND ORIGINAL " + msgWindowType + " WINDOW OF HISTOGRAM!";
+        throw new ParaverKernelException( TErrorCode::undefined, msg.c_str(), __FILE__, __LINE__ );
+      }
+    };
+
+
+    // Window clone
+    cloneTimeline( "CONTROL", GetHistogram()->getControlWindow(), clonedHistogram->getControlWindow() );
+
+    if( GetHistogram()->getDataWindow() != GetHistogram()->getControlWindow() )
+      cloneTimeline( "DATA", GetHistogram()->getDataWindow(), clonedHistogram->getDataWindow() );
+
+    if( GetHistogram()->getExtraControlWindow() != nullptr &&
+        GetHistogram()->getExtraControlWindow() != GetHistogram()->getControlWindow() &&
+        GetHistogram()->getExtraControlWindow() != GetHistogram()->getDataWindow() )
+      cloneTimeline( "EXTRA CONTROL", GetHistogram()->getExtraControlWindow(), clonedHistogram->getExtraControlWindow() );
+  
+    LoadedWindows::getInstance()->add( clonedHistogram );
+    appendHistogram2Tree( clonedGHistogram );
   }
-
-  if( GetHistogram()->getExtraControlWindow() != nullptr && GetHistogram()->getExtraControlWindow() != GetHistogram()->getControlWindow() &&
-      GetHistogram()->getExtraControlWindow() != GetHistogram()->getDataWindow() )
+  else // isDerived
   {
-    found                            = false;
-    gTimeline* extraControlGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), GetHistogram()->getExtraControlWindow(), found );
-    if( found )
-      extraControlGTimeline->clone( clonedHistogram->getExtraControlWindow(),
-                                    parent,
-                                    getAllTracesTree()->GetRootItem(),
-                                    getSelectedTraceTree( clonedHistogram->getExtraControlWindow()->getTrace() )->GetRootItem() );
-    else
-      throw new ParaverKernelException( TErrorCode::undefined, "ERROR! NOT FOUND ORIGINAL EXTRA CONTROL WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
+    auto myParents = GetHistogram()->getParents();
+    auto clonedParents = clonedHistogram->getParents();
+    std::vector< std::pair< Histogram *, Histogram * > > parentsByPairs;
+    std::transform( myParents.cbegin(), myParents.cend(),
+                    clonedParents.cbegin(),
+                    std::back_inserter( parentsByPairs ),
+                    []( Histogram *current, Histogram *cloned )
+                    {
+                      return std::make_pair( current, cloned );
+                    } );
+    std::vector< gHistogram * > tmpParents;
+    auto recursiveClone = [this]( auto& whichParentsPair )
+                          {
+                            bool found = false;
+                            gHistogram *tmpParent = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), whichParentsPair.first, found );
+                            if ( found )
+                            {
+                              bool showWindow = false;
+                              return tmpParent->clone( whichParentsPair.second, showWindow );
+                            }
+                            else
+                              throw std::logic_error( "gHistogram clone: Original and cloned Histograms not properly paired off." );
+
+                            return (gHistogram *)nullptr;
+                          };
+    std::transform( parentsByPairs.cbegin(), parentsByPairs.cend(), std::back_inserter( tmpParents ), recursiveClone );
+
+    clonedGHistogram->myHistogram->setDerivedOperation( clonedHistogram->getDerivedOperation() );
+    clonedGHistogram->adaptControlsForDerivedHistogram();
+
+    LoadedWindows::getInstance()->add( clonedHistogram );
+    appendHistogram2Tree( clonedGHistogram, true );  
   }
 
   // Finally, execute
   clonedGHistogram->myHistogram->setRecalc( false );
-  clonedGHistogram->myHistogram->setForceRecalc( false );
+//  clonedGHistogram->myHistogram->setForceRecalc( false );
 
   clonedGHistogram->myHistogram->setRedraw( true );
   clonedGHistogram->ready = true;
+
+  return clonedGHistogram;
+}
+
+
+void gHistogram::OnPopUpClone( wxCommandEvent& event )
+{
+  clone();
 }
 
 
@@ -2096,6 +2217,8 @@ void gHistogram::OnPopUpRedoZoom( wxCommandEvent& event )
 
 void gHistogram::rightDownManager()
 {
+  paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
+
   gPopUpMenu popUpMenu( this );
 
   popUpMenu.initializePopUpMenu();
@@ -2469,7 +2592,7 @@ void gHistogram::OnToolOpenFilteredControlWindowClick( wxCommandEvent& event )
 
 void gHistogram::OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myHistogram->getZoom() );
+  event.Enable( !myHistogram->isDerivedHistogram() && myHistogram->getZoom() );
 }
 
 
@@ -3092,7 +3215,7 @@ void gHistogram::OnToolOpenExtraWindowClick( wxCommandEvent& event )
 
 void gHistogram::OnToolOpenExtraWindowUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myHistogram->getExtraControlWindow() != nullptr );
+  event.Enable( !myHistogram->isDerivedHistogram() && myHistogram->getExtraControlWindow() != nullptr );
 }
 
 
@@ -3680,8 +3803,11 @@ void gHistogram::OnToolInclusiveClick( wxCommandEvent& event )
 
 void gHistogram::OnToolInclusiveUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myHistogram->getInclusiveEnabled() );
-  event.Check( myHistogram->getInclusive() );
+  if( !myHistogram->isDerivedHistogram() )
+  {
+    event.Enable( myHistogram->getInclusiveEnabled() );
+    event.Check( myHistogram->getInclusive() );
+  }
 }
 
 
@@ -3814,6 +3940,12 @@ void gHistogram::DisableCustomSortOption()
   auto customPos = choiceSortBy->FindString( STR_SORT_CUSTOM );
   if( customPos != wxNOT_FOUND )
     choiceSortBy->Delete( customPos );
+}
+
+void gHistogram::setDerivedOperation( const std::string& whichOperation )
+{
+  if( myHistogram->isDerivedHistogram() )
+    myHistogram->setDerivedOperation( whichOperation );
 }
 
 /*!

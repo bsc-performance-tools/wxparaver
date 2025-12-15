@@ -457,6 +457,8 @@ class gHistogram: public wxFrame, public gWindow
     void fillGrid();
     void fillZoom();
 
+    gHistogram* clone( Histogram *clonedHistogram = nullptr, bool showWindow = true );
+
     /// Should we show tooltips?
     static bool ShowToolTips();
 
@@ -554,8 +556,15 @@ class gHistogram: public wxFrame, public gWindow
     void setEditMode( bool value );
     bool getEditMode();
 
+    std::vector< TObjectOrder > getSelectedRows();
+    virtual void setSelectedRows( std::vector< bool >& selected );
+    virtual void setSelectedRows( std::vector< TObjectOrder >& selected );
+
     void EnableCustomSortOption();
     void DisableCustomSortOption();
+
+    void setDerivedOperation( const std::string& whichOperation );
+    void adaptControlsForDerivedHistogram();
 
     void InitHistogramCallbacks();
 
@@ -612,7 +621,7 @@ class gHistogram: public wxFrame, public gWindow
     // Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
     wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;
 
-    void updateHistogram();
+    void updateHistogram( bool updateParents = true );
 
     void OnTimerSize( wxTimerEvent& event );
     void OnTimerZoom( wxTimerEvent& event );

@@ -1513,11 +1513,16 @@ void gPopUpMenu::enablePopUpMenu()
 
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE )
   {
-    this->Enable( FindItem( _( STR_CONTROL_SCALE ) ), checkAllowedProperties( STR_CONTROL_SCALE ) );
+    bool isDerivedHistogram = std::get< gHistogram * >( *windowGenericList.begin() )->GetHistogram()->isDerivedHistogram();
+
+    this->Enable( FindItem( _( STR_CONTROL_SCALE ) ), !isDerivedHistogram && checkAllowedProperties( STR_CONTROL_SCALE ) );
     this->Enable( FindItem( _( STR_PASTE_SEMANTIC_SORT ) ), checkAllowedProperties( STR_PASTE_SEMANTIC_SORT ) );
     this->Enable( FindItem( _( STR_CONTROL_DIMENSIONS ) ), checkAllowedProperties( STR_CONTROL_DIMENSIONS ) );
 
+    this->Enable( FindItem( _( STR_FIT_TIME ) ), !isDerivedHistogram );
+
     this->Enable( FindItem( _( STR_AUTOFIT_CONTROL_ZERO ) ),
+                  !isDerivedHistogram &&
                   allWindowHas(
                     []( gHistogram *win )
                     {
@@ -1543,6 +1548,28 @@ void gPopUpMenu::enablePopUpMenu()
     else
     {
       this->Enable( FindItem( _( STR_3D_SCALE ) ), false );
+    }
+
+    // TODO: may need fine tuning
+    if ( isDerivedHistogram )
+    {
+      auto mainParentSynchGroup = std::get< gHistogram * >( *windowGenericList.begin() )->GetHistogram()->getParent( 0 )->getSyncGroup();
+      this->Enable( FindItem( _( STR_SYNCHRONIZE ) ),
+                              allWindowHas(
+                                [mainParentSynchGroup]( gHistogram *win )
+                                {
+                                  auto parents = win->GetHistogram()->getParents();
+                                  return std::all_of( parents.cbegin(),
+                                                      parents.cend(),
+                                                      [mainParentSynchGroup] ( auto p )
+                                                      { 
+                                                        return p->isSync() && p->getSyncGroup() == mainParentSynchGroup;
+                                                      } );
+                                },
+                                []( gTimeline *win )
+                                {
+                                  return true;
+                                }  ) );
     }
   }
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE )

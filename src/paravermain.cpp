@@ -231,6 +231,8 @@ wxSize paraverMain::defaultTitleBarSize = wxSize( 0, 0 );
 
 Timeline *paraverMain::beginDragWindow = nullptr;
 Timeline *paraverMain::endDragWindow   = nullptr;
+Histogram *paraverMain::beginDragHistogram = nullptr;
+Histogram *paraverMain::endDragHistogram   = nullptr;
 
 bool paraverMain::disableUserMessages = false;
 bool paraverMain::validSessions       = true;
@@ -1066,50 +1068,75 @@ bool paraverMain::DoLoadCFG( const string &path, std::optional< Trace * > whichT
         }
       }
 
-      int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
-      for( vector< Histogram * >::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
+      // Derived histograms: check which histograms are single parents to load/execute them to let derived histograms have data
+      // std::set< Histogram * > parentHistograms;
+      // auto selectParentHistograms = [&parentHistograms]( auto it )
+      // {
+      //   if( it->isDerivedHistogram() )
+      //   {
+      //     parentHistograms.insert( it ); // ONLY LEAFS
+      //   }
+      // };
+      // std::for_each( newHistograms.begin(), newHistograms.end(), selectParentHistograms );
+
+
+      auto loadHistograms = [&]( auto skipHistogram )
       {
-        wxPoint tmpPos( ( *it )->getPosX(), ( *it )->getPosY() );
-        if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
+        int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
+        for( vector< Histogram * >::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
         {
-          if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+          if ( skipHistogram( *it ) )
+            continue;
+
+          wxPoint tmpPos( ( *it )->getPosX(), ( *it )->getPosY() );
+          if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
           {
-            wxDisplay tmpDisplay( currentDisplay );
-            tmpPos.x += tmpDisplay.GetGeometry().x;
-            tmpPos.y += tmpDisplay.GetGeometry().y;
-            if( tmpPos.x != ( *it )->getPosX() )
-              ( *it )->setPosX( tmpPos.x );
-            if( tmpPos.y != ( *it )->getPosY() )
-              ( *it )->setPosY( tmpPos.y );
+            if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+            {
+              wxDisplay tmpDisplay( currentDisplay );
+              tmpPos.x += tmpDisplay.GetGeometry().x;
+              tmpPos.y += tmpDisplay.GetGeometry().y;
+              if( tmpPos.x != ( *it )->getPosX() )
+                ( *it )->setPosX( tmpPos.x );
+              if( tmpPos.y != ( *it )->getPosY() )
+                ( *it )->setPosY( tmpPos.y );
+            }
+          }
+  #if !__WXGTK__
+          gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ), tmpPos );
+  #else
+          gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ) );
+  #endif
+          tmpHisto->SetHistogram( *it );
+          tmpHisto->InitHistogramCallbacks();
+          tmpHisto->adaptControlsForDerivedHistogram();
+          appendHistogram2Tree( tmpHisto, (*it)->isDerivedHistogram() );
+          LoadedWindows::getInstance()->add( ( *it ) );
+
+          tmpHisto->GetHistogram()->setRecalc( true );
+
+          tmpHisto->SetClientSize( ( *it )->getWidth(), ( *it )->getHeight() );
+
+          if( ( *it )->getShowWindow() )
+          {
+  #if __WXGTK__
+            tmpHisto->Move( tmpPos );
+  #endif
+            tmpHisto->Show();
+          }
+
+          if( it + 1 == newHistograms.end() )
+          {
+            currentTimeline = nullptr;
+            currentHisto    = *it;
           }
         }
-#if !__WXGTK__
-        gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ), tmpPos );
-#else
-        gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ) );
-#endif
-        tmpHisto->SetHistogram( *it );
-        tmpHisto->InitHistogramCallbacks();
-        appendHistogram2Tree( tmpHisto );
-        LoadedWindows::getInstance()->add( ( *it ) );
+      };
 
-        tmpHisto->SetClientSize( ( *it )->getWidth(), ( *it )->getHeight() );
-
-        if( ( *it )->getShowWindow() )
-        {
-#if __WXGTK__
-          tmpHisto->Move( tmpPos );
-#endif
-          tmpHisto->Show();
-        }
-        tmpHisto->GetHistogram()->setRecalc( true );
-
-        if( it + 1 == newHistograms.end() )
-        {
-          currentTimeline = nullptr;
-          currentHisto    = *it;
-        }
-      }
+      // Load first single histograms, after that derived ones.
+      // loadHistograms( [&]( auto itCurrent ){ return parentHistograms.find( itCurrent ) != parentHistograms.end(); } );
+      // loadHistograms( [&]( auto itCurrent ){ return parentHistograms.find( itCurrent ) == parentHistograms.end(); } );
+      loadHistograms( [&]( auto itCurrent ){ return false; } ); // as they come. Not crashing!
 
       previousCFGs->add( path );
     }
@@ -1777,6 +1804,46 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     whichHistogram->setRedraw( true );
   }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_DERIVED_OP ) )
+  {
+    bool getOriginalList = ( !whichHistogram->getCFG4DEnabled() || !whichHistogram->getCFG4DMode() );
+    if( getOriginalList )
+    {
+      whichHistogram->setDerivedOperation( std::string( property->GetDisplayedString().mb_str() ) );
+
+      // Change Derived operation Icon: find icon in list
+      int iconNumber = getIconNumber( whichHistogram );
+
+      // Change Derived operation Icon: set both trees, global and trace tree
+      wxTreeCtrl *globalTreePage       = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
+      wxTreeCtrl *currentTraceTreePage = (wxTreeCtrl *)choiceWindowBrowser->GetPage( currentTrace + 1 );
+      bool found;
+      wxTreeItemId idInGlobalTree = getItemIdFromHistogram( globalTreePage, globalTreePage->GetRootItem(), whichHistogram, found );
+      globalTreePage->SetItemImage( idInGlobalTree, iconNumber );
+      wxTreeItemId idInCurrentTraceTree = getItemIdFromHistogram( currentTraceTreePage, currentTraceTreePage->GetRootItem(), whichHistogram, found );
+      currentTraceTreePage->SetItemImage( idInCurrentTraceTree, iconNumber );
+
+      // spreadSetRedraw( whichHistogram );
+      // spreadSetChanged( whichHistogram );
+    }
+    // TODO: cfg4d pending
+    // else
+    // {
+    //   map< string, string > statList( whichHistogram->getCFG4DStatisticsAliasList() );
+    //   string selected( std::string( property->GetDisplayedString().mb_str() ) );
+    //   for ( map< string, string >::iterator it = statList.begin(); it != statList.end(); ++it )
+    //   {
+    //     if ( it->second == selected )
+    //     {
+    //       selected = it->first;
+    //     }
+    //   }
+    //   whichHistogram->setCurrentStat( selected );
+    //   whichHistogram->setDerivedOperation( selected );
+    // }
+
+    whichHistogram->setRecalc( true );
+  }
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3D3RDWINDOW ) )
   {
     if( ( (prvTimelineTreeProperty *)property )->getSelectedWindow() == nullptr )
@@ -2312,6 +2379,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     beginDragWindow = timeline->GetMyWindow();
     currentWindow   = (wxWindow *)timeline;
     currentHisto    = nullptr;
+    beginDragHistogram = nullptr;
 
     if( timeline->IsShown() )
     {
@@ -2326,6 +2394,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     currentWindow = (wxWindow *)histo;
 
     beginDragWindow = nullptr;
+    beginDragHistogram = histo->GetHistogram();
 
     if( histo->IsShown() )
       histo->Raise();
@@ -2368,6 +2437,9 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent &event )
     return;
   }
 
+  endDragWindow    = nullptr;
+  endDragHistogram = nullptr;
+
   for( size_t i = 0; i < selectedItems.GetCount(); ++i )
   {
     wxTreeItemId selectedItem = selectedItems[ i ];
@@ -2383,6 +2455,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent &event )
       Histogram *tmpHisto = histo->GetHistogram();
 
       beginDragWindow = nullptr;
+      beginDragHistogram = histo->GetHistogram();
 
       tmpHisto->setShowWindow( !tmpHisto->getShowWindow() );
       if( tmpHisto->getShowWindow() )
@@ -2393,11 +2466,26 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent &event )
       Timeline *tmpWin = timeline->GetMyWindow();
 
       beginDragWindow = timeline->GetMyWindow();
+      beginDragHistogram = nullptr;
 
       tmpWin->setShowWindow( !tmpWin->getShowWindow() );
       if( tmpWin->getShowWindow() )
         timeline->Raise();
     }
+    // else if ( gTreeLink *tmpLink = itemData->getTreeLink() )
+    // {
+    //   gHistogram *histo = tmpLink->getWindowLinked();
+
+    //   // Same code as gHistogram
+    //   Histogram *tmpHisto = histo->GetHistogram();
+
+    //   beginDragWindow = nullptr;
+    //   beginDragHistogram = histo->GetHistogram();
+
+    //   tmpHisto->setShowWindow( !tmpHisto->getShowWindow() );
+    //   if( tmpHisto->getShowWindow() )
+    //     histo->Raise();
+    // }
   }
 }
 
@@ -2433,12 +2521,19 @@ void paraverMain::OnTreeRightClick( wxTreeEvent &event )
     {
       itemDataWindow.push_back( histo );
       // beginDragWindow = nullptr;
+      // beginDragHistogram = histo->GetHistogram();
       // histo->rightDownManager();
     }
+    // else if ( gTreeLink *tmpLink = itemData->getTreeLink() )
+    // {
+    //   gHistogram *histo = tmpLink->getWindowLinked();
+    //   itemDataWindow.push_back( histo );
+    // }
     else if( gTimeline *timeline = itemData->getTimeline() )
     {
       itemDataWindow.push_back( timeline );
       // beginDragWindow = timeline->GetMyWindow();
+      // beginDragHistogram = nullptr;
       // timeline->rightDownManager();
     }
   }
@@ -2563,6 +2658,14 @@ gHistogram *paraverMain::GetSelectedHistogram()
         return histo;
       }
     }
+    // else if ( gTreeLink *tmpLink = itemData->getTreeLink() )
+    // {
+    //   gHistogram *histo = tmpLink->getWindowLinked();
+    //   if( histo->GetHistogram() == paraverMain::myParaverMain->GetCurrentHisto() )
+    //   {
+    //     return histo;
+    //   }
+    // }
   }
   return nullptr;
 }
@@ -2647,13 +2750,12 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent &event )
   }
 
   // add pending window or histogram
+  wxTreeCtrl *allTracesPage = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
+  wxTreeCtrl *currentPage   = (wxTreeCtrl *)choiceWindowBrowser->GetPage( currentTrace + 1 );
   for( vector< Timeline * >::iterator it = allWindows.begin(); it != allWindows.end(); ++it )
   {
     if( ( *it )->getDestroy() )
       continue;
-
-    wxTreeCtrl *allTracesPage = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
-    wxTreeCtrl *currentPage   = (wxTreeCtrl *)choiceWindowBrowser->GetPage( currentTrace + 1 );
 
     if( ( *it )->getChild() == nullptr )
       BuildTree( this, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
@@ -2663,11 +2765,14 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent &event )
   {
     if( ( *it )->getDestroy() )
       continue;
-    gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ) );
-    tmpHisto->SetHistogram( *it );
-    tmpHisto->InitHistogramCallbacks();
 
-    appendHistogram2Tree( tmpHisto );
+    if( !( *it )->haveChildren() )
+    {
+      gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( ( *it )->getName().c_str() ) );
+      tmpHisto->SetHistogram( *it );
+      tmpHisto->InitHistogramCallbacks();
+      appendHistogram2Tree( tmpHisto );
+    }
   }
 
   // No window or histogram? Disable current selection.
@@ -2700,6 +2805,10 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent &event )
     lastTimeline = nullptr;
     if( lastHisto == currentHisto && !currentHisto->getChanged() )
       return;
+
+    if( currentHisto->getDestroy() && currentHisto->isDerivedHistogram() && currentHisto->haveChildren() )
+      return;
+
     lastHisto = currentHisto;
 
     updateHistogramProperties( windowProperties, currentHisto, propertiesClientData );
@@ -3157,6 +3266,7 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent &event )
       {
         currentWindow   = item->getHistogram();
         currentHisto    = item->getHistogram()->GetHistogram();
+        beginDragHistogram = currentHisto;
         currentTimeline = nullptr;
       }
     }
@@ -3685,11 +3795,18 @@ void paraverMain::OnTreeBeginDrag( wxTreeEvent &event )
     TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
 
     beginDragWindow = nullptr;
+    beginDragHistogram = nullptr;
+
     if( itemData != nullptr )
     {
       if( gTimeline *timeline = itemData->getTimeline() )
       {
         beginDragWindow = timeline->GetMyWindow();
+        event.Allow();
+      }
+      else if( gHistogram *histogram = itemData->getHistogram() )
+      {
+        beginDragHistogram = histogram->GetHistogram();
         event.Allow();
       }
     }
@@ -3733,17 +3850,111 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
     TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
 
     endDragWindow = nullptr;
+    endDragHistogram = nullptr;
 
     if( gTimeline *timeline = itemData->getTimeline() )
     {
-      endDragWindow = timeline->GetMyWindow();
-      if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace(), endDragWindow->isLevelProcessModel() ) &&
-          Timeline::compatibleLevels( beginDragWindow, endDragWindow ) )
+      if ( beginDragWindow != nullptr )
       {
-        ShowDerivedDialog();
+        endDragWindow = timeline->GetMyWindow();
+        if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace(), endDragWindow->isLevelProcessModel() ) &&
+            Timeline::compatibleLevels( beginDragWindow, endDragWindow ) )
+        {
+          ShowDerivedDialog();
+        }
+        else
+          wxMessageBox( wxT( "Incompatible windows used to derive." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
       }
-      else
-        wxMessageBox( wxT( "Incompatible windows used to derive." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
+    }
+    else if( gHistogram *histogram = itemData->getHistogram() )
+    {
+      if ( beginDragHistogram != nullptr )
+      {
+        Histogram *endDragHistogram = histogram->GetHistogram();
+
+        if( !HistogramProxy::compatibleForDerivation( beginDragHistogram, endDragHistogram ) )
+        {
+          wxMessageBox( wxT( "Incompatible histograms used to derive." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
+        }
+        else
+        {
+          Histogram *tmpDerivedHistogram = Histogram::create( localKernel, { beginDragHistogram, endDragHistogram } );
+
+          std::map< std::string, std::string > tmpOperations;
+          PRV_UINT32 dummyGroup = 0;
+          tmpDerivedHistogram->getDerivedOperationLabelsAndSymbols( tmpOperations, dummyGroup, true );
+          tmpDerivedHistogram->setDerivedOperation( "add" );
+
+          std::ostringstream tmpNum;
+          tmpNum << ++numNewDerivedHistogram;
+          tmpDerivedHistogram->setName( "New Derived Histogram #" + tmpNum.str() );
+
+          tmpDerivedHistogram->setCurrentStat( beginDragHistogram->getCurrentStat() );
+
+          // Time
+          tmpDerivedHistogram->setWindowBeginTime( beginDragHistogram->getBeginTime() );
+          tmpDerivedHistogram->setWindowEndTime( beginDragHistogram->getEndTime() );
+
+          // Recompute scale
+          tmpDerivedHistogram->setUseFixedDelta( beginDragHistogram->getUseFixedDelta() );
+          tmpDerivedHistogram->setCompute2DScale( false );
+          tmpDerivedHistogram->setCompute2DScaleZero( false );
+          tmpDerivedHistogram->setCompute3DScale( false );
+
+          // Color mode
+          tmpDerivedHistogram->setColorMode( beginDragHistogram->getColorMode() );
+
+          // Gradient? : unclear
+          tmpDerivedHistogram->setComputeGradient( beginDragHistogram->getComputeGradient() );
+
+          // Display properties
+          tmpDerivedHistogram->setZoom( beginDragHistogram->getZoom() );
+          tmpDerivedHistogram->setShowColor( beginDragHistogram->getShowColor() );
+          tmpDerivedHistogram->setHorizontal( beginDragHistogram->getHorizontal() );
+          tmpDerivedHistogram->setHideColumns( beginDragHistogram->getHideColumns() );
+          tmpDerivedHistogram->setFirstRowColored( beginDragHistogram->getFirstRowColored() );
+          tmpDerivedHistogram->setShortLabels( beginDragHistogram->getShortLabels() );
+          tmpDerivedHistogram->setOnlyTotals( beginDragHistogram->getOnlyTotals() );
+          tmpDerivedHistogram->setInclusive( beginDragHistogram->getInclusive() ); // Will be deselected
+          tmpDerivedHistogram->setFixedSemanticSort( beginDragHistogram->getFixedSemanticSort() );
+          tmpDerivedHistogram->setSemanticSortColumns( beginDragHistogram->getSemanticSortColumns() );
+          tmpDerivedHistogram->setSemanticSortCriteria( beginDragHistogram->getSemanticSortCriteria() );
+          tmpDerivedHistogram->setSemanticSortReverse( beginDragHistogram->getSemanticSortReverse() );
+
+          // Position
+          bool found = false;
+          gHistogram *tmpParent1 = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), beginDragHistogram, found );
+          wxSize titleBarSize    = tmpParent1->GetSize() - tmpParent1->GetClientSize();
+          if( titleBarSize.GetHeight() == 0 )
+            titleBarSize = paraverMain::defaultTitleBarSize;
+          wxPoint position =
+            wxPoint( tmpParent1->GetPosition().x + titleBarSize.GetHeight(), tmpParent1->GetPosition().y + titleBarSize.GetHeight() );
+
+          /* TODO: clone is not doing WXGTK distinction
+          #if !__WXGTK__
+                  gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
+          #else
+                  gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ) );
+          #endif
+          */
+          gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
+
+          // wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
+          // tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
+
+          tmpHisto->SetHistogram( tmpDerivedHistogram );
+          tmpHisto->adaptControlsForDerivedHistogram();
+
+          // tmpHisto->SetReady( false ); //? no usado
+          bool isDerived = true;
+          appendHistogram2Tree( tmpHisto, isDerived );
+          LoadedWindows::getInstance()->add( tmpDerivedHistogram );
+
+          tmpDerivedHistogram->setRecalc( true );
+          tmpDerivedHistogram->setForceRecalc( true ); // execute!
+          tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
+        }
+      }
     }
   }
 }
@@ -4083,7 +4294,7 @@ void paraverMain::selectTrace( Trace *trace )
 
 PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
 {
-  PRV_UINT16 currentTrace;
+  PRV_UINT16 currentTrace = 0;
 
   for( currentTrace = 0; currentTrace < loadedTraces.size(); ++currentTrace )
   {
@@ -4163,6 +4374,11 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent &event )
     {
       itemDataWindowHistogram.push_back( histo );
     }
+    // Commented on purpose
+    // else if ( gTreeLink *tmpLink = itemData->getTreeLink() )
+    // {
+    //   gHistogram *histo = tmpLink->getWindowLinked();
+    // }
     else if( gTimeline *timeline = itemData->getTimeline() )
     {
       itemDataWindowTimeline.push_back( timeline );
@@ -4171,7 +4387,13 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent &event )
   for( gHistogram *histo : itemDataWindowHistogram )
   {
     if( histo != nullptr )
-      histo->GetHistogram()->setDestroy( true );
+    {
+      // TODO extend check of not being used by histograms of other traces
+      if( histo->GetHistogram()->haveChildren() )
+        wxMessageBox( _( "Cannot delete parent histograms. Delete first derived histogram" ), _( "Paraver information" ), wxOK | wxICON_INFORMATION );
+      else
+        histo->GetHistogram()->setDestroy( true );
+    }
   }
 
   for( gTimeline *timeline : itemDataWindowTimeline )
@@ -4213,9 +4435,10 @@ void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent &event )
   }
   else if( currentHisto != nullptr )
   {
-    gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), currentHisto );
+    bool found = false;
+    gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), currentHisto, found );
     if( tmpHistogram != nullptr )
-      tmpEnableButtonDestroy = tmpHistogram->getEnableDestroyButton();
+      tmpEnableButtonDestroy   = tmpHistogram->getEnableDestroyButton();
   }
   else // Both null
   {
@@ -4305,7 +4528,8 @@ void paraverMain::UnloadTrace( int whichTrace )
     ( *it )->clearDataWindow();
     ( *it )->clearExtraControlWindow();
     ( *it )->setShowWindow( false );
-    ( *it )->setDestroy( true );
+    if( !( *it )->haveChildren() )
+      ( *it )->setDestroy( true );
   }
 
   traceWorkspaces.erase( loadedTraces[ whichTrace ] );
@@ -4621,18 +4845,22 @@ void paraverMain::OnSignal()
     }
     else // Histogram
     {
-      // Zoom
-      currentHisto->setWindowBeginTime( currentSignal.beginTime );
-      currentHisto->setWindowEndTime( currentSignal.endTime );
+      bool found = false;
+      gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), currentHisto, found );
+      if ( tmpHistogram != nullptr )
+      {
+        // Zoom
+        currentHisto->setWindowBeginTime( currentSignal.beginTime );
+        currentHisto->setWindowEndTime( currentSignal.endTime );
 
-      // Redraw
-      currentHisto->setChanged( true );
-      gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), currentHisto );
-      tmpHistogram->GetHistogram()->setRecalc( true );
+        // Redraw
+        currentHisto->setChanged( true );
+        tmpHistogram->GetHistogram()->setRecalc( true );
 
-      // Save image if needed
-      if( !currentSignal.imageFileName.empty() )
-        tmpHistogram->saveImage( wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
+        // Save image if needed
+        if( !currentSignal.imageFileName.empty() )
+          tmpHistogram->saveImage( wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
+      }
     }
   }
 
@@ -4740,6 +4968,14 @@ void paraverMain::OnSyncWindows( int groupId )
     {
       auto *histogram = histo->GetHistogram();
 
+    //   if( !histogram->isSync() || histogram->getSyncGroup() != wichGroup )
+    //     unsetSelected = false;
+    // }
+    // else if ( gTreeLink *tmpLink = itemData->getTreeLink() )
+    // {
+    //   gHistogram *histo = tmpLink->getWindowLinked();
+    //   auto *histogram = histo->GetHistogram();
+
       if( !histogram->isSync() || histogram->getSyncGroup() != wichGroup )
         unsetSelected = false;
     }
@@ -4762,6 +4998,11 @@ void paraverMain::OnSyncWindows( int groupId )
     {
       histo->OnPopUpSynchronizeById( wichGroup, !unsetSelected );
     }
+    // else if ( gTreeLink *tmpLink = itemData->getTreeLink() )
+    // {
+    //   gHistogram *histo = tmpLink->getWindowLinked();
+    //   histo->OnPopUpSynchronizeById( wichGroup, !unsetSelected );
+    // }
     else if( gTimeline *timeline = itemData->getTimeline() )
     {
       timeline->OnPopUpSynchronizeById( wichGroup, !unsetSelected );

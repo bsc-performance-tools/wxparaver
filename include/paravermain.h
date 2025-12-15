@@ -659,6 +659,8 @@ class paraverMain : public wxFrame
     static int initialPosY;
     static Timeline* beginDragWindow;
     static Timeline* endDragWindow;
+    static Histogram* beginDragHistogram;
+    static Histogram* endDragHistogram;
     static bool disableUserMessages;
     static bool stopOnIdle;
 
@@ -739,6 +741,7 @@ private:
     SessionInfo sessionInfo;
     bool firstSave;
     bool selectionChanging = false;
+    PRV_UINT16 numNewDerivedHistogram = 0;
 
     wxSingleInstanceChecker* instChecker;
     std::map< std::string, PRV_UINT32 > traceInstance;

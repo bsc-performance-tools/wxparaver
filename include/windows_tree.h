@@ -59,12 +59,28 @@ wxTreeCtrl * createTree( wxImageList *imageList );
 wxTreeCtrl *getAllTracesTree();
 wxTreeCtrl *getSelectedTraceTree( Trace *trace );
 
-void appendHistogram2Tree( gHistogram *ghistogram );
+using TAllTracesTreeItemId = wxTreeItemId;
+using TCurrentTraceTreeItemId = wxTreeItemId;
+using TTreeHistogramInfo = std::pair< gHistogram *, std::pair< TAllTracesTreeItemId, TCurrentTraceTreeItemId > >;
+using TErasableItems = std::vector< TTreeHistogramInfo >;
+
+void appendHistogram2Tree( gHistogram *ghistogram,
+                           bool isFirstAppendOfDerivedHistogram = false );                           
+void appendHistogram2Tree( gHistogram *ghistogram,
+                           TErasableItems& erasableTreeItems,
+                           bool isFirstAppendOfDerivedHistogram = false,
+                           wxTreeCtrl *root1 = nullptr,
+                           wxTreeItemId idRoot1 = nullptr,
+                           wxTreeCtrl *root2 = nullptr,
+                           wxTreeItemId idRoot2 = nullptr );                           
 
 wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Timeline *wanted, bool &found );
 wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found );
+wxTreeItemId getItemIdFromHistogram( wxTreeCtrl *baseRoot, wxTreeItemId root, Histogram *wanted, bool &found );
+wxTreeItemId getItemIdFromGHistogram( wxTreeCtrl *baseRoot, wxTreeItemId root, gHistogram *wanted, bool &found );
 gTimeline *getGTimelineFromWindow( wxTreeItemId root, Timeline *wanted, bool &found );
-gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted );
+gHistogram *getGHistogramFromWindow( wxTreeCtrl *baseRoot, wxTreeItemId root, Histogram *wanted, bool &found );
+
 void getParentGTimeline( gTimeline *current, std::vector< gTimeline * > & children );
 
 void BuildTree( paraverMain *parent,

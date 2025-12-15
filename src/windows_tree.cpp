@@ -59,33 +59,194 @@ wxTreeCtrl *getSelectedTraceTree( Trace *trace )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
 
-  PRV_INT16 currentTrace = paraverMain::myParaverMain->getTracePosition( trace );
+  PRV_INT16 currentTracePosition = paraverMain::myParaverMain->getTracePosition( trace );
 
-  return (wxTreeCtrl *)choiceWindowBrowser->GetPage( currentTrace + 1 );
+  return (wxTreeCtrl *)choiceWindowBrowser->GetPage( currentTracePosition + 1 );
+}
+
+#include <set>
+
+void appendHistogram2Tree( gHistogram *ghistogram, bool isFirstAppendOfDerivedGHistogram )
+{
+  wxTreeCtrl *rootAllTraces   = getAllTracesTree();
+  // wxTreeCtrl *rootCurrentPage = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
+  wxTreeCtrl *rootCurrentPage = getSelectedTraceTree( ghistogram->GetHistogram()->getTrace() );
+ 
+  TErasableItems erasableTreeItems {};
+
+  if ( !isFirstAppendOfDerivedGHistogram )
+  {
+    appendHistogram2Tree( ghistogram, erasableTreeItems, isFirstAppendOfDerivedGHistogram );
+  }
+  else
+  {
+    auto findTreeItemInfo = [&rootAllTraces, &rootCurrentPage]( auto& parent ) -> TTreeHistogramInfo
+    {
+      bool found = false;
+      gHistogram *tmpGHistogram = getGHistogramFromWindow( rootAllTraces, rootAllTraces->GetRootItem(), parent, found );
+      if ( found && tmpGHistogram != nullptr )
+      {
+        found = false;
+        auto allTracesItemId = getItemIdFromGHistogram( rootAllTraces, rootAllTraces->GetRootItem(), tmpGHistogram, found );
+        if ( !found )
+          allTracesItemId = {};
+
+        found = false;
+        auto curPageItemId = getItemIdFromGHistogram( rootCurrentPage, rootCurrentPage->GetRootItem(), tmpGHistogram, found );
+        if ( !found )
+          curPageItemId = {};
+        
+        return { tmpGHistogram, { allTracesItemId, curPageItemId } };
+      }
+
+      return {};
+    };
+
+    for( auto parent : ghistogram->GetHistogram()->getParents() )
+    { 
+      erasableTreeItems.push_back( findTreeItemInfo( parent ) );
+    }
+    
+    appendHistogram2Tree( ghistogram, erasableTreeItems, isFirstAppendOfDerivedGHistogram );
+
+    std::set< wxTreeItemId > erasedTreeItems {};
+    for ( const auto& info : erasableTreeItems )
+    {
+      if ( info.second.first != nullptr && erasedTreeItems.count( info.second.first ) == 0 && info.second.first.IsOk() )
+      {              
+        rootAllTraces->SetItemData( info.second.first, nullptr ); // unlink ghistogram
+        rootAllTraces->Delete( info.second.first );
+        erasedTreeItems.insert( info.second.first );
+      }
+      if ( info.second.second != nullptr && erasedTreeItems.count( info.second.second ) == 0 && info.second.second.IsOk() )
+      {
+        rootCurrentPage->SetItemData( info.second.second, nullptr ); // unlink ghistogram
+        rootCurrentPage->Delete( info.second.second );
+        erasedTreeItems.insert( info.second.second );
+      }
+    }
+  }
 }
 
 
-void appendHistogram2Tree( gHistogram *ghistogram )
+void appendHistogram2Tree( gHistogram *ghistogram,
+                           TErasableItems& erasableTreeItems,
+                           bool isFirstAppendOfDerivedGHistogram,
+                           //std::vector< Trace * >& trace, // Added for multitrace derived histogram
+                           wxTreeCtrl *rootAllTraces,
+                           wxTreeItemId idRootAllTraces,
+                           wxTreeCtrl *rootCurrentPage,
+                           wxTreeItemId idRootCurrentPage )
 {
   // Refresh tree in current page and always in global page
-  wxTreeCtrl *allTracesPage = getAllTracesTree();
-  wxTreeCtrl *currentPage   = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
+  if ( rootAllTraces == nullptr && rootCurrentPage == nullptr )
+  {
+    rootAllTraces = getAllTracesTree();
+    idRootAllTraces = rootAllTraces->GetRootItem();
 
-  currentPage->UnselectAll();
+    rootCurrentPage = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
+    idRootCurrentPage = rootCurrentPage->GetRootItem();
+  }
 
-  TreeBrowserItemData *currentData = new TreeBrowserItemData( wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), ghistogram );
+  rootAllTraces->UnselectAll();
+  rootCurrentPage->UnselectAll();
+  
+  auto appendToTrees = [&ghistogram, rootAllTraces, idRootAllTraces, rootCurrentPage, idRootCurrentPage]( TreeBrowserItemData *whichCurrentData = nullptr )
+  {
+    int iconNumber = getIconNumber( ghistogram->GetHistogram() );
 
-  wxTreeItemId tmpCurrentWindowId;
-  tmpCurrentWindowId = allTracesPage->AppendItem( allTracesPage->GetRootItem(),
-                                                  wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
-                                                  0,
-                                                  -1,
-                                                  currentData );
-  tmpCurrentWindowId = currentPage->AppendItem( currentPage->GetRootItem(),
-                                                wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
-                                                0,
-                                                -1,
-                                                new TreeBrowserItemData( *currentData ) );
+    std::pair< wxTreeItemId, wxTreeItemId > retIds;
+    auto& allTracesTreeId    = retIds.first;
+    auto& currentTraceTreeId = retIds.second;
+
+
+    if ( whichCurrentData == nullptr )
+      whichCurrentData = new TreeBrowserItemData( wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), ghistogram );
+
+    allTracesTreeId      = rootAllTraces->AppendItem( idRootAllTraces,
+                                                      wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
+                                                      iconNumber,
+                                                      -1,
+                                                      whichCurrentData );
+    currentTraceTreeId = rootCurrentPage->AppendItem( idRootCurrentPage,
+                                                      wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ),
+                                                      iconNumber,
+                                                      -1,
+                                                      new TreeBrowserItemData( *whichCurrentData ) );
+
+    return retIds;
+  };
+
+
+  bool isDerived = ghistogram->GetHistogram()->isDerivedHistogram() ;
+  bool isGHistogramParent = !ghistogram->GetHistogram()->haveChildren() ;
+  bool isGHistogramFirstChildren = ghistogram->GetHistogram()->haveChildren();
+  bool isSingleOrLeaf = ( ghistogram->GetHistogram()->getNumParents() == 0 );
+
+  if( !isFirstAppendOfDerivedGHistogram && isDerived )
+  {
+    auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
+
+    for( auto parent : ghistogram->GetHistogram()->getParents() )
+    {
+      bool found = false;     
+      gHistogram *tmpGHistogram = getGHistogramFromWindow( rootAllTraces, rootAllTraces->GetRootItem(), parent, found );
+      if ( found )
+      {
+        appendHistogram2Tree( tmpGHistogram, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
+      }
+      else
+      {
+        gHistogram *tmpGHistogram2 = getGHistogramFromWindow( rootCurrentPage, rootCurrentPage->GetRootItem(), parent, found );
+        if ( found )
+        {
+          appendHistogram2Tree( tmpGHistogram2, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
+        }
+      }
+    }    
+  }
+  else if ( !isFirstAppendOfDerivedGHistogram && isSingleOrLeaf )
+  {
+    auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
+  }
+  else if( isFirstAppendOfDerivedGHistogram && isGHistogramParent )
+  {
+    auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
+
+    // Recursive derived histogram insertion
+    for( auto children : erasableTreeItems )
+    {
+      appendHistogram2Tree( children.first, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
+    }
+  }
+  else if( isFirstAppendOfDerivedGHistogram && isGHistogramFirstChildren )
+  {
+    auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
+    // TODO: cuando es un clonado de una ventana derivada la primera vez debe entrar por aquí, pero  no está bien.
+    // La búsqueda de abajo no funciona ya que los hijos aún no han sido creados.
+
+    for( auto parent : ghistogram->GetHistogram()->getParents() )
+    {
+      bool found = false;     
+      gHistogram *tmpGHistogram = getGHistogramFromWindow( rootAllTraces, rootAllTraces->GetRootItem(), parent, found );
+      if ( found )
+      {
+        appendHistogram2Tree( tmpGHistogram, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
+      }
+      else
+      {
+        gHistogram *tmpGHistogram2 = getGHistogramFromWindow( rootCurrentPage, rootCurrentPage->GetRootItem(), parent, found );
+        if ( found )
+        {
+          appendHistogram2Tree( tmpGHistogram2, erasableTreeItems, isFirstAppendOfDerivedGHistogram, rootAllTraces, tmpCurrentWindowId1, rootCurrentPage, tmpCurrentWindowId2 );
+        }
+      }
+    }    
+  }
+  else if ( isFirstAppendOfDerivedGHistogram && isSingleOrLeaf )
+  {
+    auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
+  }
 }
 
 
@@ -128,6 +289,49 @@ wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool 
   }
 
   return root;
+}
+
+wxTreeItemId getItemIdFromGHistogram( wxTreeCtrl *baseRoot, wxTreeItemId root, gHistogram *wanted, bool &found )
+{
+  wxTreeItemIdValue cookie;
+  wxTreeItemId returnRoot = root;
+
+  wxTreeItemId itemCurrent = baseRoot->GetFirstChild( root, cookie );
+  wxTreeItemId itemLast    = baseRoot->GetLastChild( root );
+  while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  {
+    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( baseRoot->GetItemData( itemCurrent ) ) )->getHistogram();
+    if( tmpHistogram != nullptr && tmpHistogram == wanted )
+    {
+      returnRoot = itemCurrent;
+      found = true;
+    }
+    else if( tmpHistogram != nullptr )
+    {
+      returnRoot = getItemIdFromGHistogram( baseRoot, itemCurrent, wanted, found );
+    }
+
+    if( !found )
+    {
+      itemCurrent = baseRoot->GetNextChild( root, cookie );
+    }
+  }
+
+  if( !found && itemLast.IsOk() )
+  {
+    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( baseRoot->GetItemData( itemLast ) ) )->getHistogram();
+    if( tmpHistogram != nullptr && tmpHistogram == wanted )
+    {
+      returnRoot = itemLast;
+      found = true;
+    }
+    else
+    {
+      returnRoot = getItemIdFromGHistogram( baseRoot, itemLast, wanted, found );
+    }
+  }
+
+  return returnRoot;
 }
 
 
@@ -175,38 +379,93 @@ gTimeline *getGTimelineFromWindow( wxTreeItemId root, Timeline *wanted, bool &fo
 }
 
 
-gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted )
+gHistogram *getGHistogramFromWindow( wxTreeCtrl *baseRoot, wxTreeItemId root, Histogram *wanted, bool &found )
 {
   gHistogram *retgh = nullptr;
   wxTreeItemIdValue cookie;
 
-  bool found = false;
+  found = false;
 
-  wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( root, cookie );
-  wxTreeItemId itemLast    = getAllTracesTree()->GetLastChild( root );
+  wxTreeItemId itemCurrent = baseRoot->GetFirstChild( root, cookie );
+  wxTreeItemId itemLast    = baseRoot->GetLastChild( root );
 
   while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
-    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemCurrent ) ) )->getHistogram();
+    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( baseRoot->GetItemData( itemCurrent ) ) )->getHistogram();
     if( tmpHistogram != nullptr && tmpHistogram->GetHistogram() == wanted )
     {
       retgh = tmpHistogram;
       found = true;
     }
+    else if ( tmpHistogram != nullptr )
+    {
+      retgh = getGHistogramFromWindow( baseRoot, itemCurrent, wanted, found );
+    }
+
     if( !found )
-      itemCurrent = getAllTracesTree()->GetNextChild( root, cookie );
+      itemCurrent = baseRoot->GetNextChild( root, cookie );
   }
 
   if( !found && itemLast.IsOk() )
   {
-    if( ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemLast ) ) )->getHistogram()->GetHistogram() == wanted )
+    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( baseRoot->GetItemData( itemLast ) ) )->getHistogram();
+    if( tmpHistogram != nullptr && tmpHistogram->GetHistogram() == wanted )
     {
-      retgh = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemLast ) ) )->getHistogram();
+      retgh = tmpHistogram;
       found = true;
+    }
+    else if ( tmpHistogram != nullptr )
+    {
+      retgh = getGHistogramFromWindow( baseRoot, itemLast, wanted, found );
     }
   }
 
   return retgh;
+}
+
+
+wxTreeItemId getItemIdFromHistogram( wxTreeCtrl *baseRoot, wxTreeItemId root, Histogram *wanted, bool &found )
+{
+  wxTreeItemId retItemId;
+  wxTreeItemIdValue cookie;
+
+  found = false;
+
+  wxTreeItemId itemCurrent = baseRoot->GetFirstChild( root, cookie );
+  wxTreeItemId itemLast    = baseRoot->GetLastChild( root );
+
+  while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  {
+    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( baseRoot->GetItemData( itemCurrent ) ) )->getHistogram();
+    if( tmpHistogram != nullptr && tmpHistogram->GetHistogram() == wanted )
+    {
+      retItemId = itemCurrent;
+      found = true;
+    }
+    else if ( tmpHistogram != nullptr )
+    {
+      retItemId = getItemIdFromHistogram( baseRoot, itemCurrent, wanted, found );
+    }
+
+    if( !found )
+      itemCurrent = baseRoot->GetNextChild( root, cookie );
+  }
+
+  if( !found && itemLast.IsOk() )
+  {
+    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( baseRoot->GetItemData( itemLast ) ) )->getHistogram();
+    if( tmpHistogram != nullptr && tmpHistogram->GetHistogram() == wanted )
+    {
+      retItemId = itemLast;
+      found = true;
+    }
+    else if ( tmpHistogram != nullptr )
+    {
+      retItemId = getItemIdFromHistogram( baseRoot, itemLast, wanted, found );
+    }
+  }
+
+  return retItemId;
 }
 
 
@@ -336,6 +595,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
                      wxWindow **currentWindow,
                      bool allTracesTree )
 {
+// TODO: pending refactor
   bool destroy                  = false;
   TreeBrowserItemData *itemData = (TreeBrowserItemData *)tree->GetItemData( id );
 
@@ -421,74 +681,82 @@ bool updateTreeItem( wxTreeCtrl *tree,
   }
   else if( gHistogram *tmpHistogram = itemData->getHistogram() )
   {
-    isEditMode            = tmpHistogram->getEditMode();
-    Histogram *tmpHisto   = tmpHistogram->GetHistogram();
-
-    std::string groupName = "";
-
-    if( tmpHisto->isSync() )
+    if( Histogram *tmpHisto   = tmpHistogram->GetHistogram() )
     {
-      int windowGroup = tmpHisto->getSyncGroup() + 1;
+      isEditMode            = tmpHistogram->getEditMode();
 
-      groupName = "[#" + std::to_string( windowGroup ) + "] ";
-      tmpName   = groupName + wxString::FromUTF8( tmpHisto->getName().c_str() );
+      std::string groupName = "";
 
-      if( !isEditMode && tmpName != tree->GetItemText( id ) )
+      if( tmpHisto->isSync() )
       {
-        tree->SetItemBold( id, true );
+        int windowGroup = tmpHisto->getSyncGroup() + 1;
 
-        int r = 0, g = 0, b = 0;
+        groupName = "[#" + std::to_string( windowGroup ) + "] ";
+        tmpName   = groupName + wxString::FromUTF8( tmpHisto->getName().c_str() );
 
-        getGroupColor( windowGroup, r, g, b );
+        if( !isEditMode && tmpName != tree->GetItemText( id ) )
+        {
+          tree->SetItemBold( id, true );
 
-        tree->SetItemTextColour( id, wxColour( r, g, b ) );
-        tree->SetItemText( id, tmpName );
+          int r = 0, g = 0, b = 0;
+
+          getGroupColor( windowGroup, r, g, b );
+
+          tree->SetItemTextColour( id, wxColour( r, g, b ) );
+          tree->SetItemText( id, tmpName );
+        }
       }
-    }
-    else
-    {
-      tmpName = wxString::FromUTF8( tmpHisto->getName().c_str() );
-      if( !isEditMode && tmpName != tree->GetItemText( id ) )
+      else
       {
-        tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
-        tree->SetItemBold( id, false );
-        tree->SetItemText( id, tmpName );
+        tmpName = wxString::FromUTF8( tmpHisto->getName().c_str() );
+        if( !isEditMode && tmpName != tree->GetItemText( id ) )
+        {
+          tree->SetItemTextColour( id, wxColour( 0, 0, 0 ) );
+          tree->SetItemBold( id, false );
+          tree->SetItemText( id, tmpName );
+        }
       }
-    }
 
-    if( tmpHistogram->IsActive() && !tmpHisto->getDestroy() )
-    {
-      *currentWindow = tmpHistogram;
-      tree->SelectItem( id );
-    }
-
-    for( vector< Histogram * >::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
-    {
-      if( *it == tmpHisto )
+      if( tmpHistogram->IsActive() && !tmpHisto->getDestroy() )
       {
-        allHistograms.erase( it );
-        break;
+        *currentWindow = tmpHistogram;
+        tree->SelectItem( id );
       }
-    }
 
-    if( tmpHisto->getDestroy() )
-    {
-      if( paraverMain::myParaverMain->GetCurrentHisto() == tmpHisto )
+      for( vector< Histogram * >::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
       {
-        paraverMain::myParaverMain->SetCurrentHisto( nullptr );
-        paraverMain::myParaverMain->clearProperties();
+        if( *it == tmpHisto )
+        {
+          allHistograms.erase( it );
+          break;
+        }
       }
-      if( !allTracesTree )
-        tmpHistogram->Destroy();
-      destroy = true;
+
+      if( tmpHisto->getDestroy() )
+      {
+        if( paraverMain::myParaverMain->GetCurrentHisto() == tmpHisto )
+        {
+          paraverMain::myParaverMain->SetCurrentHisto( nullptr );
+          paraverMain::myParaverMain->clearProperties();
+        }
+
+        if( !allTracesTree )
+          tmpHistogram->Destroy();
+        for( auto parent: tmpHisto->getParents() )
+        {
+          parent->removeChild( tmpHisto );
+          parent->setDestroy( true );
+        }
+        destroy = true;
+      }
     }
   }
-
 
   // Recursive update
   if( tree->ItemHasChildren( id ) )
   {
     wxTreeItemIdValue cookie;
+
     wxTreeItemId currentChild = tree->GetFirstChild( id, cookie );
     while( currentChild.IsOk() )
     {
@@ -538,6 +806,7 @@ void iconizeWindows( wxTreeCtrl *tree, wxTreeItemId &id, bool iconize )
   {
     if( currentChild.IsOk() )
     {
+      // bool currentIsLink = false;
       TreeBrowserItemData *itemData = (TreeBrowserItemData *)tree->GetItemData( currentChild );
 
       if( gTimeline *tmpTimeline = itemData->getTimeline() )
@@ -551,6 +820,7 @@ void iconizeWindows( wxTreeCtrl *tree, wxTreeItemId &id, bool iconize )
           tmpHistogram->Show( iconize );
       }
 
+      // if( tree->ItemHasChildren( currentChild ) && !currentIsLink )
       if( tree->ItemHasChildren( currentChild ) )
         iconizeWindows( tree, currentChild, iconize );
     }
