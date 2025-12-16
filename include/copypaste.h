@@ -76,6 +76,7 @@ constexpr char STR_UNDO_ZOOM[]                   = "Undo Zoom\tCTRL+U";
 constexpr char STR_REDO_ZOOM[]                   = "Redo Zoom\tCTRL+R";
 constexpr char STR_AUTOFIT_CONTROL_ZERO[]        = "Auto Fit Control Scale Zeros";
 constexpr char STR_CUSTOM_PALETTE[]              = "Custom Palette";
+constexpr char STR_OBJECT_AXIS[]                 = "Object Axis";
 
 class gTimeline;
 class gHistogram;

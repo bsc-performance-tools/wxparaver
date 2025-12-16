@@ -954,6 +954,7 @@ class gTimeline : public wxFrame, public gWindow
     void OnPopUpPasteFilterAll( wxCommandEvent& event );
     void OnPopUpPasteFilterCommunications( wxCommandEvent& event );
     void OnPopUpPasteFilterEvents( wxCommandEvent& event );
+    void OnPopUpPasteObjectAxis( wxCommandEvent& event );
     void OnPopUpClone( wxCommandEvent& event );
     void OnPopUpRename( wxCommandEvent& event );
     void OnPopUpFitTimeScale( wxCommandEvent& event );
@@ -1014,6 +1015,7 @@ class gTimeline : public wxFrame, public gWindow
     void OnPopUpLabels( wxCommandEvent& event );
 
     void OnPopUpObjectAxis( wxCommandEvent& event );
+    void OnPopUpObjectAxisCustom( wxCommandEvent& event );
 
     void OnPopUpRunApp( wxCommandEvent& event );
 

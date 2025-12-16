@@ -223,6 +223,7 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed[ STR_FILTER_COMMS ]   = option;
   allowed[ STR_FILTER_EVENTS ]  = option;
   allowed[ STR_CUSTOM_PALETTE ] = option;
+  allowed[ STR_OBJECT_AXIS ]    = option;
 
   option[ SAME_TRACE ][ TIMELINE ][ TIMELINE ]   = false;
   option[ SAME_TRACE ][ TIMELINE ][ HISTOGRAM ]  = false;
@@ -359,6 +360,11 @@ void gPasteWindowProperties::paste( gTimeline *destinyTimeline, const string pro
       destinyTimeline->GetMyWindow()->setCustomAxisColor( sourceTimeline->GetMyWindow()->getAxisColor() );
       destinyTimeline->GetMyWindow()->setBackgroundAsZero( sourceTimeline->GetMyWindow()->getBackgroundAsZero() );
       destinyTimeline->GetMyWindow()->setUseCustomPalette( true );
+    }
+    else if( property == STR_OBJECT_AXIS )
+    {
+      destinyTimeline->GetMyWindow()->setObjectAxisSize( sourceTimeline->GetMyWindow()->getObjectAxisSize() );
+      destinyTimeline->GetMyWindow()->setObjectAxisCustomSize( sourceTimeline->GetMyWindow()->getObjectAxisCustomSize() );
     }
     else
     {

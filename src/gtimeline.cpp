@@ -1079,6 +1079,13 @@ bool gTimeline::drawAxis( wxDC& dc, vector< TObjectOrder >& selected )
       objectExt = wxSize( dc.GetSize().GetWidth() * 0.25, 0 );
       break;
 
+    case TObjectAxisSize::CUSTOM_PERC:
+      {
+        PRV_UINT16 customSize = myWindow->getObjectAxisCustomSize();
+        objectExt = wxSize( dc.GetSize().GetWidth() * customSize / 100.0, 0 );
+      }
+      break;
+
     default:
       break;
   }
@@ -2351,6 +2358,14 @@ void gTimeline::OnPopUpPasteFilterEvents( wxCommandEvent& event )
 }
 
 
+void gTimeline::OnPopUpPasteObjectAxis( wxCommandEvent& event )
+{
+  gPasteWindowProperties::getInstance()->paste( this, STR_OBJECT_AXIS );
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
+
 void gTimeline::OnPopUpPasteSpecial( wxCommandEvent& event )
 {
   wxArrayString choices;
@@ -2729,6 +2744,109 @@ void gTimeline::OnPopUpObjectAxis( wxCommandEvent& event )
   }
 
   myWindow->setRedraw( true );
+
+  // Broadcast to sync group if this property is selected
+  if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_OBJECT_AXIS ) )
+  {
+    SyncWindows::getInstance()->broadcastObjectAxisAll( myWindow->getSyncGroup() );
+  }
+}
+
+
+void gTimeline::OnPopUpObjectAxisCustom( wxCommandEvent& event )
+{
+  // Build message showing current object axis setting
+  wxString currentSetting;
+  TObjectAxisSize currentMode = myWindow->getObjectAxisSize();
+  switch( currentMode )
+  {
+    case TObjectAxisSize::CURRENT_LEVEL:
+      currentSetting = _( "Fit Current Level" );
+      break;
+    case TObjectAxisSize::ALL_LEVELS:
+      currentSetting = _( "Fit All Levels" );
+      break;
+    case TObjectAxisSize::ZERO_PERC:
+      currentSetting = _( "0%" );
+      break;
+    case TObjectAxisSize::FIVE_PERC:
+      currentSetting = _( "5%" );
+      break;
+    case TObjectAxisSize::TEN_PERC:
+      currentSetting = _( "10%" );
+      break;
+    case TObjectAxisSize::TWENTYFIVE_PERC:
+      currentSetting = _( "25%" );
+      break;
+    case TObjectAxisSize::CUSTOM_PERC:
+      currentSetting = wxString::Format( _( "Custom: %d%%" ), myWindow->getObjectAxisCustomSize() );
+      break;
+    default:
+      currentSetting = _( "Unknown" );
+      break;
+  }
+
+  // Pre-fill with stored custom value only if CUSTOM_PERC is active
+  wxString defaultValue = wxEmptyString;
+  if( currentMode == TObjectAxisSize::CUSTOM_PERC )
+  {
+    defaultValue = wxString::Format( wxT( "%d" ), myWindow->getObjectAxisCustomSize() );
+  }
+
+  wxString message = wxString::Format( _( "Current Object Axis: %s\n\nEnter custom percentage (1-100):" ), currentSetting );
+
+  wxTextEntryDialog dialog( this, message, _( "Custom Object Axis Percentage" ), defaultValue );
+
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString value = dialog.GetValue();
+    long numValue;
+
+    if( !value.ToLong( &numValue ) )
+    {
+      wxMessageBox( _( "Please enter a valid integer value." ), _( "Invalid Input" ), wxOK | wxICON_ERROR, this );
+      return;
+    }
+
+    if( numValue < 1 || numValue > 100 )
+    {
+      wxMessageBox( _( "Value must be between 1 and 100." ), _( "Invalid Range" ), wxOK | wxICON_ERROR, this );
+      return;
+    }
+
+    // Store the custom value
+    myWindow->setObjectAxisCustomSize( static_cast< PRV_UINT16 >( numValue ) );
+
+    // Check if value matches a preset - if so, switch to that preset mode
+    if( numValue == 0 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::ZERO_PERC );
+    }
+    else if( numValue == 5 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::FIVE_PERC );
+    }
+    else if( numValue == 10 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::TEN_PERC );
+    }
+    else if( numValue == 25 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::TWENTYFIVE_PERC );
+    }
+    else
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::CUSTOM_PERC );
+    }
+
+    myWindow->setRedraw( true );
+
+    // Broadcast to sync group if this property is selected
+    if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_OBJECT_AXIS ) )
+    {
+      SyncWindows::getInstance()->broadcastObjectAxisAll( myWindow->getSyncGroup() );
+    }
+  }
 }
 
 

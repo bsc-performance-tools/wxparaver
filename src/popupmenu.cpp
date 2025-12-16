@@ -257,6 +257,8 @@ void gPopUpMenu ::buildPopUpMenuPaste()
     { popUpMenuPaste, _( STR_DURATION ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteDuration, ID_MENU_PASTE_DURATION },
 
     { popUpMenuPaste, _( STR_SEMANTIC_SCALE ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteSemanticScale, ID_MENU_PASTE_SEMANTIC_SCALE },
+
+    { popUpMenuPaste, _( STR_OBJECT_AXIS ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteObjectAxis, ID_MENU_PASTE_OBJECT_AXIS },
   };
 
   std::vector< BuildMenuItem > pasteItemsBasicHistogram = {
@@ -1077,6 +1079,18 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis()
       }
     }
 
+    // Build custom label for Object Axis custom option
+    wxString customLabel;
+    if( objectAxis == TObjectAxisSize::CUSTOM_PERC )
+    {
+      PRV_UINT16 customSize = ( std::get< gTimeline * >( *windowGenericList.begin() ) )->GetMyWindow()->getObjectAxisCustomSize();
+      customLabel = wxString::Format( wxT( "Custom %d" ), customSize ) + wxT( "%" );
+    }
+    else
+    {
+      customLabel = _( "Custom..." );
+    }
+
     std::vector< BuildMenuItem > objectAxisItems = {
       { popUpMenuObjectAxis,
         _( "Fit Current Level" ),
@@ -1119,6 +1133,13 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis()
         &gPopUpMenu::OnPopUpObjectAxis,
         ID_MENU_OBJECT_AXIS_TWENTYFIVE,
         ( objectAxis == TObjectAxisSize::TWENTYFIVE_PERC && isSync ) },
+
+      { popUpMenuObjectAxis,
+        customLabel,
+        wxITEM_CHECK,
+        &gPopUpMenu::OnPopUpObjectAxisCustom,
+        ID_MENU_OBJECT_AXIS_CUSTOM,
+        ( objectAxis == TObjectAxisSize::CUSTOM_PERC && isSync ) },
     };
 
     buildListOfItems( objectAxisItems );
@@ -2310,6 +2331,17 @@ void gPopUpMenu::OnPopUpPasteControlDimensions( wxCommandEvent &event )
     {
     } );
 }
+void gPopUpMenu::OnPopUpPasteObjectAxis( wxCommandEvent &event )
+{
+  onAllWindowsCall(
+    []( gHistogram *item )
+    {
+    },
+    [ &event ]( gTimeline *item )
+    {
+      item->OnPopUpPasteObjectAxis( event );
+    } );
+}
 
 // MIX
 void gPopUpMenu::OnPopUpClone( wxCommandEvent &event )
@@ -3122,6 +3154,17 @@ void gPopUpMenu::OnPopUpObjectAxis( wxCommandEvent &event )
     [ &event ]( gTimeline *item )
     {
       item->OnPopUpObjectAxis( event );
+    },
+    []( gHistogram *item )
+    {
+    } );
+}
+void gPopUpMenu::OnPopUpObjectAxisCustom( wxCommandEvent &event )
+{
+  onAllWindowsCall(
+    [ &event ]( gTimeline *item )
+    {
+      item->OnPopUpObjectAxisCustom( event );
     },
     []( gHistogram *item )
     {

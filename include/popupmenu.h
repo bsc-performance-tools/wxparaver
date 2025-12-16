@@ -150,6 +150,8 @@
 #define ID_HIDE_SELECTED_WINDOWS                           30114
 #define ID_SHOW_SELECTED_WINDOWS_TRACE                     30115
 #define ID_HIDE_SELECTED_WINDOWS_TRACE                     30116
+#define ID_MENU_OBJECT_AXIS_CUSTOM                         30117
+#define ID_MENU_PASTE_OBJECT_AXIS                          30118
 
 #define ID_MENU_SYNC_GROUP_BASE        31000
 #define ID_MENU_SYNC_REMOVE_GROUP_BASE 32000
@@ -317,6 +319,7 @@ class gPopUpMenu : public wxMenu
     void OnPopUpPasteControlScale( wxCommandEvent &event );
     void OnPopUpPaste3DScale( wxCommandEvent &event );
     void OnPopUpPasteControlDimensions( wxCommandEvent &event );
+    void OnPopUpPasteObjectAxis( wxCommandEvent &event );
 
     // MIX
     void OnPopUpClone( wxCommandEvent &event );
@@ -406,6 +409,7 @@ class gPopUpMenu : public wxMenu
     // Timeline
     void OnPopUpLabels( wxCommandEvent &event );
     void OnPopUpObjectAxis( wxCommandEvent &event );
+    void OnPopUpObjectAxisCustom( wxCommandEvent &event );
     void OnPopUpRunApp( wxCommandEvent &event );
 
     void OnPopUpTiming( wxCommandEvent &event );
