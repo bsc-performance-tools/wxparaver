@@ -2255,7 +2255,9 @@ void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
     for( size_t i = 0; i < order.size(); ++i )
     {
       auxListToolOrder.push_back( order[ i ] );
-      listToolOrder.erase( find( listToolOrder.begin(), listToolOrder.end(), order[ i ] ) );
+      auto it = find( listToolOrder.begin(), listToolOrder.end(), order[ i ] );
+      if( it != listToolOrder.end() )
+        listToolOrder.erase( it );
     }
 
     // Add the non-selected to the end of the vector and remember if they were checked
