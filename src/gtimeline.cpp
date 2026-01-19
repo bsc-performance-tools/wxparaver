@@ -88,7 +88,7 @@ using namespace std;
 #ifdef __WXMAC__
 constexpr int TIMER_SIZE_DURATION = 750;
 #else
-constexpr int TIMER_SIZE_DURATION = 250;
+constexpr int TIMER_SIZE_DURATION = 150;
 #endif
 
 constexpr size_t MAX_LEGEND_COLORS = 512;
@@ -675,7 +675,6 @@ void gTimeline::redraw()
   redoColorsPanel       = true;
   enableApplyButton     = false;
   enabledAutoRedrawIcon = false;
-
   semanticValuesToColor.clear();
   semanticColorsToValue.clear();
   semanticPixelsToValue.clear();
@@ -742,7 +741,6 @@ void gTimeline::redraw()
     maxObj = endRow; // something!!
   else
     maxObj = selectedSet[ selectedSet.size() - 1 ];
-
   bufferImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   commImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
@@ -978,7 +976,10 @@ void gTimeline::redraw()
 
   drawZone->Refresh();
 
-  SetFocus();
+  if( codeChangeSize )
+    codeChangeSize = false;
+  else
+    SetFocus();
 }
 
 
@@ -1675,7 +1676,13 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
  */
 void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
+  int width  = event.GetSize().GetWidth();
+  int height = event.GetSize().GetHeight();
+
   timerSize->StartOnce( TIMER_SIZE_DURATION );
+  wxSize ev     = event.GetSize();
+  wxSize real   = GetSize();
+  wxSize client = GetClientSize();
 
   event.Skip();
 }
@@ -3740,9 +3747,6 @@ void gTimeline::resizeDrawZone( int width, int height )
     this->SetClientSize( width, height + infoZoneLastSize + 5 );
 #endif
   }
-  myWindow->setWidth( width, false );
-  myWindow->setHeight( height, false );
-  canRedraw = true;
 }
 
 bool gTimeline::IsSplit() const
@@ -3786,7 +3790,6 @@ void gTimeline::Unsplit()
   this->Freeze();
 
   splitter->Unsplit( infoZone );
-
 
   /*#ifdef _WIN32
     this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() -
@@ -5377,9 +5380,10 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
       codeChangeSize = false;
       return;
     }
-
-    myWindow->setHeight( height, !this->IsMaximized() && !codeChangeSize );
-    myWindow->setWidth( width, !this->IsMaximized() && !codeChangeSize );
+    else
+    {
+      myWindow->setSize( width, height, !this->IsMaximized() && !codeChangeSize );
+    }
   }
 
 
