@@ -626,7 +626,7 @@ class paraverMain : public wxFrame
                                         TraceOptions* traceOptions,
                                         const std::string& xmlFile,
                                         std::vector< std::string >& filterToolOrder );
-    void OnOKCutFilterDialog( CutFilterDialog* cutFilterDialog );
+    bool OnOKCutFilterDialog( CutFilterDialog* cutFilterDialog );
     void ShowCutTraceWindow( const std::string& filename = "", bool loadTrace = true, const std::string& xmlFile = "", bool modalDialog = false );
 
     bool getAutoRedraw() const;

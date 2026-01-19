@@ -5046,45 +5046,58 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
 
   tmpNameOut = traceSrcFileName;
 
-  for( PRV_UINT16 i = 0; i < filterToolIDs.size(); ++i )
+  try
   {
-    tmpNameIn = tmpNameOut;
-
-    if( i == filterToolIDs.size() - 1 )
-      tmpNameOut = traceDstFileName;
-    else
-      tmpNameOut = localKernel->getNewTraceName( tmpNameIn, filterToolIDs[ i ], false );
-
-    paraverMain::dialogProgress->Pulse( wxString::FromUTF8( tmpNameOut.c_str() ) );
-    paraverMain::dialogProgress->Fit();
-    paraverMain::dialogProgress->Show();
-
-    if( filterToolIDs[ i ] == TraceCutter::getID() )
+    for( PRV_UINT16 i = 0; i < filterToolIDs.size(); ++i )
     {
-      TraceCutter *traceCutter = TraceCutter::create( localKernel, tmpNameIn, tmpNameOut, traceOptions, progress );
-      traceCutter->execute( tmpNameIn, tmpNameOut, progress );
-      localKernel->copyPCF( tmpNameIn, tmpNameOut );
-      delete traceCutter;
-    }
-    else if( filterToolIDs[ i ] == TraceFilter::getID() )
-    {
-      map< TTypeValuePair, TTypeValuePair > dummyTranslation; // it it's empty, it's ignored
+      tmpNameIn = tmpNameOut;
 
-      TraceFilter *traceFilter =
-        localKernel->newTraceFilter( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str(), traceOptions, dummyTranslation, progress );
-      localKernel->copyPCF( tmpNameIn, tmpNameOut );
-      delete traceFilter;
-    }
-    else if( filterToolIDs[ i ] == TraceSoftwareCounters::getID() )
-    {
-      TraceSoftwareCounters *traceSoftwareCounters =
-        localKernel->newTraceSoftwareCounters( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str(), traceOptions, progress );
-      // traceSoftwareCounters modifies the pcf, don't copy here!
-      delete traceSoftwareCounters;
-    }
+      if( i == filterToolIDs.size() - 1 )
+        tmpNameOut = traceDstFileName;
+      else
+        tmpNameOut = localKernel->getNewTraceName( tmpNameIn, filterToolIDs[ i ], false );
 
-    localKernel->copyROW( tmpNameIn, tmpNameOut );
-    tmpFiles.push_back( tmpNameOut );
+      paraverMain::dialogProgress->Pulse( wxString::FromUTF8( tmpNameOut.c_str() ) );
+      paraverMain::dialogProgress->Fit();
+      paraverMain::dialogProgress->Show();
+
+      if( filterToolIDs[ i ] == TraceCutter::getID() )
+      {
+        TraceCutter *traceCutter = TraceCutter::create( localKernel, tmpNameIn, tmpNameOut, traceOptions, progress );
+        traceCutter->execute( tmpNameIn, tmpNameOut, progress );
+        localKernel->copyPCF( tmpNameIn, tmpNameOut );
+        delete traceCutter;
+      }
+      else if( filterToolIDs[ i ] == TraceFilter::getID() )
+      {
+        map< TTypeValuePair, TTypeValuePair > dummyTranslation; // it it's empty, it's ignored
+
+        TraceFilter *traceFilter =
+          localKernel->newTraceFilter( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str(), traceOptions, dummyTranslation, progress );
+        localKernel->copyPCF( tmpNameIn, tmpNameOut );
+        delete traceFilter;
+      }
+      else if( filterToolIDs[ i ] == TraceSoftwareCounters::getID() )
+      {
+        TraceSoftwareCounters *traceSoftwareCounters =
+          localKernel->newTraceSoftwareCounters( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str(), traceOptions, progress );
+        // traceSoftwareCounters modifies the pcf, don't copy here!
+        delete traceSoftwareCounters;
+      }
+
+      localKernel->copyROW( tmpNameIn, tmpNameOut );
+      tmpFiles.push_back( tmpNameOut );
+    }
+  }
+  catch( const std::exception& e )
+  {
+    paraverMain::dialogProgress->Show( false );
+    delete paraverMain::dialogProgress;
+    paraverMain::dialogProgress = nullptr;
+    delete progress;
+
+    wxMessageBox( wxString::FromUTF8( e.what() ), _( "Cutter/Filter Error" ), wxOK | wxICON_ERROR );
+    return "";
   }
 
   // Delete intermediate files
@@ -5162,13 +5175,17 @@ void paraverMain::OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialo
 }
 
 
-void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog )
+bool paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog )
 {
   vector< string > filterToolOrder = cutFilterDialog->GetFilterToolOrder();
   string srcTrace                  = cutFilterDialog->GetNameSourceTrace();
   string dstTrace                  = cutFilterDialog->GetNameDestinyTrace();
 
-  DoLoadFilteredTrace( srcTrace, dstTrace, cutFilterDialog->GetTraceOptions(), filterToolOrder );
+  string resultingTrace = DoLoadFilteredTrace( srcTrace, dstTrace, cutFilterDialog->GetTraceOptions(), filterToolOrder );
+  if( resultingTrace.empty() )
+  {
+    return false;
+  }
 
   if( cutFilterDialog->GetLoadResultingTrace() )
   {
@@ -5184,6 +5201,7 @@ void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog )
   }
 
   cutFilterFinished = true;
+  return true;
 }
 
 

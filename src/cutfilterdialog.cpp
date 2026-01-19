@@ -2781,11 +2781,12 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
 
     if( !previousWarning )
     {
-      paraverMain::myParaverMain->OnOKCutFilterDialog( this );
-
-      // TODO: Move destruction responsibility away from same class
-      //       Also check traceOptions destruction.
-      delete this;
+      if( paraverMain::myParaverMain->OnOKCutFilterDialog( this ) )
+      {
+        // TODO: Move destruction responsibility away from same class
+        //       Also check traceOptions destruction.
+        delete this;
+      }
     }
   }
 }
