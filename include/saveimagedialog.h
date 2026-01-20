@@ -74,8 +74,8 @@ class wxFileCtrl;
 #define ID_SCROLLEDWINDOW_SCALE_CONTROL 10010
 #define ID_SCROLLEDWINDOW3 10007
 #define ID_SCROLLEDWINDOWANDCALE 10008
-#define ID_CHECKBOX 10014
 #define ID_ORIENTATION_LEGEND_CONTROL 10002
+#define ID_CHECKBOX 10014
 #define ID_CHECKBOX_SHRINK_LABEL 10016
 #define ID_SELECT_LEGEND 10017
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
@@ -184,11 +184,11 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOWANDCALE
   void OnPaintWindowScale( wxPaintEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
-  void OnCheckboxClick( wxCommandEvent& event );
-
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_ORIENTATION_LEGEND_CONTROL
   void OnOrientationLegendControlSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
+  void OnCheckboxClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SHRINK_LABEL
   void OnCheckboxShrinkLabelClick( wxCommandEvent& event );
