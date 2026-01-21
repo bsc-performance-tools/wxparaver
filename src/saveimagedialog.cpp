@@ -315,11 +315,11 @@ void SaveImageDialog::CreateControls()
   itemBoxSizer6->Add( itemStaticText7, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP, 5 );
 
   wxArrayString widgetTopCompose1Strings;
-  widgetTopCompose1Strings.Add( _( "Horitzontal" ) );
+  widgetTopCompose1Strings.Add( _( "Horizontal" ) );
   widgetTopCompose1Strings.Add( _( "Vertical" ) );
   widgetTopCompose1 =
     new wxChoice( itemDialog1, ID_ORIENTATION_LEGEND_CONTROL, wxDefaultPosition, wxDefaultSize, widgetTopCompose1Strings, wxFULL_REPAINT_ON_RESIZE );
-  widgetTopCompose1->SetStringSelection( _( "Horitzontal" ) );
+  widgetTopCompose1->SetStringSelection( _( "Horizontal" ) );
   itemBoxSizer6->Add( widgetTopCompose1, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 5 );
 
   shrinkLabelCheckBox = new wxCheckBox( itemDialog1, ID_CHECKBOX_SHRINK_LABEL, _( "Shrink Labels" ), wxDefaultPosition, wxDefaultSize, 0 );
@@ -1112,7 +1112,7 @@ void SaveImageDialog::OnOrientationLegendControlSelected( wxCommandEvent& event 
   int selectionIndex     = event.GetSelection(); // index of selected item
   wxString selectionText = event.GetString();    // text of selected item
 
-  if( selectionText == "Horitzontal" )
+  if( selectionText == "Horizontal" )
   {
     imageGeneration->setImageOrientation( TScaleImageOrientation::TScaleImageOrientationHorizontal );
 
