@@ -330,37 +330,36 @@ void SaveImageDialog::CreateControls()
 
   itemBoxSizer5->Add(itemNotebook6, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer( wxVERTICAL );
-  itemBoxSizer5->Add( itemBoxSizer14, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5 );
+  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer5->Add(itemBoxSizer14, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer( wxHORIZONTAL );
-  itemBoxSizer14->Add( itemBoxSizer15, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5 );
+  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer14->Add(itemBoxSizer15, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxStaticText* itemStaticText16 = new wxStaticText( itemDialog1, wxID_STATIC, _( "Legend orientation" ), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer15->Add( itemStaticText16, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP, 5 );
+  wxStaticText* itemStaticText16 = new wxStaticText( itemDialog1, wxID_STATIC, _("Legend orientation"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer15->Add(itemStaticText16, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   wxArrayString widgetTopCompose1Strings;
   widgetTopCompose1Strings.Add(_("Horitzontal"));
   widgetTopCompose1Strings.Add(_("Vertical"));
   widgetTopCompose1 = new wxChoice( itemDialog1, ID_ORIENTATION_LEGEND_CONTROL, wxDefaultPosition, wxDefaultSize, widgetTopCompose1Strings, wxFULL_REPAINT_ON_RESIZE );
   widgetTopCompose1->SetStringSelection(_("Horitzontal"));
-  itemBoxSizer15->Add( widgetTopCompose1, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 5 );
+  itemBoxSizer15->Add(widgetTopCompose1, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer( wxHORIZONTAL );
-  itemBoxSizer14->Add( itemBoxSizer16, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5 );
+  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer14->Add(itemBoxSizer16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxCheckBox* itemCheckBox17 = new wxCheckBox( itemDialog1, ID_CHECKBOX, _( "Use original size" ), wxDefaultPosition, wxDefaultSize, 0 );
-  itemCheckBox17->SetValue( false );
-  itemBoxSizer16->Add( itemCheckBox17, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5 );
+  wxCheckBox* itemCheckBox17 = new wxCheckBox( itemDialog1, ID_CHECKBOX, _("Use original size"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemCheckBox17->SetValue(false);
+  itemBoxSizer16->Add(itemCheckBox17, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxCheckBox* itemCheckBox18 =
-    new wxCheckBox( itemDialog1, ID_CHECKBOX_SHRINK_LABEL, _( "Shrink Header Label" ), wxDefaultPosition, wxDefaultSize, 0 );
-  itemCheckBox18->SetValue( false );
-  itemBoxSizer16->Add( itemCheckBox18, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5 );
+  wxCheckBox* itemCheckBox18 = new wxCheckBox( itemDialog1, ID_CHECKBOX_SHRINK_LABEL, _("Shrink Header Label"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemCheckBox18->SetValue(false);
+  itemBoxSizer16->Add(itemCheckBox18, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  buttonSelectLegendValues = new wxButton( itemDialog1, ID_SELECT_LEGEND, _( "Select Legend" ), wxDefaultPosition, wxDefaultSize, 0 );
-  buttonSelectLegendValues->SetName( wxT( "buttonSelectLegendValues" ) );
-  itemBoxSizer16->Add( buttonSelectLegendValues, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5 );
+  buttonSelectLegendValues = new wxButton( itemDialog1, ID_SELECT_LEGEND, _("Select Legend"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonSelectLegendValues->SetName(wxT("buttonSelectLegendValues"));
+  itemBoxSizer16->Add(buttonSelectLegendValues, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   // Connect events and objects
   drawWindowSingle->Connect(ID_SCROLLEDWINDOW_IMAGE, wxEVT_PAINT, wxPaintEventHandler(SaveImageDialog::OnPaintWindowSingle), NULL, this);
