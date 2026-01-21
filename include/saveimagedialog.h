@@ -63,19 +63,15 @@ class wxFileCtrl;
 #define ID_SAVELEGENDTEXTCTRL 10507
 #define ID_SAVELEGENDCONTROLCHECKBOX 10012
 #define ID_SAVELEGENDCONTROLTEXTCTRL 10013
-#define ID_CHECKBOX1 10011
+#define ID_IMAGE_PLUS_LEGEND_CHECKBOX 10011
 #define ID_TEXTCTRL 10015
 #define ID_NOTEBOOK 10004
-#define ID_SCROLLEDWINDOW1 10003
 #define ID_SCROLLEDWINDOW_IMAGE 10005
-#define ID_SCROLLEDWINDOW 10001
 #define ID_SCROLLEDWINDOW_SCALE 10006
-#define ID_SCROLLEDWINDOW2 10009
 #define ID_SCROLLEDWINDOW_SCALE_CONTROL 10010
-#define ID_SCROLLEDWINDOW3 10007
 #define ID_SCROLLEDWINDOWANDCALE 10008
+#define ID_USE_ORIGINAL_SIZE_CHECKBOX 10014
 #define ID_ORIENTATION_LEGEND_CONTROL 10002
-#define ID_CHECKBOX 10014
 #define ID_CHECKBOX_SHRINK_LABEL 10016
 #define ID_SELECT_LEGEND 10017
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
@@ -160,17 +156,8 @@ public:
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SAVELEGENDCONTROLCHECKBOX
   void OnSavelegendcontrolcheckboxClick( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX1
-  void OnCheckbox1Click( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
-  void OnOkClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for wxID_OK
-  void OnOkUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
-  void OnCancelClick( wxCommandEvent& event );
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_IMAGE_PLUS_LEGEND_CHECKBOX
+  void OnImagePlusLegendCheckboxClick( wxCommandEvent& event );
 
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE
   void OnPaintWindowSingle( wxPaintEvent& event );
@@ -184,17 +171,26 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOWANDCALE
   void OnPaintWindowScale( wxPaintEvent& event );
 
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_USE_ORIGINAL_SIZE_CHECKBOX
+  void OnUseOriginalSizeCheckboxClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_ORIENTATION_LEGEND_CONTROL
   void OnOrientationLegendControlSelected( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
-  void OnCheckboxClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SHRINK_LABEL
   void OnCheckboxShrinkLabelClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SELECT_LEGEND
   void OnShowLegend( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
+  void OnOkClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for wxID_OK
+  void OnOkUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
+  void OnCancelClick( wxCommandEvent& event );
 
   ////@end SaveImageDialog event handler declarations
 
@@ -243,14 +239,16 @@ public:
   wxBoxSizer* imageScaleControlSizer;
   wxCheckBox* imageAndScaleCheckbox;
   wxTextCtrl* imageScaleFileName;
-  wxButton* buttonSave;
-  wxButton* buttonCancel;
   wxScrolledWindow* drawWindowSingle;
   wxScrolledWindow* drawScaleSingle;
   wxScrolledWindow* drawScaleControlSingle;
   wxScrolledWindow* drawWindowAndScale;
+  wxCheckBox* useOriginalSizeCheckBox;
   wxChoice* widgetTopCompose1;
+  wxCheckBox* shrinkLabelCheckBox;
   wxButton* buttonSelectLegendValues;
+  wxButton* buttonSave;
+  wxButton* buttonCancel;
   ////@end SaveImageDialog member variables
 
   WindowImageGenerator* imageGeneration;

@@ -58,64 +58,61 @@ IMPLEMENT_DYNAMIC_CLASS( SaveImageDialog, wxDialog )
 BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
 
 ////@begin SaveImageDialog event table entries
-  EVT_TEXT_ENTER( ID_TEXTPATH, SaveImageDialog::OnTextpathEnter )
-  EVT_UPDATE_UI( ID_FILENAVIGATOR, SaveImageDialog::OnFilenavigatorUpdate )
-  EVT_CHECKBOX( ID_SAVEIMAGECHECKBOX, SaveImageDialog::OnSaveimagecheckboxClick )
-  EVT_CHECKBOX( ID_SAVELEGENDCHECKBOX, SaveImageDialog::OnSavelegendcheckboxClick )
-  EVT_CHECKBOX( ID_SAVELEGENDCONTROLCHECKBOX, SaveImageDialog::OnSavelegendcontrolcheckboxClick )
-  EVT_CHECKBOX( ID_CHECKBOX1, SaveImageDialog::OnCheckbox1Click )
-  EVT_BUTTON( wxID_OK, SaveImageDialog::OnOkClick )
-  EVT_UPDATE_UI( wxID_OK, SaveImageDialog::OnOkUpdate )
-  EVT_BUTTON( wxID_CANCEL, SaveImageDialog::OnCancelClick )
-  EVT_CHOICE( ID_ORIENTATION_LEGEND_CONTROL, SaveImageDialog::OnOrientationLegendControlSelected )
-  EVT_CHECKBOX( ID_CHECKBOX, SaveImageDialog::OnCheckboxClick )
-  EVT_CHECKBOX( ID_CHECKBOX_SHRINK_LABEL, SaveImageDialog::OnCheckboxShrinkLabelClick )
-  EVT_BUTTON( ID_SELECT_LEGEND, SaveImageDialog::OnShowLegend )
-  ////@end SaveImageDialog event table entries
+EVT_TEXT_ENTER( ID_TEXTPATH, SaveImageDialog::OnTextpathEnter )
+EVT_UPDATE_UI( ID_FILENAVIGATOR, SaveImageDialog::OnFilenavigatorUpdate )
+EVT_CHECKBOX( ID_SAVEIMAGECHECKBOX, SaveImageDialog::OnSaveimagecheckboxClick )
+EVT_CHECKBOX( ID_SAVELEGENDCHECKBOX, SaveImageDialog::OnSavelegendcheckboxClick )
+EVT_CHECKBOX( ID_SAVELEGENDCONTROLCHECKBOX, SaveImageDialog::OnSavelegendcontrolcheckboxClick )
+EVT_CHECKBOX( ID_IMAGE_PLUS_LEGEND_CHECKBOX, SaveImageDialog::OnImagePlusLegendCheckboxClick )
+EVT_CHECKBOX( ID_USE_ORIGINAL_SIZE_CHECKBOX, SaveImageDialog::OnUseOriginalSizeCheckboxClick )
+EVT_CHOICE( ID_ORIENTATION_LEGEND_CONTROL, SaveImageDialog::OnOrientationLegendControlSelected )
+EVT_CHECKBOX( ID_CHECKBOX_SHRINK_LABEL, SaveImageDialog::OnCheckboxShrinkLabelClick )
+EVT_BUTTON( ID_SELECT_LEGEND, SaveImageDialog::OnShowLegend )
+EVT_BUTTON( wxID_OK, SaveImageDialog::OnOkClick )
+EVT_UPDATE_UI( wxID_OK, SaveImageDialog::OnOkUpdate )
+EVT_BUTTON( wxID_CANCEL, SaveImageDialog::OnCancelClick )
+////@end SaveImageDialog event table entries
 
-  EVT_FILECTRL_SELECTIONCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
-  EVT_FILECTRL_FOLDERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
-  EVT_FILECTRL_FILTERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
+EVT_FILECTRL_SELECTIONCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
+EVT_FILECTRL_FOLDERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
+EVT_FILECTRL_FILTERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
 
-  END_EVENT_TABLE()
+END_EVENT_TABLE()
 
-  wxString SaveImageDialog::directoryStartingPath = _( "" );
+wxString SaveImageDialog::directoryStartingPath = _( "" );
 
-  /*!
-   * SaveImageDialog constructors
-   */
+/*!
+ * SaveImageDialog constructors
+ */
 
-  SaveImageDialog::SaveImageDialog()
+SaveImageDialog::SaveImageDialog()
+{
+  Init();
+}
+
+SaveImageDialog::SaveImageDialog( wxWindow* parent,
+                                  wxString& whichStartingPath,
+                                  wxString whichFileName,
+                                  WindowImageGenerator* whichImageGeneration,
+                                  bool isItHistogram,
+                                  wxString whichLegendSuffix,
+                                  wxString whichLegendControlSuffix,
+                                  wxWindowID id,
+                                  const wxString& caption,
+                                  const wxPoint& pos,
+                                  const wxSize& size,
+                                  long style )
+  : defaultFileName( whichFileName ), isHistogram( isItHistogram ), legendSuffix( whichLegendSuffix ), legendControlSuffix( whichLegendControlSuffix )
+{
+  if( directoryStartingPath.IsEmpty() )
   {
-    Init();
+    directoryStartingPath = whichStartingPath;
   }
+  imageGeneration = whichImageGeneration;
 
-  SaveImageDialog::SaveImageDialog( wxWindow* parent,
-                                    wxString& whichStartingPath,
-                                    wxString whichFileName,
-                                    WindowImageGenerator* whichImageGeneration,
-                                    bool isItHistogram,
-                                    wxString whichLegendSuffix,
-                                    wxString whichLegendControlSuffix,
-                                    wxWindowID id,
-                                    const wxString& caption,
-                                    const wxPoint& pos,
-                                    const wxSize& size,
-                                    long style )
-    : defaultFileName( whichFileName )
-    , isHistogram( isItHistogram )
-    , legendSuffix( whichLegendSuffix )
-    , legendControlSuffix( whichLegendControlSuffix )
-  {
-    if( directoryStartingPath.IsEmpty() )
-    {
-      directoryStartingPath = whichStartingPath;
-    }
-    imageGeneration = whichImageGeneration;
-
-    Init();
-    Create( parent, id, caption, pos, size, style );
-  }
+  Init();
+  Create( parent, id, caption, pos, size, style );
+}
 
 
 /*!
@@ -125,13 +122,13 @@ BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
 bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   ////@begin SaveImageDialog creation
-  SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
+  SetExtraStyle( wxWS_EX_VALIDATE_RECURSIVELY | wxWS_EX_BLOCK_EVENTS );
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if (GetSizer())
+  if( GetSizer() )
   {
-    GetSizer()->SetSizeHints(this);
+    GetSizer()->SetSizeHints( this );
   }
   Centre();
   ////@end SaveImageDialog creation
@@ -157,31 +154,33 @@ SaveImageDialog::~SaveImageDialog()
 void SaveImageDialog::Init()
 {
   ////@begin SaveImageDialog member initialisation
-  sizerMain = NULL;
-  sizerPath = NULL;
-  textPath = NULL;
-  fileNavigator = NULL;
-  imageToSaveSizer = NULL;
-  imageSizer = NULL;
-  imageCheckbox = NULL;
-  imageFileName = NULL;
-  legendSizer = NULL;
-  legendCheckbox = NULL;
-  legendFileName = NULL;
-  legendControlSizer = NULL;
-  legendControlCheckbox = NULL;
-  legendControlFileName = NULL;
-  imageScaleControlSizer = NULL;
-  imageAndScaleCheckbox = NULL;
-  imageScaleFileName = NULL;
-  buttonSave = NULL;
-  buttonCancel = NULL;
-  drawWindowSingle = NULL;
-  drawScaleSingle = NULL;
-  drawScaleControlSingle = NULL;
-  drawWindowAndScale = NULL;
-  widgetTopCompose1 = NULL;
+  sizerMain                = NULL;
+  sizerPath                = NULL;
+  textPath                 = NULL;
+  fileNavigator            = NULL;
+  imageToSaveSizer         = NULL;
+  imageSizer               = NULL;
+  imageCheckbox            = NULL;
+  imageFileName            = NULL;
+  legendSizer              = NULL;
+  legendCheckbox           = NULL;
+  legendFileName           = NULL;
+  legendControlSizer       = NULL;
+  legendControlCheckbox    = NULL;
+  legendControlFileName    = NULL;
+  imageScaleControlSizer   = NULL;
+  imageAndScaleCheckbox    = NULL;
+  imageScaleFileName       = NULL;
+  drawWindowSingle         = NULL;
+  drawScaleSingle          = NULL;
+  drawScaleControlSingle   = NULL;
+  drawWindowAndScale       = NULL;
+  useOriginalSizeCheckBox  = NULL;
+  widgetTopCompose1        = NULL;
+  shrinkLabelCheckBox      = NULL;
   buttonSelectLegendValues = NULL;
+  buttonSave               = NULL;
+  buttonCancel             = NULL;
   ////@end SaveImageDialog member initialisation
 }
 
@@ -195,177 +194,166 @@ void SaveImageDialog::CreateControls()
   ////@begin SaveImageDialog content construction
   SaveImageDialog* itemDialog1 = this;
 
-  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-  itemDialog1->SetSizer(itemBoxSizer1);
+  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer( wxVERTICAL );
+  itemDialog1->SetSizer( itemBoxSizer1 );
 
-  sizerMain = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer1->Add(sizerMain, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer1->Add( itemBoxSizer2, 1, wxGROW | wxALL, 5 );
 
-  sizerPath = new wxBoxSizer(wxHORIZONTAL);
-  sizerMain->Add(sizerPath, 0, wxGROW|wxALL, 5);
+  sizerMain = new wxBoxSizer( wxVERTICAL );
+  itemBoxSizer2->Add( sizerMain, 1, wxGROW | wxALL, 5 );
 
-  wxStaticText* itemStaticText4 = new wxStaticText( itemDialog1, wxID_STATIC, _("Path:"), wxDefaultPosition, wxDefaultSize, 0 );
-  sizerPath->Add(itemStaticText4, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  sizerPath = new wxBoxSizer( wxHORIZONTAL );
+  sizerMain->Add( sizerPath, 0, wxGROW | wxALL, 5 );
+
+  wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _( "Path:" ), wxDefaultPosition, wxDefaultSize, 0 );
+  sizerPath->Add( itemStaticText5, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP, 5 );
 
   textPath = new wxTextCtrl( itemDialog1, ID_TEXTPATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-  sizerPath->Add(textPath, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+  sizerPath->Add( textPath, 5, wxALIGN_CENTER_VERTICAL | wxRIGHT, 5 );
 
-  fileNavigator = new wxFileCtrl( itemDialog1,ID_FILENAVIGATOR,wxEmptyString,wxEmptyString,"BMP (*.bmp)|*.bmp|JPG (*.jpg;*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|XPM (*.xpm)|*.xpm",wxSIMPLE_BORDER|wxFC_SAVE,wxDefaultPosition,wxSize(600, 400) );
-  sizerMain->Add(fileNavigator, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  fileNavigator = new wxFileCtrl( itemDialog1,
+                                  ID_FILENAVIGATOR,
+                                  wxEmptyString,
+                                  wxEmptyString,
+                                  "BMP (*.bmp)|*.bmp|JPG (*.jpg;*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|XPM (*.xpm)|*.xpm",
+                                  wxSIMPLE_BORDER | wxFC_SAVE,
+                                  wxDefaultPosition,
+                                  wxSize( 600, 400 ) );
+  sizerMain->Add( fileNavigator, 1, wxGROW | wxLEFT | wxRIGHT | wxTOP, 5 );
 
-  wxStaticBox* itemStaticBoxSizer7Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Image to save "));
-  imageToSaveSizer = new wxStaticBoxSizer(itemStaticBoxSizer7Static, wxVERTICAL);
-  sizerMain->Add(imageToSaveSizer, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticBox* itemStaticBoxSizer8Static = new wxStaticBox( itemDialog1, wxID_ANY, _( " Image to save " ) );
+  imageToSaveSizer                       = new wxStaticBoxSizer( itemStaticBoxSizer8Static, wxVERTICAL );
+  sizerMain->Add( imageToSaveSizer, 0, wxGROW | wxLEFT | wxRIGHT, 5 );
 
-  imageSizer = new wxBoxSizer(wxHORIZONTAL);
-  imageToSaveSizer->Add(imageSizer, 0, wxGROW, 5);
+  imageSizer = new wxBoxSizer( wxHORIZONTAL );
+  imageToSaveSizer->Add( imageSizer, 0, wxGROW, 5 );
 
-  imageCheckbox = new wxCheckBox( itemDialog1, ID_SAVEIMAGECHECKBOX, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
-  imageCheckbox->SetValue(true);
-  imageSizer->Add(imageCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+  imageCheckbox = new wxCheckBox( itemDialog1, ID_SAVEIMAGECHECKBOX, _( "Timeline" ), wxDefaultPosition, wxDefaultSize, 0 );
+  imageCheckbox->SetValue( true );
+  imageSizer->Add( imageCheckbox, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 5 );
 
   imageFileName = new wxTextCtrl( itemDialog1, ID_SAVEIMAGETEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  imageSizer->Add(imageFileName, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP, 5);
+  imageSizer->Add( imageFileName, 4, wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP, 5 );
 
-  legendSizer = new wxBoxSizer(wxHORIZONTAL);
-  imageToSaveSizer->Add(legendSizer, 0, wxGROW, 5);
+  legendSizer = new wxBoxSizer( wxHORIZONTAL );
+  imageToSaveSizer->Add( legendSizer, 0, wxGROW, 5 );
 
-  legendCheckbox = new wxCheckBox( itemDialog1, ID_SAVELEGENDCHECKBOX, _("Legend Data"), wxDefaultPosition, wxDefaultSize, 0 );
-  legendCheckbox->SetValue(true);
-  legendSizer->Add(legendCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+  legendCheckbox = new wxCheckBox( itemDialog1, ID_SAVELEGENDCHECKBOX, _( "Legend Data" ), wxDefaultPosition, wxDefaultSize, 0 );
+  legendCheckbox->SetValue( true );
+  legendSizer->Add( legendCheckbox, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 5 );
 
   legendFileName = new wxTextCtrl( itemDialog1, ID_SAVELEGENDTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  legendSizer->Add(legendFileName, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+  legendSizer->Add( legendFileName, 4, wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM, 5 );
 
-  legendControlSizer = new wxBoxSizer(wxHORIZONTAL);
-  imageToSaveSizer->Add(legendControlSizer, 0, wxGROW, 5);
+  legendControlSizer = new wxBoxSizer( wxHORIZONTAL );
+  imageToSaveSizer->Add( legendControlSizer, 0, wxGROW, 5 );
 
-  legendControlCheckbox = new wxCheckBox( itemDialog1, ID_SAVELEGENDCONTROLCHECKBOX, _("Legend Control"), wxDefaultPosition, wxDefaultSize, 0 );
-  legendControlCheckbox->SetValue(true);
-  legendControlSizer->Add(legendControlCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+  legendControlCheckbox = new wxCheckBox( itemDialog1, ID_SAVELEGENDCONTROLCHECKBOX, _( "Legend Control" ), wxDefaultPosition, wxDefaultSize, 0 );
+  legendControlCheckbox->SetValue( true );
+  legendControlSizer->Add( legendControlCheckbox, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 5 );
 
   legendControlFileName = new wxTextCtrl( itemDialog1, ID_SAVELEGENDCONTROLTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  legendControlSizer->Add(legendControlFileName, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+  legendControlSizer->Add( legendControlFileName, 4, wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM, 5 );
 
-  imageScaleControlSizer = new wxBoxSizer(wxHORIZONTAL);
-  imageToSaveSizer->Add(imageScaleControlSizer, 0, wxGROW, 5);
+  imageScaleControlSizer = new wxBoxSizer( wxHORIZONTAL );
+  imageToSaveSizer->Add( imageScaleControlSizer, 0, wxGROW, 5 );
 
-  imageAndScaleCheckbox = new wxCheckBox( itemDialog1, ID_CHECKBOX1, _("Image + Legend"), wxDefaultPosition, wxDefaultSize, 0 );
-  imageAndScaleCheckbox->SetValue(true);
-  imageScaleControlSizer->Add(imageAndScaleCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+  imageAndScaleCheckbox = new wxCheckBox( itemDialog1, ID_IMAGE_PLUS_LEGEND_CHECKBOX, _( "Image + Legend" ), wxDefaultPosition, wxDefaultSize, 0 );
+  imageAndScaleCheckbox->SetValue( true );
+  imageScaleControlSizer->Add( imageAndScaleCheckbox, 1, wxALIGN_CENTER_VERTICAL | wxLEFT, 5 );
 
   imageScaleFileName = new wxTextCtrl( itemDialog1, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  imageScaleControlSizer->Add(imageScaleFileName, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+  imageScaleControlSizer->Add( imageScaleFileName, 4, wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM, 5 );
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer14 = new wxStdDialogButtonSizer;
+  wxBoxSizer* itemBoxSizer21 = new wxBoxSizer( wxVERTICAL );
+  itemBoxSizer2->Add( itemBoxSizer21, 1, wxGROW | wxALL, 5 );
 
-  sizerMain->Add(itemStdDialogButtonSizer14, 0, wxGROW|wxALL, 5);
-  buttonSave = new wxButton( itemDialog1, wxID_OK, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
-  buttonSave->Enable(false);
-  itemStdDialogButtonSizer14->AddButton(buttonSave);
+  wxNotebook* itemNotebook22 = new wxNotebook( itemDialog1, ID_NOTEBOOK, wxDefaultPosition, wxSize( 600, 300 ), wxBK_DEFAULT );
 
-  buttonCancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer14->AddButton(buttonCancel);
+  drawWindowSingle =
+    new wxScrolledWindow( itemNotebook22, ID_SCROLLEDWINDOW_IMAGE, wxDefaultPosition, wxSize( -1, 250 ), wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  drawWindowSingle->SetScrollbars( 1, 1, 0, 0 );
+  itemNotebook22->AddPage( drawWindowSingle, _( "Window Preview" ) );
 
-  itemStdDialogButtonSizer14->Realize();
+  drawScaleSingle =
+    new wxScrolledWindow( itemNotebook22, ID_SCROLLEDWINDOW_SCALE, wxDefaultPosition, wxSize( -1, 250 ), wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  drawScaleSingle->SetScrollbars( 1, 100, 0, 0 );
+  itemNotebook22->AddPage( drawScaleSingle, _( "Legend Data Preview" ) );
 
-  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer1->Add(itemBoxSizer4, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  drawScaleControlSingle = new wxScrolledWindow( itemNotebook22,
+                                                 ID_SCROLLEDWINDOW_SCALE_CONTROL,
+                                                 wxDefaultPosition,
+                                                 wxSize( -1, 250 ),
+                                                 wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  drawScaleControlSingle->SetScrollbars( 1, 1, 0, 0 );
+  itemNotebook22->AddPage( drawScaleControlSingle, _( "Legend Control Preview" ) );
 
-  wxBoxSizer* itemBoxSizer9 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer4->Add(itemBoxSizer9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  drawWindowAndScale =
+    new wxScrolledWindow( itemNotebook22, ID_SCROLLEDWINDOWANDCALE, wxDefaultPosition, wxSize( -1, 250 ), wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  drawWindowAndScale->SetScrollbars( 1, 1, 0, 0 );
+  itemNotebook22->AddPage( drawWindowAndScale, _( "Window + Legend Preview" ) );
 
-  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer1->Add(itemBoxSizer5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer21->Add( itemNotebook22, 1, wxGROW | wxALL, 5 );
 
-  wxNotebook* itemNotebook6 = new wxNotebook( itemDialog1, ID_NOTEBOOK, wxDefaultPosition, wxSize(600, 300), wxBK_DEFAULT );
+  wxBoxSizer* itemBoxSizer35 = new wxBoxSizer( wxVERTICAL );
+  itemBoxSizer21->Add( itemBoxSizer35, 0, wxGROW | wxALL, 5 );
 
-  wxScrolledWindow* itemScrolledWindow7 = new wxScrolledWindow( itemNotebook6, ID_SCROLLEDWINDOW1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  itemScrolledWindow7->SetScrollbars(1, 1, 0, 0);
-  wxBoxSizer* itemBoxSizer12 = new wxBoxSizer(wxVERTICAL);
-  itemScrolledWindow7->SetSizer(itemBoxSizer12);
+  useOriginalSizeCheckBox =
+    new wxCheckBox( itemDialog1, ID_USE_ORIGINAL_SIZE_CHECKBOX, _( "Use original size" ), wxDefaultPosition, wxDefaultSize, 0 );
+  useOriginalSizeCheckBox->SetValue( false );
+  itemBoxSizer35->Add( useOriginalSizeCheckBox, 0, wxALIGN_LEFT | wxALL, 5 );
 
-  drawWindowSingle = new wxScrolledWindow( itemScrolledWindow7, ID_SCROLLEDWINDOW_IMAGE, wxDefaultPosition, wxSize(-1, 250), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  itemBoxSizer12->Add(drawWindowSingle, 0, wxGROW|wxALL, 5);
-  drawWindowSingle->SetScrollbars(1, 1, 0, 0);
+  wxStaticBox* itemStaticBoxSizer2Static = new wxStaticBox( itemDialog1, wxID_ANY, _( "Legend" ) );
+  wxStaticBoxSizer* itemStaticBoxSizer2  = new wxStaticBoxSizer( itemStaticBoxSizer2Static, wxVERTICAL );
+  itemBoxSizer35->Add( itemStaticBoxSizer2, 0, wxALIGN_LEFT | wxALL, 5 );
 
-  itemScrolledWindow7->FitInside();
-  itemNotebook6->AddPage(itemScrolledWindow7, _("Window Preview"));
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer( wxHORIZONTAL );
+  itemStaticBoxSizer2->Add( itemBoxSizer6, 0, wxALIGN_LEFT | wxALL, 5 );
 
-  wxScrolledWindow* itemScrolledWindow16 = new wxScrolledWindow( itemNotebook6, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  itemScrolledWindow16->SetScrollbars(1, 1, 0, 0);
-  wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxVERTICAL);
-  itemScrolledWindow16->SetSizer(itemBoxSizer17);
-
-  drawScaleSingle = new wxScrolledWindow( itemScrolledWindow16, ID_SCROLLEDWINDOW_SCALE, wxDefaultPosition, wxSize(-1, 250), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  itemBoxSizer17->Add(drawScaleSingle, 0, wxGROW|wxALL, 5);
-  drawScaleSingle->SetScrollbars(1, 100, 0, 0);
-
-  itemScrolledWindow16->FitInside();
-  itemNotebook6->AddPage(itemScrolledWindow16, _("Legend Data Preview"));
-
-  wxScrolledWindow* itemScrolledWindow19 = new wxScrolledWindow( itemNotebook6, ID_SCROLLEDWINDOW2, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  itemScrolledWindow19->SetScrollbars(1, 1, 0, 0);
-  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
-  itemScrolledWindow19->SetSizer(itemBoxSizer6);
-
-  drawScaleControlSingle = new wxScrolledWindow( itemScrolledWindow19, ID_SCROLLEDWINDOW_SCALE_CONTROL, wxDefaultPosition, wxSize(-1, 250), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  itemBoxSizer6->Add(drawScaleControlSingle, 0, wxGROW|wxALL, 5);
-  drawScaleControlSingle->SetScrollbars(1, 1, 0, 0);
-
-  itemScrolledWindow19->FitInside();
-  itemNotebook6->AddPage(itemScrolledWindow19, _("Legend Control Preview"));
-
-  wxScrolledWindow* itemScrolledWindow1 = new wxScrolledWindow( itemNotebook6, ID_SCROLLEDWINDOW3, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  itemScrolledWindow1->SetScrollbars(1, 1, 0, 0);
-  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
-  itemScrolledWindow1->SetSizer(itemBoxSizer7);
-
-  drawWindowAndScale = new wxScrolledWindow( itemScrolledWindow1, ID_SCROLLEDWINDOWANDCALE, wxDefaultPosition, wxSize(-1, 250), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  itemBoxSizer7->Add(drawWindowAndScale, 0, wxGROW|wxALL, 5);
-  drawWindowAndScale->SetScrollbars(1, 1, 0, 0);
-
-  itemScrolledWindow1->FitInside();
-  itemNotebook6->AddPage(itemScrolledWindow1, _("Window + Legend Preview"));
-
-  itemBoxSizer5->Add(itemNotebook6, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer5->Add(itemBoxSizer14, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer14->Add(itemBoxSizer15, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-  wxStaticText* itemStaticText16 = new wxStaticText( itemDialog1, wxID_STATIC, _("Legend orientation"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer15->Add(itemStaticText16, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  wxStaticText* itemStaticText7 = new wxStaticText( itemDialog1, wxID_STATIC, _( "Orientation" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer6->Add( itemStaticText7, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP, 5 );
 
   wxArrayString widgetTopCompose1Strings;
-  widgetTopCompose1Strings.Add(_("Horitzontal"));
-  widgetTopCompose1Strings.Add(_("Vertical"));
-  widgetTopCompose1 = new wxChoice( itemDialog1, ID_ORIENTATION_LEGEND_CONTROL, wxDefaultPosition, wxDefaultSize, widgetTopCompose1Strings, wxFULL_REPAINT_ON_RESIZE );
-  widgetTopCompose1->SetStringSelection(_("Horitzontal"));
-  itemBoxSizer15->Add(widgetTopCompose1, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  widgetTopCompose1Strings.Add( _( "Horitzontal" ) );
+  widgetTopCompose1Strings.Add( _( "Vertical" ) );
+  widgetTopCompose1 =
+    new wxChoice( itemDialog1, ID_ORIENTATION_LEGEND_CONTROL, wxDefaultPosition, wxDefaultSize, widgetTopCompose1Strings, wxFULL_REPAINT_ON_RESIZE );
+  widgetTopCompose1->SetStringSelection( _( "Horitzontal" ) );
+  itemBoxSizer6->Add( widgetTopCompose1, 1, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 5 );
 
-  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer14->Add(itemBoxSizer16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  shrinkLabelCheckBox = new wxCheckBox( itemDialog1, ID_CHECKBOX_SHRINK_LABEL, _( "Shrink Labels" ), wxDefaultPosition, wxDefaultSize, 0 );
+  shrinkLabelCheckBox->SetValue( false );
+  itemStaticBoxSizer2->Add( shrinkLabelCheckBox, 0, wxALIGN_LEFT | wxALL, 5 );
 
-  wxCheckBox* itemCheckBox17 = new wxCheckBox( itemDialog1, ID_CHECKBOX, _("Use original size"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemCheckBox17->SetValue(false);
-  itemBoxSizer16->Add(itemCheckBox17, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  buttonSelectLegendValues = new wxButton( itemDialog1, ID_SELECT_LEGEND, _( "Select Values" ), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonSelectLegendValues->SetName( wxT( "buttonSelectLegendValues" ) );
+  itemStaticBoxSizer2->Add( buttonSelectLegendValues, 0, wxALIGN_LEFT | wxALL, 5 );
 
-  wxCheckBox* itemCheckBox18 = new wxCheckBox( itemDialog1, ID_CHECKBOX_SHRINK_LABEL, _("Shrink Header Label"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemCheckBox18->SetValue(false);
-  itemBoxSizer16->Add(itemCheckBox18, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer1->Add( itemBoxSizer5, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5 );
 
-  buttonSelectLegendValues = new wxButton( itemDialog1, ID_SELECT_LEGEND, _("Select Legend"), wxDefaultPosition, wxDefaultSize, 0 );
-  buttonSelectLegendValues->SetName(wxT("buttonSelectLegendValues"));
-  itemBoxSizer16->Add(buttonSelectLegendValues, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer6 = new wxStdDialogButtonSizer;
+
+  itemBoxSizer5->Add( itemStdDialogButtonSizer6, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5 );
+  buttonSave = new wxButton( itemDialog1, wxID_OK, _( "&Save" ), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonSave->Enable( false );
+  itemStdDialogButtonSizer6->AddButton( buttonSave );
+
+  buttonCancel = new wxButton( itemDialog1, wxID_CANCEL, _( "&Cancel" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer6->AddButton( buttonCancel );
+
+  itemStdDialogButtonSizer6->Realize();
 
   // Connect events and objects
-  drawWindowSingle->Connect(ID_SCROLLEDWINDOW_IMAGE, wxEVT_PAINT, wxPaintEventHandler(SaveImageDialog::OnPaintWindowSingle), NULL, this);
-  drawScaleSingle->Connect(ID_SCROLLEDWINDOW_SCALE, wxEVT_PAINT, wxPaintEventHandler(SaveImageDialog::onPaintScale), NULL, this);
-  drawScaleControlSingle->Connect(ID_SCROLLEDWINDOW_SCALE_CONTROL, wxEVT_PAINT, wxPaintEventHandler(SaveImageDialog::onPaintScaleControl), NULL, this);
-  drawWindowAndScale->Connect(ID_SCROLLEDWINDOWANDCALE, wxEVT_PAINT, wxPaintEventHandler(SaveImageDialog::OnPaintWindowScale), NULL, this);
+  drawWindowSingle->Connect( ID_SCROLLEDWINDOW_IMAGE, wxEVT_PAINT, wxPaintEventHandler( SaveImageDialog::OnPaintWindowSingle ), NULL, this );
+  drawScaleSingle->Connect( ID_SCROLLEDWINDOW_SCALE, wxEVT_PAINT, wxPaintEventHandler( SaveImageDialog::onPaintScale ), NULL, this );
+  drawScaleControlSingle->Connect( ID_SCROLLEDWINDOW_SCALE_CONTROL,
+                                   wxEVT_PAINT,
+                                   wxPaintEventHandler( SaveImageDialog::onPaintScaleControl ),
+                                   NULL,
+                                   this );
+  drawWindowAndScale->Connect( ID_SCROLLEDWINDOWANDCALE, wxEVT_PAINT, wxPaintEventHandler( SaveImageDialog::OnPaintWindowScale ), NULL, this );
   ////@end SaveImageDialog content construction
   fileTypeText = _( ".png" );
 
@@ -378,7 +366,7 @@ void SaveImageDialog::CreateControls()
   {
     scaleMaster = imageGeneration->getScaleImage();
 
-    itemScrolledWindow19->Hide();
+    drawScaleControlSingle->Hide();
     imageToSaveSizer->Hide( (wxSizer*)legendControlSizer, true );
   }
   else
@@ -394,7 +382,7 @@ void SaveImageDialog::CreateControls()
     }
     if( imageGeneration->getScaleImageBitmap() == nullptr )
     {
-      itemScrolledWindow19->Hide();
+      drawScaleControlSingle->Hide();
       imageToSaveSizer->Hide( (wxSizer*)legendControlSizer, true );
     }
   }
@@ -403,7 +391,7 @@ void SaveImageDialog::CreateControls()
       scaleMaster->getLegendType() == TScaleImageType::TScaleImageGradientColorNotNull ||
       scaleMaster->getLegendType() == TScaleImageType::TScaleImageAlternativeGradientColor )
   {
-    itemCheckBox18->Hide();
+    shrinkLabelCheckBox->Hide();
     buttonSelectLegendValues->Hide();
   }
 
@@ -597,7 +585,7 @@ wxBitmap SaveImageDialog::GetBitmapResource( const wxString& name )
 {
   // Bitmap retrieval
   ////@begin SaveImageDialog bitmap retrieval
-  wxUnusedVar(name);
+  wxUnusedVar( name );
   return wxNullBitmap;
   ////@end SaveImageDialog bitmap retrieval
 }
@@ -610,7 +598,7 @@ wxIcon SaveImageDialog::GetIconResource( const wxString& name )
 {
   // Icon retrieval
   ////@begin SaveImageDialog icon retrieval
-  wxUnusedVar(name);
+  wxUnusedVar( name );
   return wxNullIcon;
   ////@end SaveImageDialog icon retrieval
 }
@@ -697,7 +685,7 @@ void SaveImageDialog::onPaintScale( wxPaintEvent& event )
 {
   ////@begin wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
   // Before editing this code, remove the block markers.
-  wxPaintDC dc(wxDynamicCast(event.GetEventObject(), wxWindow));
+  wxPaintDC dc( wxDynamicCast( event.GetEventObject(), wxWindow ) );
   ////@end wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
   wxPaintDC dcScale( drawScaleSingle );
   drawScaleSingle->PrepareDC( dcScale );
@@ -1102,21 +1090,16 @@ void SaveImageDialog::OnSavelegendcontrolcheckboxClick( wxCommandEvent& event )
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
  */
 
-void SaveImageDialog::OnCheckboxClick( wxCommandEvent& event )
+void SaveImageDialog::OnUseOriginalSizeCheckboxClick( wxCommandEvent& event )
 {
-  wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX ), wxCheckBox );
-  if( !checkbox )
-    return;
+  // wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX ), wxCheckBox );
+  // if( !checkbox )
+  //   return;
 
-  bool isChecked = checkbox->IsChecked();
+  // bool isChecked = checkbox->IsChecked();
 
   // Lambda helper para evitar código repetido
-  adjustPanelSize( isChecked );
-
-  ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-  ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
+  adjustPanelSize( event.IsChecked() );
 }
 
 
@@ -1159,18 +1142,7 @@ void SaveImageDialog::OnOrientationLegendControlSelected( wxCommandEvent& event 
     // wxScrolledWindow* drawScaleControlSingle;
   }
 
-  wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX ), wxCheckBox );
-  if( !checkbox )
-    return;
-
-  bool isChecked = checkbox->IsChecked();
-
-  adjustPanelSize( isChecked );
-
-  ////@begin wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_ORIENTATION_LEGEND_CONTROL in SaveImageDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-  ////@end wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_ORIENTATION_LEGEND_CONTROL in SaveImageDialog.
+  adjustPanelSize( useOriginalSizeCheckBox->IsChecked() );
 }
 
 
@@ -1251,7 +1223,7 @@ void SaveImageDialog::OnPaintWindowSingle( wxPaintEvent& event )
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX1
  */
 
-void SaveImageDialog::OnCheckbox1Click( wxCommandEvent& event )
+void SaveImageDialog::OnImagePlusLegendCheckboxClick( wxCommandEvent& event )
 {
   ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX1 in SaveImageDialog.
   // Before editing this code, remove the block markers.
@@ -1266,8 +1238,7 @@ void SaveImageDialog::OnCheckbox1Click( wxCommandEvent& event )
 
 void SaveImageDialog::OnCheckboxShrinkLabelClick( wxCommandEvent& event )
 {
-
-  imageGeneration->transformToShort(event.IsChecked());
+  imageGeneration->transformToShort( event.IsChecked() );
 
   drawScaleSingle->Refresh();
   drawScaleSingle->Update();
@@ -1280,17 +1251,7 @@ void SaveImageDialog::OnCheckboxShrinkLabelClick( wxCommandEvent& event )
   drawWindowAndScale->Refresh();
   drawWindowAndScale->Update();
 
-  wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX ), wxCheckBox );
-  if( !checkbox )
-    return;
-
-  bool isChecked = checkbox->IsChecked();
-
-  adjustPanelSize( isChecked );
-  ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SHRINK_LABEL in SaveImageDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-  ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SHRINK_LABEL in SaveImageDialog.
+  adjustPanelSize( useOriginalSizeCheckBox->IsChecked() );
 }
 
 
@@ -1439,18 +1400,8 @@ void SaveImageDialog::OnShowLegend( wxCommandEvent& event )
     imageGeneration->generateScaleWindowsImage();
 
 
-    wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX ), wxCheckBox );
-    if( !checkbox )
-      return;
-
-    bool isChecked = checkbox->IsChecked();
-
-    adjustPanelSize( isChecked );
+    adjustPanelSize( useOriginalSizeCheckBox->IsChecked() );
   }
 
   delete dialog;
-  ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SELECT_LEGEND in SaveImageDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-  ////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SELECT_LEGEND in SaveImageDialog.
 }
