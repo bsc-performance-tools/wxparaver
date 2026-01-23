@@ -80,6 +80,7 @@ class ScaleImageGenerator
                          TImageFormat& whichImageType,
                          TScaleImageType scaleType,
                          TScaleImageOrientation orientation,
+                         TBackgroundMode backgroundColor,
                          bool whichMergedImages = false );
 
     ScaleImageGenerator( Timeline* whichMyWindow,
@@ -90,6 +91,7 @@ class ScaleImageGenerator
                          TImageFormat& whichImageType,
                          TScaleImageType scaleType,
                          TScaleImageOrientation orientation,
+                         TBackgroundMode backgroundColor,
                          bool whichMergedImages = false );
     ~ScaleImageGenerator();
 
@@ -237,7 +239,7 @@ class WindowImageGenerator
 
     void transformToShort( bool isShort );
 
-    void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow );
+    void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, bool derivedFromHisto = false );
     void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram );
 
     void generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName );

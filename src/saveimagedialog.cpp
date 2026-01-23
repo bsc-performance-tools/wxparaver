@@ -371,6 +371,7 @@ void SaveImageDialog::CreateControls()
   }
   else
   {
+    imageCheckbox->SetLabel( _( "Histogram" ) );
     scaleMaster = imageGeneration->getScaleDataImage();
 
     if( imageGeneration->getScaleDataImageBitmap() == nullptr && imageGeneration->getScaleImageBitmap() == nullptr )
@@ -386,13 +387,22 @@ void SaveImageDialog::CreateControls()
       imageToSaveSizer->Hide( (wxSizer*)legendControlSizer, true );
     }
   }
-
-  if( scaleMaster->getLegendType() == TScaleImageType::TScaleImageGradientColor ||
-      scaleMaster->getLegendType() == TScaleImageType::TScaleImageGradientColorNotNull ||
-      scaleMaster->getLegendType() == TScaleImageType::TScaleImageAlternativeGradientColor )
+  if( scaleMaster != nullptr )
   {
-    shrinkLabelCheckBox->Hide();
-    buttonSelectLegendValues->Hide();
+    if( scaleMaster->getLegendType() == TScaleImageType::TScaleImageGradientColor ||
+        scaleMaster->getLegendType() == TScaleImageType::TScaleImageGradientColorNotNull ||
+        scaleMaster->getLegendType() == TScaleImageType::TScaleImageAlternativeGradientColor )
+    {
+      shrinkLabelCheckBox->Hide();
+      buttonSelectLegendValues->Hide();
+    }
+  }
+  else
+  {
+    drawScaleSingle->Hide();
+    drawWindowAndScale->Hide();
+    imageToSaveSizer->Hide( (wxSizer*)legendSizer, true );
+    imageToSaveSizer->Hide( (wxSizer*)imageScaleControlSizer, true );
   }
 
   Layout();
@@ -625,22 +635,22 @@ wxString SaveImageDialog::GetLegendControlFilePath()
 
 bool SaveImageDialog::DialogSavesImage()
 {
-  return imageCheckbox->IsChecked();
+  return ( imageCheckbox->IsChecked() && imageCheckbox->IsShown() );
 }
 
 bool SaveImageDialog::DialogSavesLegend()
 {
-  return legendCheckbox->IsChecked();
+  return ( legendCheckbox->IsChecked() && legendCheckbox->IsShown() );
 }
 
 bool SaveImageDialog::DialogSavesControlLegend()
 {
-  return legendControlCheckbox->IsChecked();
+  return ( legendControlCheckbox->IsChecked() && legendControlCheckbox->IsShown() );
 }
 
 bool SaveImageDialog::DialogSavesImageScale()
 {
-  return imageAndScaleCheckbox->IsChecked();
+  return ( imageAndScaleCheckbox->IsChecked() && imageAndScaleCheckbox->IsShown() );
 }
 
 

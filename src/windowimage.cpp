@@ -194,14 +194,17 @@ void WindowImageGenerator::generatescaleImageDataWindows( std::map< TSemanticVal
                                             imageTextFont,
                                             filterIndex,
                                             typeScale,
-                                            orientationScale );
+                                            orientationScale,
+                                            TBackgroundMode::BACKGROUND_SOLID_LIGHT );
 
   scaleImageData->initializeConfiguration();
   scaleImageData->computeSemanticLabels();
   scaleImageData->processImage();
 }
 
-void WindowImageGenerator::generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow )
+void WindowImageGenerator::generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor,
+                                                          Timeline* myWindow,
+                                                          bool derivedFromHisto )
 {
   std::map< TSemanticValue, rgb > scaleValues = semanticValuesToColor;
 
@@ -242,8 +245,24 @@ void WindowImageGenerator::generatescaleImageDataWindows( std::map< TSemanticVal
   }
   orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
 
-  scaleImage =
-    new ScaleImageGenerator( myWindow, scaleValues, imageBackground, imageForeground, imageTextFont, filterIndex, typeScale, orientationScale );
+  TBackgroundMode backgroundColor;
+  if( derivedFromHisto )
+  {
+    backgroundColor = TBackgroundMode::BACKGROUND_SOLID_LIGHT;
+  }
+  else
+  {
+    backgroundColor = TBackgroundMode::BACKGROUND_SOLID_DARK;
+  }
+  scaleImage = new ScaleImageGenerator( myWindow,
+                                        scaleValues,
+                                        imageBackground,
+                                        imageForeground,
+                                        imageTextFont,
+                                        filterIndex,
+                                        typeScale,
+                                        orientationScale,
+                                        backgroundColor );
 
   scaleImage->initializeConfiguration();
   scaleImage->computeSemanticLabels();
@@ -362,6 +381,7 @@ void WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const st
   titleDC.SetBackground( wxBrush( imageBackground ) );
   titleDC.Clear();
 
+
   titleDC.SetPen( wxPen( imageBackground, 1 ) );
   titleDC.SetTextBackground( imageBackground );
   titleDC.SetTextForeground( imageForeground );
@@ -372,6 +392,11 @@ void WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const st
   memoryImageTimeline = new wxMemoryDC( *bitmapImageTimeline );
 
   // Compute title image size
+
+
+  auto c = gridImage->GetLabelBackgroundColour();
+  memoryImageTimeline->SetBackground( wxBrush( c ) );
+  memoryImageTimeline->Clear();
 
   memoryImageTimeline->Blit( 0, 0, titleWidth, titleHeigth, &titleDC, 0, 0 );
 
@@ -390,6 +415,7 @@ void WindowImageGenerator::generateScaleWindowsImage( std::map< TSemanticValue, 
                                                  filterIndex,
                                                  typeScale,
                                                  orientationScale,
+                                                 TBackgroundMode::BACKGROUND_SOLID_DARK,
                                                  true );
   else
     scaleWindowsImage = new ScaleImageGenerator( myHisto,
@@ -401,6 +427,7 @@ void WindowImageGenerator::generateScaleWindowsImage( std::map< TSemanticValue, 
                                                  filterIndex,
                                                  typeScale,
                                                  orientationScale,
+                                                 TBackgroundMode::BACKGROUND_SOLID_LIGHT,
                                                  true );
   scaleWindowsImage->initializeConfiguration();
   scaleWindowsImage->computeSemanticLabels();
@@ -591,6 +618,7 @@ ScaleImageGenerator::ScaleImageGenerator( Histogram* whichMyWindow,
                                           TImageFormat& whichImageType,
                                           TScaleImageType wichScaleType,
                                           TScaleImageOrientation wichOrientation,
+                                          TBackgroundMode backgroundColor,
                                           bool whichMergedImages )
   : myWindow( whichMyWindow )
   , semanticValuesColors( whichSemanticValues )
@@ -603,6 +631,7 @@ ScaleImageGenerator::ScaleImageGenerator( Histogram* whichMyWindow,
   , totalSquaresGradientColor( 21 )
   , mergedImages( whichMergedImages )
 {
+  dataImage.backgroundMode = backgroundColor;
   // Inicializar dataImage con algunos valores lógicos o por defecto
   dataImage.precision = 2;
 
@@ -628,6 +657,7 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
                                           TImageFormat& whichImageType,
                                           TScaleImageType wichScaleType,
                                           TScaleImageOrientation wichOrientation,
+                                          TBackgroundMode backgroundColor,
                                           bool whichMergedImages )
   : myWindow( whichmyWindow )
   , myDataWindow( whichmyWindow )
@@ -642,7 +672,7 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
 {
   // Inicializar dataImage con algunos valores lógicos o por defecto
   dataImage.precision = 2;
-
+  dataImage.backgroundMode = backgroundColor;
   // Inicializar punteros a nullptr
   bitmapImageContent = nullptr;
   memoryImageContent = nullptr;
@@ -718,14 +748,10 @@ void ScaleImageGenerator::initializeConfiguration()
   dataImage.imageWidth  = dataImage.widthRect;
   //
   //
-  if( filterIndex == TImageFormat::BMP || TImageFormat::JPG == filterIndex || mergedImages )
-  {
-    dataImage.backgroundMode = TBackgroundMode::BACKGROUND_SOLID_DARK;
-  }
-  else
-  {
-    dataImage.backgroundMode = TBackgroundMode::BACKGROUND_TRANSPARENT;
-  }
+  // if( filterIndex != TImageFormat::BMP || TImageFormat::JPG != filterIndex || !mergedImages )
+  // {
+  //   dataImage.backgroundMode = TBackgroundMode::BACKGROUND_TRANSPARENT;
+  // }
 }
 
 void ScaleImageGenerator::setImageOrientation( TScaleImageOrientation a_orientation )

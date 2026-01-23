@@ -590,9 +590,10 @@ void gHistogram::execute()
   initColumnSelection();
   columnSelection.getSelected( noVoidSemRanges );
 
-  if( myHistogram->getZoom() )
-    fillZoom();
-  else
+  // Fill zoom always becouse for the histogram image generation, we need to fill to generate the semanticValuesToColorData for the legends
+  fillZoom();
+
+  if( !myHistogram->getZoom() )
     fillGrid();
 
   ready = true;
@@ -3320,26 +3321,42 @@ void gHistogram::saveImageDialog( wxString whichFileName )
     // filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
     wxFont semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
 
-    wxColour foregroundColour = *wxWHITE;
-    wxColour backgroundColour = *wxBLACK;
-
-    WindowImageGenerator* newWindowImage =
-      new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+    WindowImageGenerator* newWindowImage;
 
     if( GetHistogram()->getZoom() )
     {
+      wxColour foregroundColour = *wxWHITE;
+      wxColour backgroundColour = *wxBLACK;
+
+      newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+
       newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
       newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
       newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
 
       if( myHistogram->getFirstRowColored() )
       {
-        newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow() );
+        newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
       }
     }
     else
     {
+      wxColour foregroundColour = *wxBLACK;
+      wxColour backgroundColour = *wxWHITE;
+
+      newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+
       newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+
+      if( myHistogram->getShowColor() == true )
+      {
+        newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+        newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+      }
+      if( myHistogram->getFirstRowColored() == true )
+      {
+        newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
+      }
     }
 
 
