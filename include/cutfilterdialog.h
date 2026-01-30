@@ -80,6 +80,10 @@ class wxSpinCtrl;
 #define ID_TEXTCTRL_CUTTER_BEGIN_CUT 10118
 #define ID_TEXTCTRL_CUTTER_END_CUT 10119
 #define ID_TEXTCTRL_CUTTER_TASKS 10157
+#define ID_RADIOBUTTON_CUTTER_SELECT_APPLICATION 10159
+#define ID_RADIOBUTTON_CUTTER_SELECT_TASK 10160
+#define ID_RADIOBUTTON_CUTTER_SELECT_THREAD 10161
+#define ID_BUTTON_CUTTER_SELECT_OBJECTS 10158
 #define ID_BUTTON_CUTTER_SELECT_REGION 10114
 #define ID_BUTTON_CUTTER_ALL_WINDOW 10198
 #define ID_BUTTON_CUTTER_ALL_TRACE 10115
@@ -213,6 +217,9 @@ class CutFilterDialog : public wxDialog
 
   /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT
   void OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_OBJECTS
+  void OnButtonCutterSelectObjectsClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_REGION
   void OnButtonCutterSelectRegionClick( wxCommandEvent& event );
@@ -409,6 +416,10 @@ class CutFilterDialog : public wxDialog
   wxTextCtrl* textCutterBeginCut;
   wxTextCtrl* textCutterEndCut;
   wxTextCtrl* textCutterTasks;
+  wxRadioButton* radioCutterCutByApplication;
+  wxRadioButton* radioCutterCutByTask;
+  wxRadioButton* radioCutterCutByThread;
+  wxButton* buttonCutterSelectObjects;
   wxButton* buttonCutterSelectRegion;
   wxButton* buttonCutterAllWindow;
   wxButton* buttonCutterAllTrace;
