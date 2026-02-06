@@ -352,7 +352,7 @@ void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
       DoLoadSession( fileName );
     else if( localKernel->isTraceFile( fileName ) )
       DoLoadTrace( fileName );
-    else if( CFGLoader::isCFGFile( fileName ) && !loadedTraces.empty() )
+    else if( !loadedTraces.empty() && CFGLoader::isCFGFile( fileName ) )
       DoLoadCFG( fileName );
 
     fileName.erase();
@@ -2430,7 +2430,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent &event )
       string auxFile = std::string( fileName.GetFullPath().mb_str() );
       if( localKernel->isTraceFile( auxFile ) )
         DoLoadTrace( auxFile );
-      else if( CFGLoader::isCFGFile( auxFile ) && loadedTraces.size() > 0 )
+      else if( !loadedTraces.empty() && CFGLoader::isCFGFile( auxFile ) )
         DoLoadCFG( auxFile );
     }
     event.Skip();
@@ -2776,7 +2776,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent &event )
   }
 
   // No window or histogram? Disable current selection.
-  if( loadedTraces.size() > 0 )
+  if( !loadedTraces.empty() )
   {
     allWindows.clear();
     allHistograms.clear();
@@ -3143,7 +3143,7 @@ void paraverMain::OnIdle( wxIdleEvent &event )
       loadFilesQueue.pop();
       if( fileStr.substr( fileStr.length() - 3 ) == "cfg" )
       {
-        if( loadedTraces.size() > 0 )
+        if( !loadedTraces.empty() )
           DoLoadCFG( fileStr );
       }
       else
@@ -3476,7 +3476,7 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent &event )
 
 void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent &event )
 {
-  tbarMain->EnableTool( ID_NEW_WINDOW, loadedTraces.size() > 0 );
+  tbarMain->EnableTool( ID_NEW_WINDOW, !loadedTraces.empty() );
 
   if( currentTimeline != nullptr )
     tbarMain->EnableTool( ID_NEW_WINDOW, true );
@@ -3767,7 +3767,7 @@ void paraverMain::OnNewDerivedWindowClick( wxCommandEvent &event )
 
 void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent &event )
 {
-  if( loadedTraces.size() > 0 && currentTrace > -1 )
+  if( !loadedTraces.empty() && currentTrace > -1 )
   {
     vector< Timeline * > timelines;
     LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
@@ -3976,7 +3976,7 @@ void paraverMain::OnNewHistogramClick( wxCommandEvent &event )
 
 void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent &event )
 {
-  if( loadedTraces.size() > 0 )
+  if( !loadedTraces.empty() )
   {
     vector< Timeline * > timelines;
     if( currentTrace == -1 )
@@ -4503,7 +4503,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent &event )
 
 void paraverMain::OnUnloadtraceUpdate( wxUpdateUIEvent &event )
 {
-  event.Enable( loadedTraces.begin() != loadedTraces.end() );
+  event.Enable( !loadedTraces.empty() );
 }
 
 
@@ -4798,7 +4798,7 @@ void paraverMain::OnSignal()
     DoLoadTrace( currentSignal.traceFileName );
 
   // Anyway, Am I able to load any cfg?
-  if( loadedTraces.size() == 0 )
+  if( loadedTraces.empty() )
   {
     wxMessageDialog message( this, _( "No trace loaded" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
     raiseCurrentWindow = false;
@@ -5133,7 +5133,7 @@ void paraverMain::MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,
     // 1) given by parameter
     cutFilterDialog->SetNameSourceTrace( filename );
   }
-  else if( loadedTraces.size() > 0 && currentTrace == -1 )
+  else if( !loadedTraces.empty() && currentTrace == -1 )
   {
     // 2) tracePath if "All Traces" selected
     cutFilterDialog->SetNameSourceTrace( std::string( tracePath.mb_str() ) + PATH_SEP );
@@ -5848,7 +5848,7 @@ void paraverMain::insertSignalItem( bool isSig1 )
     PRV_INT16 current = currentTrace;
 
     // Is that trace loaded? First, try with current!
-    if( loadedTraces.size() > 0 )
+    if( !loadedTraces.empty() )
     {
       found = matchTraceNames( loadedTraces[ current ]->getFileName(), loadedTraces[ current ]->getTraceName(), lines[ 2 ] );
     }
