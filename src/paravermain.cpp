@@ -6177,6 +6177,6 @@ void paraverMain::OnChoicewinbrowserPageChanging( wxChoicebookEvent &event )
 {
   ////@begin wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER in paraverMain.
   // Before editing this code, remove the block markers.
-  //event.Skip();
+  event.Skip();
   ////@end wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER in paraverMain.
 }
