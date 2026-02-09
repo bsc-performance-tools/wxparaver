@@ -939,8 +939,6 @@ class gTimeline : public wxFrame, public gWindow
     void drawFunctionLineColor();
     void drawFusedLinesColor();
 
-    void OnPopUpRightDown( void );
-
     // Pop Up Menu Methods
     void OnPopUpCopy( wxCommandEvent& event );
     void OnPopUpPasteDefaultSpecial( wxCommandEvent& event );
@@ -962,6 +960,7 @@ class gTimeline : public wxFrame, public gWindow
     void OnPopUpFitSemanticScaleMax( wxCommandEvent& event );
     void OnPopUpFitSemanticScale( wxCommandEvent& event );
     void OnPopUpFitObjects( wxCommandEvent& event );
+    void OnPopUpHideEmptyObjects( wxCommandEvent& event );
     void OnPopUpViewCommunicationLines( wxCommandEvent& event );
     void OnPopUpViewEventFlags( wxCommandEvent& event );
     void OnPopUpFunctionLineColor( wxCommandEvent& event );

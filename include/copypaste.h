@@ -53,6 +53,7 @@ constexpr char STR_CLONE[]                       = "Clone";
 constexpr char STR_RENAME[]                      = "Rename\tF2";
 constexpr char STR_FIT_TIME[]                    = "Fit Time Scale";
 constexpr char STR_FIT_SEMANTIC[]                = "Fit Semantic Scale";
+constexpr char STR_MENU_OBJECTS[]                = "Objects";
 constexpr char STR_FIT_OBJECTS[]                 = "Fit Objects";
 constexpr char STR_CONTROL_SCALE[]               = "Control Scale";
 constexpr char STR_CONTROL_DIMENSIONS[]          = "Control Dimensions";

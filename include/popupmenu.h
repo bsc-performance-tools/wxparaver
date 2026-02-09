@@ -152,6 +152,7 @@
 #define ID_HIDE_SELECTED_WINDOWS_TRACE                     30116
 #define ID_MENU_OBJECT_AXIS_CUSTOM                         30117
 #define ID_MENU_PASTE_OBJECT_AXIS                          30118
+#define ID_MENU_HIDE_EMPTY_OBJECTS                         30119
 
 #define ID_MENU_SYNC_GROUP_BASE        31000
 #define ID_MENU_SYNC_REMOVE_GROUP_BASE 32000
@@ -225,6 +226,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuPaste;
     wxMenu *popUpMenuPasteFilter;
     wxMenu *popUpMenuFitSemantic;
+    wxMenu *popUpMenuObjects;
     wxMenu *popUpMenuShowWindows;
     wxMenu *popUpMenuDrawMode;
     wxMenu *popUpMenuDrawModeTime;
@@ -315,7 +317,7 @@ class gPopUpMenu : public wxMenu
     void OnPopUpPasteFilterCommunications( wxCommandEvent &event );
     void OnPopUpPasteFilterEvents( wxCommandEvent &event );
 
-    // HISGORAM
+    // HISTOGRAM
     void OnPopUpPasteControlScale( wxCommandEvent &event );
     void OnPopUpPaste3DScale( wxCommandEvent &event );
     void OnPopUpPasteControlDimensions( wxCommandEvent &event );
@@ -325,7 +327,11 @@ class gPopUpMenu : public wxMenu
     void OnPopUpClone( wxCommandEvent &event );
     void OnPopUpRename( wxCommandEvent &event );
     void OnPopUpFitTimeScale( wxCommandEvent &event );
+
+    // MIX
     void OnPopUpFitObjects( wxCommandEvent &event );
+    // TIMELINE
+    void OnPopUpHideEmptyObjects( wxCommandEvent &event );
 
     // TIMELINE
     void OnPopUpFitSemanticScaleMin( wxCommandEvent &event );

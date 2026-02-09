@@ -92,6 +92,7 @@ void gPopUpMenu::initializePopUpMenu()
   INIT_WXMENU( popUpMenuPaste );
   INIT_WXMENU( popUpMenuPasteFilter );
   INIT_WXMENU( popUpMenuFitSemantic );
+  INIT_WXMENU( popUpMenuObjects );
   INIT_WXMENU( popUpMenuShowWindows );
   INIT_WXMENU( popUpMenuDrawMode );
   INIT_WXMENU( popUpMenuDrawModeTime );
@@ -497,7 +498,7 @@ void gPopUpMenu ::buildPopUpMenuShowWindows()
   AppendSubMenu( popUpMenuShowWindows, _( STR_SHOW_WINDOWS_STATE ) );
 }
 
-void gPopUpMenu ::buildPopUpMenuFitSemantic()
+void gPopUpMenu::buildPopUpMenuFitSemantic()
 {
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE )
   {
@@ -515,17 +516,27 @@ void gPopUpMenu ::buildPopUpMenuFitSemantic()
   }
 }
 
-void gPopUpMenu ::buildPopUpMenuFitObjects()
+void gPopUpMenu::buildPopUpMenuFitObjects()
 {
   std::vector< BuildMenuItem > fitItemsCommon = {
-    { this, _( STR_FIT_TIME ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpFitTimeScale, wxID_ZOOM_100 },
-
-    { this, _( STR_FIT_OBJECTS ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpFitObjects, ID_MENU_FIT_OBJECTS }
+    { this, _( STR_FIT_TIME ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpFitTimeScale, wxID_ZOOM_100 }
   };
 
   buildListOfItems( fitItemsCommon );
 
-  this->buildItem( this, _( "Select Objects..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRowSelection, ID_MENU_ROW_SELECTION );
+  std::vector< BuildMenuItem > objectsItems = {
+    { popUpMenuObjects, _( STR_FIT_OBJECTS ),     wxITEM_NORMAL, &gPopUpMenu::OnPopUpFitObjects,   ID_MENU_FIT_OBJECTS },
+    { popUpMenuObjects, _( "Select Objects..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRowSelection, ID_MENU_ROW_SELECTION }
+  };
+
+  if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE )
+  {
+    objectsItems.push_back( { popUpMenuObjects, _( "Hide Empty Objects" ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpHideEmptyObjects, ID_MENU_HIDE_EMPTY_OBJECTS } );
+  }
+
+  buildListOfItems( objectsItems );
+
+  AppendSubMenu( popUpMenuObjects, _( STR_MENU_OBJECTS ) );
 
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE )
   {
@@ -1491,7 +1502,7 @@ bool gPopUpMenu::allWindowsHas( vector< gHistogram * > histogramWindows, std::fu
 }
 
 /*************************************************************/
-/*************ENABLE POP UP MENU FUNCTIONALLITIES*************/
+/*************ENABLE POP UP MENU FUNCTIONALITIES**************/
 /*************************************************************/
 
 bool gPopUpMenu::checkAllowedProperties( const char *property )
@@ -2296,7 +2307,7 @@ void gPopUpMenu::OnPopUpPasteFilterEvents( wxCommandEvent &event )
     } );
 }
 
-// HISGORAM
+// HISTOGRAM
 void gPopUpMenu::OnPopUpPasteControlScale( wxCommandEvent &event )
 {
   onAllWindowsCall(
@@ -2377,6 +2388,18 @@ void gPopUpMenu::OnPopUpFitObjects( wxCommandEvent &event )
     [ &event ]( auto &item )
     {
       item->OnPopUpFitObjects( event );
+    } );
+}
+
+void gPopUpMenu::OnPopUpHideEmptyObjects( wxCommandEvent &event )
+{
+  onAllWindowsCall(
+    [ &event ]( gTimeline *item )
+    {
+      item->OnPopUpHideEmptyObjects( event );
+    },
+    [ &event ]( gHistogram *item )
+    {
     } );
 }
 

@@ -2204,6 +2204,13 @@ void gTimeline::OnPopUpFitObjects( wxCommandEvent& event )
   myWindow->setChanged( true );
 }
 
+void gTimeline::OnPopUpHideEmptyObjects( wxCommandEvent& event )
+{
+  // TODO: pending implementation
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
 void gTimeline::OnPopUpViewCommunicationLines( wxCommandEvent& event )
 {
   drawCommunicationLines( event.IsChecked() );
