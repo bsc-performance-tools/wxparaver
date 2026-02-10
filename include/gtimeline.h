@@ -1173,6 +1173,8 @@ class gTimeline : public wxFrame, public gWindow
   ////@end gTimeline member variables
     // clang-format on
 
+  std::vector< bool > rowWithSomeSemanticValue;
+
     class CustomColorSemValue : public wxObject
     {
       public:

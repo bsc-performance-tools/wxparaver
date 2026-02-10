@@ -332,6 +332,8 @@ void gTimeline::Init()
   selectedCustomColor = nullptr;
 
   enabledAutoRedrawIcon = false;
+
+  rowWithSomeSemanticValue = std::vector< bool >();
 }
 
 
@@ -863,6 +865,13 @@ void gTimeline::redraw()
   // Draw before any row
   drawZeroAxis( bufferDraw, selectedSet );
 
+  rowWithSomeSemanticValue.clear();
+  if ( rowWithSomeSemanticValue.size() != selectedSet.size() )
+  {
+    rowWithSomeSemanticValue.reserve( selectedSet.size() );
+    //rowWithSomeSemanticValue.emplace( rowWithSomeSemanticValue.end(), true ); // TODO: necessary?
+  }
+
   // Drawmode: Group objects with same wxCoord in objectPosList
   PRV_UINT32 rowToDraw = 0;
   if( myWindow->getWindowBeginTime() != myWindow->getWindowEndTime() )
@@ -903,6 +912,10 @@ void gTimeline::redraw()
                  eventmaskdc,
                  commdc,
                  commmaskdc );
+
+        //std::cout << "valuesToDraw[ " << rowToDraw << " ].size() = " << valuesToDraw[ rowToDraw ].size() << std::endl;
+        rowWithSomeSemanticValue[ rowToDraw ] = !( valuesToDraw[ rowToDraw ].empty() || 
+                                                   std::all_of( valuesToDraw[ rowToDraw ].cbegin(), valuesToDraw[ rowToDraw ].cend(), []( auto& i ){ return i == IDLE; } ) ); // TODO initial concept, has to be calculated and returned in compute
       }
       ++rowToDraw;
 
@@ -2206,7 +2219,26 @@ void gTimeline::OnPopUpFitObjects( wxCommandEvent& event )
 
 void gTimeline::OnPopUpHideEmptyObjects( wxCommandEvent& event )
 {
-  // TODO: pending implementation
+  vector< bool > tmpSelectedRows;
+  myWindow->getSelectedRows( myWindow->getLevel(), tmpSelectedRows );
+  TObjectOrder maxObjects = tmpSelectedRows.size();
+
+  // TODO: this vector has to be defined in the class, initialized to false.
+  //vector< bool > rowWithSomeSemanticValue( maxObjects, true );
+
+  //rowWithSomeSemanticValue[0] = false; // test 1st row.
+
+  for( TObjectOrder i = 0; i < maxObjects; ++i )
+    tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && rowWithSomeSemanticValue[ i ];
+
+  // If no object have values, show all of them. Otherwise a segfault can occur if no objects are shown.
+  if( !std::any_of( tmpSelectedRows.cbegin(), tmpSelectedRows.cend(), []( bool i ){ return i; } ) )
+  {
+    tmpSelectedRows.flip();
+  }
+
+  myWindow->setSelectedRows( myWindow->getLevel(), tmpSelectedRows );
+
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
