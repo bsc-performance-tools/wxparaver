@@ -332,8 +332,6 @@ void gTimeline::Init()
   selectedCustomColor = nullptr;
 
   enabledAutoRedrawIcon = false;
-
-  rowWithSomeSemanticValue = std::vector< bool >();
 }
 
 
@@ -820,6 +818,9 @@ void gTimeline::redraw()
   PRV_INT32 timePos = objectAxisPos + 1;
 
   vector< vector< TSemanticValue > > valuesToDraw;
+  //vector< int > tmpRowWithSomeSemanticValue( selectedSet.size(), 0 ); // To be applied next time clicked in "Hide Empty Rows". 
+  //vector< int > tmpRowWithSomeSemanticValue; // To be applied next time clicked in "Hide Empty Rows". 
+  //rowWithSomeSemanticValue.clear();
   vector< unordered_set< PRV_INT32 > > eventsToDraw;
 #ifdef _MSC_VER
   vector< unordered_set< commCoord > > commsToDraw;
@@ -848,6 +849,54 @@ void gTimeline::redraw()
   }
   else
   {
+    // rowWithSomeSemanticValue.clear();
+    // if ( rowWithSomeSemanticValue.size() != selectedSet.size() )
+    // {
+    //   rowWithSomeSemanticValue.reserve( selectedSet.size() );
+    //   std::fill( rowWithSomeSemanticValue.begin(), rowWithSomeSemanticValue.end(), 0 ); // TODO: necessary?
+    // }
+    std::cout << "redraw: size init = " << rowWithSemanticValuesNotZero.size() << std::endl;
+
+#if 0
+  // Brute force - all at once
+  rowWithSemanticValuesNotZero.clear();
+    std::cout << "redraw: size after clear = " << rowWithSemanticValuesNotZero.size() << std::endl;
+  //rowWithSemanticValuesNotZero.reserve( selected.size() );
+    std::cout << "redraw: size after reserve = " << rowWithSemanticValuesNotZero.size() << std::endl;
+  //std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+  //  std::cout << "redraw: size after fill = " << rowWithSemanticValuesNotZero.size() << std::endl;
+  std::for_each( selected.cbegin(), selected.cend(), [this]( auto e ){ rowWithSemanticValuesNotZero.push_back( 0 ); } );
+    std::cout << "redraw: size after push_back = " << rowWithSemanticValuesNotZero.size() << std::endl;
+#endif
+    //rowWithSemanticValuesNotZero.clear();
+
+    
+    // Efficient resize and set to 0.
+    if ( rowWithSemanticValuesNotZero.empty() )
+    {
+      // Expand and reset to 0.
+      rowWithSemanticValuesNotZero.resize( selected.size(), 0 );
+    }
+    else if ( rowWithSemanticValuesNotZero.size() == selected.size() )
+    {
+      // Reuse! Just reset to 0.
+      std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+    }
+    else if ( rowWithSemanticValuesNotZero.size() > selected.size() )
+    {
+      // Shrink and reset to 0.
+      rowWithSemanticValuesNotZero.resize( selected.size() );
+      std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+    }
+    else // rowWithSemanticValuesNotZero.size() < selected.size()
+    {
+      // Reset to 0 and then expand setting new added to 0.
+      std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+      rowWithSemanticValuesNotZero.resize( selected.size(), 0 );
+    }
+    // std::cout << "redraw: size after FIT = " << rowWithSemanticValuesNotZero.size() << std::endl;
+
+
     myWindow->computeSemanticParallel( selectedSet,
                                        selected,
                                        timeStep,
@@ -857,6 +906,8 @@ void gTimeline::redraw()
                                        maxObj,
                                        drawCaution,
                                        valuesToDraw,
+                                       //tmpRowWithSomeSemanticValue,
+                                       rowWithSemanticValuesNotZero,
                                        eventsToDraw,
                                        commsToDraw,
                                        progress );
@@ -865,12 +916,12 @@ void gTimeline::redraw()
   // Draw before any row
   drawZeroAxis( bufferDraw, selectedSet );
 
-  rowWithSomeSemanticValue.clear();
-  if ( rowWithSomeSemanticValue.size() != selectedSet.size() )
-  {
-    rowWithSomeSemanticValue.reserve( selectedSet.size() );
-    //rowWithSomeSemanticValue.emplace( rowWithSomeSemanticValue.end(), true ); // TODO: necessary?
-  }
+  // rowWithSomeSemanticValue.clear();
+  // if ( rowWithSomeSemanticValue.size() != selectedSet.size() )
+  // {
+  //   rowWithSomeSemanticValue.reserve( selectedSet.size() );
+  //   //rowWithSomeSemanticValue.emplace( rowWithSomeSemanticValue.end(), true ); // TODO: necessary?
+  // }
 
   // Drawmode: Group objects with same wxCoord in objectPosList
   PRV_UINT32 rowToDraw = 0;
@@ -914,8 +965,9 @@ void gTimeline::redraw()
                  commmaskdc );
 
         //std::cout << "valuesToDraw[ " << rowToDraw << " ].size() = " << valuesToDraw[ rowToDraw ].size() << std::endl;
-        rowWithSomeSemanticValue[ rowToDraw ] = !( valuesToDraw[ rowToDraw ].empty() || 
-                                                   std::all_of( valuesToDraw[ rowToDraw ].cbegin(), valuesToDraw[ rowToDraw ].cend(), []( auto& i ){ return i == IDLE; } ) ); // TODO initial concept, has to be calculated and returned in compute
+        //rowWithSomeSemanticValue[ rowToDraw ] = !( valuesToDraw[ rowToDraw ].empty() || 
+        //                                           std::all_of( valuesToDraw[ rowToDraw ].cbegin(), valuesToDraw[ rowToDraw ].cend(), []( auto& i ){ return i == IDLE; } ) ); // TODO initial concept, has to be calculated and returned in compute
+       //rowWithSomeSemanticValue[ rowToDraw ] = tmpRowWithSomeSemanticValue[ rowToDraw ];
       }
       ++rowToDraw;
 
@@ -930,6 +982,11 @@ void gTimeline::redraw()
           break;
       }
     }
+    
+    // if( !myWindow->isPunctualColorSet() )
+    // {
+    //   rowWithSomeSemanticValue.swap( tmpRowWithSomeSemanticValue );
+    // }
   }
 
   if( ( myWindow->getShowProgressBar() ) && ( gTimeline::dialogProgress != nullptr ) )
@@ -2092,6 +2149,9 @@ gTimeline* gTimeline::clone( Timeline* clonedWindow, wxWindow* parent, wxTreeIte
   clonedTimeline->SetMyWindow( clonedWindow );
   clonedTimeline->InitMyWindowCallbacks();
   clonedTimeline->SetClientSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
+
+  clonedTimeline->setRowWithSemanticValuesNotZero( rowWithSemanticValuesNotZero );
+  
   clonedWindow->setPixelSize( myWindow->getPixelSize() );
 
   // add to loaded windows list
@@ -2221,15 +2281,20 @@ void gTimeline::OnPopUpHideEmptyObjects( wxCommandEvent& event )
 {
   vector< bool > tmpSelectedRows;
   myWindow->getSelectedRows( myWindow->getLevel(), tmpSelectedRows );
-  TObjectOrder maxObjects = tmpSelectedRows.size();
+  // TObjectOrder maxObjects = tmpSelectedRows.size();
 
   // TODO: this vector has to be defined in the class, initialized to false.
   //vector< bool > rowWithSomeSemanticValue( maxObjects, true );
 
   //rowWithSomeSemanticValue[0] = false; // test 1st row.
 
-  for( TObjectOrder i = 0; i < maxObjects; ++i )
-    tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && rowWithSomeSemanticValue[ i ];
+  // for( TObjectOrder i = 0; i < maxObjects; ++i )
+  //   tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && rowWithSomeSemanticValue[ i ];
+  std::cout << "size selected = " << tmpSelectedRows.size() << std::endl;
+  std::cout << "size rwos not zro = " << rowWithSemanticValuesNotZero.size() << std::endl;
+std::cout << "num 0s = " << std::count( rowWithSemanticValuesNotZero.cbegin(), rowWithSemanticValuesNotZero.cend(),  0 )  << std::endl;
+std::cout << "num 1s = " << std::count( rowWithSemanticValuesNotZero.cbegin(), rowWithSemanticValuesNotZero.cend(),  1 )  << std::endl;
+  std::transform( tmpSelectedRows.begin(), tmpSelectedRows.end(), rowWithSemanticValuesNotZero.begin(), tmpSelectedRows.begin(), std::logical_and<>() );
 
   // If no object have values, show all of them. Otherwise a segfault can occur if no objects are shown.
   if( !std::any_of( tmpSelectedRows.cbegin(), tmpSelectedRows.cend(), []( bool i ){ return i; } ) )

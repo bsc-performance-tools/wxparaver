@@ -1065,6 +1065,9 @@ class gTimeline : public wxFrame, public gWindow
     void setEditMode( bool value );
     bool getEditMode();
 
+    void setRowWithSemanticValuesNotZero( const std::vector<int> &whichRows ) { rowWithSemanticValuesNotZero = whichRows; }
+    //std::vector<int> &getRowWithSemanticValuesNotZero() { return rowWithSemanticValuesNotZero; }
+
     static wxProgressDialog* dialogProgress;
     static int numberOfProgressDialogUsers;
 
@@ -1173,7 +1176,7 @@ class gTimeline : public wxFrame, public gWindow
   ////@end gTimeline member variables
     // clang-format on
 
-  std::vector< bool > rowWithSomeSemanticValue;
+  std::vector< int > rowWithSemanticValuesNotZero = {}; // for "Hide Empty Columns" feature.
 
     class CustomColorSemValue : public wxObject
     {
