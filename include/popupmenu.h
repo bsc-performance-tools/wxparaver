@@ -247,17 +247,17 @@ class gPopUpMenu : public wxMenu
 
     bool checkAllowedProperties( const char *property );
 
-    bool allWindowsHas( std::vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function );
-    bool allWindowsHas( std::vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function );
+    bool allWindowsHave( std::vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function );
+    bool allWindowsHave( std::vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function );
 
     template< typename... Funcs >
-    bool allWindowHas( Funcs &&...funcs );
+    bool allWindowsHave( Funcs &&...funcs );
 
-    bool anyWindowHave( std::vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function );
-    bool anyWindowHave( std::vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function );
+    bool anyWindowHas( std::vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function );
+    bool anyWindowHas( std::vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function );
 
     template< typename... Funcs >
-    bool anyWindowHave( Funcs &&...funcs );
+    bool anyWindowHas( Funcs &&...funcs );
 
 
     // builder methods
