@@ -1482,7 +1482,7 @@ bool gPopUpMenu::allWindowsHas( vector< gTimeline * > timelineWindows, std::func
 {
   for( auto *timeline : timelineWindows )
   {
-    if( function( timeline ) == false )
+    if( !function( timeline ) )
     {
       return false;
     }
@@ -1493,13 +1493,53 @@ bool gPopUpMenu::allWindowsHas( vector< gHistogram * > histogramWindows, std::fu
 {
   for( auto *histogram : histogramWindows )
   {
-    if( function( histogram ) == false )
+    if( !function( histogram ) )
     {
       return false;
     }
   }
   return true;
 }
+
+
+bool gPopUpMenu::anyWindowHave( vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function )
+{
+  for( auto *timeline : timelineWindows )
+  {
+    if( function( timeline ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool gPopUpMenu::anyWindowHave( vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function )
+{
+  for( auto *histogram : histogramWindows )
+  {
+    if( function( histogram ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+template< typename... Funcs >
+bool gPopUpMenu::anyWindowHave( Funcs &&...funcs )
+{
+  auto visitor = overloads{ std::forward< Funcs >( funcs )... };
+
+  return std::any_of( windowGenericList.begin(),
+                      windowGenericList.end(),
+                      [ & ]( const gWindowGenericItem &item )
+                      {
+                        return std::visit( visitor, item );
+                      } );
+}
+
 
 /*************************************************************/
 /*************ENABLE POP UP MENU FUNCTIONALITIES**************/
@@ -1619,6 +1659,17 @@ void gPopUpMenu::enablePopUpMenu()
 
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE )
   {
+    this->Enable( FindItem( _( "Hide Empty Objects" ) ),
+                            anyWindowHave(
+                              []( gTimeline *win )
+                              {
+                                return win->getAnyRowWithAllSemanticValuesZero();
+                              },
+                              []( gHistogram *win )
+                              {
+                                return false;
+                              } ) ); 
+
     popUpMenuColor->Enable( FindItem( _( "Punctual Window..." ) ),
                             allWindowHas(
                               []( gTimeline *window )

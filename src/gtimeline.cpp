@@ -883,6 +883,14 @@ void gTimeline::redraw()
                                        eventsToDraw,
                                        commsToDraw,
                                        progress );
+
+    anyRowWithAllSemanticValuesZero = !rowWithSemanticValuesNotZero.empty() &&
+                                      std::any_of( selectedSet.cbegin(), selectedSet.cend(),
+                                                   [this]
+                                                   ( auto e )
+                                                   { 
+                                                     return rowWithSemanticValuesNotZero[ e ] == 0;
+                                                   } );
   }
 
   // Draw before any row

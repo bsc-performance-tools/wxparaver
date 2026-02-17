@@ -253,6 +253,12 @@ class gPopUpMenu : public wxMenu
     template< typename... Funcs >
     bool allWindowHas( Funcs &&...funcs );
 
+    bool anyWindowHave( std::vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function );
+    bool anyWindowHave( std::vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function );
+
+    template< typename... Funcs >
+    bool anyWindowHave( Funcs &&...funcs );
+
 
     // builder methods
 

@@ -1067,6 +1067,7 @@ class gTimeline : public wxFrame, public gWindow
 
     void setRowWithSemanticValuesNotZero( const std::vector<int> &whichRows ) { rowWithSemanticValuesNotZero = whichRows; }
     //std::vector<int> &getRowWithSemanticValuesNotZero() { return rowWithSemanticValuesNotZero; }
+    bool getAnyRowWithAllSemanticValuesZero() { return anyRowWithAllSemanticValuesZero; }
 
     static wxProgressDialog* dialogProgress;
     static int numberOfProgressDialogUsers;
@@ -1176,7 +1177,9 @@ class gTimeline : public wxFrame, public gWindow
   ////@end gTimeline member variables
     // clang-format on
 
-  std::vector< int > rowWithSemanticValuesNotZero = {}; // for "Hide Empty Columns" feature.
+  // "Hide Empty Rows" feature.
+  std::vector< int > rowWithSemanticValuesNotZero = {};
+  bool anyRowWithAllSemanticValuesZero = false;
 
     class CustomColorSemValue : public wxObject
     {
