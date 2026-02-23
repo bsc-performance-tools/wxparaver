@@ -429,6 +429,7 @@ class gPopUpMenu : public wxMenu
 
     // MIX
     void OnPopUpSaveCFG( wxCommandEvent &event );
+    void OnPopUpSynchronizedWindowsSaveCFG( wxCommandEvent &event );
     void OnPopUpSaveImageDialog( wxCommandEvent &event );
 
     // Timeline

@@ -3253,6 +3253,28 @@ void gPopUpMenu::OnPopUpInfoPanel( wxCommandEvent &event )
 
 // Mix
 
+void gPopUpMenu::OnPopUpSynchronizedWindowsSaveCFG( wxCommandEvent &event )
+{
+  // PRECOND: window is synchronized
+  SaveOptions options;
+
+  TGroupId currentSyncGroup {};
+  if( auto windowItem = std::get_if< gTimeline * >( &( windowGenericList.front() ) ) )
+    currentSyncGroup = ( *windowItem )->GetMyWindow()->getSyncGroup();
+  else if( auto windowItem = std::get_if< gHistogram * >( &( windowGenericList.front() ) ) )
+    currentSyncGroup = ( *windowItem )->GetHistogram()->getSyncGroup();
+
+  vector< Timeline * > windows     = SyncWindows::getInstance()->getGroupWindows<Timeline>( currentSyncGroup );
+  vector< Histogram * > histograms = SyncWindows::getInstance()->getGroupWindows<Histogram>( currentSyncGroup );
+
+  CFGS4DLinkedPropertiesManager dummyManager;
+  vector< CFGS4DLinkedPropertiesManager > dummyList;
+  dummyList.push_back( dummyManager );
+
+  paraverMain::myParaverMain->SaveConfigurationFile( nullptr, options, windows, histograms, dummyList );
+}
+
+
 void gPopUpMenu::OnPopUpSaveCFG( wxCommandEvent &event )
 {
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE )
