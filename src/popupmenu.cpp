@@ -76,7 +76,7 @@ gPopUpMenu::gPopUpMenu( std::vector< gWindowGenericItem > argWindowGenericList )
 gPopUpMenu::gPopUpMenu( gHistogram *wichHistogramDerivedList )
 {
   typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE;
-  windowGenericList.emplace_back( wichHistogramDerivedList ); // Implicitly creates a variant with gTimeline*
+  windowGenericList.emplace_back( wichHistogramDerivedList ); // Implicitly creates a variant with gHistogram*
 }
 
 gPopUpMenu::gPopUpMenu( gTimeline *wichTimelineDerivedList )
@@ -103,6 +103,7 @@ void gPopUpMenu::initializePopUpMenu()
   INIT_WXMENU( popUpMenuLabels );
   INIT_WXMENU( popUpMenuObjectAxis );
   INIT_WXMENU( popUpMenuSave );
+  INIT_WXMENU( popUpMenuSaveConfiguration );
   INIT_WXMENU( popUpMenuRun );
   INIT_WXMENU( popUpMenuSync );
   INIT_WXMENU( popUpMenuColor2D );
@@ -1161,9 +1162,16 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis()
 
 void gPopUpMenu ::buildPopUpMenuSave()
 {
-  std::vector< BuildMenuItem > saveMenuItems = {
-    { popUpMenuSave, _( "Configuration..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveCFG, ID_MENU_SAVE_TIMELINE_AS_CFG },
+  std::vector< BuildMenuItem > saveConfigurationItems = {
+    { popUpMenuSaveConfiguration, _( "Selected Windows..." ),     wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveCFG,   ID_MENU_SAVE_TIMELINE_AS_CFG },
+    { popUpMenuSaveConfiguration, _( STR_SAVE_SYNCHRONIZATION_GROUP ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSynchronizedWindowsSaveCFG, ID_MENU_SAVE_SYNCHRONIZED_WINDOWS_TO_CFG }
   };
+
+  buildListOfItems( saveConfigurationItems );
+
+  popUpMenuSave->AppendSubMenu( popUpMenuSaveConfiguration, _( "Configuration" ) );
+
+  std::vector< BuildMenuItem > saveMenuItems = {};
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE )
   {
     saveMenuItems.push_back( { popUpMenuSave, _( "Image..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveImageDialog, ID_MENU_SAVE_IMAGE } );
@@ -1766,6 +1774,11 @@ void gPopUpMenu::enablePopUpMenu()
 
   bool tmpEnableRemoveGroup = SyncWindows::getInstance()->getNumGroups() > 1 || SyncWindows::getInstance()->getNumWindows( 0 ) > 0;
   popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), tmpEnableRemoveGroup );
+
+  if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE )
+    this->Enable( FindItem( _( STR_SAVE_SYNCHRONIZATION_GROUP ) ), ( std::get< gTimeline * >( *windowGenericList.begin() ) )->GetMyWindow()->isSync() );
+  else if ( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE )
+    this->Enable( FindItem( _( STR_SAVE_SYNCHRONIZATION_GROUP ) ), ( std::get< gHistogram * >( *windowGenericList.begin() ) )->GetHistogram()->isSync() );
 }
 
 void gPopUpMenu::enableItemByTag( const std::string tag, bool enable )
