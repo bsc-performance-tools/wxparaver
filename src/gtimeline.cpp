@@ -3384,26 +3384,26 @@ void gTimeline::computeWhatWhere( std::vector< std::pair< TWhatWhereLine, wxStri
 
   if( myWindow->isFusedLinesColorSet() )
     return;
-  std::vector< Timeline* > groupWindows;
+  std::vector< Timeline* > groupTimelines;
   if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_INFO_PANEL ) )
   {
-    groupWindows = SyncWindows::getInstance()->getGroupTimelineWindows( myWindow->getSyncGroup() );
+    groupTimelines = SyncWindows::getInstance()->getGroupWindows<Timeline>( myWindow->getSyncGroup() );
 
-    auto it = std::find( groupWindows.begin(), groupWindows.end(), myWindow );
-    if( it != groupWindows.end() )
+    auto it = std::find( groupTimelines.begin(), groupTimelines.end(), myWindow );
+    if( it != groupTimelines.end() )
     {
       // Rotate the range so that `it` becomes the first element
-      std::rotate( groupWindows.begin(), it, it + 1 );
+      std::rotate( groupTimelines.begin(), it, it + 1 );
     }
   }
   else
   {
-    groupWindows.push_back( myWindow );
+    groupTimelines.push_back( myWindow );
   }
 
-  for( auto& itWindowsGroup : groupWindows )
+  for( auto& itWindowsGroup : groupTimelines )
   {
-    if( groupWindows.size() > 1 )
+    if( groupTimelines.size() > 1 )
     {
       wxString name;
       name << _( "---------------------- Window Name: " ) << wxString::FromUTF8( itWindowsGroup->getName().c_str() )
