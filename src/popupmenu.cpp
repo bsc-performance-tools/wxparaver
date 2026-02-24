@@ -1163,7 +1163,7 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis()
 void gPopUpMenu ::buildPopUpMenuSave()
 {
   std::vector< BuildMenuItem > saveConfigurationItems = {
-    { popUpMenuSaveConfiguration, _( "Selected Windows..." ),     wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveCFG,   ID_MENU_SAVE_TIMELINE_AS_CFG },
+    { popUpMenuSaveConfiguration, _( "Selected Windows..." ),          wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveCFG,                    ID_MENU_SAVE_TIMELINE_AS_CFG },
     { popUpMenuSaveConfiguration, _( STR_SAVE_SYNCHRONIZATION_GROUP ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSynchronizedWindowsSaveCFG, ID_MENU_SAVE_SYNCHRONIZED_WINDOWS_TO_CFG }
   };
 
