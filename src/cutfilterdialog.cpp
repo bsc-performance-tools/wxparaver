@@ -1384,6 +1384,20 @@ Trace* CutFilterDialog::getTrace()
 {
   Trace* tmpTrace = nullptr;
 
+  string inputPath = string( fileBrowserButtonInputTrace->GetPath().mb_str() );
+  if( !inputPath.empty() )
+  {
+    for( Trace* t : paraverMain::myParaverMain->GetLoadedTraces() )
+    {
+      if( t != nullptr && t->getFileName() == inputPath )
+      {
+        tmpTrace = t;
+        break;
+      }
+    }
+    if( tmpTrace != nullptr )
+      return tmpTrace;
+  }
   if( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr )
     tmpTrace = paraverMain::myParaverMain->GetCurrentTimeline()->getTrace();
   else if( paraverMain::myParaverMain->GetCurrentHisto() != nullptr )
