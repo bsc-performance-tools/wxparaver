@@ -25,30 +25,36 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
-#include <sstream>
+#include "customalgorithms.h"
 #include "histogramdialog.h"
-#include "paraverconfig.h"
 #include "labelconstructor.h"
-#include "wxparaverapp.h"
+#include "paraverconfig.h"
 #include "timelinetreeselector.h"
+#include "wxparaverapp.h"
+
 // #include "histogram.h"
 
 // PREFERENCES
-//#include <wx/notebook.h>
+// #include <wx/notebook.h>
 #include "preferencesdialog.h"
+
+// clang-format off
 ////@begin XPM images
 #include "../icons/three_dots.xpm"
 ////@end XPM images
+// clang-format on
 
 using namespace std;
 
@@ -65,6 +71,7 @@ IMPLEMENT_DYNAMIC_CLASS( HistogramDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( HistogramDialog, wxDialog )
 
+// clang-format off
 ////@begin HistogramDialog event table entries
   EVT_IDLE( HistogramDialog::OnIdle )
   EVT_BUTTON( ID_HISTOGRAM_CONTROLTIMELINEBUTTON, HistogramDialog::OnHistogramControltimelinebuttonClick )
@@ -85,6 +92,7 @@ BEGIN_EVENT_TABLE( HistogramDialog, wxDialog )
   EVT_BUTTON( wxID_CANCEL, HistogramDialog::OnCancelClick )
   EVT_BUTTON( wxID_OK, HistogramDialog::OnOkClick )
 ////@end HistogramDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -101,7 +109,7 @@ HistogramDialog::HistogramDialog()
 HistogramDialog::HistogramDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
 }
 
 
@@ -111,6 +119,7 @@ HistogramDialog::HistogramDialog( wxWindow* parent, wxWindowID id, const wxStrin
 
 bool HistogramDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin HistogramDialog creation
   SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -122,6 +131,7 @@ bool HistogramDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
   }
   Centre();
 ////@end HistogramDialog creation
+  // clang-format on
   return true;
 }
 
@@ -132,8 +142,10 @@ bool HistogramDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
 
 HistogramDialog::~HistogramDialog()
 {
+  // clang-format off
 ////@begin HistogramDialog destruction
 ////@end HistogramDialog destruction
+  // clang-format on
 }
 
 
@@ -143,6 +155,7 @@ HistogramDialog::~HistogramDialog()
 
 void HistogramDialog::Init()
 {
+  // clang-format off
 ////@begin HistogramDialog member initialisation
   controlTimelineAutofit = true;
   controlTimelineSelected = nullptr;
@@ -177,7 +190,9 @@ void HistogramDialog::Init()
   radioAllTrace = NULL;
   radioManual = NULL;
   buttonSelect = NULL;
+  buttonOkHistogramDialog = NULL;
 ////@end HistogramDialog member initialisation
+  // clang-format on
 }
 
 
@@ -186,7 +201,8 @@ void HistogramDialog::Init()
  */
 
 void HistogramDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin HistogramDialog content construction
   HistogramDialog* itemDialog1 = this;
 
@@ -352,26 +368,27 @@ void HistogramDialog::CreateControls()
   wxButton* itemButton45 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStdDialogButtonSizer44->AddButton(itemButton45);
 
-  wxButton* itemButton46 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer44->AddButton(itemButton46);
+  buttonOkHistogramDialog = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer44->AddButton(buttonOkHistogramDialog);
 
   itemStdDialogButtonSizer44->Realize();
 
 ////@end HistogramDialog content construction
+  // clang-format on
 
   controlTimelineAutofit = ParaverConfig::getInstance()->getHistogramAutofitControlScale();
   buttonControlTimelineAutoFit->SetValue( controlTimelineAutofit );
   extraControlTimelineAutofit = ParaverConfig::getInstance()->getHistogramAutofitThirdDimensionScale();
-  button3DTimelineAutoFit->SetValue( extraControlTimelineAutofit ); 
+  button3DTimelineAutoFit->SetValue( extraControlTimelineAutofit );
 
   // Filter forbidden chars
-  txtControlTimelineMin->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  txtControlTimelineMax->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  txtControlTimelineDelta->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+  txtControlTimelineMin->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
+  txtControlTimelineMax->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
+  txtControlTimelineDelta->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
 
-  txt3DTimelineMin->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  txt3DTimelineMax->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  txt3DTimelineDelta->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+  txt3DTimelineMin->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
+  txt3DTimelineMax->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
+  txt3DTimelineDelta->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
 }
 
 
@@ -390,6 +407,7 @@ bool HistogramDialog::ShowToolTips()
 
 wxBitmap HistogramDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin HistogramDialog bitmap retrieval
   wxUnusedVar(name);
@@ -400,6 +418,7 @@ wxBitmap HistogramDialog::GetBitmapResource( const wxString& name )
   }
   return wxNullBitmap;
 ////@end HistogramDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -408,11 +427,13 @@ wxBitmap HistogramDialog::GetBitmapResource( const wxString& name )
 
 wxIcon HistogramDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin HistogramDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end HistogramDialog icon retrieval
+  // clang-format on
 }
 
 
@@ -420,67 +441,95 @@ bool HistogramDialog::TransferDataFromWindow()
 {
   // Copy Selected window
   wxString errorMessage = _( "" );
-  double tmp;
 
-  if ( !GetControlTimelineAutofit() )
+  if( !GetControlTimelineAutofit() )
   {
-    if ( txtControlTimelineMin->GetValue().ToDouble( &tmp ) )
-      controlTimelineMin = tmp;
-    else
+    double tmpControlTimelineMin = std::numeric_limits< double >::quiet_NaN(), tmpControlTimelineMax = std::numeric_limits< double >::quiet_NaN(),
+           tmpControlTimelineDelta = std::numeric_limits< double >::quiet_NaN();
+
+    // If value is not auto, check conversions control timeline defined by user to double
+    if( !txtControlTimelineMin->GetValue().ToDouble( &tmpControlTimelineMin ) )
     {
-      controlTimelineMin = controlTimelineSelected->getMinimumY();
-      errorMessage = _( "\tControl Timeline Minimum : " ) + formatNumber( controlTimelineMin ) + _( "\n" );
+      errorMessage += _( "\tCONTROL TIMELINE MIN NOT VALID: Conversion Problems \n" );
     }
 
-    if ( txtControlTimelineMax->GetValue().ToDouble( &tmp ) )
-      controlTimelineMax = tmp;
-    else
+    if( !txtControlTimelineMax->GetValue().ToDouble( &tmpControlTimelineMax ) )
     {
-      controlTimelineMax = controlTimelineSelected->getMaximumY();
-      errorMessage += _( "\tControl Timeline Maximum : " ) + formatNumber( controlTimelineMax ) + _( "\n" );
+      errorMessage += _( "\tCONTROL TIMELINE MAX NOT VALID: Conversion Problems \n" );
     }
 
-    if ( txtControlTimelineDelta->GetValue().ToDouble( &tmp ) )
-      controlTimelineDelta = tmp;
-    else
+    if( !txtControlTimelineDelta->GetValue().ToDouble( &tmpControlTimelineDelta ) )
     {
-      controlTimelineDelta = computeDelta( controlTimelineMin, controlTimelineMax );
-      errorMessage += _( "\tControl Timeline Delta : " ) + formatNumber( controlTimelineDelta ) + _( "\n" );
+      errorMessage += _( "\tCONTROL TIMELINE DELTA NOT VALID: Conversion Problems \n" );
+    }
+    if( !std::isnan( tmpControlTimelineMin ) && !std::isnan( tmpControlTimelineMax ) && !std::isnan( tmpControlTimelineDelta ) )
+    {
+      if( tmpControlTimelineMax <= tmpControlTimelineMin )
+      {
+        errorMessage += _( "\tCONTROL TIMELINE MIN/MAX NOT VALID: Control Max is lower/equal than control timeline min\n" );
+      }
+      else
+      {
+        controlTimelineMin = tmpControlTimelineMin;
+        controlTimelineMax = tmpControlTimelineMax;
+        // Check Control timeline value delta valid
+        if( tmpControlTimelineDelta <= 0 )
+          errorMessage += _( "\tCONTROL TIMELINE DELTA NOT VALID: Value 0 or lower not allowed\n" );
+        else
+          controlTimelineDelta = tmpControlTimelineDelta;
+      }
     }
   }
 
 
-  if ( extraControlTimelineSelected != nullptr )
+  if( extraControlTimelineSelected != nullptr )
   {
-    if ( !GetExtraControlTimelineAutofit() )
+    if( !GetExtraControlTimelineAutofit() )
     {
-      if ( txt3DTimelineMin->GetValue().ToDouble( &tmp ) )
-        extraControlTimelineMin = tmp;
-      else
+      double tmpExtraControlTimelineMin   = std::numeric_limits< double >::quiet_NaN(),
+             tmpExtraControlTimelineMax   = std::numeric_limits< double >::quiet_NaN(),
+             tmpExtraControlTimelineDelta = std::numeric_limits< double >::quiet_NaN();
+
+      // If value is not auto, check conversions control timeline defined by user to double
+      if( !txt3DTimelineMin->GetValue().ToDouble( &tmpExtraControlTimelineMin ) )
       {
-        extraControlTimelineMin = extraControlTimelineSelected->getMinimumY();
-        errorMessage += _( "\t3D Timeline Min : " ) + formatNumber( extraControlTimelineMin ) + _( "\n" );
+        errorMessage += _( "\tEXTRA CONTROL TIMELINE MIN NOT VALID: Conversion Problems \n" );
       }
 
-      if ( txt3DTimelineMax->GetValue().ToDouble( &tmp ) )
-        extraControlTimelineMax = tmp;
-      else
+      if( !txt3DTimelineMax->GetValue().ToDouble( &tmpExtraControlTimelineMax ) )
       {
-        extraControlTimelineMax = extraControlTimelineSelected->getMaximumY();
-        errorMessage += _( "\t3D Timeline Max : " ) + formatNumber( extraControlTimelineMax ) + _( "\n" );
+        errorMessage += _( "\tEXTRA CONTROL TIMELINE MAX NOT VALID: Conversion Problems \n" );
       }
 
-      if ( txt3DTimelineDelta->GetValue().ToDouble( &tmp ) )
-        extraControlTimelineDelta = tmp;
-      else
+      if( !txt3DTimelineDelta->GetValue().ToDouble( &tmpExtraControlTimelineDelta ) )
       {
-        extraControlTimelineDelta = computeDelta( extraControlTimelineMin, extraControlTimelineMax );
-        errorMessage += _( "\t3D Timeline Delta : " ) +  formatNumber( extraControlTimelineDelta ) + _( "\n" );
+        errorMessage += _( "\tEXTRA CONTROL TIMELINE DELTA NOT VALID: Conversion Problems \n" );
+      }
+      if( !std::isnan( tmpExtraControlTimelineMin ) && !std::isnan( tmpExtraControlTimelineMax ) && !std::isnan( tmpExtraControlTimelineDelta ) )
+      {
+        if( tmpExtraControlTimelineMax <= tmpExtraControlTimelineMin )
+        {
+          errorMessage += _( "\tEXTRA CONTROL TIMELINE MIN/MAX NOT VALID: Control Max is lower/equal than control timeline min\n" );
+        }
+        else
+        {
+          extraControlTimelineMin = tmpExtraControlTimelineMin;
+          extraControlTimelineMax = tmpExtraControlTimelineMax;
+
+          // Check Control timeline extra value delta valid
+          if( tmpExtraControlTimelineDelta <= 0 )
+            errorMessage +=
+              _( "\tEXTRA CONTROL TIMELINE DELTA NOT VALID: Value 0 or lower not allowed: " ) + formatNumber( controlTimelineMin ) + _( "\n" );
+          else
+            extraControlTimelineDelta = tmpExtraControlTimelineDelta;
+        }
       }
     }
   }
   else
+  {
     extraControlTimelines.clear();
+  }
 
   timeRange.clear();
 
@@ -490,47 +539,50 @@ bool HistogramDialog::TransferDataFromWindow()
                                               controlTimelineSelected->getTimeUnit(),
                                               ParaverConfig::getInstance()->getTimelinePrecision(),
                                               auxBegin );
-  if ( !done )
+  if( !done )
   {
-    if( radioAllTrace->GetValue() )
-      auxBegin = 0.0;
-    else
-      auxBegin = controlTimelineSelected->getWindowBeginTime();
-    errorMessage += _( "\tBegin Time : " ) + formatNumber( auxBegin ) + _( "\n" );
+    errorMessage += _( "\tBEGIN TIME NOT VALID: Conversion Problems \n" );
   }
   else
+  {
     auxBegin = controlTimelineSelected->windowUnitsToTraceUnits( auxBegin );
+  }
+
 
   done = LabelConstructor::getTimeValue( std::string( txtEndTime->GetValue().mb_str() ),
                                          controlTimelineSelected->getTimeUnit(),
                                          ParaverConfig::getInstance()->getTimelinePrecision(),
                                          auxEnd );
-  if ( !done )
+  if( !done )
   {
-    if( radioAllTrace->GetValue() )
-      auxEnd = controlTimelineSelected->getTrace()->getEndTime();
-    else
-      auxEnd = controlTimelineSelected->getWindowEndTime();
-    errorMessage += _( "\tEnd Time : " ) + formatNumber( auxEnd ) + _( "\n" );
+    errorMessage += _( "\tEND TIME NOT VALID: Conversion Problems \n" );
   }
   else
-    auxEnd = controlTimelineSelected->windowUnitsToTraceUnits( auxEnd );
-
-  timeRange.push_back( make_pair( auxBegin, auxEnd ) );
-
-  if ( errorMessage != _( "" ) )
   {
-    wxString prefix = _( "Following substitutions will be applied:\n\n" );
-    wxMessageDialog message( this,
-                             prefix + errorMessage,
-                             _( "Conversion problem" ),
-                             wxOK | wxICON_EXCLAMATION );
-    message.ShowModal();
+    auxEnd = controlTimelineSelected->windowUnitsToTraceUnits( auxEnd );
   }
 
-  return true;
-}
+  if( auxBegin >= auxEnd )
+  {
+    errorMessage += _( "\tBEGIN/END TIME NOT VALID: Begin is bigger than end \n" );
+  }
+  else
+  {
+    timeRange.push_back( make_pair( auxBegin, auxEnd ) );
+  }
 
+  if( errorMessage != _( "" ) )
+  {
+    wxString prefix = _( "Following values are not correct:\n\n" );
+    wxMessageDialog message( this, prefix + errorMessage, _( "Problem parameters" ), wxOK | wxICON_EXCLAMATION );
+    message.ShowModal();
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
 
 
 /*!
@@ -539,7 +591,7 @@ bool HistogramDialog::TransferDataFromWindow()
 
 void HistogramDialog::OnOkClick( wxCommandEvent& event )
 {
-  if ( TransferDataFromWindow() )
+  if( TransferDataFromWindow() )
   {
     EndModal( wxID_OK );
   }
@@ -570,7 +622,7 @@ void HistogramDialog::updateExtraControlTimelineAutofit()
 {
   TSemanticValue min, max, delta;
 
-  if ( extraControlTimelineSelected == nullptr )
+  if( extraControlTimelineSelected == nullptr )
   {
     txt3DTimelineMin->Clear();
     txt3DTimelineMax->Clear();
@@ -675,11 +727,12 @@ wxString HistogramDialog::formatNumber( double value )
   {
     auxSStr.imbue( std::locale( "" ) );
   }
-  catch(...)
+  catch( ... )
   {
     auxSStr.imbue( std::locale::classic() );
   }
-  auxSStr.precision( ParaverConfig::getInstance()->getHistogramPrecision() );
+  auxSStr.precision( calculate_precision( value ) );
+
   auxSStr << fixed;
   auxSStr << value;
   auxNumber << wxString::FromUTF8( auxSStr.str().c_str() );
@@ -692,10 +745,10 @@ TSemanticValue HistogramDialog::computeDelta( TSemanticValue min, TSemanticValue
 {
   TSemanticValue delta;
 
-  if ( max - min < ( TSemanticValue )1.0 )
+  if( max - min < (TSemanticValue)1.0 )
     delta = ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns();
-  else if ( max - min <= ParaverConfig::getInstance()->getHistogramNumColumns() )
-    delta = (double )1.0;
+  else if( max - min <= ParaverConfig::getInstance()->getHistogramNumColumns() && controlTimelineSelected->isCodeColorSet() )
+    delta = (double)1.0;
   else
     delta = ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns();
 
@@ -703,7 +756,7 @@ TSemanticValue HistogramDialog::computeDelta( TSemanticValue min, TSemanticValue
 }
 
 
-void HistogramDialog::computeColumns( Timeline *current, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta )
+void HistogramDialog::computeColumns( Timeline* current, TSemanticValue& min, TSemanticValue& max, TSemanticValue& delta )
 {
   min = current->getMinimumY();
   max = current->getMaximumY();
@@ -712,13 +765,13 @@ void HistogramDialog::computeColumns( Timeline *current, TSemanticValue &min, TS
 }
 
 // if current = nullptr, PUT none
-PRV_UINT32 HistogramDialog::fillList( Timeline *current, vector< TWindowID > listTimelines, wxChoice *listWidget )
+PRV_UINT32 HistogramDialog::fillList( Timeline* current, vector< TWindowID > listTimelines, wxChoice* listWidget )
 {
-  Timeline *aux;
-  int pos = 0;
+  Timeline* aux;
+  int pos         = 0;
   int posSelected = 0;
 
-  if ( current == nullptr )
+  if( current == nullptr )
     listWidget->Append( _( "- - - None - - -" ) );
 
   for( vector< TWindowID >::iterator it = listTimelines.begin(); it != listTimelines.end(); ++it )
@@ -728,23 +781,23 @@ PRV_UINT32 HistogramDialog::fillList( Timeline *current, vector< TWindowID > lis
     listWidget->Append( wxString::FromUTF8( aux->getName().c_str() ) );
 
     // Find its position in that list
-    if ( aux == current )
+    if( aux == current )
       posSelected = pos;
     pos++;
   }
 
-  if ( current == nullptr )
+  if( current == nullptr )
     posSelected = 0;
 
   return posSelected;
 }
 
-bool HistogramDialog::TransferDataToWindow( Timeline *current )
+bool HistogramDialog::TransferDataToWindow( Timeline* current )
 {
   PRV_UINT32 pos;
-  currentWindow = current;
+  currentWindow           = current;
   controlTimelineSelected = current;
-  dataTimelineSelected = current;
+  dataTimelineSelected    = current;
 
   txtControlTimelines->SetValue( wxString( current->getName().c_str(), wxConvUTF8 ) );
   // Set Control Timeline Min, Max and Delta
@@ -753,31 +806,31 @@ bool HistogramDialog::TransferDataToWindow( Timeline *current )
   computeColumns( current, min, max, delta );
 
   txtControlTimelineMin->SetValue( formatNumber( min ) );
-  txtControlTimelineMax->SetValue( formatNumber(  max ) );
+  txtControlTimelineMax->SetValue( formatNumber( max ) );
   txtControlTimelineDelta->SetValue( formatNumber( delta ) );
 
   buttonControlTimelineAutoFit->SetValue( controlTimelineAutofit );
 
   LoadedWindows::getInstance()->getValidDataWindow( current, nullptr, dataTimelines );
   txtDataTimelines->SetValue( wxString( current->getName().c_str(), wxConvUTF8 ) );
-  
+
   LoadedWindows::getInstance()->getValidControlWindow( current, current, extraControlTimelines );
   txt3DTimelines->SetValue( wxT( "None" ) );
 
   button3DTimelineAutoFit->SetValue( extraControlTimelineAutofit );
   button3DTimelineAutoFit->Enable( false );
 
-  txtBeginTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].first ),
-                                                      current->getTimeUnit(),
-                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
-  );
+  txtBeginTime->SetValue( wxString::FromUTF8(
+    LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].first ),
+                                 current->getTimeUnit(),
+                                 ParaverConfig::getInstance()->getTimelinePrecision() )
+      .c_str() ) );
 
-  txtEndTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].second ),
-                                                      current->getTimeUnit(),
-                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
-  );
+  txtEndTime->SetValue( wxString::FromUTF8(
+    LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].second ),
+                                 current->getTimeUnit(),
+                                 ParaverConfig::getInstance()->getTimelinePrecision() )
+      .c_str() ) );
 
   return true;
 }
@@ -789,19 +842,19 @@ bool HistogramDialog::TransferDataToWindow( Timeline *current )
 
 void HistogramDialog::OnRadiobuttonAllwindowSelected( wxCommandEvent& event )
 {
-  Timeline *current = controlTimelineSelected;
+  Timeline* current = controlTimelineSelected;
 
-  txtBeginTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].first ),
-                                                     current->getTimeUnit(),
-                                                     ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
-  );
+  txtBeginTime->SetValue( wxString::FromUTF8(
+    LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].first ),
+                                 current->getTimeUnit(),
+                                 ParaverConfig::getInstance()->getTimelinePrecision() )
+      .c_str() ) );
 
-  txtEndTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].second ),
-                                                     current->getTimeUnit(),
-                                                     ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
-  );
+  txtEndTime->SetValue( wxString::FromUTF8(
+    LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].second ),
+                                 current->getTimeUnit(),
+                                 ParaverConfig::getInstance()->getTimelinePrecision() )
+      .c_str() ) );
 }
 
 
@@ -811,19 +864,19 @@ void HistogramDialog::OnRadiobuttonAllwindowSelected( wxCommandEvent& event )
 
 void HistogramDialog::OnRadiobuttonAlltraceSelected( wxCommandEvent& event )
 {
-  Timeline *current = controlTimelineSelected;
+  Timeline* current = controlTimelineSelected;
 
-  txtBeginTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::TRACE_RANGE ) ].first ),
-                                                     current->getTimeUnit(),
-                                                     ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
-  );
+  txtBeginTime->SetValue( wxString::FromUTF8(
+    LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::TRACE_RANGE ) ].first ),
+                                 current->getTimeUnit(),
+                                 ParaverConfig::getInstance()->getTimelinePrecision() )
+      .c_str() ) );
 
-  txtEndTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::TRACE_RANGE ) ].second ),
-                                                     current->getTimeUnit(),
-                                                     ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
-  );
+  txtEndTime->SetValue( wxString::FromUTF8(
+    LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::TRACE_RANGE ) ].second ),
+                                 current->getTimeUnit(),
+                                 ParaverConfig::getInstance()->getTimelinePrecision() )
+      .c_str() ) );
 }
 
 
@@ -887,19 +940,17 @@ void HistogramDialog::OnIdle( wxIdleEvent& event )
 {
   if( waitingGlobalTiming )
   {
-    Timeline *current = controlTimelineSelected;
-    txtBeginTime->SetValue(
-      wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( wxGetApp().GetGlobalTimingBegin() ),
-                                                        current->getTimeUnit(),
-                                                        ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
-    );
+    Timeline* current = controlTimelineSelected;
+    txtBeginTime->SetValue( wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( wxGetApp().GetGlobalTimingBegin() ),
+                                                                             current->getTimeUnit(),
+                                                                             ParaverConfig::getInstance()->getTimelinePrecision() )
+                                                  .c_str() ) );
 
-    txtEndTime->SetValue(
-      wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( wxGetApp().GetGlobalTimingEnd() ),
-                                                        current->getTimeUnit(),
-                                                        ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
-    );
-    
+    txtEndTime->SetValue( wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( wxGetApp().GetGlobalTimingEnd() ),
+                                                                           current->getTimeUnit(),
+                                                                           ParaverConfig::getInstance()->getTimelinePrecision() )
+                                                .c_str() ) );
+
     if( !wxGetApp().GetGlobalTiming() )
       waitingGlobalTiming = false;
   }
@@ -920,7 +971,7 @@ void HistogramDialog::OnHistogramControltimelinebuttonClick( wxCommandEvent& eve
                                          controlTimelineSelected->getTrace(),
                                          false );
   timelineSelector.Move( wxGetMousePosition() );
-  
+
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
@@ -939,15 +990,10 @@ void HistogramDialog::OnHistogramControltimelinebuttonClick( wxCommandEvent& eve
 
 void HistogramDialog::OnHistogramDatatimelinebuttonClick( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( this,
-                                         wxID_ANY,
-                                         wxT( "Data Timeline" ),
-                                         dataTimelines,
-                                         dataTimelineSelected,
-                                         dataTimelineSelected->getTrace(),
-                                         false );
+  TimelineTreeSelector
+    timelineSelector( this, wxID_ANY, wxT( "Data Timeline" ), dataTimelines, dataTimelineSelected, dataTimelineSelected->getTrace(), false );
   timelineSelector.Move( wxGetMousePosition() );
-  
+
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
@@ -970,10 +1016,11 @@ void HistogramDialog::OnHistogram3dtimelinebuttonClick( wxCommandEvent& event )
                                          wxT( "3D Timeline" ),
                                          extraControlTimelines,
                                          extraControlTimelineSelected,
-                                         extraControlTimelineSelected == nullptr ? controlTimelineSelected->getTrace() : extraControlTimelineSelected->getTrace(),
+                                         extraControlTimelineSelected == nullptr ? controlTimelineSelected->getTrace()
+                                                                                 : extraControlTimelineSelected->getTrace(),
                                          true );
   timelineSelector.Move( wxGetMousePosition() );
-  
+
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
@@ -989,4 +1036,3 @@ void HistogramDialog::OnHistogram3dtimelinebuttonClick( wxCommandEvent& event )
     }
   }
 }
-

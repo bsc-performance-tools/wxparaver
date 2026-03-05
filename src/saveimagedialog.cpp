@@ -25,22 +25,26 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
-#include "wxparaverapp.h"
-#include "saveimagedialog.h"
 #include "labelconstructor.h"
+#include "saveimagedialog.h"
+#include "wxparaverapp.h"
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 
 /*!
@@ -56,6 +60,7 @@ IMPLEMENT_DYNAMIC_CLASS( SaveImageDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
 
+// clang-format off
 ////@begin SaveImageDialog event table entries
   EVT_TEXT_ENTER( ID_TEXTPATH, SaveImageDialog::OnTextpathEnter )
   EVT_UPDATE_UI( ID_FILENAVIGATOR, SaveImageDialog::OnFilenavigatorUpdate )
@@ -65,10 +70,11 @@ BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
   EVT_UPDATE_UI( wxID_OK, SaveImageDialog::OnOkUpdate )
   EVT_BUTTON( wxID_CANCEL, SaveImageDialog::OnCancelClick )
 ////@end SaveImageDialog event table entries
+// clang-format on
 
-  EVT_FILECTRL_SELECTIONCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
-  EVT_FILECTRL_FOLDERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
-  EVT_FILECTRL_FILTERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
+EVT_FILECTRL_SELECTIONCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
+EVT_FILECTRL_FOLDERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
+EVT_FILECTRL_FILTERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
 
 END_EVENT_TABLE()
 
@@ -83,15 +89,24 @@ SaveImageDialog::SaveImageDialog()
   Init();
 }
 
-SaveImageDialog::SaveImageDialog( wxWindow* parent, wxString& whichStartingPath, wxString whichFileName, bool isItHistogram, wxString whichLegendSuffix, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+SaveImageDialog::SaveImageDialog( wxWindow* parent,
+                                  wxString& whichStartingPath,
+                                  wxString whichFileName,
+                                  bool isItHistogram,
+                                  wxString whichLegendSuffix,
+                                  wxWindowID id,
+                                  const wxString& caption,
+                                  const wxPoint& pos,
+                                  const wxSize& size,
+                                  long style )
   : defaultFileName( whichFileName ), isHistogram( isItHistogram ), legendSuffix( whichLegendSuffix )
 {
-  if ( directoryStartingPath.IsEmpty() )
+  if( directoryStartingPath.IsEmpty() )
   {
     directoryStartingPath = whichStartingPath;
   }
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
 }
 
 
@@ -101,6 +116,7 @@ SaveImageDialog::SaveImageDialog( wxWindow* parent, wxString& whichStartingPath,
 
 bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin SaveImageDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -112,6 +128,8 @@ bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
   }
   Centre();
 ////@end SaveImageDialog creation
+  // clang-format on
+
   return true;
 }
 
@@ -122,8 +140,10 @@ bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
 
 SaveImageDialog::~SaveImageDialog()
 {
+  // clang-format off
 ////@begin SaveImageDialog destruction
 ////@end SaveImageDialog destruction
+  // clang-format on
 }
 
 
@@ -133,6 +153,7 @@ SaveImageDialog::~SaveImageDialog()
 
 void SaveImageDialog::Init()
 {
+  // clang-format off
 ////@begin SaveImageDialog member initialisation
   sizerMain = NULL;
   sizerPath = NULL;
@@ -148,6 +169,7 @@ void SaveImageDialog::Init()
   buttonSave = NULL;
   buttonCancel = NULL;
 ////@end SaveImageDialog member initialisation
+  // clang-format on
 }
 
 
@@ -156,7 +178,8 @@ void SaveImageDialog::Init()
  */
 
 void SaveImageDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin SaveImageDialog content construction
   SaveImageDialog* itemDialog1 = this;
 
@@ -212,16 +235,17 @@ void SaveImageDialog::CreateControls()
   itemStdDialogButtonSizer1->Realize();
 
 ////@end SaveImageDialog content construction
+  // clang-format on
   fileTypeText = _( ".png" );
 
 #if !defined( __WXGTK3__ ) && !defined( __WXOSX__ ) && !defined( __WXMSW__ )
   sizerMain->Hide( sizerPath, true );
 #endif
 
-  if ( isHistogram )
+  if( isHistogram )
   {
-    imageCheckbox->Hide(); 
-    imageToSaveSizer->Hide( (wxSizer*) legendSizer, true );
+    imageCheckbox->Hide();
+    imageToSaveSizer->Hide( (wxSizer*)legendSizer, true );
   }
 
   Layout();
@@ -235,7 +259,7 @@ void SaveImageDialog::CreateControls()
 }
 
 
-void SaveImageDialog::updateFileNamesAndPaths() 
+void SaveImageDialog::updateFileNamesAndPaths()
 {
   wxFileName myPath = fileNavigator->GetPath();
 
@@ -257,8 +281,8 @@ void SaveImageDialog::updateFileNamesAndPaths()
 
 void SaveImageDialog::OnTextpathEnter( wxCommandEvent& event )
 {
-  wxString myPath = textPath->GetValue(); 
-  if ( wxDirExists( myPath ) ) 
+  wxString myPath = textPath->GetValue();
+  if( wxDirExists( myPath ) )
   {
     fileNavigator->SetDirectory( myPath );
     directoryStartingPath = myPath;
@@ -269,19 +293,19 @@ void SaveImageDialog::OnTextpathEnter( wxCommandEvent& event )
 void SaveImageDialog::setImageFileName()
 {
   wxString fileName = fileNavigator->GetFilename();
-  if ( fileName.Find( "." ) != wxNOT_FOUND )
+  if( fileName.Find( "." ) != wxNOT_FOUND )
   {
     // Change file if matched current selected image extension
     wxString selectedFileSuffix = wxString( LabelConstructor::getImageFileSuffix( static_cast< TImageFormat >( fileNavigator->GetFilterIndex() ) ) );
-    if ( fileNavigator->GetFilename().AfterLast( '.' ) == selectedFileSuffix )
+    if( fileNavigator->GetFilename().AfterLast( '.' ) == selectedFileSuffix )
       fileName = fileNavigator->GetFilename().BeforeLast( '.' );
     else
     {
       // Change filename and selector if matched some available image extensions
-      for( int tif = (int)TImageFormat::BMP; tif <= (int)TImageFormat::XPM ; ++tif )
+      for( int tif = (int)TImageFormat::BMP; tif <= (int)TImageFormat::XPM; ++tif )
       {
         wxString ext = wxString( LabelConstructor::getImageFileSuffix( static_cast< TImageFormat >( tif ) ) );
-        if ( fileNavigator->GetFilename().AfterLast( '.' ) == ext )
+        if( fileNavigator->GetFilename().AfterLast( '.' ) == ext )
         {
           fileName = fileNavigator->GetFilename().BeforeLast( '.' );
           fileNavigator->SetFilterIndex( tif );
@@ -290,15 +314,15 @@ void SaveImageDialog::setImageFileName()
       }
     }
   }
-  
+
   selectedImageFilePath = fileName + fileTypeText;
-  if ( imageCheckbox->IsChecked() && imageFileName->GetValue() != selectedImageFilePath )
+  if( imageCheckbox->IsChecked() && imageFileName->GetValue() != selectedImageFilePath )
     imageFileName->ChangeValue( selectedImageFilePath );
   else if( !imageCheckbox->IsChecked() && !imageFileName->IsEmpty() )
     imageFileName->Clear();
 
   selectedLegendFilePath = fileName + legendSuffix + fileTypeText;
-  if ( legendCheckbox->IsChecked() && legendFileName->GetValue() != selectedLegendFilePath ) 
+  if( legendCheckbox->IsChecked() && legendFileName->GetValue() != selectedLegendFilePath )
     legendFileName->ChangeValue( selectedLegendFilePath );
   else if( !legendCheckbox->IsChecked() && !legendFileName->IsEmpty() )
     legendFileName->Clear();
@@ -352,7 +376,7 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
     }
   }
 
-  if ( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !textPath->IsEmpty() )
+  if( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !textPath->IsEmpty() )
   {
     directoryStartingPath = textPath->GetValue();
     EndModal( wxID_OK );
@@ -366,10 +390,12 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
 
 void SaveImageDialog::OnCancelClick( wxCommandEvent& event )
 {
+  // clang-format off
 ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
   // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog. 
+////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
+  // clang-format on
 }
 
 
@@ -388,11 +414,13 @@ bool SaveImageDialog::ShowToolTips()
 
 wxBitmap SaveImageDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin SaveImageDialog bitmap retrieval
   wxUnusedVar(name);
   return wxNullBitmap;
 ////@end SaveImageDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -401,11 +429,13 @@ wxBitmap SaveImageDialog::GetBitmapResource( const wxString& name )
 
 wxIcon SaveImageDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin SaveImageDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end SaveImageDialog icon retrieval
+  // clang-format on
 }
 
 wxString SaveImageDialog::GetImageFilePath()
@@ -442,8 +472,7 @@ int SaveImageDialog::GetFilterIndex()
 
 void SaveImageDialog::OnOkUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) &&
-                wxDir::Exists( textPath->GetValue() ) &&
+  event.Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && wxDir::Exists( textPath->GetValue() ) &&
                 !fileNavigator->GetFilename().IsEmpty() );
 }
 
@@ -466,4 +495,3 @@ void SaveImageDialog::OnFilenavigatorUpdate( wxUpdateUIEvent& event )
 {
   setImageFileName();
 }
-

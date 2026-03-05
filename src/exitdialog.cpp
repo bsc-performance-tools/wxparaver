@@ -25,21 +25,25 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
 #include "exitdialog.h"
 
+// clang-format off
 ////@begin XPM images
 #include "../icons/logout.xpm"
 ////@end XPM images
+// clang-format on
 
 
 /*!
@@ -55,11 +59,13 @@ IMPLEMENT_DYNAMIC_CLASS( ExitDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( ExitDialog, wxDialog )
 
+// clang-format off
 ////@begin ExitDialog event table entries
   EVT_BUTTON( ID_BUTTON_SAVE_EXIT, ExitDialog::OnButtonSaveExitClick )
   EVT_BUTTON( ID_BUTTON_CANCEL, ExitDialog::OnButtonCancelClick )
   EVT_BUTTON( ID_BUTTON_CLOSE_NO_SAVE, ExitDialog::OnButtonCloseNoSaveClick )
 ////@end ExitDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -76,7 +82,7 @@ ExitDialog::ExitDialog()
 ExitDialog::ExitDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
 }
 
 
@@ -86,6 +92,7 @@ ExitDialog::ExitDialog( wxWindow* parent, wxWindowID id, const wxString& caption
 
 bool ExitDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin ExitDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -97,6 +104,7 @@ bool ExitDialog::Create( wxWindow* parent, wxWindowID id, const wxString& captio
   }
   Centre();
 ////@end ExitDialog creation
+  // clang-format on
   return true;
 }
 
@@ -107,8 +115,10 @@ bool ExitDialog::Create( wxWindow* parent, wxWindowID id, const wxString& captio
 
 ExitDialog::~ExitDialog()
 {
+  // clang-format off
 ////@begin ExitDialog destruction
 ////@end ExitDialog destruction
+  // clang-format on
 }
 
 
@@ -118,11 +128,13 @@ ExitDialog::~ExitDialog()
 
 void ExitDialog::Init()
 {
+  // clang-format off
 ////@begin ExitDialog member initialisation
   saveExitButton = nullptr;
   cancelButton = nullptr;
   noSaveExitButton = nullptr;
 ////@end ExitDialog member initialisation
+  // clang-format on
 }
 
 
@@ -131,7 +143,8 @@ void ExitDialog::Init()
  */
 
 void ExitDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin ExitDialog content construction
   ExitDialog* itemDialog1 = this;
 
@@ -162,8 +175,8 @@ void ExitDialog::CreateControls()
   itemBoxSizer3->Add(noSaveExitButton, 1, wxGROW|wxALL, 5);
 
 ////@end ExitDialog content construction
+  // clang-format on
 }
-
 
 
 /*!
@@ -181,6 +194,7 @@ bool ExitDialog::ShowToolTips()
 
 wxBitmap ExitDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin ExitDialog bitmap retrieval
   wxUnusedVar(name);
@@ -191,6 +205,7 @@ wxBitmap ExitDialog::GetBitmapResource( const wxString& name )
   }
   return wxNullBitmap;
 ////@end ExitDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -199,11 +214,13 @@ wxBitmap ExitDialog::GetBitmapResource( const wxString& name )
 
 wxIcon ExitDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin ExitDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end ExitDialog icon retrieval
+  // clang-format on
 }
 
 

@@ -24,63 +24,64 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 #ifdef __BORLANDC__
-#pragma hdrstopclo
+#  pragma hdrstopclo
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
-#include <wx/version.h>
 #include <wx/dcgraph.h>
+#include <wx/version.h>
 
+// clang-format off
 ////@begin includes
 #include "wx/imaglist.h"
 ////@end includes
-#include <wx/dcbuffer.h>
-#include <wx/statline.h>
-#include <algorithm>
-#include <wx/filename.h>
-#include <wx/display.h>
-#include <wx/valnum.h>
-
+// clang-format on
 #include "config_traits.h"
-#include "wxparaverapp.h"
-#include "gtimeline.h"
-#include "finddialog.h"
-#include "window.h"
-#include "labelconstructor.h"
 #include "drawmode.h"
+#include "finddialog.h"
+#include "gtimeline.h"
+#include "labelconstructor.h"
 #include "loadedwindows.h"
-//#include "windows_tree.h" --> to .gtimeline.h
-#include "output.h"
-#include "filedialogext.h"
-#include "progresscontroller.h"
-#include "paravermain.h"
-#include "saveimagedialog.h"
-#include "sequencedriver.h"
-#include "popupmenu.h"
-#include "ParaverMetadataManager.h"
+#include "window.h"
+#include "wxparaverapp.h"
 
+#include <algorithm>
+#include <wx/dcbuffer.h>
+#include <wx/display.h>
+#include <wx/filename.h>
+#include <wx/statline.h>
+#include <wx/valnum.h>
+// #include "windows_tree.h" --> to .gtimeline.h
 #include "autoredraw_refresh.xpm"
 #include "caution.xpm"
 #include "caution_yellow.xpm"
+#include "filedialogext.h"
+#include "output.h"
+#include "paravermain.h"
+#include "ParaverMetadataManager.h"
+#include "popupmenu.h"
+#include "progresscontroller.h"
+#include "saveimagedialog.h"
+#include "sequencedriver.h"
 
 #ifdef __WXMAC__
-  #include <wx/rawbmp.h>
+#  include <wx/rawbmp.h>
 #endif
 
 #define wxTEST_GRAPHICS 1
 
 #if wxTEST_GRAPHICS
-#include "wx/graphics.h"
-#if wxUSE_GRAPHICS_CONTEXT == 0
-#undef wxTEST_GRAPHICS
-#define wxTEST_GRAPHICS 0
-#endif
+#  include "wx/graphics.h"
+#  if wxUSE_GRAPHICS_CONTEXT == 0
+#    undef wxTEST_GRAPHICS
+#    define wxTEST_GRAPHICS 0
+#  endif
 #else
-#undef wxUSE_GRAPHICS_CONTEXT
-#define wxUSE_GRAPHICS_CONTEXT 0
+#  undef wxUSE_GRAPHICS_CONTEXT
+#  define wxUSE_GRAPHICS_CONTEXT 0
 #endif
 
 using namespace std;
@@ -88,13 +89,15 @@ using namespace std;
 #ifdef __WXMAC__
 constexpr int TIMER_SIZE_DURATION = 750;
 #else
-constexpr int TIMER_SIZE_DURATION = 250;
+constexpr int TIMER_SIZE_DURATION = 150;
 #endif
 
 constexpr size_t MAX_LEGEND_COLORS = 512;
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 
 /*!
@@ -109,74 +112,71 @@ IMPLEMENT_CLASS( gTimeline, wxFrame )
  */
 
 BEGIN_EVENT_TABLE( gTimeline, wxFrame )
-
+EVT_MOVE( gTimeline::OnMove )
+// clang-format off
 ////@begin gTimeline event table entries
-  EVT_CLOSE( gTimeline::OnCloseWindow )
-  EVT_IDLE( gTimeline::OnIdle )
-  EVT_RIGHT_DOWN( gTimeline::OnRightDown )
-  EVT_SPLITTER_DCLICK( ID_SPLITTER_TIMELINE, gTimeline::OnSplitterTimelineSashDClick )
-  EVT_SPLITTER_UNSPLIT( ID_SPLITTER_TIMELINE, gTimeline::OnSplitterTimelineSashUnsplit )
-  EVT_UPDATE_UI( ID_SCROLLED_DRAW, gTimeline::OnScrolledWindowUpdate )
-  EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK_INFO, gTimeline::OnNotebookInfoPageChanging )
-  EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
-  EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
-  EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
-  EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
-  EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
-  EVT_CHECKBOX( ID_CHECKBOX5, gTimeline::OnCheckWhatWhereText )
-  EVT_UPDATE_UI( ID_CHECKBOX5, gTimeline::OnCheckWWShowDateUpdate )
-  EVT_CHECKBOX( ID_CHECKBOX6, gTimeline::OnCheckWhatWhereText )
-  EVT_UPDATE_UI( wxID_STATIC_SLOPE, gTimeline::OnStaticSlopeUpdate )
-  EVT_CHECKBOX( ID_CHECKBOX_CUSTOM_PALETTE, gTimeline::OnCheckboxCustomPaletteClick )
-  EVT_UPDATE_UI( ID_CHECKBOX_CUSTOM_PALETTE, gTimeline::OnCheckboxCustomPaletteUpdate )
-  EVT_BUTTON( ID_BUTTON_CUSTOM_PALETTE_APPLY, gTimeline::OnButtonCustomPaletteApplyClick )
-  EVT_UPDATE_UI( ID_BUTTON_CUSTOM_PALETTE_APPLY, gTimeline::OnButtonCustomPaletteApplyUpdate )
-  EVT_UPDATE_UI( ID_SCROLLED_COLORS, gTimeline::OnScrolledColorsUpdate )
-  EVT_UPDATE_UI( wxID_STATIC_RED, gTimeline::OnStaticSelectedColorUpdate )
-  EVT_SLIDER( ID_SLIDER_RED, gTimeline::OnSliderSelectedColorUpdated )
-  EVT_UPDATE_UI( ID_SLIDER_RED, gTimeline::OnSliderSelectedColorUpdateUI )
-  EVT_TEXT( ID_TEXT_RED, gTimeline::OnTextSelectedColorUpdated )
-  EVT_UPDATE_UI( ID_TEXT_RED, gTimeline::OnTextSelectedColorUpdate )
-  EVT_UPDATE_UI( wxID_STATIC_GREEN, gTimeline::OnStaticSelectedColorUpdate )
-  EVT_SLIDER( ID_SLIDER_GREEN, gTimeline::OnSliderSelectedColorUpdated )
-  EVT_UPDATE_UI( ID_SLIDER_GREEN, gTimeline::OnSliderSelectedColorUpdateUI )
-  EVT_TEXT( ID_TEXT_GREEN, gTimeline::OnTextSelectedColorUpdated )
-  EVT_UPDATE_UI( ID_TEXT_GREEN, gTimeline::OnTextSelectedColorUpdate )
-  EVT_UPDATE_UI( wxID_STATIC_BLUE, gTimeline::OnStaticSelectedColorUpdate )
-  EVT_SLIDER( ID_SLIDER_BLUE, gTimeline::OnSliderSelectedColorUpdated )
-  EVT_UPDATE_UI( ID_SLIDER_BLUE, gTimeline::OnSliderSelectedColorUpdateUI )
-  EVT_TEXT( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdated )
-  EVT_UPDATE_UI( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdate )
+EVT_CLOSE( gTimeline::OnCloseWindow )
+EVT_IDLE( gTimeline::OnIdle )
+EVT_RIGHT_DOWN( gTimeline::OnRightDown )
+EVT_SPLITTER_DCLICK( ID_SPLITTER_TIMELINE, gTimeline::OnSplitterTimelineSashDClick )
+EVT_SPLITTER_UNSPLIT( ID_SPLITTER_TIMELINE, gTimeline::OnSplitterTimelineSashUnsplit )
+EVT_UPDATE_UI( ID_SCROLLED_DRAW, gTimeline::OnScrolledWindowUpdate )
+EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK_INFO, gTimeline::OnNotebookInfoPageChanging )
+EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
+EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
+EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
+EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
+EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
+EVT_CHECKBOX( ID_CHECKBOX5, gTimeline::OnCheckWhatWhereText )
+EVT_UPDATE_UI( ID_CHECKBOX5, gTimeline::OnCheckWWShowDateUpdate )
+EVT_CHECKBOX( ID_CHECKBOX6, gTimeline::OnCheckWhatWhereText )
+EVT_UPDATE_UI( wxID_STATIC_SLOPE, gTimeline::OnStaticSlopeUpdate )
+EVT_CHECKBOX( ID_CHECKBOX_CUSTOM_PALETTE, gTimeline::OnCheckboxCustomPaletteClick )
+EVT_UPDATE_UI( ID_CHECKBOX_CUSTOM_PALETTE, gTimeline::OnCheckboxCustomPaletteUpdate )
+EVT_BUTTON( ID_BUTTON_CUSTOM_PALETTE_APPLY, gTimeline::OnButtonCustomPaletteApplyClick )
+EVT_UPDATE_UI( ID_BUTTON_CUSTOM_PALETTE_APPLY, gTimeline::OnButtonCustomPaletteApplyUpdate )
+EVT_UPDATE_UI( ID_SCROLLED_COLORS, gTimeline::OnScrolledColorsUpdate )
+EVT_UPDATE_UI( wxID_STATIC_RED, gTimeline::OnStaticSelectedColorUpdate )
+EVT_SLIDER( ID_SLIDER_RED, gTimeline::OnSliderSelectedColorUpdated )
+EVT_UPDATE_UI( ID_SLIDER_RED, gTimeline::OnSliderSelectedColorUpdateUI )
+EVT_TEXT( ID_TEXT_RED, gTimeline::OnTextSelectedColorUpdated )
+EVT_UPDATE_UI( ID_TEXT_RED, gTimeline::OnTextSelectedColorUpdate )
+EVT_UPDATE_UI( wxID_STATIC_GREEN, gTimeline::OnStaticSelectedColorUpdate )
+EVT_SLIDER( ID_SLIDER_GREEN, gTimeline::OnSliderSelectedColorUpdated )
+EVT_UPDATE_UI( ID_SLIDER_GREEN, gTimeline::OnSliderSelectedColorUpdateUI )
+EVT_TEXT( ID_TEXT_GREEN, gTimeline::OnTextSelectedColorUpdated )
+EVT_UPDATE_UI( ID_TEXT_GREEN, gTimeline::OnTextSelectedColorUpdate )
+EVT_UPDATE_UI( wxID_STATIC_BLUE, gTimeline::OnStaticSelectedColorUpdate )
+EVT_SLIDER( ID_SLIDER_BLUE, gTimeline::OnSliderSelectedColorUpdated )
+EVT_UPDATE_UI( ID_SLIDER_BLUE, gTimeline::OnSliderSelectedColorUpdateUI )
+EVT_TEXT( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdated )
+EVT_UPDATE_UI( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdate )
+EVT_ACTIVATE( gTimeline::OnActivateWindow )
 ////@end gTimeline event table entries
+// clang-format on
 
-  EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
-  EVT_TIMER( ID_TIMER_MOTION, gTimeline::OnTimerMotion )
-  EVT_TIMER( ID_TIMER_WHEEL, gTimeline::OnTimerWheel )
-  
+EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
+EVT_TIMER( ID_TIMER_MOTION, gTimeline::OnTimerMotion )
+EVT_TIMER( ID_TIMER_WHEEL, gTimeline::OnTimerWheel )
+EVT_TIMER( ID_TIMER_POSITION, gTimeline::OnTimerPosition )
+
 END_EVENT_TABLE()
 
-wxProgressDialog *gTimeline::dialogProgress = nullptr;
-int gTimeline::numberOfProgressDialogUsers = 0;
+wxProgressDialog* gTimeline::dialogProgress = nullptr;
+int gTimeline::numberOfProgressDialogUsers  = 0;
 
 /*!
  * gTimeline constructors
  */
-//class paraverMain;
+// class paraverMain;
 #include "paravermain.h"
-gTimeline::gTimeline() :
-        gWindow()
+gTimeline::gTimeline() : gWindow()
 {
   Init();
   parent = nullptr;
 }
 
-gTimeline::gTimeline( wxWindow* whichParent,
-                      wxWindowID id,
-                      const wxString& caption,
-                      const wxPoint& pos,
-                      const wxSize& size,
-                      long style ) :
-        gWindow()
+gTimeline::gTimeline( wxWindow* whichParent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style ) : gWindow()
 {
   Init();
   Create( whichParent, id, caption, pos, size, style );
@@ -190,11 +190,13 @@ gTimeline::gTimeline( wxWindow* whichParent,
 
 bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
-////@begin gTimeline creation
+  // clang-format off
+  ////@begin gTimeline creation
   wxFrame::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-////@end gTimeline creation
+  ////@end gTimeline creation
+  // clang-format on
   splitter->Unsplit();
   redrawStopWatch->Pause();
   return true;
@@ -207,13 +209,16 @@ bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption
 
 gTimeline::~gTimeline()
 {
-////@begin gTimeline destruction
-////@end gTimeline destruction
+  // clang-format off
+  ////@begin gTimeline destruction
+  ////@end gTimeline destruction
+  // clang-format on
   gPasteWindowProperties::getInstance()->verifyRemove( this );
 
   delete timerMotion;
   delete timerSize;
   delete timerWheel;
+  delete timerPosition;
   delete myWindow;
   delete redrawStopWatch;
 }
@@ -225,99 +230,102 @@ gTimeline::~gTimeline()
 
 void gTimeline::Init()
 {
-////@begin gTimeline member initialisation
-  canRedraw = false;
-  drawCaution = false;
-  drawCautionNegatives = false;
-  escapePressed = false;
-  findBeginTime = 0;
-  findEndTime = 0;
-  findFirstObject = 0;
-  findLastObject = 0;
-  firstUnsplit = false;
-  infoZoneLastSize = 200;
-  lastEventFoundTime = 0;
-  lastFoundObject = 0;
-  lastSemanticFoundTime = 0;
-  myWindow = nullptr;
-  objectHeight = 1;
-  redoColorsPanel = false;
-  redrawStopWatch = new wxStopWatch();
-  splitChanged = false;
-  timerMotion = new wxTimer( this, ID_TIMER_MOTION );
-  timerSize = new wxTimer( this, ID_TIMER_SIZE );
-  timerWheel = new wxTimer( this, ID_TIMER_WHEEL );
-  timing = false;
-  wheelZoomBeginObject = 0;
-  wheelZoomBeginTime = 0;
-  wheelZoomEndObject = 0;
-  wheelZoomEndTime = 0;
-  wheelZoomFactor = 1;
-  zooming = false;
-  splitter = NULL;
-  drawZone = NULL;
-  infoZone = NULL;
-  whatWherePanel = NULL;
-  checkWWSemantic = NULL;
-  checkWWEvents = NULL;
-  checkWWCommunications = NULL;
-  checkWWPreviousNext = NULL;
-  checkWWText = NULL;
-  checkWWShowDate = NULL;
-  checkWWHex = NULL;
-  whatWhereText = NULL;
-  timingZone = NULL;
-  initialTimeText = NULL;
-  initialSemanticLabel = NULL;
-  initialSemanticText = NULL;
-  finalTimeText = NULL;
-  finalSemanticLabel = NULL;
-  finalSemanticText = NULL;
-  durationText = NULL;
-  slopeLabel = NULL;
-  slopeText = NULL;
-  colorsPanelGlobal = NULL;
-  checkboxCustomPalette = NULL;
+  // clang-format off
+  ////@begin gTimeline member initialisation
+  canRedraw                = false;
+  drawCaution              = false;
+  drawCautionNegatives     = false;
+  escapePressed            = false;
+  findBeginTime            = 0;
+  findEndTime              = 0;
+  findFirstObject          = 0;
+  findLastObject           = 0;
+  firstUnsplit             = false;
+  infoZoneLastSize         = 200;
+  lastEventFoundTime       = 0;
+  lastFoundObject          = 0;
+  lastSemanticFoundTime    = 0;
+  myWindow                 = nullptr;
+  objectHeight             = 1;
+  redoColorsPanel          = false;
+  redrawStopWatch          = new wxStopWatch();
+  splitChanged             = false;
+  timerMotion              = new wxTimer( this, ID_TIMER_MOTION );
+  timerSize                = new wxTimer( this, ID_TIMER_SIZE );
+  timerWheel               = new wxTimer( this, ID_TIMER_WHEEL );
+  timing                   = false;
+  wheelZoomBeginObject     = 0;
+  wheelZoomBeginTime       = 0;
+  wheelZoomEndObject       = 0;
+  wheelZoomEndTime         = 0;
+  wheelZoomFactor          = 1;
+  zooming                  = false;
+  timerPosition            = new wxTimer( this, ID_TIMER_POSITION );
+  splitter                 = NULL;
+  drawZone                 = NULL;
+  infoZone                 = NULL;
+  whatWherePanel           = NULL;
+  checkWWSemantic          = NULL;
+  checkWWEvents            = NULL;
+  checkWWCommunications    = NULL;
+  checkWWPreviousNext      = NULL;
+  checkWWText              = NULL;
+  checkWWShowDate          = NULL;
+  checkWWHex               = NULL;
+  whatWhereText            = NULL;
+  timingZone               = NULL;
+  initialTimeText          = NULL;
+  initialSemanticLabel     = NULL;
+  initialSemanticText      = NULL;
+  finalTimeText            = NULL;
+  finalSemanticLabel       = NULL;
+  finalSemanticText        = NULL;
+  durationText             = NULL;
+  slopeLabel               = NULL;
+  slopeText                = NULL;
+  colorsPanelGlobal        = NULL;
+  checkboxCustomPalette    = NULL;
   buttonCustomPaletteApply = NULL;
-  colorsPanel = NULL;
-  colorsSizer = NULL;
-  sizerSelectedColor = NULL;
-  panelSelectedColor = NULL;
-  labelSelectedColorRed = NULL;
-  sliderSelectedRed = NULL;
-  textSelectedRed = NULL;
-  labelSelectedColorGreen = NULL;
-  sliderSelectedGreen = NULL;
-  textSelectedGreen = NULL;
-  labelSelectedColorBlue = NULL;
-  sliderSelectedBlue = NULL;
-  textSelectedBlue = NULL;
-////@end gTimeline member initialisation
+  colorsPanel              = NULL;
+  colorsSizer              = NULL;
+  sizerSelectedColor       = NULL;
+  panelSelectedColor       = NULL;
+  labelSelectedColorRed    = NULL;
+  sliderSelectedRed        = NULL;
+  textSelectedRed          = NULL;
+  labelSelectedColorGreen  = NULL;
+  sliderSelectedGreen      = NULL;
+  textSelectedGreen        = NULL;
+  labelSelectedColorBlue   = NULL;
+  sliderSelectedBlue       = NULL;
+  textSelectedBlue         = NULL;
+  ////@end gTimeline member initialisation
+  // clang-format on
 
   zoomXY = false;
   bufferImage.Create( 1, 1 );
 #ifdef __WXMAC__
-  objectFont = wxFont( 8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
-  timeFont = wxFont( 8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+  objectFont   = wxFont( 8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
+  timeFont     = wxFont( 8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
   semanticFont = wxFont( 10, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
 #else
-  objectFont = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
-  timeFont = wxFont( 6, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+  objectFont   = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+  timeFont     = wxFont( 6, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
   semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
 #endif
-  whatWhereTime = 0.0;
-  whatWhereRow = 0;
+  whatWhereTime     = 0.0;
+  whatWhereRow      = 0;
   whatWhereSemantic = 0.0;
 
   forceRedoColorsPanel = false;
-  enableApplyButton = false;
-  lastType = NO_TYPE;
-  lastMin = 0;
-  lastMax = 15;
-  lastValuesSize = semanticValuesToColor.size();
-  codeColorSet = true;
-  gradientFunc = TGradientFunction::LINEAR;
-  
+  enableApplyButton    = false;
+  lastType             = NO_TYPE;
+  lastMin              = 0;
+  lastMax              = 15;
+  lastValuesSize       = semanticValuesToColor.size();
+  codeColorSet         = true;
+  gradientFunc         = TGradientFunction::LINEAR;
+
 #ifdef _WIN32
   wheelZoomObjects = false;
 #endif
@@ -334,207 +342,258 @@ void gTimeline::Init()
 
 void gTimeline::CreateControls()
 {
-////@begin gTimeline content construction
+  // clang-format off
+  ////@begin gTimeline content construction
   gTimeline* itemFrame1 = this;
 
-  splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTER_TIMELINE, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT );
-  splitter->SetMinimumPaneSize(wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
+  splitter =
+    new wxSplitterWindow( itemFrame1, ID_SPLITTER_TIMELINE, wxDefaultPosition, wxDefaultSize, wxSP_BORDER | wxSP_3DSASH | wxSP_PERMIT_UNSPLIT );
+  splitter->SetMinimumPaneSize( wxDLG_UNIT( itemFrame1, wxSize( 0, -1 ) ).x );
 
-  drawZone = new wxScrolledWindow( splitter, ID_SCROLLED_DRAW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE );
-  drawZone->SetScrollbars(1, 1, 0, 0);
+  drawZone =
+    new wxScrolledWindow( splitter, ID_SCROLLED_DRAW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE );
+  drawZone->SetScrollbars( 1, 1, 0, 0 );
   infoZone = new wxNotebook( splitter, ID_NOTEBOOK_INFO, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
-  whatWherePanel = new wxScrolledWindow( infoZone, ID_SCROLLED_WHATWHERE, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  whatWherePanel->SetScrollbars(1, 1, 0, 0);
-  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
-  whatWherePanel->SetSizer(itemBoxSizer6);
+  whatWherePanel = new wxScrolledWindow( infoZone, ID_SCROLLED_WHATWHERE, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  whatWherePanel->SetScrollbars( 1, 1, 0, 0 );
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer( wxVERTICAL );
+  whatWherePanel->SetSizer( itemBoxSizer6 );
 
-  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer6->Add(itemBoxSizer7, 0, wxALIGN_LEFT|wxALL, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
-  checkWWSemantic = new wxCheckBox( whatWherePanel, ID_CHECKBOX, _("Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkWWSemantic->SetValue(true);
-  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
+  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer6->Add( itemBoxSizer7, 0, wxALIGN_LEFT | wxALL, wxDLG_UNIT( whatWherePanel, wxSize( 5, -1 ) ).x );
+  checkWWSemantic = new wxCheckBox( whatWherePanel, ID_CHECKBOX, _( "Semantic" ), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWSemantic->SetValue( true );
+  itemBoxSizer7->Add( checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL, wxDLG_UNIT( whatWherePanel, wxSize( 2, -1 ) ).x );
 
-  checkWWEvents = new wxCheckBox( whatWherePanel, ID_CHECKBOX1, _("Events"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkWWEvents->SetValue(true);
-  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
+  checkWWEvents = new wxCheckBox( whatWherePanel, ID_CHECKBOX1, _( "Events" ), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWEvents->SetValue( true );
+  itemBoxSizer7->Add( checkWWEvents, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, wxDLG_UNIT( whatWherePanel, wxSize( 2, -1 ) ).x );
 
-  checkWWCommunications = new wxCheckBox( whatWherePanel, ID_CHECKBOX2, _("Communications"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkWWCommunications->SetValue(true);
-  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
+  checkWWCommunications = new wxCheckBox( whatWherePanel, ID_CHECKBOX2, _( "Communications" ), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWCommunications->SetValue( true );
+  itemBoxSizer7->Add( checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, wxDLG_UNIT( whatWherePanel, wxSize( 2, -1 ) ).x );
 
-  checkWWPreviousNext = new wxCheckBox( whatWherePanel, ID_CHECKBOX3, _("Prev./Next"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkWWPreviousNext->SetValue(true);
-  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
+  checkWWPreviousNext = new wxCheckBox( whatWherePanel, ID_CHECKBOX3, _( "Prev./Next" ), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWPreviousNext->SetValue( true );
+  itemBoxSizer7->Add( checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, wxDLG_UNIT( whatWherePanel, wxSize( 2, -1 ) ).x );
 
-  checkWWText = new wxCheckBox( whatWherePanel, ID_CHECKBOX4, _("Text"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkWWText->SetValue(true);
-  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
+  checkWWText = new wxCheckBox( whatWherePanel, ID_CHECKBOX4, _( "Text" ), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWText->SetValue( true );
+  itemBoxSizer7->Add( checkWWText, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, wxDLG_UNIT( whatWherePanel, wxSize( 2, -1 ) ).x );
 
-  checkWWShowDate = new wxCheckBox( whatWherePanel, ID_CHECKBOX5, _("Show Date"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkWWShowDate->SetValue(false);
-  itemBoxSizer7->Add(checkWWShowDate, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
+  checkWWShowDate = new wxCheckBox( whatWherePanel, ID_CHECKBOX5, _( "Show Date" ), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWShowDate->SetValue( false );
+  itemBoxSizer7->Add( checkWWShowDate, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, wxDLG_UNIT( whatWherePanel, wxSize( 2, -1 ) ).x );
 
-  checkWWHex = new wxCheckBox( whatWherePanel, ID_CHECKBOX6, _("Hex"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkWWHex->SetValue(false);
-  itemBoxSizer7->Add(checkWWHex, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
+  checkWWHex = new wxCheckBox( whatWherePanel, ID_CHECKBOX6, _( "Hex" ), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWHex->SetValue( false );
+  itemBoxSizer7->Add( checkWWHex, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, wxDLG_UNIT( whatWherePanel, wxSize( 2, -1 ) ).x );
 
-  whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
+  whatWhereText =
+    new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxWANTS_CHARS );
+  itemBoxSizer6->Add( whatWhereText, 1, wxGROW | wxLEFT | wxRIGHT | wxBOTTOM, wxDLG_UNIT( whatWherePanel, wxSize( 5, -1 ) ).x );
 
   whatWherePanel->FitInside();
-  infoZone->AddPage(whatWherePanel, _("What / Where"));
+  infoZone->AddPage( whatWherePanel, _( "What / Where" ) );
 
-  timingZone = new wxScrolledWindow( infoZone, ID_SCROLLED_TIMING, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  timingZone->SetScrollbars(1, 5, 0, 0);
-  wxFlexGridSizer* itemFlexGridSizer15 = new wxFlexGridSizer(3, 4, 0, 0);
-  timingZone->SetSizer(itemFlexGridSizer15);
+  timingZone = new wxScrolledWindow( infoZone, ID_SCROLLED_TIMING, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxTAB_TRAVERSAL );
+  timingZone->SetScrollbars( 1, 5, 0, 0 );
+  wxFlexGridSizer* itemFlexGridSizer15 = new wxFlexGridSizer( 3, 4, 0, 0 );
+  timingZone->SetSizer( itemFlexGridSizer15 );
 
-  wxStaticText* itemStaticText16 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(itemStaticText16, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  wxStaticText* itemStaticText16 = new wxStaticText( timingZone, wxID_STATIC, _( "Initial time" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add( itemStaticText16,
+                            0,
+                            wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
   initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_INITIALTIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(initialTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add( initialTimeText,
+                            1,
+                            wxGROW | wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
-  initialSemanticLabel = new wxStaticText( timingZone, wxID_STATIC_INITIALSEMANTIC, _("Inital semantic"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(initialSemanticLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  initialSemanticLabel = new wxStaticText( timingZone, wxID_STATIC_INITIALSEMANTIC, _( "Inital semantic" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add( initialSemanticLabel,
+                            0,
+                            wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
   initialSemanticText = new wxTextCtrl( timingZone, ID_TEXTCTRL_INITIALSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(initialSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add( initialSemanticText,
+                            1,
+                            wxGROW | wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
-  wxStaticText* itemStaticText20 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(itemStaticText20, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  wxStaticText* itemStaticText20 = new wxStaticText( timingZone, wxID_STATIC, _( "Final time" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add( itemStaticText20,
+                            0,
+                            wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
   finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_FINALTIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(finalTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add( finalTimeText,
+                            1,
+                            wxGROW | wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
-  finalSemanticLabel = new wxStaticText( timingZone, wxID_STATIC_FINALSEMANTIC, _("Final semantic"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(finalSemanticLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  finalSemanticLabel = new wxStaticText( timingZone, wxID_STATIC_FINALSEMANTIC, _( "Final semantic" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add( finalSemanticLabel,
+                            0,
+                            wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
   finalSemanticText = new wxTextCtrl( timingZone, ID_TEXTCTRL_FINALSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(finalSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add( finalSemanticText,
+                            1,
+                            wxGROW | wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
-  wxStaticText* itemStaticText24 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(itemStaticText24, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  wxStaticText* itemStaticText24 = new wxStaticText( timingZone, wxID_STATIC, _( "Duration" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add( itemStaticText24,
+                            0,
+                            wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
   durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL_DURATION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(durationText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add( durationText,
+                            1,
+                            wxGROW | wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
-  slopeLabel = new wxStaticText( timingZone, wxID_STATIC_SLOPE, _("Slope"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(slopeLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  slopeLabel = new wxStaticText( timingZone, wxID_STATIC_SLOPE, _( "Slope" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add( slopeLabel,
+                            0,
+                            wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
   slopeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_SLOPE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(slopeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add( slopeText,
+                            1,
+                            wxGROW | wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM,
+                            wxDLG_UNIT( timingZone, wxSize( 5, -1 ) ).x );
 
-  itemFlexGridSizer15->AddGrowableCol(1);
-  itemFlexGridSizer15->AddGrowableCol(3);
+  itemFlexGridSizer15->AddGrowableCol( 1 );
+  itemFlexGridSizer15->AddGrowableCol( 3 );
 
   timingZone->FitInside();
-  infoZone->AddPage(timingZone, _("Timing"));
+  infoZone->AddPage( timingZone, _( "Timing" ) );
 
-  colorsPanelGlobal = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  colorsPanelGlobal->SetScrollbars(1, 1, 0, 0);
-  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-  colorsPanelGlobal->SetSizer(itemBoxSizer2);
+  colorsPanelGlobal = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL );
+  colorsPanelGlobal->SetScrollbars( 1, 1, 0, 0 );
+  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer( wxVERTICAL );
+  colorsPanelGlobal->SetSizer( itemBoxSizer2 );
 
-  wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer3, 0, wxGROW, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  checkboxCustomPalette = new wxCheckBox( colorsPanelGlobal, ID_CHECKBOX_CUSTOM_PALETTE, _("Custom palette"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkboxCustomPalette->SetValue(false);
-  itemBoxSizer3->Add(checkboxCustomPalette, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  wxBoxSizer* itemBoxSizer3 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer2->Add( itemBoxSizer3, 0, wxGROW, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
+  checkboxCustomPalette = new wxCheckBox( colorsPanelGlobal, ID_CHECKBOX_CUSTOM_PALETTE, _( "Custom palette" ), wxDefaultPosition, wxDefaultSize, 0 );
+  checkboxCustomPalette->SetValue( false );
+  itemBoxSizer3->Add( checkboxCustomPalette, 0, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
-  buttonCustomPaletteApply = new wxButton( colorsPanelGlobal, ID_BUTTON_CUSTOM_PALETTE_APPLY, _("Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer3->Add(buttonCustomPaletteApply, 0, wxALIGN_CENTER_VERTICAL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  buttonCustomPaletteApply = new wxButton( colorsPanelGlobal, ID_BUTTON_CUSTOM_PALETTE_APPLY, _( "Apply" ), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer3->Add( buttonCustomPaletteApply, 0, wxALIGN_CENTER_VERTICAL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
-  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer5, 1, wxGROW, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  colorsPanel = new wxScrolledWindow( colorsPanelGlobal, ID_SCROLLED_COLORS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL|wxTAB_TRAVERSAL );
-  itemBoxSizer5->Add(colorsPanel, 1, wxGROW, wxDLG_UNIT(colorsPanelGlobal, wxSize(5, -1)).x);
-  colorsPanel->SetScrollbars(1, 5, 0, 0);
-  colorsSizer = new wxBoxSizer(wxVERTICAL);
-  colorsPanel->SetSizer(colorsSizer);
+  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer2->Add( itemBoxSizer5, 1, wxGROW, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
+  colorsPanel = new wxScrolledWindow( colorsPanelGlobal,
+                                      ID_SCROLLED_COLORS,
+                                      wxDefaultPosition,
+                                      wxDefaultSize,
+                                      wxSUNKEN_BORDER | wxHSCROLL | wxVSCROLL | wxTAB_TRAVERSAL );
+  itemBoxSizer5->Add( colorsPanel, 1, wxGROW, wxDLG_UNIT( colorsPanelGlobal, wxSize( 5, -1 ) ).x );
+  colorsPanel->SetScrollbars( 1, 5, 0, 0 );
+  colorsSizer = new wxBoxSizer( wxVERTICAL );
+  colorsPanel->SetSizer( colorsSizer );
 
   colorsPanel->FitInside();
-  sizerSelectedColor = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer5->Add(sizerSelectedColor, 2, wxALIGN_TOP|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxVERTICAL);
-  sizerSelectedColor->Add(itemBoxSizer1, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  panelSelectedColor = new wxPanel( colorsPanelGlobal, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  panelSelectedColor->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-  itemBoxSizer1->Add(panelSelectedColor, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  sizerSelectedColor = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer5->Add( sizerSelectedColor, 2, wxALIGN_TOP | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
+  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer( wxVERTICAL );
+  sizerSelectedColor->Add( itemBoxSizer1, 1, wxGROW | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
+  panelSelectedColor = new wxPanel( colorsPanelGlobal, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxTAB_TRAVERSAL );
+  panelSelectedColor->SetExtraStyle( wxWS_EX_VALIDATE_RECURSIVELY );
+  itemBoxSizer1->Add( panelSelectedColor, 1, wxGROW | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
-  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
-  sizerSelectedColor->Add(itemBoxSizer4, 3, wxALIGN_TOP|wxLEFT|wxRIGHT, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer4->Add(itemBoxSizer10, 0, wxGROW|wxLEFT|wxRIGHT, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  labelSelectedColorRed = new wxStaticText( colorsPanelGlobal, wxID_STATIC_RED, _("Red"), wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
-  itemBoxSizer10->Add(labelSelectedColorRed, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer( wxVERTICAL );
+  sizerSelectedColor->Add( itemBoxSizer4, 3, wxALIGN_TOP | wxLEFT | wxRIGHT, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer4->Add( itemBoxSizer10, 0, wxGROW | wxLEFT | wxRIGHT, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
+  labelSelectedColorRed =
+    new wxStaticText( colorsPanelGlobal, wxID_STATIC_RED, _( "Red" ), wxDefaultPosition, wxDLG_UNIT( colorsPanelGlobal, wxSize( 30, -1 ) ), 0 );
+  itemBoxSizer10->Add( labelSelectedColorRed, 0, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
   sliderSelectedRed = new wxSlider( colorsPanelGlobal, ID_SLIDER_RED, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-  itemBoxSizer10->Add(sliderSelectedRed, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  itemBoxSizer10->Add( sliderSelectedRed, 1, wxGROW | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
-  textSelectedRed = new wxTextCtrl( colorsPanelGlobal, ID_TEXT_RED, wxEmptyString, wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
-  textSelectedRed->SetMaxLength(3);
-  itemBoxSizer10->Add(textSelectedRed, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  textSelectedRed =
+    new wxTextCtrl( colorsPanelGlobal, ID_TEXT_RED, wxEmptyString, wxDefaultPosition, wxDLG_UNIT( colorsPanelGlobal, wxSize( 30, -1 ) ), 0 );
+  textSelectedRed->SetMaxLength( 3 );
+  itemBoxSizer10->Add( textSelectedRed, 0, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
-  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer4->Add(itemBoxSizer13, 0, wxGROW|wxLEFT|wxRIGHT, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  labelSelectedColorGreen = new wxStaticText( colorsPanelGlobal, wxID_STATIC_GREEN, _("Green"), wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
-  itemBoxSizer13->Add(labelSelectedColorGreen, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer4->Add( itemBoxSizer13, 0, wxGROW | wxLEFT | wxRIGHT, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
+  labelSelectedColorGreen =
+    new wxStaticText( colorsPanelGlobal, wxID_STATIC_GREEN, _( "Green" ), wxDefaultPosition, wxDLG_UNIT( colorsPanelGlobal, wxSize( 30, -1 ) ), 0 );
+  itemBoxSizer13->Add( labelSelectedColorGreen, 0, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
   sliderSelectedGreen = new wxSlider( colorsPanelGlobal, ID_SLIDER_GREEN, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-  itemBoxSizer13->Add(sliderSelectedGreen, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  itemBoxSizer13->Add( sliderSelectedGreen, 1, wxGROW | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
-  textSelectedGreen = new wxTextCtrl( colorsPanelGlobal, ID_TEXT_GREEN, wxEmptyString, wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
-  textSelectedGreen->SetMaxLength(3);
-  itemBoxSizer13->Add(textSelectedGreen, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  textSelectedGreen =
+    new wxTextCtrl( colorsPanelGlobal, ID_TEXT_GREEN, wxEmptyString, wxDefaultPosition, wxDLG_UNIT( colorsPanelGlobal, wxSize( 30, -1 ) ), 0 );
+  textSelectedGreen->SetMaxLength( 3 );
+  itemBoxSizer13->Add( textSelectedGreen, 0, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
-  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer4->Add(itemBoxSizer16, 0, wxGROW|wxLEFT|wxRIGHT, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  labelSelectedColorBlue = new wxStaticText( colorsPanelGlobal, wxID_STATIC_BLUE, _("Blue"), wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
-  itemBoxSizer16->Add(labelSelectedColorBlue, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer( wxHORIZONTAL );
+  itemBoxSizer4->Add( itemBoxSizer16, 0, wxGROW | wxLEFT | wxRIGHT, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
+  labelSelectedColorBlue =
+    new wxStaticText( colorsPanelGlobal, wxID_STATIC_BLUE, _( "Blue" ), wxDefaultPosition, wxDLG_UNIT( colorsPanelGlobal, wxSize( 30, -1 ) ), 0 );
+  itemBoxSizer16->Add( labelSelectedColorBlue, 0, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
   sliderSelectedBlue = new wxSlider( colorsPanelGlobal, ID_SLIDER_BLUE, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-  sliderSelectedBlue->SetHelpText(_("blueSlider"));
-  if (gTimeline::ShowToolTips())
-    sliderSelectedBlue->SetToolTip(_("blueSlider"));
-  itemBoxSizer16->Add(sliderSelectedBlue, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  sliderSelectedBlue->SetHelpText( _( "blueSlider" ) );
+  if( gTimeline::ShowToolTips() )
+    sliderSelectedBlue->SetToolTip( _( "blueSlider" ) );
+  itemBoxSizer16->Add( sliderSelectedBlue, 1, wxGROW | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
-  textSelectedBlue = new wxTextCtrl( colorsPanelGlobal, ID_TEXT_BLUE, wxEmptyString, wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
-  textSelectedBlue->SetMaxLength(3);
-  itemBoxSizer16->Add(textSelectedBlue, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  textSelectedBlue =
+    new wxTextCtrl( colorsPanelGlobal, ID_TEXT_BLUE, wxEmptyString, wxDefaultPosition, wxDLG_UNIT( colorsPanelGlobal, wxSize( 30, -1 ) ), 0 );
+  textSelectedBlue->SetMaxLength( 3 );
+  itemBoxSizer16->Add( textSelectedBlue, 0, wxALIGN_CENTER_VERTICAL | wxALL, wxDLG_UNIT( colorsPanelGlobal, wxSize( 2, -1 ) ).x );
 
   colorsPanelGlobal->FitInside();
-  infoZone->AddPage(colorsPanelGlobal, _("Colors"));
+  infoZone->AddPage( colorsPanelGlobal, _( "Colors" ) );
 
-  splitter->SplitHorizontally(drawZone, infoZone, wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
+  splitter->SplitHorizontally( drawZone, infoZone, wxDLG_UNIT( itemFrame1, wxSize( 0, -1 ) ).x );
 
   // Connect events and objects
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-////@end gTimeline content construction
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler( gTimeline::OnScrolledWindowSize ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler( gTimeline::OnScrolledWindowPaint ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler( gTimeline::OnScrolledWindowEraseBackground ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler( gTimeline::OnScrolledWindowLeftDown ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler( gTimeline::OnScrolledWindowLeftUp ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler( gTimeline::OnScrolledWindowLeftDClick ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler( gTimeline::OnScrolledWindowMiddleUp ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler( gTimeline::OnScrolledWindowRightDown ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler( gTimeline::OnScrolledWindowMotion ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler( gTimeline::OnScrolledWindowMouseWheel ), NULL, this );
+  drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler( gTimeline::OnScrolledWindowKeyDown ), NULL, this );
+  ////@end gTimeline content construction
+  // clang-format on
 
   SetMinSize( wxSize( 100, 50 ) );
-  
-  ParaverConfig *paraverConfig = ParaverConfig::getInstance();
+
+  ParaverConfig* paraverConfig = ParaverConfig::getInstance();
 
   checkWWSemantic->SetValue( paraverConfig->getTimelineWhatWhereSemantic() );
   checkWWCommunications->SetValue( paraverConfig->getTimelineWhatWhereCommunications() );
   checkWWEvents->SetValue( paraverConfig->getTimelineWhatWhereEvents() );
   checkWWPreviousNext->SetValue( paraverConfig->getTimelineWhatWherePreviousNext() );
   checkWWText->SetValue( paraverConfig->getTimelineWhatWhereText() );
-  //checkWWShowDate->SetValue( paraverConfig->getTimelineWhatWhereShowDate() );
+  // checkWWShowDate->SetValue( paraverConfig->getTimelineWhatWhereShowDate() );
 
-  wxIntegerValidator<unsigned short> tmpVal;
+  wxIntegerValidator< unsigned short > tmpVal;
   tmpVal.SetRange( 0, 255 );
   textSelectedRed->SetValidator( tmpVal );
   textSelectedGreen->SetValidator( tmpVal );
@@ -557,11 +616,13 @@ bool gTimeline::ShowToolTips()
 
 wxBitmap gTimeline::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
-////@begin gTimeline bitmap retrieval
-  wxUnusedVar(name);
+  ////@begin gTimeline bitmap retrieval
+  wxUnusedVar( name );
   return wxNullBitmap;
-////@end gTimeline bitmap retrieval
+  ////@end gTimeline bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -570,11 +631,13 @@ wxBitmap gTimeline::GetBitmapResource( const wxString& name )
 
 wxIcon gTimeline::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
-////@begin gTimeline icon retrieval
-  wxUnusedVar(name);
+  ////@begin gTimeline icon retrieval
+  wxUnusedVar( name );
   return wxNullIcon;
-////@end gTimeline icon retrieval
+  ////@end gTimeline icon retrieval
+  // clang-format on
 }
 
 
@@ -583,15 +646,15 @@ void gTimeline::drawStackedImages( wxDC& dc )
 {
   if( bufferImage.IsOk() )
     dc.DrawBitmap( bufferImage, 0, 0, false );
-    
+
   doDrawCaution( dc );
-  
+
   if( myWindow->getDrawFlags() && eventImage.IsOk() )
     dc.DrawBitmap( eventImage, 0, 0, true );
 
   if( myWindow->getDrawCommLines() && commImage.IsOk() )
     dc.DrawBitmap( commImage, 0, 0, true );
-    
+
   if( zooming && zoomBMP.IsOk() && !motionEvent.ShiftDown() )
   {
     dc.DrawBitmap( zoomBMP, 0, 0, true );
@@ -610,55 +673,49 @@ void gTimeline::redraw()
   }
 #endif
   myWindow->setReady( false );
-  redoColorsPanel = true;
-  enableApplyButton = false;
+  redoColorsPanel       = true;
+  enableApplyButton     = false;
   enabledAutoRedrawIcon = false;
-
   semanticValuesToColor.clear();
   semanticColorsToValue.clear();
   semanticPixelsToValue.clear();
 
   rgb rgbForegroundColour = myWindow->getAxisColor();
-  foregroundColour = wxColour( rgbForegroundColour.red,
-                               rgbForegroundColour.green,
-                               rgbForegroundColour.blue );
+  foregroundColour        = wxColour( rgbForegroundColour.red, rgbForegroundColour.green, rgbForegroundColour.blue );
   rgb rgbBackgroundColour = myWindow->getBackgroundColor();
-  backgroundColour = wxColour( rgbBackgroundColour.red,
-                               rgbBackgroundColour.green,
-                               rgbBackgroundColour.blue );
+  backgroundColour        = wxColour( rgbBackgroundColour.red, rgbBackgroundColour.green, rgbBackgroundColour.blue );
 
-  rgb rgbLogicalColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineLogicalCommunications();
-  logicalColour = wxColour( rgbLogicalColour.red, rgbLogicalColour.green ,rgbLogicalColour.blue );
+  rgb rgbLogicalColour = ( (paraverMain*)parent )->GetParaverConfig()->getColorsTimelineLogicalCommunications();
+  logicalColour        = wxColour( rgbLogicalColour.red, rgbLogicalColour.green, rgbLogicalColour.blue );
 
-  rgb rgbPhysicalColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelinePhysicalCommunications();
-  physicalColour = wxColour( rgbPhysicalColour.red, rgbPhysicalColour.green ,rgbPhysicalColour.blue );
+  rgb rgbPhysicalColour = ( (paraverMain*)parent )->GetParaverConfig()->getColorsTimelinePhysicalCommunications();
+  physicalColour        = wxColour( rgbPhysicalColour.red, rgbPhysicalColour.green, rgbPhysicalColour.blue );
 
-  logicalPen = wxPen( logicalColour );
+  logicalPen  = wxPen( logicalColour );
   physicalPen = wxPen( physicalColour );
 
-// Disabled because some window managers can't show the progress dialog later
-//  redrawStopWatch->Start();
-  
-  wxString winTitle = GetTitle();
-  SetTitle( _("(Working...) ") + winTitle );
+  // Disabled because some window managers can't show the progress dialog later
+  //  redrawStopWatch->Start();
 
-  ProgressController *progress = nullptr;
-  if ( myWindow->getShowProgressBar() )
+  wxString winTitle = GetTitle();
+  SetTitle( _( "(Working...) " ) + winTitle );
+
+  ProgressController* progress = nullptr;
+  if( myWindow->getShowProgressBar() )
   {
     progress = ProgressController::create( myWindow->getKernel() );
 
-  // Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
-  // Waiting for wxwidgets 3 code adaptation to prove that its solved.
+    // Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
+    // Waiting for wxwidgets 3 code adaptation to prove that its solved.
 #ifndef _WIN32
     if( gTimeline::dialogProgress == nullptr )
     {
-      gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
-                                                        wxT(""),
-                                                        MAX_PROGRESS_BAR_VALUE,
-                                                        this,
-                                                        wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
-                                                        wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
-                                                        wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+      gTimeline::dialogProgress =
+        new wxProgressDialog( wxT( "Drawing window..." ),
+                              wxT( "" ),
+                              MAX_PROGRESS_BAR_VALUE,
+                              this,
+                              wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
     }
 
     progress->setHandler( gTimeline::dialogProgress, progressFunction );
@@ -666,40 +723,39 @@ void gTimeline::redraw()
     ++gTimeline::numberOfProgressDialogUsers;
 
     // Disabled because some window managers can't show the progress dialog later
-    //gTimeline::dialogProgress->Show( false );
+    // gTimeline::dialogProgress->Show( false );
     gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
     gTimeline::dialogProgress->Fit();
 #endif // _WIN32
   }
   // Get selected rows
-  vector<bool>         selected;
-  vector<TObjectOrder> selectedSet;
+  vector< bool > selected;
+  vector< TObjectOrder > selectedSet;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-  TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
+  TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, true );
   myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
 
   // To avoid empty zooms (probably due to other bug)
   TObjectOrder maxObj;
-  if ( selectedSet.size() == 0 )
-    maxObj = endRow; //something!!
+  if( selectedSet.size() == 0 )
+    maxObj = endRow; // something!!
   else
     maxObj = selectedSet[ selectedSet.size() - 1 ];
-
   bufferImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   commImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   eventImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
 
   wxMemoryDC bufferDraw( bufferImage );
-  wxGraphicsContext *gc = wxGraphicsContext::Create( bufferDraw );
+  wxGraphicsContext* gc = wxGraphicsContext::Create( bufferDraw );
   gc->SetAntialiasMode( wxANTIALIAS_NONE );
 
   wxMemoryDC commdc( commImage );
   wxMemoryDC eventdc( eventImage );
-  wxGraphicsContext *gcComm = wxGraphicsContext::Create( commdc );
+  wxGraphicsContext* gcComm = wxGraphicsContext::Create( commdc );
   gcComm->SetAntialiasMode( wxANTIALIAS_NONE );
-  wxGraphicsContext *gcEvent = wxGraphicsContext::Create( eventdc );
+  wxGraphicsContext* gcEvent = wxGraphicsContext::Create( eventdc );
   gcEvent->SetAntialiasMode( wxANTIALIAS_NONE );
 
   commdc.SetBackgroundMode( wxTRANSPARENT );
@@ -712,7 +768,7 @@ void gTimeline::redraw()
   commMask.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(), 1 );
   wxMemoryDC commmaskdc( commMask );
 
-  wxGraphicsContext *gcCommMask = wxGraphicsContext::Create( commmaskdc );
+  wxGraphicsContext* gcCommMask = wxGraphicsContext::Create( commmaskdc );
   gcCommMask->SetAntialiasMode( wxANTIALIAS_NONE );
 
   commmaskdc.SetBackground( *wxBLACK_BRUSH );
@@ -722,7 +778,7 @@ void gTimeline::redraw()
   eventMask.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(), 1 );
   wxMemoryDC eventmaskdc( eventMask );
 
-  wxGraphicsContext *gcEventMask = wxGraphicsContext::Create( eventmaskdc );
+  wxGraphicsContext* gcEventMask = wxGraphicsContext::Create( eventmaskdc );
   gcEventMask->SetAntialiasMode( wxANTIALIAS_NONE );
 
   eventmaskdc.SetBackground( *wxBLACK_BRUSH );
@@ -731,7 +787,7 @@ void gTimeline::redraw()
 
   bufferDraw.SetBackground( wxBrush( backgroundColour ) );
   bufferDraw.Clear();
-  
+
   // Paint blank image while redrawing
   wxClientDC dc( drawZone );
 #ifdef __WXGTK__
@@ -757,8 +813,8 @@ void gTimeline::redraw()
   eventmaskdc.SetPen( *wxWHITE_PEN );
   eventmaskdc.SetBrush( *wxWHITE_BRUSH );
 
-  float magnify = float( myWindow->getPixelSize() );
-  TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
+  float magnify  = float( myWindow->getPixelSize() );
+  TTime timeStep = ( ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) * magnify ) /
                    ( drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder - magnify );
   PRV_INT32 timePos = objectAxisPos + 1;
 
@@ -770,29 +826,72 @@ void gTimeline::redraw()
   vector< unordered_set< commCoord, hashCommCoord > > commsToDraw;
 #endif
 
-  vector< vector< vector< pair<TSemanticValue,TSemanticValue> > > > valuesToDrawPunctual;
+  vector< vector< vector< pair< TSemanticValue, TSemanticValue > > > > valuesToDrawPunctual;
   if( myWindow->isPunctualColorSet() )
   {
     if( myWindow->getPunctualColorWindow() != nullptr )
       myWindow->getPunctualColorWindow()->init( myWindow->getWindowBeginTime(), NOCREATE );
 
-    myWindow->computeSemanticPunctualParallel( selectedSet, selected,
-                                               timeStep, timePos, objectAxisPos,
+    myWindow->computeSemanticPunctualParallel( selectedSet,
+                                               selected,
+                                               timeStep,
+                                               timePos,
+                                               objectAxisPos,
                                                objectPosList,
                                                maxObj,
                                                drawCaution,
-                                               valuesToDrawPunctual, eventsToDraw, commsToDraw,
+                                               valuesToDrawPunctual,
+                                               eventsToDraw,
+                                               commsToDraw,
                                                progress );
   }
   else
   {
-    myWindow->computeSemanticParallel( selectedSet, selected,
-                                       timeStep, timePos, objectAxisPos,
+    // Efficient resize and set to 0.
+    if( rowWithSemanticValuesNotZero.empty() )
+    {
+      // Expand and reset to 0.
+      rowWithSemanticValuesNotZero.resize( selected.size(), 0 );
+    }
+    else if( rowWithSemanticValuesNotZero.size() == selected.size() )
+    {
+      // Reuse! Just reset to 0.
+      std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+    }
+    else if( rowWithSemanticValuesNotZero.size() > selected.size() )
+    {
+      // Shrink and reset to 0.
+      rowWithSemanticValuesNotZero.resize( selected.size() );
+      std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+    }
+    else // rowWithSemanticValuesNotZero.size() < selected.size()
+    {
+      // Reset to 0 and then expand setting new added to 0.
+      std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+      rowWithSemanticValuesNotZero.resize( selected.size(), 0 );
+    }
+
+    myWindow->computeSemanticParallel( selectedSet,
+                                       selected,
+                                       timeStep,
+                                       timePos,
+                                       objectAxisPos,
                                        objectPosList,
                                        maxObj,
                                        drawCaution,
-                                       valuesToDraw, eventsToDraw, commsToDraw,
+                                       valuesToDraw,
+                                       rowWithSemanticValuesNotZero,
+                                       eventsToDraw,
+                                       commsToDraw,
                                        progress );
+
+    anyRowWithAllSemanticValuesZero = !rowWithSemanticValuesNotZero.empty() &&
+                                      std::any_of( selectedSet.cbegin(), selectedSet.cend(),
+                                                   [this]
+                                                   ( auto e )
+                                                   { 
+                                                     return rowWithSemanticValuesNotZero[ e ] == 0;
+                                                   } );
   }
 
   // Draw before any row
@@ -805,7 +904,7 @@ void gTimeline::redraw()
     for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != selectedSet.end(); ++obj )
     {
       TObjectOrder firstObj = *obj;
-      TObjectOrder lastObj = firstObj;
+      TObjectOrder lastObj  = firstObj;
       if( !myWindow->isFusedLinesColorSet() )
       {
         while( ( lastObj + 1 ) <= maxObj && objectPosList[ lastObj + 1 ] == objectPosList[ firstObj ] )
@@ -817,15 +916,27 @@ void gTimeline::redraw()
 
       if( myWindow->isPunctualColorSet() )
       {
-        drawRow( bufferDraw, firstObj,
-                 valuesToDrawPunctual[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
-                 eventdc, eventmaskdc, commdc, commmaskdc );
+        drawRow( bufferDraw,
+                 firstObj,
+                 valuesToDrawPunctual[ rowToDraw ],
+                 eventsToDraw[ rowToDraw ],
+                 commsToDraw[ rowToDraw ],
+                 eventdc,
+                 eventmaskdc,
+                 commdc,
+                 commmaskdc );
       }
       else
       {
-        drawRow( bufferDraw, firstObj,
-                 valuesToDraw[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
-                 eventdc, eventmaskdc, commdc, commmaskdc );
+        drawRow( bufferDraw,
+                 firstObj,
+                 valuesToDraw[ rowToDraw ],
+                 eventsToDraw[ rowToDraw ],
+                 commsToDraw[ rowToDraw ],
+                 eventdc,
+                 eventmaskdc,
+                 commdc,
+                 commmaskdc );
       }
       ++rowToDraw;
 
@@ -841,17 +952,17 @@ void gTimeline::redraw()
       }
     }
   }
-  
+
   if( ( myWindow->getShowProgressBar() ) && ( gTimeline::dialogProgress != nullptr ) )
-  { 
+  {
     --gTimeline::numberOfProgressDialogUsers;
-    if ( gTimeline::numberOfProgressDialogUsers == 0 )
+    if( gTimeline::numberOfProgressDialogUsers == 0 )
     {
       gTimeline::dialogProgress->Show( false );
       delete gTimeline::dialogProgress;
       gTimeline::dialogProgress = nullptr;
 
-      if ( progress != nullptr )
+      if( progress != nullptr )
         delete progress;
     }
   }
@@ -866,8 +977,8 @@ void gTimeline::redraw()
   eventmaskdc.SetPen( *wxBLACK_PEN );
   eventmaskdc.SetBrush( *wxBLACK_BRUSH );
   eventmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
-  eventmaskdc.SelectObject(wxNullBitmap);
-  wxMask *mask = new wxMask( eventMask );
+  eventmaskdc.SelectObject( wxNullBitmap );
+  wxMask* mask = new wxMask( eventMask );
   eventImage.SetMask( mask );
 
   if( myWindow->getDrawFlags() )
@@ -878,7 +989,7 @@ void gTimeline::redraw()
   commmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
   commmaskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
   commmaskdc.DrawRectangle( 0, timeAxisPos, drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() - timeAxisPos );
-  commmaskdc.SelectObject(wxNullBitmap);
+  commmaskdc.SelectObject( wxNullBitmap );
   mask = new wxMask( commMask );
   commImage.SetMask( mask );
 
@@ -890,8 +1001,8 @@ void gTimeline::redraw()
   delete gcComm;
   delete gcCommMask;
   delete gcEventMask;
-// Disabled because some window managers can't show the progress dialog later
-//  redrawStopWatch->Pause();
+  // Disabled because some window managers can't show the progress dialog later
+  //  redrawStopWatch->Pause();
 
   SetTitle( winTitle );
 
@@ -899,29 +1010,33 @@ void gTimeline::redraw()
 
   drawZone->Refresh();
 
-  SetFocus();
+  if( codeChangeSize )
+    codeChangeSize = false;
+  else
+    SetFocus();
 }
 
 
-bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
+bool gTimeline::drawAxis( wxDC& dc, vector< TObjectOrder >& selected )
 {
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   PRV_UINT32 precision = 0;
 
   size_t numObjects = selected.size();
-  float magnify = float( myWindow->getPixelSize() );
-  
-  rgb rgbAxisColour = myWindow->getAxisColor();
-  wxColour axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green ,rgbAxisColour.blue );
+  float magnify     = float( myWindow->getPixelSize() );
+
+  rgb rgbAxisColour   = myWindow->getAxisColor();
+  wxColour axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green, rgbAxisColour.blue );
 
   dc.SetPen( wxPen( axisColour, 1 ) );
   dc.SetTextForeground( axisColour );
 
   // Get the text extent for time label
   dc.SetFont( timeFont );
-  wxSize timeExt = dc.GetTextExtent( wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ),
-                                                                                       myWindow->getTimeUnit(), precision ).c_str() ) );
-  timeAxisPos = dc.GetSize().GetHeight() - ( drawBorder + timeExt.GetHeight() + drawBorder );
+  wxSize timeExt = dc.GetTextExtent( wxString::FromUTF8(
+    LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ), myWindow->getTimeUnit(), precision )
+      .c_str() ) );
+  timeAxisPos    = dc.GetSize().GetHeight() - ( drawBorder + timeExt.GetHeight() + drawBorder );
   if( timeAxisPos + drawBorder + 1 > dc.GetSize().GetHeight() )
   {
     return false;
@@ -934,7 +1049,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   TTraceLevel endLevel = TTraceLevel::THREAD;
   string tmpLongestLabel;
   wxString tmpCurrentLabel;
-  size_t tmpMaxLength = 0;
+  size_t tmpMaxLength        = 0;
   size_t tmpCurrentMaxLength = 0;
 
   switch( myWindow->getObjectAxisSize() )
@@ -942,68 +1057,74 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     case TObjectAxisSize::CURRENT_LEVEL:
       if( myWindow->isFusedLinesColorSet() )
       {
-        objectExt = dc.GetTextExtent( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                                            myWindow->getMaximumY(),
-                                                                                            false,
-                                                                                            ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                                            false ).c_str() ) ) + wxSize( 5, 0 );
+        objectExt =
+          dc.GetTextExtent( wxString::FromUTF8(
+            LabelConstructor::semanticLabel( myWindow, myWindow->getMaximumY(), false, ParaverConfig::getInstance()->getTimelinePrecision(), false )
+              .c_str() ) ) +
+          wxSize( 5, 0 );
         break;
       }
 
-      tmpCurrentMaxLength = LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1,
-                                                           myWindow->getLevel(),
-                                                           myWindow->getTrace() ).length();
+      tmpCurrentMaxLength =
+        LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1, myWindow->getLevel(), myWindow->getTrace() )
+          .length();
 
       tmpMaxLength = myWindow->getTrace()->getMaxLengthRow( myWindow->getLevel() );
 
-      if ( tmpCurrentMaxLength > tmpMaxLength ) // because row label can be empty or shorter
+      if( tmpCurrentMaxLength > tmpMaxLength ) // because row label can be empty or shorter
         tmpMaxLength = tmpCurrentMaxLength;
-        
+
       tmpLongestLabel = string( tmpMaxLength, 'Z' );
-      objectExt = dc.GetTextExtent( wxString::FromUTF8( tmpLongestLabel.c_str() ) );
+      objectExt       = dc.GetTextExtent( wxString::FromUTF8( tmpLongestLabel.c_str() ) );
       break;
 
     case TObjectAxisSize::ALL_LEVELS:
       if( myWindow->getTrace()->existResourceInfo() )
         endLevel = TTraceLevel::CPU;
-    
+
       for( TTraceLevel iLevel = TTraceLevel::WORKLOAD; iLevel <= endLevel; ++iLevel )
       {
         tmpCurrentMaxLength = myWindow->getTrace()->getMaxLengthRow( iLevel );
-        tmpCurrentLabel = wxString::FromUTF8( LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( iLevel ) - 1,
-                                                                             iLevel,
-                                                                             myWindow->getTrace() ).c_str() );
-        if ( tmpCurrentMaxLength < tmpCurrentLabel.Len() )
+        tmpCurrentLabel     = wxString::FromUTF8(
+          LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( iLevel ) - 1, iLevel, myWindow->getTrace() ).c_str() );
+        if( tmpCurrentMaxLength < tmpCurrentLabel.Len() )
           tmpCurrentMaxLength = tmpCurrentLabel.Len();
-          
-        if ( tmpMaxLength < tmpCurrentMaxLength )
+
+        if( tmpMaxLength < tmpCurrentMaxLength )
           tmpMaxLength = tmpCurrentMaxLength;
       }
 
       tmpLongestLabel = string( tmpMaxLength, 'Z' );
-      objectExt = dc.GetTextExtent( wxString::FromUTF8( tmpLongestLabel.c_str() ) );
+      objectExt       = dc.GetTextExtent( wxString::FromUTF8( tmpLongestLabel.c_str() ) );
       break;
 
     case TObjectAxisSize::ZERO_PERC:
-      objectExt = wxSize( 0 , 0 );
+      objectExt = wxSize( 0, 0 );
       break;
 
     case TObjectAxisSize::FIVE_PERC:
-      objectExt = wxSize( dc.GetSize().GetWidth() * 0.05 , 0 );
+      objectExt = wxSize( dc.GetSize().GetWidth() * 0.05, 0 );
       break;
 
     case TObjectAxisSize::TEN_PERC:
-      objectExt = wxSize( dc.GetSize().GetWidth() * 0.10 , 0 );
+      objectExt = wxSize( dc.GetSize().GetWidth() * 0.10, 0 );
       break;
 
     case TObjectAxisSize::TWENTYFIVE_PERC:
-      objectExt = wxSize( dc.GetSize().GetWidth() * 0.25 , 0 );
+      objectExt = wxSize( dc.GetSize().GetWidth() * 0.25, 0 );
+      break;
+
+    case TObjectAxisSize::CUSTOM_PERC:
+      {
+        PRV_UINT16 customSize = myWindow->getObjectAxisCustomSize();
+        objectExt = wxSize( dc.GetSize().GetWidth() * customSize / 100.0, 0 );
+      }
       break;
 
     default:
       break;
   }
-  
+
   objectAxisPos = drawBorder + objectExt.GetWidth() + drawBorder;
   if( objectAxisPos + drawBorder + 1 > dc.GetSize().GetWidth() )
   {
@@ -1011,37 +1132,33 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   }
 
   // Draw axis lines
-  dc.DrawLine( objectAxisPos, drawBorder,
-               objectAxisPos, timeAxisPos );
-  dc.DrawLine( objectAxisPos, timeAxisPos,
-               dc.GetSize().GetWidth() - drawBorder, timeAxisPos );
+  dc.DrawLine( objectAxisPos, drawBorder, objectAxisPos, timeAxisPos );
+  dc.DrawLine( objectAxisPos, timeAxisPos, dc.GetSize().GetWidth() - drawBorder, timeAxisPos );
 
   // Draw axis labels
   if( myWindow->isFusedLinesColorSet() )
   {
-    dc.DrawText( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                      myWindow->getMaximumY(),
-                                                                      false,
-                                                                      ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                      false ).c_str() ),
-                 drawBorder, drawBorder );
+    dc.DrawText(
+      wxString::FromUTF8(
+        LabelConstructor::semanticLabel( myWindow, myWindow->getMaximumY(), false, ParaverConfig::getInstance()->getTimelinePrecision(), false )
+          .c_str() ),
+      drawBorder,
+      drawBorder );
 
-    dc.DrawText( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                      myWindow->getMinimumY(),
-                                                                      false,
-                                                                      ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                      false ).c_str() ),
-                 drawBorder, timeAxisPos - objectExt.GetHeight() );
+    dc.DrawText(
+      wxString::FromUTF8(
+        LabelConstructor::semanticLabel( myWindow, myWindow->getMinimumY(), false, ParaverConfig::getInstance()->getTimelinePrecision(), false )
+          .c_str() ),
+      drawBorder,
+      timeAxisPos - objectExt.GetHeight() );
 
     if( myWindow->getMinimumY() < 0.0 && myWindow->getMaximumY() > 0.0 )
     {
       TSemanticValue relativeZero = myWindow->getMaximumY() / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
-      dc.DrawText( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                        0.0,
-                                                                        false,
-                                                                        ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                        false ).c_str() ),
-                   drawBorder, ( relativeZero * ( timeAxisPos - objectExt.GetHeight() ) ) + drawBorder + 1 );
+      dc.DrawText( wxString::FromUTF8(
+                     LabelConstructor::semanticLabel( myWindow, 0.0, false, ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() ),
+                   drawBorder,
+                   ( relativeZero * ( timeAxisPos - objectExt.GetHeight() ) ) + drawBorder + 1 );
     }
     else
     {
@@ -1049,36 +1166,38 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                                                                         ( myWindow->getMaximumY() + myWindow->getMinimumY() ) / 2.0,
                                                                         false,
                                                                         ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                        false ).c_str() ),
-                   drawBorder, ( timeAxisPos - objectExt.GetHeight() ) / 2 );
+                                                                        false )
+                                         .c_str() ),
+                   drawBorder,
+                   ( timeAxisPos - objectExt.GetHeight() ) / 2 );
     }
   }
   else
   {
     wxCoord y;
-    double inc = (double)( timeAxisPos - drawBorder ) / (double)( numObjects );
-    bool drawLabel = true;
+    double inc          = (double)( timeAxisPos - drawBorder ) / (double)( numObjects );
+    bool drawLabel      = true;
     TObjectOrder power2 = 1;
 
     objectPosList.clear();
     objectPosList.insert( objectPosList.begin(), myWindow->getWindowLevelObjects(), 0 );
-    objectHeight = 1;
+    objectHeight                        = 1;
     vector< TObjectOrder >::iterator it = selected.begin();
 
     wxCoord accumHeight = 0;
-    wxCoord stepHeight = objectExt.GetHeight();
-    
-    int numpixels = timeAxisPos - 2 * drawBorder; /* Usable num pixels */
-    int everyobj = 1; /* Draw every Xth object */
-    bool printlast = numpixels > objectFont.GetPointSize(); /* Do we have space for more than 1? */
-    bool printall = numpixels > 0 && numpixels > int( numObjects * objectFont.GetPointSize() ); /* Do we have space for all? */
+    wxCoord stepHeight  = objectExt.GetHeight();
+
+    int numpixels  = timeAxisPos - 2 * drawBorder;                                               /* Usable num pixels */
+    int everyobj   = 1;                                                                          /* Draw every Xth object */
+    bool printlast = numpixels > objectFont.GetPointSize();                                      /* Do we have space for more than 1? */
+    bool printall  = numpixels > 0 && numpixels > int( numObjects * objectFont.GetPointSize() ); /* Do we have space for all? */
 
     /* If we have space for some, but not all, check which to print ... */
-    if (!printall && printlast)
+    if( !printall && printlast )
     {
       /* Locate the maximum 2^n that fit on the pixels */
       int every = 1;
-      while( ( numObjects * objectFont.GetPointSize() ) / every > numpixels-objectFont.GetPointSize() )
+      while( ( numObjects * objectFont.GetPointSize() ) / every > numpixels - objectFont.GetPointSize() )
         every = every << 1;
 
       every = every << 1;
@@ -1092,7 +1211,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     // for every object
     for( TObjectOrder obj = (TObjectOrder)0; obj < numObjects; obj++ )
     {
-      y = ( (wxCoord) ( inc * ( obj ) ) ) + drawBorder;
+      y = ( (wxCoord)( inc * ( obj ) ) ) + drawBorder;
       if( ( inc * 0.25 ) >= 1.0 )
       {
         if( obj > (TObjectOrder)0 && objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 )
@@ -1111,21 +1230,20 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
         case TObjectLabels::ALL_LABELS:
           drawLabel = true;
           break;
-          
-        case  TObjectLabels::SPACED_LABELS:
-          if( ( printlast && ( obj % everyobj == 0 || obj == numObjects - 1 ) ) ||
-              ( !printlast && obj == 0 ) )
+
+        case TObjectLabels::SPACED_LABELS:
+          if( ( printlast && ( obj % everyobj == 0 || obj == numObjects - 1 ) ) || ( !printlast && obj == 0 ) )
             drawLabel = true;
           else
             drawLabel = false;
-          //drawLabel = y > accumHeight;
+          // drawLabel = y > accumHeight;
           break;
-          
+
         case TObjectLabels::POWER2_LABELS:
           if( obj == power2 - 1 )
           {
             drawLabel = true;
-            power2 = power2 << 1;
+            power2    = power2 << 1;
           }
           else
             drawLabel = false;
@@ -1134,15 +1252,16 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
           break;
       }
 
-      if( ( printall || drawLabel ) &&
-          !( myWindow->getObjectAxisSize() == TObjectAxisSize::ZERO_PERC ) )
+      if( ( printall || drawLabel ) && !( myWindow->getObjectAxisSize() == TObjectAxisSize::ZERO_PERC ) )
       {
         if( myWindow->getLevel() == TTraceLevel::CPU || myWindow->getLevel() == TTraceLevel::NODE || myWindow->getLevel() == TTraceLevel::SYSTEM )
           dc.DrawText( wxString::FromUTF8( LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
-                       drawBorder, y );
+                       drawBorder,
+                       y );
         else
           dc.DrawText( wxString::FromUTF8( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
-                       drawBorder, y );
+                       drawBorder,
+                       y );
         accumHeight += stepHeight;
       }
 
@@ -1156,49 +1275,53 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     {
       if( ( inc * 0.25 ) < 1.0 && magnify > objectHeight )
       {
-        for( vector<wxCoord>::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
+        for( vector< wxCoord >::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
           *it = ( floor( ( *it - drawBorder ) / magnify ) * magnify ) + drawBorder;
         objectHeight = magnify;
       }
     }
   }
-  
+
   dc.SetFont( timeFont );
-  dc.DrawText( wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ),
-                                                                 myWindow->getTimeUnit(), precision ).c_str() ),
-               objectAxisPos, timeAxisPos + drawBorder );
-  dc.DrawText( wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowEndTime() ),
-                                                                 myWindow->getTimeUnit(), precision ).c_str() ),
-               dc.GetSize().GetWidth() -
-               ( dc.GetTextExtent( wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowEndTime() ),
-                                                                                     myWindow->getTimeUnit(), precision ).c_str() ) )
-               .GetWidth() + drawBorder ),
-               timeAxisPos + drawBorder );
+  dc.DrawText(
+    wxString::FromUTF8(
+      LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ), myWindow->getTimeUnit(), precision )
+        .c_str() ),
+    objectAxisPos,
+    timeAxisPos + drawBorder );
+  dc.DrawText(
+    wxString::FromUTF8(
+      LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowEndTime() ), myWindow->getTimeUnit(), precision ).c_str() ),
+    dc.GetSize().GetWidth() -
+      ( dc
+          .GetTextExtent( wxString::FromUTF8(
+            LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowEndTime() ), myWindow->getTimeUnit(), precision )
+              .c_str() ) )
+          .GetWidth() +
+        drawBorder ),
+    timeAxisPos + drawBorder );
 
   dc.SetPen( wxPen( backgroundColour ) );
   dc.SetBrush( wxBrush( backgroundColour ) );
   dc.DrawRectangle( objectAxisPos + 1, 0, drawZone->GetSize().GetWidth(), timeAxisPos );
-               
+
   return true;
 }
 
-void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
+void gTimeline::drawZeroAxis( wxDC& dc, vector< TObjectOrder >& selected )
 {
   if( myWindow->getMaximumY() > 0.0 && myWindow->getMinimumY() < 0.0 )
   {
-    rgb rgbAxisColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineZeroDashLine();
+    rgb rgbAxisColour = ( (paraverMain*)parent )->GetParaverConfig()->getColorsTimelineZeroDashLine();
     wxColour axisColour;
     if( rgbAxisColour == myWindow->getAxisColor() )
-      axisColour = wxColour( rgbAxisColour.red - 1, rgbAxisColour.green ,rgbAxisColour.blue );
+      axisColour = wxColour( rgbAxisColour.red - 1, rgbAxisColour.green, rgbAxisColour.blue );
     else
-      axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green ,rgbAxisColour.blue );
+      axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green, rgbAxisColour.blue );
     dc.SetPen( wxPen( axisColour, 1, wxPENSTYLE_LONG_DASH ) );
-    
-    TSemanticValue relativeZero = Normalizer::calculate( 0.0,
-                                                         myWindow->getMinimumY(),
-                                                         myWindow->getMaximumY(),
-                                                         GetMyWindow()->getSemanticColor().getGradientFunction(), 
-                                                         true );
+
+    TSemanticValue relativeZero =
+      Normalizer::calculate( 0.0, myWindow->getMinimumY(), myWindow->getMaximumY(), GetMyWindow()->getSemanticColor().getGradientFunction(), true );
 
     if( myWindow->isFusedLinesColorSet() )
     {
@@ -1207,17 +1330,15 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
     }
     else if( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
     {
-      wxCoord lastPos = 0;
+      wxCoord lastPos     = 0;
       wxCoord relativePos = ( 1.0 - relativeZero ) * objectHeight;
-      for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+      for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
       {
         wxCoord tmpObjPos = objectPosList[ *it ];
         if( tmpObjPos != lastPos )
         {
           lastPos = tmpObjPos;
-          dc.DrawLine( objectAxisPos, relativePos + lastPos + 1,
-                       dc.GetSize().GetWidth() - drawBorder, relativePos + lastPos + 1 );
-          
+          dc.DrawLine( objectAxisPos, relativePos + lastPos + 1, dc.GetSize().GetWidth() - drawBorder, relativePos + lastPos + 1 );
         }
       }
     }
@@ -1225,32 +1346,34 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
 }
 
 #ifdef _MSC_VER
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
                          vector< ValuesType >& valuesToDraw,
                          unordered_set< PRV_INT32 >& eventsToDraw,
                          unordered_set< commCoord >& commsToDraw,
-                         wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
-                         wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
+                         wxMemoryDC& eventdc,
+                         wxMemoryDC& eventmaskdc,
+                         wxMemoryDC& commdc,
+                         wxMemoryDC& commmaskdc )
 #else
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
                          vector< ValuesType >& valuesToDraw,
                          unordered_set< PRV_INT32 >& eventsToDraw,
                          unordered_set< commCoord, hashCommCoord >& commsToDraw,
-                         wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
-                         wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
+                         wxMemoryDC& eventdc,
+                         wxMemoryDC& eventmaskdc,
+                         wxMemoryDC& commdc,
+                         wxMemoryDC& commmaskdc )
 #endif
 {
-  float magnify  = float( myWindow->getPixelSize() );
+  float magnify = float( myWindow->getPixelSize() );
   if( myWindow->isPunctualColorSet() )
   {
     rgb rgbPunctualColour = myWindow->getPunctualColor();
-    wxColour punctualColor( rgbPunctualColour.red,
-                            rgbPunctualColour.green,
-                            rgbPunctualColour.blue );
+    wxColour punctualColor( rgbPunctualColour.red, rgbPunctualColour.green, rgbPunctualColour.blue );
     dc.SetPen( punctualColor );
     dc.SetBrush( punctualColor );
   }
@@ -1260,7 +1383,7 @@ void gTimeline::drawRow( wxDC& dc,
     objectPos = 0;
   else
     objectPos = objectPosList[ firstRow ];
-  wxCoord timePos   = objectAxisPos + 1;
+  wxCoord timePos     = objectAxisPos + 1;
   wxCoord timeLastPos = timePos;
   int semanticLastPos = 0;
 
@@ -1271,9 +1394,7 @@ void gTimeline::drawRow( wxDC& dc,
     {
       drawRowPunctual( dc, *it, objectPos, timePos, magnify );
     }
-    else if( myWindow->isCodeColorSet() ||
-             myWindow->isGradientColorSet() ||
-             myWindow->isNotNullGradientColorSet() ||
+    else if( myWindow->isCodeColorSet() || myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() ||
              myWindow->isAlternativeGradientColorSet() )
     {
       drawRowColor( dc, *it, objectPos, timePos, magnify );
@@ -1287,9 +1408,9 @@ void gTimeline::drawRow( wxDC& dc,
       drawRowFusedLines( dc, *it, semanticLastPos, timeLastPos, firstRow, timePos, it == itLast );
     }
 
-    timePos += (int) magnify ;
+    timePos += (int)magnify;
   }
-  
+
   if( !myWindow->isFusedLinesColorSet() )
   {
     drawRowEvents( eventdc, eventmaskdc, objectPosList[ firstRow ], eventsToDraw );
@@ -1298,7 +1419,7 @@ void gTimeline::drawRow( wxDC& dc,
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowColor( wxDC& dc, ValuesType valueToDraw, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
@@ -1309,7 +1430,7 @@ template<>
 void gTimeline::drawRowColor( wxDC& dc, TSemanticValue valueToDraw, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
-  
+
   if( myWindow->isCodeColorSet() && valueToDraw < 0.0 )
     drawCautionNegatives = true;
 
@@ -1319,7 +1440,7 @@ void gTimeline::drawRowColor( wxDC& dc, TSemanticValue valueToDraw, wxCoord obje
 
   dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
 
-  if ( magnify == 1.0 )
+  if( magnify == 1.0 )
   {
     if( objectPos + objectHeight < timeAxisPos )
       dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
@@ -1330,12 +1451,12 @@ void gTimeline::drawRowColor( wxDC& dc, TSemanticValue valueToDraw, wxCoord obje
   {
     // Draw a rectangle and fill with same color
     dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-    dc.DrawRectangle( timePos , objectPos, magnify , objectHeight );
+    dc.DrawRectangle( timePos, objectPos, magnify, objectHeight );
   }
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowFunction( wxDC& dc, ValuesType valueToDraw, int& semanticLastPos, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
@@ -1346,21 +1467,21 @@ template<>
 void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& semanticLastPos, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   TSemanticValue realMin = myWindow->getMinimumY();
-  
+
   if( myWindow->getSemanticScaleMinAtZero() && myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
     realMin = 0.0;
-  
+
   if( valueToDraw < realMin )
     valueToDraw = realMin;
   else if( valueToDraw > myWindow->getMaximumY() )
     valueToDraw = myWindow->getMaximumY();
 
-  double normalizedSemanticValue = Normalizer::calculate( valueToDraw, 
+  double normalizedSemanticValue = Normalizer::calculate( valueToDraw,
                                                           myWindow->getMinimumY(),
                                                           myWindow->getMaximumY(),
                                                           GetMyWindow()->getSemanticColor().getGradientFunction(),
                                                           true );
-  int currentPos = objectHeight * normalizedSemanticValue;
+  int currentPos                 = objectHeight * normalizedSemanticValue;
   semanticPixelsToValue[ currentPos ].insert( valueToDraw );
 
   dc.SetPen( foregroundColour );
@@ -1368,37 +1489,46 @@ void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& sema
   {
     int from = ( currentPos > semanticLastPos ) ? currentPos : semanticLastPos;
     int to   = ( currentPos < semanticLastPos ) ? currentPos : semanticLastPos;
-    dc.DrawLine( timePos, objectPos + objectHeight - from,
-                 timePos, objectPos + objectHeight - to + 1 );
+    dc.DrawLine( timePos, objectPos + objectHeight - from, timePos, objectPos + objectHeight - to + 1 );
     if( magnify > 1.0 )
-      dc.DrawLine( timePos,           objectPos + objectHeight - currentPos,
-                   timePos + magnify, objectPos + objectHeight - currentPos ); 
+      dc.DrawLine( timePos, objectPos + objectHeight - currentPos, timePos + magnify, objectPos + objectHeight - currentPos );
   }
   else
   {
-    if ( magnify == 1.0 )
+    if( magnify == 1.0 )
       dc.DrawPoint( timePos, objectPos + objectHeight - currentPos );
     else
-      dc.DrawLine( timePos,           objectPos + objectHeight - currentPos,
-                   timePos + magnify, objectPos + objectHeight - currentPos ); 
+      dc.DrawLine( timePos, objectPos + objectHeight - currentPos, timePos + magnify, objectPos + objectHeight - currentPos );
   }
 
   semanticLastPos = currentPos;
 }
 
 
-template<typename ValuesType>
-void gTimeline::drawRowFusedLines( wxDC& dc, ValuesType valueToDraw, int& semanticLastPos, wxCoord& timeLastPos, TObjectOrder whichObject, wxCoord timePos, bool isLastValue )
+template< typename ValuesType >
+void gTimeline::drawRowFusedLines( wxDC& dc,
+                                   ValuesType valueToDraw,
+                                   int& semanticLastPos,
+                                   wxCoord& timeLastPos,
+                                   TObjectOrder whichObject,
+                                   wxCoord timePos,
+                                   bool isLastValue )
 {
   // Default implementation should not be called; only intended for compiling
   abort();
 }
 
 template<>
-void gTimeline::drawRowFusedLines( wxDC& dc, TSemanticValue valueToDraw, int& semanticLastPos, wxCoord& timeLastPos, TObjectOrder whichObject, wxCoord timePos, bool isLastValue )
+void gTimeline::drawRowFusedLines( wxDC& dc,
+                                   TSemanticValue valueToDraw,
+                                   int& semanticLastPos,
+                                   wxCoord& timeLastPos,
+                                   TObjectOrder whichObject,
+                                   wxCoord timePos,
+                                   bool isLastValue )
 {
   TSemanticValue realMin = myWindow->getMinimumY();
-  
+
   if( myWindow->getSemanticScaleMinAtZero() && myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
     realMin = 0.0;
 
@@ -1407,8 +1537,7 @@ void gTimeline::drawRowFusedLines( wxDC& dc, TSemanticValue valueToDraw, int& se
   else if( valueToDraw > myWindow->getMaximumY() )
     valueToDraw = myWindow->getMaximumY();
 
-  double tmpPos = ( valueToDraw - realMin ) 
-                  / ( myWindow->getMaximumY() - realMin );
+  double tmpPos  = ( valueToDraw - realMin ) / ( myWindow->getMaximumY() - realMin );
   int currentPos = ( timeAxisPos - drawBorder ) * tmpPos;
 
   // First value. It's no needed to draw a vertical line from 0.
@@ -1419,12 +1548,11 @@ void gTimeline::drawRowFusedLines( wxDC& dc, TSemanticValue valueToDraw, int& se
   semanticColorsToValue[ colorToDraw ].insert( whichObject );
   dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
 
-  auto drawLastHorizontalValue = [&]( wxCoord timeEndPos )
-    {
-      dc.DrawLine( timeLastPos, timeAxisPos - semanticLastPos,
-                   timeEndPos,  timeAxisPos - semanticLastPos );
-      timeLastPos = timePos;
-    };
+  auto drawLastHorizontalValue = [ & ]( wxCoord timeEndPos )
+  {
+    dc.DrawLine( timeLastPos, timeAxisPos - semanticLastPos, timeEndPos, timeAxisPos - semanticLastPos );
+    timeLastPos = timePos;
+  };
 
   if( currentPos != semanticLastPos )
   {
@@ -1432,8 +1560,7 @@ void gTimeline::drawRowFusedLines( wxDC& dc, TSemanticValue valueToDraw, int& se
 
     int from = ( currentPos > semanticLastPos ) ? currentPos : semanticLastPos;
     int to   = ( currentPos < semanticLastPos ) ? currentPos : semanticLastPos;
-    dc.DrawLine( timePos, timeAxisPos - from,
-                 timePos, timeAxisPos - to );
+    dc.DrawLine( timePos, timeAxisPos - from, timePos, timeAxisPos - to );
   }
   else if( isLastValue )
   {
@@ -1444,7 +1571,7 @@ void gTimeline::drawRowFusedLines( wxDC& dc, TSemanticValue valueToDraw, int& se
 }
 
 
-template<typename ValuesType>
+template< typename ValuesType >
 void gTimeline::drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
@@ -1452,17 +1579,22 @@ void gTimeline::drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord
 }
 
 template<>
-void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemanticValue> >& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify )
+void gTimeline::drawRowPunctual( wxDC& dc,
+                                 vector< pair< TSemanticValue, TSemanticValue > >& valuesToDrawList,
+                                 wxCoord objectPos,
+                                 wxCoord timePos,
+                                 float magnify )
 {
   TSemanticValue realMin = myWindow->getMinimumY();
-  
+
   if( myWindow->getSemanticScaleMinAtZero() && myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
     realMin = 0.0;
 
   TSemanticValue valueToDraw;
-  for( vector< pair<TSemanticValue,TSemanticValue> >::iterator itValues = valuesToDrawList.begin(); itValues != valuesToDrawList.end(); ++itValues )
+  for( vector< pair< TSemanticValue, TSemanticValue > >::iterator itValues = valuesToDrawList.begin(); itValues != valuesToDrawList.end();
+       ++itValues )
   {
-    valueToDraw = (*itValues).first;
+    valueToDraw = ( *itValues ).first;
 
     if( valueToDraw < realMin || valueToDraw > myWindow->getMaximumY() )
       continue;
@@ -1472,17 +1604,17 @@ void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemantic
                                                             myWindow->getMaximumY(),
                                                             myWindow->getSemanticColor().getGradientFunction(),
                                                             true );
-    int currentPos = floor( ( (double)objectHeight / (double)magnify ) * normalizedSemanticValue ) * magnify;
-    
+    int currentPos                 = floor( ( (double)objectHeight / (double)magnify ) * normalizedSemanticValue ) * magnify;
+
     if( myWindow->getPunctualColorWindow() != nullptr )
     {
-      TSemanticValue valueToColor = (*itValues).second;
-      rgb colorToDraw = myWindow->getPunctualColorWindow()->calcColor( valueToColor, *( myWindow->getPunctualColorWindow() ) );
-      
+      TSemanticValue valueToColor = ( *itValues ).second;
+      rgb colorToDraw             = myWindow->getPunctualColorWindow()->calcColor( valueToColor, *( myWindow->getPunctualColorWindow() ) );
+
       // SaveImage & mouse over needed info
       semanticValuesToColor[ valueToColor ] = colorToDraw;
       semanticColorsToValue[ colorToDraw ].insert( valueToColor );
-    
+
       dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
       dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
     }
@@ -1499,18 +1631,17 @@ void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder ro
   for( unordered_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
   {
     eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
-    eventdc.DrawLine( *it+1, rowPos - 6, *it+1, rowPos-3 );
-    eventdc.DrawLine( *it+2, rowPos - 6, *it+2, rowPos-3 );
-    eventdc.DrawLine( *it+3, rowPos - 6, *it+3, rowPos-3 );
-    eventdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
+    eventdc.DrawLine( *it + 1, rowPos - 6, *it + 1, rowPos - 3 );
+    eventdc.DrawLine( *it + 2, rowPos - 6, *it + 2, rowPos - 3 );
+    eventdc.DrawLine( *it + 3, rowPos - 6, *it + 3, rowPos - 3 );
+    eventdc.DrawLine( *it + 4, rowPos - 6, *it + 4, rowPos - 3 );
 
     eventmaskdc.DrawLine( *it, rowPos - 6, *it, rowPos );
-    eventmaskdc.DrawLine( *it+1, rowPos - 6, *it+1, rowPos-3 );
-    eventmaskdc.DrawLine( *it+2, rowPos - 6, *it+2, rowPos-3 );
-    eventmaskdc.DrawLine( *it+3, rowPos - 6, *it+3, rowPos-3 );
-    eventmaskdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
+    eventmaskdc.DrawLine( *it + 1, rowPos - 6, *it + 1, rowPos - 3 );
+    eventmaskdc.DrawLine( *it + 2, rowPos - 6, *it + 2, rowPos - 3 );
+    eventmaskdc.DrawLine( *it + 3, rowPos - 6, *it + 3, rowPos - 3 );
+    eventmaskdc.DrawLine( *it + 4, rowPos - 6, *it + 4, rowPos - 3 );
   }
-
 }
 
 
@@ -1521,29 +1652,25 @@ void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPo
 #endif
 {
 #ifdef _MSC_VER
-  for( unordered_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set< commCoord >::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
-  for( unordered_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set< commCoord, hashCommCoord >::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #endif
   {
     if( it->recType & LOG )
       commdc.SetPen( logicalPen );
     else if( it->recType & PHY )
-      commdc.SetPen(  physicalPen );
+      commdc.SetPen( physicalPen );
 
     if( it->toRow != rowPos )
     {
-      commdc.DrawLine( it->toTime, it->toRow,
-                       it->fromTime, rowPos );
-      commmaskdc.DrawLine( it->toTime, it->toRow,
-                           it->fromTime, rowPos );
+      commdc.DrawLine( it->toTime, it->toRow, it->fromTime, rowPos );
+      commmaskdc.DrawLine( it->toTime, it->toRow, it->fromTime, rowPos );
     }
     else
     {
-      commdc.DrawLine( it->toTime, it->toRow,
-                       it->fromTime, rowPos + ( objectHeight / 2 ) );
-      commmaskdc.DrawLine( it->toTime, it->toRow,
-                           it->fromTime, rowPos + ( objectHeight / 2 ) );
+      commdc.DrawLine( it->toTime, it->toRow, it->fromTime, rowPos + ( objectHeight / 2 ) );
+      commmaskdc.DrawLine( it->toTime, it->toRow, it->fromTime, rowPos + ( objectHeight / 2 ) );
     }
   }
 }
@@ -1565,16 +1692,16 @@ void gTimeline::OnScrolledWindowEraseBackground( wxEraseEvent& event )
 void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
 {
   wxPaintDC dc( drawZone );
-  
+
   if( !myWindow->getReady() )
     return;
 
-// #ifdef __WXMAC__
-//   drawStackedImages( dc );
-// #else
+  // #ifdef __WXMAC__
+  //   drawStackedImages( dc );
+  // #else
   if( drawImage.IsOk() )
     dc.DrawBitmap( drawImage, 0, 0, false );
-// #endif
+  // #endif
 }
 
 
@@ -1583,23 +1710,13 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
  */
 void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
-  if( !IsShown() )
-    return;
-  else if( canRedraw &&
-           ( event.GetSize().GetWidth() != myWindow->getWidth() ||
-             event.GetSize().GetHeight() != myWindow->getHeight() ) )
-  {
-#ifndef _WIN32
-    if( !splitChanged )
-    {
-#endif
-      myWindow->setWidth( event.GetSize().GetWidth() );
-      myWindow->setHeight( event.GetSize().GetHeight() );
-#ifndef _WIN32
-    }
-#endif
-    timerSize->StartOnce( TIMER_SIZE_DURATION );
-  }
+  int width  = event.GetSize().GetWidth();
+  int height = event.GetSize().GetHeight();
+
+  timerSize->StartOnce( TIMER_SIZE_DURATION );
+  wxSize ev     = event.GetSize();
+  wxSize real   = GetSize();
+  wxSize client = GetClientSize();
 
   event.Skip();
 }
@@ -1610,18 +1727,17 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
  */
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
-/*#ifndef _WIN32
-  if( IsActive() )
-    drawZone->SetFocus();
-#endif*/
+  /*#ifndef _WIN32
+    if( IsActive() )
+      drawZone->SetFocus();
+  #endif*/
   if( paraverMain::stopOnIdle )
     return;
 
   if( myWindow->getDestroy() )
     return;
 
-  string composedName = myWindow->getName() + " @ " +
-                        myWindow->getTrace()->getTraceNameNumbered();
+  string composedName = myWindow->getName() + " @ " + myWindow->getTrace()->getTraceNameNumbered();
 
   this->SetTitle( wxString::FromUTF8( composedName.c_str() ) );
 
@@ -1659,24 +1775,24 @@ void gTimeline::OnIdle( wxIdleEvent& event )
       myWindow->setShowWindow( true );
     else
       this->Raise();
-    
+
     myWindow->setRaiseWindow( false );
   }
 
-// TODO: fix windows placement from cfg with many displays
-/*  if( ParaverConfig::??? )
-  {
-    myWindow->setPosX( this->GetPosition().x );
-    myWindow->setPosY( this->GetPosition().y );
-  }
-  else
-*/
+  // TODO: fix windows placement from cfg with many displays
+  /*  if( ParaverConfig::??? )
+    {
+      myWindow->setPosX( this->GetPosition().x );
+      myWindow->setPosY( this->GetPosition().y );
+    }
+    else
+  */
   int currentDisplay = wxDisplay::GetFromWindow( this );
-  if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+  if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
   {
     wxDisplay tmpDisplay( currentDisplay );
-    myWindow->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
-    myWindow->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
+    // myWindow->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
+    // myWindow->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
   }
 
   bool state = false;
@@ -1714,9 +1830,9 @@ void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
     if( drawCautionNegatives )
     {
       wxMessageDialog dialog( this,
-                            wxT( "Negative values are drawn as zero in code color view." ),
-                            wxT( "Code color negatives" ),
-                            wxOK|wxICON_EXCLAMATION );
+                              wxT( "Negative values are drawn as zero in code color view." ),
+                              wxT( "Code color negatives" ),
+                              wxOK | wxICON_EXCLAMATION );
       dialog.ShowModal();
     }
     else // hidden feature: clicking on botton left corner always fit the semantic scale, even if no caution is shown
@@ -1727,8 +1843,7 @@ void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
 
     return;
   }
-  else if( enabledAutoRedrawIcon &&
-           event.GetX() < tmpImageAutoRedraw.GetWidth() + 2 * drawBorder &&
+  else if( enabledAutoRedrawIcon && event.GetX() < tmpImageAutoRedraw.GetWidth() + 2 * drawBorder &&
            event.GetY() < tmpImageAutoRedraw.GetWidth() + 2 * drawBorder )
   {
     myWindow->setForceRedraw( true );
@@ -1736,10 +1851,10 @@ void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
   }
 
   drawZone->SetFocus();
-  zooming = true;
+  zooming          = true;
   firstMotionEvent = event;
-  zoomBeginX = event.GetX();
-  zoomBeginY = event.GetY();
+  zoomBeginX       = event.GetX();
+  zoomBeginY       = event.GetY();
 }
 
 
@@ -1749,7 +1864,7 @@ void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
 void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 {
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-  TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
+  TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
   wxMemoryDC dc( bufferImage );
   bool outOfDraw = false;
 
@@ -1758,7 +1873,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     escapePressed = false;
     return;
   }
-  
+
   if( timing && !wxGetApp().GetGlobalTiming() )
   {
     zooming = false;
@@ -1767,22 +1882,24 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 
   zoomEndX = event.GetX();
   zoomEndY = event.GetY();
-  zoomXY = event.ControlDown();
+  zoomXY   = event.ControlDown();
 
   if( event.ShiftDown() )
   {
     zooming = false;
-    zoomXY = false;
+    zoomXY  = false;
     MousePanLeftUp( event );
     return;
   }
-  
+
   // TIME zoom limits
   if( zooming )
   {
     if( zoomEndX < zoomBeginX )
     {
-      long tmp = zoomEndX; zoomEndX = zoomBeginX; zoomBeginX = tmp;
+      long tmp   = zoomEndX;
+      zoomEndX   = zoomBeginX;
+      zoomBeginX = tmp;
     }
     if( zoomBeginX < objectAxisPos )
       zoomBeginX = 0;
@@ -1791,22 +1908,21 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   }
   if( zoomEndX < objectAxisPos )
   {
-    zoomEndX = 0;
+    zoomEndX  = 0;
     outOfDraw = true;
   }
   else if( zoomEndX > dc.GetSize().GetWidth() - drawBorder )
   {
-    zoomEndX = dc.GetSize().GetWidth() - drawBorder - objectAxisPos;
+    zoomEndX  = dc.GetSize().GetWidth() - drawBorder - objectAxisPos;
     outOfDraw = true;
   }
   else
     zoomEndX -= objectAxisPos;
 
   // Detect begin and end TIME
-  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) / ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
 
-  TTime endTime = ( timeStep * zoomEndX ) + myWindow->getWindowBeginTime();
+  TTime endTime   = ( timeStep * zoomEndX ) + myWindow->getWindowBeginTime();
   TTime beginTime = ( timeStep * zoomBeginX ) + myWindow->getWindowBeginTime();
 
   if( wxGetApp().GetGlobalTiming() )
@@ -1836,12 +1952,14 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     }
     return;
   }
-  
+
   if( zooming )
   {
     if( zoomEndY < zoomBeginY )
     {
-      long tmp = zoomEndY; zoomEndY = zoomBeginY; zoomBeginY = tmp;
+      long tmp   = zoomEndY;
+      zoomEndY   = zoomBeginY;
+      zoomBeginY = tmp;
     }
     if( zoomBeginY > timeAxisPos )
       zoomBeginY = timeAxisPos - 1;
@@ -1851,65 +1969,64 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 
   if( zoomEndY > timeAxisPos )
   {
-    zoomEndY = timeAxisPos;
+    zoomEndY  = timeAxisPos;
     outOfDraw = true;
   }
   if( zoomEndY < drawBorder )
   {
-    zoomEndY = drawBorder;
+    zoomEndY  = drawBorder;
     outOfDraw = true;
   }
 
-  vector<TObjectOrder> selected;
+  vector< TObjectOrder > selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
-  TObjectOrder numObjects = selected.size();
-  double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
 
-  
-  beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
-  endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
+  if( selected.empty() )
+    return;
+
+  TObjectOrder numObjects = selected.size();
+  double heightPerRow     = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
+
+
+  beginRow = TObjectOrder( floor( ( zoomBeginY - drawBorder - 1 ) / heightPerRow ) );
+  endRow   = TObjectOrder( floor( ( zoomEndY - drawBorder - 1 ) / heightPerRow ) );
 
   if( endRow >= numObjects )
     endRow = numObjects - 1;
   if( beginRow >= numObjects )
     beginRow = numObjects - 1;
-    
+
   beginRow = selected[ beginRow ];
   endRow   = selected[ endRow ];
 
-  if( zooming && myWindow->getReady() &&
-      zoomEndX - zoomBeginX > 5.0 &&
-      ( ( zoomXY && zoomEndY - zoomBeginY > 5.0 ) || !zoomXY ) )
+  if( zooming && myWindow->getReady() && zoomEndX - zoomBeginX > 5.0 && ( ( zoomXY && zoomEndY - zoomBeginY > 5.0 ) || !zoomXY ) )
   {
     if( !zoomXY )
     {
       beginRow = myWindow->getZoomSecondDimension().first;
-      endRow =  myWindow->getZoomSecondDimension().second;
+      endRow   = myWindow->getZoomSecondDimension().second;
     }
     if( ( endTime - beginTime ) < 10 )
       endTime = beginTime + 10;
 
     // Update window properties
-    if( zoomXY && 
-        ( selected.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
-          || myWindow->isFusedLinesColorSet() )
-      )
+    if( zoomXY &&
+        ( selected.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() ) || myWindow->isFusedLinesColorSet() ) )
     {
       if( zoomBeginY < drawBorder )
         zoomBeginY = timeAxisPos - drawBorder;
       else
         zoomBeginY = timeAxisPos - zoomBeginY;
-      
+
       if( zoomEndY < drawBorder )
         zoomEndY = timeAxisPos - drawBorder;
       else
         zoomEndY = timeAxisPos - zoomEndY;
-      
-      TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
-                                    ( timeAxisPos - drawBorder );
+
+      TSemanticValue semanticStep  = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) / ( timeAxisPos - drawBorder );
       TSemanticValue beginSemantic = ( semanticStep * zoomEndY ) + myWindow->getMinimumY();
-      TSemanticValue endSemantic = ( semanticStep * zoomBeginY ) + myWindow->getMinimumY();
-      
+      TSemanticValue endSemantic   = ( semanticStep * zoomBeginY ) + myWindow->getMinimumY();
+
       myWindow->setMinimumY( beginSemantic );
       myWindow->setMaximumY( endSemantic );
     }
@@ -1917,15 +2034,15 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     {
       myWindow->addZoom( beginTime, endTime, beginRow, endRow );
     }
-    myWindow->setWindowBeginTime( beginTime, true );
-    myWindow->setWindowEndTime( endTime, true );
+    myWindow->setWindowBeginTime( beginTime );
+    myWindow->setWindowEndTime( endTime );
 
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
 
   zooming = false;
-  zoomXY = false;
+  zoomXY  = false;
 }
 
 
@@ -1934,11 +2051,8 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
  */
 void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
 {
-  if( this->IsShown() && 
-      ( myWindow->getForceRedraw() || 
-        ( wxparaverApp::mainWindow->getAutoRedraw() && myWindow->getRedraw() && !wxparaverApp::mainWindow->GetSomeWinIsRedraw() ) 
-      )
-    )
+  if( this->IsShown() && ( myWindow->getForceRedraw() || ( wxparaverApp::mainWindow->getAutoRedraw() && myWindow->getRedraw() &&
+                                                           !wxparaverApp::mainWindow->GetSomeWinIsRedraw() ) ) )
   {
     wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
     myWindow->setForceRedraw( false );
@@ -1953,23 +2067,24 @@ void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
     enabledAutoRedrawIcon = true;
 
     wxMemoryDC bufferDraw;
-    bufferDraw.SelectObject(wxNullBitmap);
+    bufferDraw.SelectObject( wxNullBitmap );
     bufferDraw.SelectObject( drawImage );
 
     wxBitmap refreshImage( autoredraw_refresh_xpm );
     bufferDraw.SetPen( wxPen( backgroundColour ) );
     bufferDraw.SetBrush( wxBrush( backgroundColour ) );
-    bufferDraw.DrawRectangle( 0, 0,
-                              refreshImage.GetWidth() + 2 * drawBorder, refreshImage.GetHeight() + 2 * drawBorder );
-    bufferDraw.DrawBitmap( refreshImage,
-                           drawBorder,
-                           drawBorder,
-                           true );
+    bufferDraw.DrawRectangle( 0, 0, refreshImage.GetWidth() + 2 * drawBorder, refreshImage.GetHeight() + 2 * drawBorder );
+    bufferDraw.DrawBitmap( refreshImage, drawBorder, drawBorder, true );
     drawZone->Refresh();
   }
-
 }
 
+void gTimeline::OnMove( wxMoveEvent& event )
+{
+  timerPosition->StartOnce( TIMER_SIZE_DURATION );
+
+  event.Skip();
+}
 
 void gTimeline::OnPopUpCopy( wxCommandEvent& event )
 {
@@ -1989,56 +2104,59 @@ gTimeline *gTimeline::clone( Trace *newTrace, TTimeUnit whichTimeUnit, bool must
 
 // simple windows can let this method do the entire work passing a nullptr clonedWindow
 // derived windows must pass existing clonedWindow, because Timeline::clone is recursive
-gTimeline *gTimeline::clone( Timeline *clonedWindow,
-                             wxWindow *parent,
-                             wxTreeItemId idRoot1,
-                             wxTreeItemId idRoot2,
-                             bool mustRedraw )
+gTimeline* gTimeline::clone( Timeline* clonedWindow, wxWindow* parent, wxTreeItemId idRoot1, wxTreeItemId idRoot2, bool mustRedraw )
 {
-  if ( clonedWindow == nullptr )
+  if( clonedWindow == nullptr )
     clonedWindow = myWindow->clone(); // recursive clone
 
   // Create empty gTimeline and assign window with same dimensions.
   // Shifts position right and down.
   wxSize titleBarSize = GetSize() - GetClientSize();
-  if ( titleBarSize.GetHeight() == 0 )
+  if( titleBarSize.GetHeight() == 0 )
     titleBarSize = paraverMain::defaultTitleBarSize;
-  wxPoint position =  wxPoint( GetPosition().x + titleBarSize.GetHeight(),
-                               GetPosition().y + titleBarSize.GetHeight() );
-  wxSize size = wxSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
+  wxPoint position = wxPoint( GetPosition().x + titleBarSize.GetHeight(), GetPosition().y + titleBarSize.GetHeight() );
 
   string composedName = myWindow->getName() + " @ " + myWindow->getTrace()->getTraceNameNumbered();
 
-//  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
-  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), position );
+  //  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
+  gTimeline* clonedTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), position );
   clonedTimeline->SetMyWindow( clonedWindow );
-  clonedTimeline->SetClientSize( size );
+  clonedTimeline->InitMyWindowCallbacks();
+  clonedTimeline->SetClientSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
+
+  clonedTimeline->setRowWithSemanticValuesNotZero( rowWithSemanticValuesNotZero );
+  
   clonedWindow->setPixelSize( myWindow->getPixelSize() );
 
   // add to loaded windows list
   LoadedWindows::getInstance()->add( clonedWindow );
 
-  wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
-  PRV_INT16 currentTrace = paraverMain::myParaverMain->getTracePosition( clonedWindow->getTrace() );
-  wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 ); // Global page
-  wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 ); // Current page
+  wxChoicebook* choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
+  PRV_INT16 currentTrace            = paraverMain::myParaverMain->getTracePosition( clonedWindow->getTrace() );
+  wxTreeCtrl* allTracesPage         = (wxTreeCtrl*)choiceWindowBrowser->GetPage( 0 );                // Global page
+  wxTreeCtrl* currentPage           = (wxTreeCtrl*)choiceWindowBrowser->GetPage( currentTrace + 1 ); // Current page
 
-  TreeBrowserItemData *currentData =  new TreeBrowserItemData( wxString::FromUTF8( clonedWindow->getName().c_str() ), clonedTimeline );
+  TreeBrowserItemData* currentData = new TreeBrowserItemData( wxString::FromUTF8( clonedWindow->getName().c_str() ), clonedTimeline );
 
   int iconNumber = getIconNumber( clonedWindow );
 
-  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( idRoot1, wxString::FromUTF8( clonedWindow->getName().c_str() ), iconNumber, -1, currentData );
-  wxTreeItemId currentWindowId2 = currentPage->AppendItem( idRoot2, wxString::FromUTF8( clonedWindow->getName().c_str() ), iconNumber, -1, new TreeBrowserItemData( *currentData ) );
+  wxTreeItemId currentWindowId1 =
+    allTracesPage->AppendItem( idRoot1, wxString::FromUTF8( clonedWindow->getName().c_str() ), iconNumber, -1, currentData );
+  wxTreeItemId currentWindowId2 = currentPage->AppendItem( idRoot2,
+                                                           wxString::FromUTF8( clonedWindow->getName().c_str() ),
+                                                           iconNumber,
+                                                           -1,
+                                                           new TreeBrowserItemData( *currentData ) );
 
   // if derived, clone parents
-  if ( clonedWindow->isDerivedWindow() )
+  if( clonedWindow->isDerivedWindow() )
   {
-//    vector< gTimeline * > gParents;
-//    getParentGTimeline( this, gParents );
+    //    vector< gTimeline * > gParents;
+    //    getParentGTimeline( this, gParents );
 
     clone( clonedWindow->getParent( 0 ), parent, currentWindowId1, currentWindowId2, mustRedraw );
     clone( clonedWindow->getParent( 1 ), parent, currentWindowId1, currentWindowId2, mustRedraw );
-    
+
     allTracesPage->CollapseAllChildren( currentWindowId1 );
     currentPage->CollapseAllChildren( currentWindowId2 );
   }
@@ -2087,14 +2205,14 @@ void gTimeline::OnPopUpClone( wxCommandEvent& event )
 
 void gTimeline::OnPopUpRename( wxCommandEvent& event )
 {
-  ( (paraverMain *) parent )->renameTreeItem( );
+  ( (paraverMain*)parent )->renameTreeItem();
 }
 
 
 void gTimeline::OnPopUpFitTimeScale( wxCommandEvent& event )
 {
-  myWindow->setWindowBeginTime( 0, true );
-  myWindow->setWindowEndTime( myWindow->getTrace()->getEndTime(), true );
+  myWindow->setWindowBeginTime( 0 );
+  myWindow->setWindowEndTime( myWindow->getTrace()->getEndTime() );
   myWindow->addZoom( 0, myWindow->getTrace()->getEndTime() );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
@@ -2125,9 +2243,30 @@ void gTimeline::OnPopUpFitSemanticScale( wxCommandEvent& event )
 void gTimeline::OnPopUpFitObjects( wxCommandEvent& event )
 {
   // Doesn't work!!
-  //myWindow->addZoom( TObjectOrder( 0 ), myWindow->getWindowLevelObjects() - 1 );
-  myWindow->addZoom( myWindow->getZoomFirstDimension().first, myWindow->getZoomFirstDimension().second,
-                     TObjectOrder( 0 ), myWindow->getWindowLevelObjects() - 1 );
+  // myWindow->addZoom( TObjectOrder( 0 ), myWindow->getWindowLevelObjects() - 1 );
+  myWindow->addZoom( myWindow->getZoomFirstDimension().first,
+                     myWindow->getZoomFirstDimension().second,
+                     TObjectOrder( 0 ),
+                     myWindow->getWindowLevelObjects() - 1 );
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
+void gTimeline::OnPopUpHideEmptyObjects( wxCommandEvent& event )
+{
+  vector< bool > tmpSelectedRows;
+  myWindow->getSelectedRows( myWindow->getLevel(), tmpSelectedRows );
+
+  std::transform( tmpSelectedRows.begin(), tmpSelectedRows.end(), rowWithSemanticValuesNotZero.begin(), tmpSelectedRows.begin(), std::logical_and<>() );
+
+  // If no object have values, show all of them. Otherwise a segfault can occur if no objects are shown.
+  if( !std::any_of( tmpSelectedRows.cbegin(), tmpSelectedRows.cend(), []( bool i ){ return i; } ) )
+  {
+    tmpSelectedRows.flip();
+  }
+
+  myWindow->setSelectedRows( myWindow->getLevel(), tmpSelectedRows );
+
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
@@ -2164,28 +2303,28 @@ void gTimeline::OnPopUpPunctualColor( wxCommandEvent& event )
 
 void gTimeline::OnPopUpPunctualColorWindow( wxCommandEvent& event )
 {
-  vector<Timeline *> compatWindows;
+  vector< Timeline* > compatWindows;
   int selIndex = 0;
 
   setEnableDestroyButton( false );
 
   LoadedWindows::getInstance()->getDerivedCompatible( myWindow->getTrace(), compatWindows );
   compatWindows.erase( std::find( compatWindows.begin(), compatWindows.end(), myWindow ) );
-  
+
   wxArrayString choices;
   choices.Add( _( "None" ) );
   int tmpIndex = 1;
-  for( vector<Timeline *>::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
+  for( vector< Timeline* >::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
   {
-    choices.Add( wxString::FromUTF8( (*it)->getName().c_str() ) );
-    if( (*it) == myWindow->getPunctualColorWindow() )
+    choices.Add( wxString::FromUTF8( ( *it )->getName().c_str() ) );
+    if( ( *it ) == myWindow->getPunctualColorWindow() )
       selIndex = tmpIndex;
     ++tmpIndex;
   }
 
-  wxSingleChoiceDialog *dialog = new wxSingleChoiceDialog( this, _("Select window to use for coloring points:"), _("Punctual Window"), choices );
+  wxSingleChoiceDialog* dialog = new wxSingleChoiceDialog( this, _( "Select window to use for coloring points:" ), _( "Punctual Window" ), choices );
   dialog->SetSelection( selIndex );
-  if ( dialog->ShowModal() == wxID_OK )
+  if( dialog->ShowModal() == wxID_OK )
   {
     if( dialog->GetSelection() == 0 )
       myWindow->setPunctualColorWindow( nullptr );
@@ -2193,7 +2332,7 @@ void gTimeline::OnPopUpPunctualColorWindow( wxCommandEvent& event )
       myWindow->setPunctualColorWindow( compatWindows[ dialog->GetSelection() - 1 ] );
     myWindow->setRedraw( true );
   }
-  
+
   delete dialog;
 
   setEnableDestroyButton( true );
@@ -2215,7 +2354,7 @@ void gTimeline::OnPopUpPasteDefaultSpecial( wxCommandEvent& event )
   myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
   pasteActions->paste( this, "Size" );
 
-  if ( pasteActions->isAllowed( this, STR_OBJECTS ) )
+  if( pasteActions->isAllowed( this, STR_OBJECTS ) )
     pasteActions->paste( this, "Objects" );
 
   myWindow->setRedraw( true );
@@ -2293,22 +2432,30 @@ void gTimeline::OnPopUpPasteFilterEvents( wxCommandEvent& event )
 }
 
 
+void gTimeline::OnPopUpPasteObjectAxis( wxCommandEvent& event )
+{
+  gPasteWindowProperties::getInstance()->paste( this, STR_OBJECT_AXIS );
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
+
 void gTimeline::OnPopUpPasteSpecial( wxCommandEvent& event )
 {
   wxArrayString choices;
 
-  wxMultiChoiceDialog *dialog = gPopUpMenu<gTimeline>::createPasteSpecialDialog( choices, this );
+  wxMultiChoiceDialog* dialog = gPopUpMenu::createPasteSpecialDialog( choices, this );
 
-  if ( dialog->ShowModal() == wxID_OK )
+  if( dialog->ShowModal() == wxID_OK )
   {
     wxArrayInt selections = dialog->GetSelections();
-    if ( selections.GetCount() > 0 )
+    if( selections.GetCount() > 0 )
     {
-      for ( size_t i = 0; i < selections.GetCount(); i++ )
+      for( size_t i = 0; i < selections.GetCount(); i++ )
       {
         gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
-        if ( pasteActions->isAllowed( this, gPopUpMenu<gTimeline>::getOption( choices, selections[i] ) ) )
-          pasteActions->paste( this, gPopUpMenu<gTimeline>::getOption( choices, selections[i] ) );
+        if( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[ i ] ) ) )
+          pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[ i ] ) );
       }
 
       myWindow->setRedraw( true );
@@ -2324,15 +2471,26 @@ void gTimeline::OnPopUpRowSelection( wxCommandEvent& event )
 {
   setEnableDestroyButton( false );
 
-  RowsSelectionDialog *dialog = gPopUpMenu<gTimeline>::createRowSelectionDialog( this );
+  RowsSelectionDialog* dialog = gPopUpMenu::createRowSelectionDialog( this );
 
-  if ( dialog->ShowModal() == wxID_OK )
+  if( dialog->ShowModal() == wxID_OK )
   {
-    if ( dialog->ShouldChangeTimelineZoom() )
+    bool applyZoom   = true;
+    bool isZoomAware = dialog->isZoomAwareTransferData( GetMyWindow()->getCurrentZoomRange() );
+
+    if( !isZoomAware )
+    {
+      wxString tmpMsg = wxT( "Do you want to extend the zoom to fit selected objects?" );
+      int answer      = wxMessageBox( tmpMsg, _( "Paraver question" ), wxYES_NO | wxICON_QUESTION, dialog );
+
+      applyZoom = ( answer == wxYES );
+    }
+
+    if( applyZoom && !isZoomAware )
     {
       myWindow->addZoom( dialog->GetNewBeginZoom(), dialog->GetNewEndZoom() );
     }
-  
+
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
@@ -2370,13 +2528,22 @@ void gTimeline::OnPopUpGradientFunction( wxCommandEvent& event )
 
   switch( event.GetId() )
   {
-    case ID_MENU_GRADIENT_FUNCTION_LINEAR: gradFunc = TGradientFunction::LINEAR; break;
-    case ID_MENU_GRADIENT_FUNCTION_STEPS: gradFunc = TGradientFunction::STEPS; break;
-    case ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC: gradFunc = TGradientFunction::LOGARITHMIC; break;
-    case ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL: gradFunc = TGradientFunction::EXPONENTIAL; break;
-    default: gradFunc = TGradientFunction::LINEAR;
+    case ID_MENU_GRADIENT_FUNCTION_LINEAR:
+      gradFunc = TGradientFunction::LINEAR;
+      break;
+    case ID_MENU_GRADIENT_FUNCTION_STEPS:
+      gradFunc = TGradientFunction::STEPS;
+      break;
+    case ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC:
+      gradFunc = TGradientFunction::LOGARITHMIC;
+      break;
+    case ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL:
+      gradFunc = TGradientFunction::EXPONENTIAL;
+      break;
+    default:
+      gradFunc = TGradientFunction::LINEAR;
   }
-  
+
   OnMenuGradientFunction( gradFunc );
 }
 
@@ -2579,15 +2746,25 @@ void gTimeline::OnPopUpDrawModeBothMode( wxCommandEvent& event )
 
 void gTimeline::OnPopUpPixelSize( wxCommandEvent& event )
 {
-  PRV_UINT16 pixelSize; 
+  PRV_UINT16 pixelSize;
 
   switch( event.GetId() )
   {
-    case ID_MENU_PIXEL_SIZE_x1: pixelSize = 1; break;
-    case ID_MENU_PIXEL_SIZE_x2: pixelSize = 2; break;
-    case ID_MENU_PIXEL_SIZE_x4: pixelSize = 4; break;
-    case ID_MENU_PIXEL_SIZE_x8: pixelSize = 8; break;
-    default:                    pixelSize = 1; break;
+    case ID_MENU_PIXEL_SIZE_x1:
+      pixelSize = 1;
+      break;
+    case ID_MENU_PIXEL_SIZE_x2:
+      pixelSize = 2;
+      break;
+    case ID_MENU_PIXEL_SIZE_x4:
+      pixelSize = 4;
+      break;
+    case ID_MENU_PIXEL_SIZE_x8:
+      pixelSize = 8;
+      break;
+    default:
+      pixelSize = 1;
+      break;
   }
 
   myWindow->setPixelSize( pixelSize );
@@ -2641,6 +2818,109 @@ void gTimeline::OnPopUpObjectAxis( wxCommandEvent& event )
   }
 
   myWindow->setRedraw( true );
+
+  // Broadcast to sync group if this property is selected
+  if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_OBJECT_AXIS ) )
+  {
+    SyncWindows::getInstance()->broadcastObjectAxisAll( myWindow->getSyncGroup() );
+  }
+}
+
+
+void gTimeline::OnPopUpObjectAxisCustom( wxCommandEvent& event )
+{
+  // Build message showing current object axis setting
+  wxString currentSetting;
+  TObjectAxisSize currentMode = myWindow->getObjectAxisSize();
+  switch( currentMode )
+  {
+    case TObjectAxisSize::CURRENT_LEVEL:
+      currentSetting = _( "Fit Current Level" );
+      break;
+    case TObjectAxisSize::ALL_LEVELS:
+      currentSetting = _( "Fit All Levels" );
+      break;
+    case TObjectAxisSize::ZERO_PERC:
+      currentSetting = _( "0%" );
+      break;
+    case TObjectAxisSize::FIVE_PERC:
+      currentSetting = _( "5%" );
+      break;
+    case TObjectAxisSize::TEN_PERC:
+      currentSetting = _( "10%" );
+      break;
+    case TObjectAxisSize::TWENTYFIVE_PERC:
+      currentSetting = _( "25%" );
+      break;
+    case TObjectAxisSize::CUSTOM_PERC:
+      currentSetting = wxString::Format( _( "Custom: %d%%" ), myWindow->getObjectAxisCustomSize() );
+      break;
+    default:
+      currentSetting = _( "Unknown" );
+      break;
+  }
+
+  // Pre-fill with stored custom value only if CUSTOM_PERC is active
+  wxString defaultValue = wxEmptyString;
+  if( currentMode == TObjectAxisSize::CUSTOM_PERC )
+  {
+    defaultValue = wxString::Format( wxT( "%d" ), myWindow->getObjectAxisCustomSize() );
+  }
+
+  wxString message = wxString::Format( _( "Current Object Axis: %s\n\nEnter custom percentage (1-100):" ), currentSetting );
+
+  wxTextEntryDialog dialog( this, message, _( "Custom Object Axis Percentage" ), defaultValue );
+
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString value = dialog.GetValue();
+    long numValue;
+
+    if( !value.ToLong( &numValue ) )
+    {
+      wxMessageBox( _( "Please enter a valid integer value." ), _( "Invalid Input" ), wxOK | wxICON_ERROR, this );
+      return;
+    }
+
+    if( numValue < 1 || numValue > 100 )
+    {
+      wxMessageBox( _( "Value must be between 1 and 100." ), _( "Invalid Range" ), wxOK | wxICON_ERROR, this );
+      return;
+    }
+
+    // Store the custom value
+    myWindow->setObjectAxisCustomSize( static_cast< PRV_UINT16 >( numValue ) );
+
+    // Check if value matches a preset - if so, switch to that preset mode
+    if( numValue == 0 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::ZERO_PERC );
+    }
+    else if( numValue == 5 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::FIVE_PERC );
+    }
+    else if( numValue == 10 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::TEN_PERC );
+    }
+    else if( numValue == 25 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::TWENTYFIVE_PERC );
+    }
+    else
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::CUSTOM_PERC );
+    }
+
+    myWindow->setRedraw( true );
+
+    // Broadcast to sync group if this property is selected
+    if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_OBJECT_AXIS ) )
+    {
+      SyncWindows::getInstance()->broadcastObjectAxisAll( myWindow->getSyncGroup() );
+    }
+  }
 }
 
 
@@ -2661,8 +2941,8 @@ void gTimeline::OnPopUpRunApp( wxCommandEvent& event )
     case ID_MENU_FOLDING:
       SequenceDriver::sequenceFolding( this );
       break;
-    case ID_MENU_PROFET:
-      SequenceDriver::sequenceProfet( this );
+    case ID_MENU_MESS:
+      SequenceDriver::sequenceMess( this );
       break;
     case ID_MENU_CARM:
       SequenceDriver::sequenceCarm( this );
@@ -2684,14 +2964,53 @@ void gTimeline::OnPopUpSynchronize( wxCommandEvent& event )
   }
   else
   {
-    vector<TGroupId> tmpGroups;
+    vector< TGroupId > tmpGroups;
     SyncWindows::getInstance()->getGroups( tmpGroups );
-    
+
     TGroupId group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
     if( myWindow->isSync() && group == myWindow->getSyncGroup() )
       myWindow->removeFromSync();
     else
       myWindow->addToSyncGroup( group );
+  }
+}
+
+
+void gTimeline::OnPopUpSynchronizeById( TGroupId wichGroup )
+{
+  if( !SyncWindows::getInstance()->isGroupCreated( wichGroup ) )
+  {
+    wxMessageBox( "Group not exist", "Warning", wxOK | wxICON_INFORMATION );
+  }
+  else
+  {
+    if( myWindow->isSync() && wichGroup == myWindow->getSyncGroup() )
+    {
+      myWindow->removeFromSync();
+    }
+    else
+    {
+      myWindow->removeFromSync();
+      myWindow->addToSyncGroup( wichGroup );
+    }
+  }
+}
+
+void gTimeline::OnPopUpSynchronizeById( TGroupId& wichGroup, bool setSynchronized )
+{
+  if( SyncWindows::getInstance()->isGroupCreated( wichGroup ) )
+  {
+    if( setSynchronized )
+    {
+      if( myWindow->isSync() )
+        myWindow->removeFromSync();
+      myWindow->addToSyncGroup( wichGroup );
+    }
+    else
+    {
+      if( myWindow->isSync() )
+        myWindow->removeFromSync();
+    }
   }
 }
 
@@ -2710,22 +3029,21 @@ void gTimeline::OnPopUpRemoveAllGroups( wxCommandEvent& event )
 }
 
 
-
 void gTimeline::OnPopUpUndoZoom( wxCommandEvent& event )
 {
-  if ( !myWindow->emptyPrevZoom() )
+  if( !myWindow->emptyPrevZoom() )
   {
     TObjectOrder prevZoomBegin = myWindow->getPrevZoomSecondDimension().first;
-    TObjectOrder prevZoomEnd = myWindow->getPrevZoomSecondDimension().second;
-    vector<TObjectOrder> selectedSet;
+    TObjectOrder prevZoomEnd   = myWindow->getPrevZoomSecondDimension().second;
+    vector< TObjectOrder > selectedSet;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, prevZoomBegin, prevZoomEnd, true );
-   
-    if ( selectedSet.size() > 0 )
+
+    if( selectedSet.size() > 0 )
     {
       // as before
       myWindow->prevZoom();
-      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first, true );
-      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second, true );
+      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
+      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
       myWindow->setRedraw( true );
       myWindow->setChanged( true );
     }
@@ -2733,7 +3051,7 @@ void gTimeline::OnPopUpUndoZoom( wxCommandEvent& event )
     {
       wxString tmpMsg( wxT( "Unable to browse current objects in previous zoom!\n\nPlease select objects." ) );
       wxMessageDialog tmpDialog( nullptr, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
-      if ( tmpDialog.ShowModal() == wxID_OK )
+      if( tmpDialog.ShowModal() == wxID_OK )
       {
         wxCommandEvent dummyEvent;
         OnPopUpRowSelection( dummyEvent );
@@ -2745,19 +3063,19 @@ void gTimeline::OnPopUpUndoZoom( wxCommandEvent& event )
 
 void gTimeline::OnPopUpRedoZoom( wxCommandEvent& event )
 {
-  if ( !myWindow->emptyNextZoom() )
+  if( !myWindow->emptyNextZoom() )
   {
     TObjectOrder nextZoomBegin = myWindow->getNextZoomSecondDimension().first;
-    TObjectOrder nextZoomEnd = myWindow->getNextZoomSecondDimension().second;
-    vector<TObjectOrder> selectedSet;
+    TObjectOrder nextZoomEnd   = myWindow->getNextZoomSecondDimension().second;
+    vector< TObjectOrder > selectedSet;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, nextZoomBegin, nextZoomEnd, true );
-   
-    if ( selectedSet.size() > 0 )
+
+    if( selectedSet.size() > 0 )
     {
       // as before
       myWindow->nextZoom();
-      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first, true );
-      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second, true );
+      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
+      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
       myWindow->setRedraw( true );
       myWindow->setChanged( true );
     }
@@ -2765,7 +3083,7 @@ void gTimeline::OnPopUpRedoZoom( wxCommandEvent& event )
     {
       wxString tmpMsg( wxT( "Unable to browse current objects in next zoom!\n\nPlease select objects." ) );
       wxMessageDialog tmpDialog( nullptr, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
-      if ( tmpDialog.ShowModal() == wxID_OK )
+      if( tmpDialog.ShowModal() == wxID_OK )
       {
         wxCommandEvent dummyEvent;
         OnPopUpRowSelection( dummyEvent );
@@ -2777,12 +3095,14 @@ void gTimeline::OnPopUpRedoZoom( wxCommandEvent& event )
 
 void gTimeline::rightDownManager()
 {
-  gPopUpMenu<gTimeline> popUpMenu( this );
+  gPopUpMenu popUpMenu( this );
 
-  popUpMenu.enable( "Undo Zoom", !myWindow->emptyPrevZoom() );
-  popUpMenu.enable( "Redo Zoom", !myWindow->emptyNextZoom() );
+  popUpMenu.initializePopUpMenu();
+  popUpMenu.enablePopUpMenu();
 
-  popUpMenu.enableMenu( this );
+  popUpMenu.enableItemByTag( "Undo Zoom", !myWindow->emptyPrevZoom() );
+  popUpMenu.enableItemByTag( "Redo Zoom", !myWindow->emptyNextZoom() );
+
   PopupMenu( &popUpMenu );
 }
 
@@ -2814,13 +3134,10 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   PRV_UINT32 precision = 0;
 
-  rgb rgbForegroundColour = myWindow->getAxisColor();
-  wxColour foregroundColour = wxColour( rgbForegroundColour.red,
-                                        rgbForegroundColour.green,
-                                        rgbForegroundColour.blue );
+  rgb rgbForegroundColour   = myWindow->getAxisColor();
+  wxColour foregroundColour = wxColour( rgbForegroundColour.red, rgbForegroundColour.green, rgbForegroundColour.blue );
 
-  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                   ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) / ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
 
   if( zooming )
   {
@@ -2829,7 +3146,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
       MousePanMotion();
       return;
     }
-    
+
     if( !timing )
       zoomXY = event.ControlDown();
     else
@@ -2837,19 +3154,19 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 
     long beginX = zoomBeginX > event.GetX() ? event.GetX() : zoomBeginX;
     long beginY = drawBorder;
-    long endX = zoomBeginX < event.GetX() ? event.GetX() : zoomBeginX;
-    long endY = timeAxisPos;
+    long endX   = zoomBeginX < event.GetX() ? event.GetX() : zoomBeginX;
+    long endY   = timeAxisPos;
     if( beginX < objectAxisPos )
       beginX = objectAxisPos;
     if( endX > drawImage.GetWidth() - drawBorder )
       endX = drawImage.GetWidth() - drawBorder;
-    wxCoord width = endX - beginX;
+    wxCoord width  = endX - beginX;
     wxCoord height = timeAxisPos - drawBorder + 1;
 
-    if ( zoomXY )
+    if( zoomXY )
     {
       beginY = zoomBeginY > event.GetY() ? event.GetY() : zoomBeginY;
-      endY = zoomBeginY < event.GetY() ? event.GetY() : zoomBeginY;
+      endY   = zoomBeginY < event.GetY() ? event.GetY() : zoomBeginY;
       if( beginY > timeAxisPos )
         beginY = timeAxisPos;
       if( endY > timeAxisPos )
@@ -2863,15 +3180,15 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 
     if( endX - beginX > 3.0 )
     {
-// #ifdef __WXMAC__
-//       if( !zoomBMP.IsOk() ||
-//           zoomBMP.GetHeight() != drawImage.GetHeight() ||
-//           zoomBMP.GetWidth() != drawImage.GetWidth() )
-//         zoomBMP = wxBitmap( drawImage.GetWidth(), drawImage.GetHeight() );
-//       wxMemoryDC memdc( zoomBMP );
-// #else
+      // #ifdef __WXMAC__
+      //       if( !zoomBMP.IsOk() ||
+      //           zoomBMP.GetHeight() != drawImage.GetHeight() ||
+      //           zoomBMP.GetWidth() != drawImage.GetWidth() )
+      //         zoomBMP = wxBitmap( drawImage.GetWidth(), drawImage.GetHeight() );
+      //       wxMemoryDC memdc( zoomBMP );
+      // #else
       wxMemoryDC memdc( drawImage );
-// #endif
+      // #endif
       memdc.SetBackgroundMode( wxTRANSPARENT );
       memdc.SetBackground( *wxTRANSPARENT_BRUSH );
       memdc.Clear();
@@ -2905,47 +3222,48 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     else
       endX -= objectAxisPos;
 
-    TTime endTime = ( timeStep * endX ) + myWindow->getWindowBeginTime();
+    TTime endTime   = ( timeStep * endX ) + myWindow->getWindowBeginTime();
     TTime beginTime = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
 
-    initialTimeText->SetValue( wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( beginTime ),
-                                                                                 myWindow->getTimeUnit(), precision ).c_str() ) );
-    finalTimeText->SetValue( wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime ),
-                                                                               myWindow->getTimeUnit(), precision ).c_str() ) );
-    durationText->SetValue( wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime - beginTime ),
-                                                                              myWindow->getTimeUnit(), precision ).c_str() ) );
-    vector<TObjectOrder> selectedSet;
+    initialTimeText->SetValue( wxString::FromUTF8(
+      LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( beginTime ), myWindow->getTimeUnit(), precision ).c_str() ) );
+    finalTimeText->SetValue(
+      wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime ), myWindow->getTimeUnit(), precision ).c_str() ) );
+    durationText->SetValue( wxString::FromUTF8(
+      LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime - beginTime ), myWindow->getTimeUnit(), precision ).c_str() ) );
+    vector< TObjectOrder > selectedSet;
     TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-    TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
+    TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
     if( zoomXY &&
-        ( selectedSet.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
-          || myWindow->isFusedLinesColorSet() ) )
+        ( selectedSet.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() ) || myWindow->isFusedLinesColorSet() ) )
     {
       if( beginY < drawBorder )
         beginY = timeAxisPos - drawBorder;
       else
         beginY = timeAxisPos - beginY;
-      
+
       if( endY < drawBorder )
         endY = timeAxisPos - drawBorder;
       else
         endY = timeAxisPos - endY;
-      
-      TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
-                                    ( timeAxisPos - drawBorder );
+
+      TSemanticValue semanticStep  = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) / ( timeAxisPos - drawBorder );
       TSemanticValue beginSemantic = ( semanticStep * endY ) + myWindow->getMinimumY();
-      TSemanticValue endSemantic = ( semanticStep * beginY ) + myWindow->getMinimumY();
-      
-      if( myWindow->getMaximumY() - myWindow->getMinimumY() < 1 ) precision = 6;
-      initialSemanticText->SetValue( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, beginSemantic, false, precision, false ).c_str() ) );
+      TSemanticValue endSemantic   = ( semanticStep * beginY ) + myWindow->getMinimumY();
+
+      if( myWindow->getMaximumY() - myWindow->getMinimumY() < 1 )
+        precision = 6;
+      initialSemanticText->SetValue(
+        wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, beginSemantic, false, precision, false ).c_str() ) );
       finalSemanticText->SetValue( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, endSemantic, false, precision, false ).c_str() ) );
-      slopeText->SetValue( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, 
-                                                                                 ( endSemantic - beginSemantic ) / 
-                                                                                 myWindow->traceUnitsToWindowUnits( endTime - beginTime ),
-                                                                                 false,
-                                                                                 6,
-                                                                                 false ).c_str() ) );
+      slopeText->SetValue( wxString::FromUTF8(
+        LabelConstructor::semanticLabel( myWindow,
+                                         ( endSemantic - beginSemantic ) / myWindow->traceUnitsToWindowUnits( endTime - beginTime ),
+                                         false,
+                                         6,
+                                         false )
+          .c_str() ) );
     }
   }
   else if( timing || wxGetApp().GetGlobalTiming() )
@@ -2959,7 +3277,8 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
       beginX -= objectAxisPos;
     TTime time = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
 
-    initialTimeText->SetValue( wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit(), precision ).c_str() ) );
+    initialTimeText->SetValue(
+      wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit(), precision ).c_str() ) );
     finalTimeText->SetValue( _( "" ) );
     durationText->SetValue( _( "" ) );
   }
@@ -2983,7 +3302,7 @@ void gTimeline::OnSplitterTimelineSashUnsplit( wxSplitterEvent& event )
 void gTimeline::OnSplitterTimelineSashDClick( wxSplitterEvent& event )
 {
   infoZoneLastSize = infoZone->GetSize().GetHeight();
-  canRedraw = false;
+  canRedraw        = false;
   event.Skip();
 }
 
@@ -3009,10 +3328,10 @@ void gTimeline::OnNotebookInfoPageChanging( wxNotebookEvent& event )
   infoZone->ChangeSelection( event.GetSelection() );
   if( !splitter->IsSplit() )
   {
-    //splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
+    // splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
     Split();
   }
-//  drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
+  //  drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
   canRedraw = true;
 }
 
@@ -3020,134 +3339,161 @@ void gTimeline::OnNotebookInfoPageChanging( wxNotebookEvent& event )
 wxString gTimeline::formatTime( TRecordTime whichTime, bool showDate )
 {
   wxString formattedTime;
-  
-  if ( !showDate )
+
+  if( !showDate )
   {
-    formattedTime = wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
-                                                                     myWindow->getTimeUnit(), 0 ).c_str() );
+    formattedTime =
+      wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ), myWindow->getTimeUnit(), 0 ).c_str() );
   }
   else
   {
     ptime headerTime = myWindow->getTrace()->getTraceTime();
-    ptime clickTime = headerTime + boost::posix_time::nanoseconds( (long)myWindow->traceUnitsToCustomUnits( whichTime, NS ) );
-    formattedTime = wxString::FromUTF8( LabelConstructor::timeLabel( clickTime ).c_str() );
+    ptime clickTime  = headerTime + boost::posix_time::nanoseconds( (long)myWindow->traceUnitsToCustomUnits( whichTime, NS ) );
+    formattedTime    = wxString::FromUTF8( LabelConstructor::timeLabel( clickTime, 0 ).c_str() );
   }
-  
+
   return formattedTime;
 }
 
 
 // Computes What/Where, filling whatWhereLines vector. Doesn't show it --> printWhatWhere.
-void gTimeline::computeWhatWhere( TRecordTime whichTime,
+void gTimeline::computeWhatWhere( std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
+                                  TRecordTime whichTime,
                                   TObjectOrder whichRow,
                                   TSemanticValue whichSemantic,
                                   bool textMode,
                                   bool showDate,
                                   bool hexMode )
 {
-  whatWhereTime = whichTime;
-  whatWhereRow = whichRow;
+  whatWhereTime     = whichTime;
+  whatWhereRow      = whichRow;
   whatWhereSemantic = whichSemantic;
-  
-  whatWhereLines.clear();
-  whatWhereSelectedTimeEventLines = 0;
+
+  tmpWhatWhereLines.clear();
+  whatWhereSelectedTimeEventLines         = 0;
   whatWhereSelectedTimeCommunicationLines = 0;
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_OBJECT_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_OBJECT_SECTION, _( "" ) ) );
 
   wxString txt;
 
   if( myWindow->isFusedLinesColorSet() )
   {
-    txt << _( "Semantic: " ) << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                                      whichSemantic,
-                                                                                      false,
-                                                                                      ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                                      false ).c_str() );
+    txt << _( "\nSemantic: " )
+        << wxString::FromUTF8(
+             LabelConstructor::semanticLabel( myWindow, whichSemantic, false, ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
   }
   else
   {
     if( myWindow->getLevel() == TTraceLevel::CPU )
-      txt << _( "Object: " ) << wxString::FromUTF8( LabelConstructor::objectLabel( whichRow + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+      txt << _( "Object: " )
+          << wxString::FromUTF8( LabelConstructor::objectLabel( whichRow + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
     else
       txt << _( "Object: " ) << wxString::FromUTF8( LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
   }
   txt << _( "\t  Click time: " ) << formatTime( whichTime, showDate );
   txt << _( "\n" );
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, txt ) );
+  tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, txt ) );
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_OBJECT_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::END_OBJECT_SECTION, _( "" ) ) );
 
   if( myWindow->isFusedLinesColorSet() )
     return;
-
-  myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS, false );
-  myWindow->initRow( whichRow, whichTime, CREATEEVENTS + CREATECOMMS, false );
-  
-  TRecordTime tmpBeginTime = myWindow->getBeginTime( whichRow );
-
-  if ( tmpBeginTime > 0.0 )
+  std::vector< Timeline* > groupTimelines;
+  if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_INFO_PANEL ) )
   {
-    myWindow->getRecordList( whichRow )->erase( myWindow->getRecordList( whichRow )->begin(),
-                                                myWindow->getRecordList( whichRow )->end() );
+    groupTimelines = SyncWindows::getInstance()->getGroupWindows<Timeline>( myWindow->getSyncGroup() );
 
-    --tmpBeginTime;
-    myWindow->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
-    myWindow->initRow( whichRow, tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
-    
+    auto it = std::find( groupTimelines.begin(), groupTimelines.end(), myWindow );
+    if( it != groupTimelines.end() )
+    {
+      // Rotate the range so that `it` becomes the first element
+      std::rotate( groupTimelines.begin(), it, it + 1 );
+    }
+  }
+  else
+  {
+    groupTimelines.push_back( myWindow );
+  }
+
+  for( auto& itWindowsGroup : groupTimelines )
+  {
+    if( groupTimelines.size() > 1 )
+    {
+      wxString name;
+      name << _( "---------------------- Window Name: " ) << wxString::FromUTF8( itWindowsGroup->getName().c_str() )
+           << _( "---------------------- " );
+
+      tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_OBJECT_SECTION, _( "" ) ) );
+      tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, name ) );
+      tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::END_OBJECT_SECTION, _( "" ) ) );
+    }
+    itWindowsGroup->init( whichTime, CREATEEVENTS + CREATECOMMS, false );
+    itWindowsGroup->initRow( whichRow, whichTime, CREATEEVENTS + CREATECOMMS, false );
+
+    TRecordTime tmpBeginTime = myWindow->getBeginTime( whichRow );
+
+    if( tmpBeginTime > 0.0 )
+    {
+      itWindowsGroup->getRecordList( whichRow )
+        ->erase( itWindowsGroup->getRecordList( whichRow )->begin(), itWindowsGroup->getRecordList( whichRow )->end() );
+
+      --tmpBeginTime;
+      itWindowsGroup->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
+      itWindowsGroup->initRow( whichRow, tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
+
+      if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
+      {
+        printWWSemantic( itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, hexMode );
+        printWWRecords( itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, showDate );
+        itWindowsGroup->calcNext( whichRow, false );
+        while( itWindowsGroup->getEndTime( whichRow ) < itWindowsGroup->getTrace()->getEndTime() &&
+               itWindowsGroup->getBeginTime( whichRow ) == itWindowsGroup->getEndTime( whichRow ) )
+        {
+          printWWSemantic( itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, hexMode );
+          printWWRecords( itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, showDate );
+          itWindowsGroup->calcNext( whichRow, false );
+        }
+      }
+    }
+
+    printWWSemantic( itWindowsGroup, tmpWhatWhereLines, whichRow, true, textMode, hexMode );
+    printWWRecords( itWindowsGroup, tmpWhatWhereLines, whichRow, true, textMode, showDate );
+
     if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
     {
-      printWWSemantic( whichRow, false, textMode, hexMode );
-      printWWRecords( whichRow, false, textMode, showDate );
       myWindow->calcNext( whichRow, false );
       while( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() &&
              myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
       {
-        printWWSemantic( whichRow, false, textMode, hexMode );
-        printWWRecords( whichRow, false, textMode, showDate );
-        myWindow->calcNext( whichRow, false );
+        printWWSemantic( itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, hexMode );
+        printWWRecords( itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, showDate );
+        itWindowsGroup->calcNext( whichRow, false );
       }
+      printWWSemantic( itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, hexMode );
+      printWWRecords( itWindowsGroup, tmpWhatWhereLines, whichRow, false, textMode, showDate );
     }
-  }
-
-  printWWSemantic( whichRow, true, textMode, hexMode );
-  printWWRecords( whichRow, true, textMode, showDate );
-
-  if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
-  {
-    myWindow->calcNext( whichRow, false );
-    while( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() &&
-           myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
-    {
-      printWWSemantic( whichRow, false, textMode, hexMode );
-      printWWRecords( whichRow, false, textMode, showDate );
-      myWindow->calcNext( whichRow, false );
-    }
-    printWWSemantic( whichRow, false, textMode, hexMode );
-    printWWRecords( whichRow, false, textMode, showDate );
   }
 }
 
-
-void gTimeline::printWhatWhere( )
+void gTimeline::printWhatWhere()
 {
   int fontSize = 10;
   bool allowedLine, allowedSection = false, tooMuchMessage = true;
   int recordsCount = 0;
 
   // Detect open region to avoid wxRichTextCtrl warning "Debug: Too many EndStyle calls!"
-  bool boldOpen = false;
-  bool italicOpen = false;
-  bool fontSizeOpen = false;
-  bool textColourOpen = false;  
+  bool boldOpen       = false;
+  bool italicOpen     = false;
+  bool fontSizeOpen   = false;
+  bool textColourOpen = false;
 
   whatWhereText->Clear();
 
   whatWhereText->BeginFontSize( fontSize );
   fontSizeOpen = true;
 
-  for ( vector< pair< TWhatWhereLine, wxString > >::iterator it = whatWhereLines.begin(); 
-        it != whatWhereLines.end(); ++it )
+  for( vector< pair< TWhatWhereLine, wxString > >::iterator it = whatWhereLines.begin(); it != whatWhereLines.end(); ++it )
   {
     // Is that section allowed?
     switch( it->first )
@@ -3155,13 +3501,13 @@ void gTimeline::printWhatWhere( )
       case TWhatWhereLine::BEGIN_OBJECT_SECTION:
         allowedSection = true;
         break;
-      
+
       case TWhatWhereLine::BEGIN_PREVNEXT_SECTION:
         allowedSection = checkWWPreviousNext->IsChecked();
         whatWhereText->BeginTextColour( wxColour( 0xb0b0b0 ) ); // GREY
         textColourOpen = true;
         break;
-      
+
       case TWhatWhereLine::END_PREVNEXT_SECTION:
         whatWhereText->EndTextColour();
         textColourOpen = false;
@@ -3190,7 +3536,7 @@ void gTimeline::printWhatWhere( )
         whatWhereText->EndItalic();
         whatWhereText->EndFontSize();
         fontSizeOpen = false;
-        italicOpen = false;
+        italicOpen   = false;
         break;
 
       case TWhatWhereLine::BEGIN_SEMANTIC_SECTION:
@@ -3205,7 +3551,7 @@ void gTimeline::printWhatWhere( )
         break;
 
       default:
-        if ( allowedSection )
+        if( allowedSection )
         {
           // Is that line allowed?
           switch( it->first )
@@ -3216,7 +3562,8 @@ void gTimeline::printWhatWhere( )
               else
               {
                 allowedLine = checkWWEvents->IsChecked();
-                if( allowedLine ) ++recordsCount;
+                if( allowedLine )
+                  ++recordsCount;
               }
               break;
             case TWhatWhereLine::COMMUNICATION_LINE:
@@ -3225,18 +3572,19 @@ void gTimeline::printWhatWhere( )
               else
               {
                 allowedLine = checkWWCommunications->IsChecked();
-                if( allowedLine ) ++recordsCount;
+                if( allowedLine )
+                  ++recordsCount;
               }
               break;
 
             case TWhatWhereLine::SEMANTIC_LINE:
               recordsCount = 0;
-              allowedLine = checkWWSemantic->IsChecked();
+              allowedLine  = checkWWSemantic->IsChecked();
               break;
 
             case TWhatWhereLine::MARK_LINE:
-              allowedLine = (( checkWWEvents->IsChecked() && whatWhereSelectedTimeEventLines > 0 ) ||
-                             ( checkWWCommunications->IsChecked() && whatWhereSelectedTimeCommunicationLines > 0 ));
+              allowedLine = ( ( checkWWEvents->IsChecked() && whatWhereSelectedTimeEventLines > 0 ) ||
+                              ( checkWWCommunications->IsChecked() && whatWhereSelectedTimeCommunicationLines > 0 ) );
               break;
 
             default:
@@ -3244,7 +3592,7 @@ void gTimeline::printWhatWhere( )
               break;
           }
 
-          if ( allowedLine )
+          if( allowedLine )
             whatWhereText->WriteText( it->second );
           else if( tooMuchMessage && recordsCount >= 100 )
           {
@@ -3254,22 +3602,22 @@ void gTimeline::printWhatWhere( )
             tooMuchMessage = false;
           }
 
-        break;
-      }
+          break;
+        }
     }
   }
 
   // Close opened regions (to avoid wxRichTextCtrl warning "Debug: Too many EndStyle calls!")
-  if ( fontSizeOpen )
+  if( fontSizeOpen )
     whatWhereText->EndFontSize();
 
-  if ( boldOpen )
+  if( boldOpen )
     whatWhereText->EndBold();
 
-  if ( italicOpen )
+  if( italicOpen )
     whatWhereText->EndItalic();
 
-  if ( textColourOpen )
+  if( textColourOpen )
     whatWhereText->EndTextColour();
 
   infoZone->ChangeSelection( 0 );
@@ -3277,141 +3625,154 @@ void gTimeline::printWhatWhere( )
 
 
 // If some tags changes here, please read printWhatWhere function.
-void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode, bool hexMode )
+void gTimeline::printWWSemantic( Timeline* temporalWindow,
+                                 std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
+                                 TObjectOrder whichRow,
+                                 bool clickedValue,
+                                 bool textMode,
+                                 bool hexMode )
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_SEMANTIC_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_SEMANTIC_SECTION, _( "" ) ) );
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" ) ) );
   else
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" ) ) );
 
-  if ( !textMode )
-    onString << _("Semantic value: ");
-  onString << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( whichRow ), textMode, 
-                                                                    ParaverConfig::getInstance()->getTimelinePrecision(), hexMode ).c_str() );
-  onString << wxT( "\t  Duration: " ) << wxString::FromUTF8( LabelConstructor::timeLabel(
-                                                                myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( whichRow )
-                                                                                                   - myWindow->getBeginTime( whichRow ) ),
-                                                                myWindow->getTimeUnit(), 
-                                                                ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+  if( !textMode )
+    onString << _( "Semantic value: " );
+  onString << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
+                                                                   temporalWindow->getValue( whichRow ),
+                                                                   textMode,
+                                                                   ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                                   hexMode )
+                                    .c_str() );
+  onString << wxT( "\t  Duration: " )
+           << wxString::FromUTF8( LabelConstructor::timeLabel( temporalWindow->traceUnitsToWindowUnits( temporalWindow->getEndTime( whichRow ) -
+                                                                                                        temporalWindow->getBeginTime( whichRow ) ),
+                                                               temporalWindow->getTimeUnit(),
+                                                               ParaverConfig::getInstance()->getTimelinePrecision() )
+                                    .c_str() );
   onString << _( "\n" );
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::SEMANTIC_LINE, onString ));
+  tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::SEMANTIC_LINE, onString ) );
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" ) ) );
   else
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" ) ) );
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_SEMANTIC_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::END_SEMANTIC_SECTION, _( "" ) ) );
 }
 
 
 // If some tags changes here, please read printWhatWhere function.
-void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate )
+void gTimeline::printWWRecords( Timeline* temporalWindow,
+                                std::vector< std::pair< TWhatWhereLine, wxString > >& tmpWhatWhereLines,
+                                TObjectOrder whichRow,
+                                bool clickedValue,
+                                bool textMode,
+                                bool showDate )
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_RECORDS_SECTION, _( "" )));
+  tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_RECORDS_SECTION, _( "" ) ) );
 
-  RecordList *rl = myWindow->getRecordList( whichRow );
+  RecordList* rl          = temporalWindow->getRecordList( whichRow );
   RecordList::iterator it = rl->begin();
 
   while( it != rl->end() &&
-         ( (*it).getTime() < myWindow->getWindowBeginTime() ||
-           (*it).getTime() < myWindow->getBeginTime( whichRow ) ) )
+         ( ( *it ).getTime() < temporalWindow->getWindowBeginTime() || ( *it ).getTime() < temporalWindow->getBeginTime( whichRow ) ) )
   {
     ++it;
   }
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" ) ) );
   else
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" ) ) );
 
-  TRecordTime timePerPixel = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                             ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
+  TRecordTime timePerPixel =
+    ( temporalWindow->getWindowEndTime() - temporalWindow->getWindowBeginTime() ) / ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
   TRecordTime stepTime = timePerPixel * ParaverConfig::getInstance()->getTimelineWhatWhereEventPixels();
   TRecordTime fromTime = whatWhereTime - stepTime;
-  if( fromTime < 0.0 ) fromTime = 0.0;
+  if( fromTime < 0.0 )
+    fromTime = 0.0;
   TRecordTime toTime = whatWhereTime + stepTime;
 
-  while( it != rl->end() &&
-         (*it).getTime() < fromTime )
+  while( it != rl->end() && ( *it ).getTime() < fromTime )
     ++it;
 
-  while( it != rl->end() && 
-         (*it).getTime() >= fromTime &&
-         (*it).getTime() <= toTime )
+  while( it != rl->end() && ( *it ).getTime() >= fromTime && ( *it ).getTime() <= toTime )
   {
-    if( (*it).getRecordType() & EVENT )
+    if( ( *it ).getRecordType() & EVENT )
     {
-      onString << wxT( "User Event at " ) << formatTime( (*it).getTime(), showDate );
+      onString << wxT( "User Event at " ) << formatTime( ( *it ).getTime(), showDate );
       onString << wxT( "    " );
-      onString << wxString::FromUTF8( LabelConstructor::eventLabel( myWindow,
-                                                                     (*it).getEventType(),
-                                                                     (*it).getEventValue(),
-                                                                     textMode ).c_str() );
+      onString << wxString::FromUTF8(
+        LabelConstructor::eventLabel( temporalWindow, ( *it ).getEventType(), ( *it ).getEventValue(), textMode ).c_str() );
       onString << wxT( "\n" );
 
-      whatWhereLines.push_back( make_pair( TWhatWhereLine::EVENT_LINE, onString ));
+      tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::EVENT_LINE, onString ) );
       onString.clear();
-      
-      if ( clickedValue )
+
+      if( clickedValue )
         whatWhereSelectedTimeEventLines++;
     }
-    else if( (*it).getRecordType() & COMM )
+    else if( ( *it ).getRecordType() & COMM )
     {
-      if( (*it).getRecordType() & LOG )
+      if( ( *it ).getRecordType() & LOG )
         onString << wxT( "Logical " );
-      else if( (*it).getRecordType() & PHY )
+      else if( ( *it ).getRecordType() & PHY )
         onString << wxT( "Physical " );
-        
-      if( (*it).getRecordType() & SEND )
+
+      if( ( *it ).getRecordType() & SEND )
         onString << wxT( "SEND " );
-      else if( (*it).getRecordType() & RECV )
+      else if( ( *it ).getRecordType() & RECV )
         onString << wxT( "RECEIVE " );
-        
-      onString << wxT( "at " ) << formatTime( (*it).getTime(), showDate );
-      
-      if( (*it).getRecordType() & SEND )
+
+      onString << wxT( "at " ) << formatTime( ( *it ).getTime(), showDate );
+
+      if( ( *it ).getRecordType() & SEND )
         onString << wxT( " to " );
-      else if( (*it).getRecordType() & RECV )
+      else if( ( *it ).getRecordType() & RECV )
         onString << wxT( " from " );
-      if ( myWindow->getLevel() >= TTraceLevel::WORKLOAD && myWindow->getLevel() <= TTraceLevel::THREAD )
-        onString << wxString::FromUTF8( LabelConstructor::objectLabel( myWindow->threadObjectToWindowObject( (*it).getCommPartnerObject() ),
-                                                                        myWindow->getLevel(),
-                                                                        myWindow->getTrace() ).c_str() );
+      if( temporalWindow->getLevel() >= TTraceLevel::WORKLOAD && temporalWindow->getLevel() <= TTraceLevel::THREAD )
+        onString << wxString::FromUTF8( LabelConstructor::objectLabel( temporalWindow->threadObjectToWindowObject( ( *it ).getCommPartnerObject() ),
+                                                                       temporalWindow->getLevel(),
+                                                                       temporalWindow->getTrace() )
+                                          .c_str() );
       else
-        onString << wxString::FromUTF8( LabelConstructor::objectLabel( myWindow->cpuObjectToWindowObject( (*it).getCommPartnerObject() ),
-                                                                        myWindow->getLevel(),
-                                                                        myWindow->getTrace() ).c_str() );
+        onString << wxString::FromUTF8( LabelConstructor::objectLabel( temporalWindow->cpuObjectToWindowObject( ( *it ).getCommPartnerObject() ),
+                                                                       temporalWindow->getLevel(),
+                                                                       temporalWindow->getTrace() )
+                                          .c_str() );
 
-      onString << wxT( " at " ) << formatTime( (*it).getCommPartnerTime(), showDate );
-      
-      if( (*it).getRecordType() & SEND )
-        onString << wxT( ", Duration: " ) << wxString::FromUTF8( LabelConstructor::timeLabel(
-                                                                    myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() 
-                                                                                                       - (*it).getTime() ),
-                                                                    myWindow->getTimeUnit(),
-                                                                    0 ).c_str() );
-      else if( (*it).getRecordType() & RECV )
-        onString << wxT( ", Duration: " ) << wxString::FromUTF8( LabelConstructor::timeLabel(
-                                                                    myWindow->traceUnitsToWindowUnits( (*it).getTime()
-                                                                                                       - (*it).getCommPartnerTime() ),
-                                                                    myWindow->getTimeUnit(), 
-                                                                    0 ).c_str() );
+      onString << wxT( " at " ) << formatTime( ( *it ).getCommPartnerTime(), showDate );
 
-      onString << wxT( " (size: " ) << (*it).getCommSize() << 
-                  wxT( ", tag: " ) << (*it).getCommTag() << wxT( ")" );
+      if( ( *it ).getRecordType() & SEND )
+        onString << wxT( ", Duration: " )
+                 << wxString::FromUTF8(
+                      LabelConstructor::timeLabel( temporalWindow->traceUnitsToWindowUnits( ( *it ).getCommPartnerTime() - ( *it ).getTime() ),
+                                                   temporalWindow->getTimeUnit(),
+                                                   0 )
+                        .c_str() );
+      else if( ( *it ).getRecordType() & RECV )
+        onString << wxT( ", Duration: " )
+                 << wxString::FromUTF8(
+                      LabelConstructor::timeLabel( temporalWindow->traceUnitsToWindowUnits( ( *it ).getTime() - ( *it ).getCommPartnerTime() ),
+                                                   temporalWindow->getTimeUnit(),
+                                                   0 )
+                        .c_str() );
+
+      onString << wxT( " (size: " ) << ( *it ).getCommSize() << wxT( ", tag: " ) << ( *it ).getCommTag() << wxT( ")" );
       onString << wxT( "\n" );
 
-      whatWhereLines.push_back( make_pair( TWhatWhereLine::COMMUNICATION_LINE, onString ));
+      tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::COMMUNICATION_LINE, onString ) );
       onString.clear();
 
-      if ( clickedValue )
+      if( clickedValue )
         whatWhereSelectedTimeCommunicationLines++;
     }
     ++it;
@@ -3420,35 +3781,42 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   rl->erase( rl->begin(), it );
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" ) ) );
   else
-    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" )));
+    tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" ) ) );
 
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_RECORDS_SECTION, _( "" )));
-  whatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, _( "\n" )));
+  tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::END_RECORDS_SECTION, _( "" ) ) );
+  tmpWhatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, _( "\n" ) ) );
 }
 
 
 void gTimeline::resizeDrawZone( int width, int height )
 {
-  canRedraw = false;
+  codeChangeSize = true;
+  canRedraw      = false;
 
   if( !splitter->IsSplit() )
+  {
+    drawZone->SetClientSize( width, height );
+#ifndef _WIN32
     this->SetClientSize( width, height );
+#else
+    this->SetSize( width, height );
+#endif
+    canRedraw    = true;
+    splitChanged = true;
+  }
   else
   {
 #ifdef _WIN32
-  this->SetClientSize( width, height + /*infoZone->GetClientSize().GetHeight()*/infoZoneLastSize + 5 );
+    this->SetClientSize( width, height + /*infoZone->GetClientSize().GetHeight()*/ infoZoneLastSize + 5 );
 #endif
     splitter->SetSashPosition( height );
 #ifndef _WIN32
-    drawZone->SetClientSize( width, height );
+    // drawZone->SetClientSize( width, height );
     this->SetClientSize( width, height + infoZoneLastSize + 5 );
 #endif
   }
-  myWindow->setWidth( width );
-  myWindow->setHeight( height );
-  canRedraw = true;
 }
 
 bool gTimeline::IsSplit() const
@@ -3458,15 +3826,17 @@ bool gTimeline::IsSplit() const
 
 void gTimeline::OnPopUpInfoPanel( wxCommandEvent& event )
 {
-  if( splitter->IsSplit() )
+  if( !event.IsChecked() )
   {
-    canRedraw = false;
+    canRedraw        = false;
     infoZoneLastSize = infoZone->GetSize().GetHeight();
     splitter->Unsplit();
     Unsplit();
   }
   else
+  {
     Split();
+  }
 }
 
 void gTimeline::OnPopUpSaveCFG( wxCommandEvent& event )
@@ -3489,16 +3859,18 @@ void gTimeline::Unsplit()
   canRedraw = false;
   this->Freeze();
 
-/*#ifdef _WIN32
-  this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() -
-                                                         infoZone->GetClientSize().GetHeight() );
-#else*/
+  splitter->Unsplit( infoZone );
+
+  /*#ifdef _WIN32
+    this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() -
+                                                           infoZone->GetClientSize().GetHeight() );
+  #else*/
   this->SetClientSize( this->GetClientSize().GetWidth(), myWindow->getHeight() );
-//#endif
+  // #endif
 
   drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
   this->Thaw();
-  canRedraw = true;
+  canRedraw    = true;
   splitChanged = true;
 }
 
@@ -3509,9 +3881,9 @@ void gTimeline::Split()
   this->Freeze();
   splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
   resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
-  infoZone->SetClientSize( myWindow->getWidth(), infoZoneLastSize );
+  // infoZone->SetSize( myWindow->getWidth(), infoZoneLastSize );
   this->Thaw();
-  canRedraw = true;
+  canRedraw    = true;
   splitChanged = true;
 }
 
@@ -3527,13 +3899,13 @@ void gTimeline::EnableTiming( bool state )
   if( timing )
     drawZone->SetCursor( *wxCROSS_CURSOR );
   else
-    drawZone->SetCursor( wxNullCursor  );
+    drawZone->SetCursor( wxNullCursor );
 }
 
 
 void gTimeline::OnItemColorLeftUp( wxMouseEvent& event )
 {
-  wxPanel *selectedItemColor = ( (CustomColorSemValue *)event.m_callbackUserData )->myPanel;
+  wxPanel* selectedItemColor = ( (CustomColorSemValue*)event.m_callbackUserData )->myPanel;
   panelSelectedColor->SetBackgroundColour( selectedItemColor->GetBackgroundColour() );
   panelSelectedColor->Refresh();
   sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
@@ -3542,12 +3914,12 @@ void gTimeline::OnItemColorLeftUp( wxMouseEvent& event )
   textSelectedRed->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Red() ) );
   textSelectedGreen->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Green() ) );
   textSelectedBlue->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Blue() ) );
-  
-  selectedCustomColor = static_cast<CustomColorSemValue *>( event.m_callbackUserData );
+
+  selectedCustomColor = static_cast< CustomColorSemValue* >( event.m_callbackUserData );
 
   if( lastSelectedItemText != nullptr )
     lastSelectedItemText->SetFont( originalUnselectectItemTextFont );
-  wxStaticText *selectedItemText = ( (CustomColorSemValue *)event.m_callbackUserData )->myText;
+  wxStaticText* selectedItemText = ( (CustomColorSemValue*)event.m_callbackUserData )->myText;
   selectedItemText->SetFont( selectedItemText->GetFont().MakeBold() );
   selectedItemText->GetParent()->Layout();
   lastSelectedItemText = selectedItemText;
@@ -3563,40 +3935,34 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
     return;
 
   PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
-  
-  if( forceRedoColorsPanel || 
-      ( redoColorsPanel &&
-        ( myWindow->getSemanticInfoType() != lastType ||
-          myWindow->getMinimumY() != lastMin ||
-          myWindow->getMaximumY() != lastMax ||
-          semanticValuesToColor.size() != lastValuesSize ||
-          myWindow->isCodeColorSet() != codeColorSet ||
-          myWindow->getSemanticColor().getGradientFunction() != gradientFunc )
-      ) 
-    )
+
+  if( forceRedoColorsPanel ||
+      ( redoColorsPanel && ( myWindow->getSemanticInfoType() != lastType || myWindow->getMinimumY() != lastMin ||
+                             myWindow->getMaximumY() != lastMax || semanticValuesToColor.size() != lastValuesSize ||
+                             myWindow->isCodeColorSet() != codeColorSet || myWindow->getSemanticColor().getGradientFunction() != gradientFunc ) ) )
   {
-    lastType = myWindow->getSemanticInfoType();
-    lastMin = myWindow->getMinimumY();
-    lastMax = myWindow->getMaximumY();
+    lastType       = myWindow->getSemanticInfoType();
+    lastMin        = myWindow->getMinimumY();
+    lastMax        = myWindow->getMaximumY();
     lastValuesSize = semanticValuesToColor.size();
-    codeColorSet = myWindow->isCodeColorSet();
-    gradientFunc = myWindow->getSemanticColor().getGradientFunction();
+    codeColorSet   = myWindow->isCodeColorSet();
+    gradientFunc   = myWindow->getSemanticColor().getGradientFunction();
 
     lastSelectedItemText = nullptr;
     wxStaticText dummyText( colorsPanel, wxID_ANY, _T("") );
     originalUnselectectItemTextFont = dummyText.GetFont();
 
     backgroundColorPanel = nullptr;
-    zeroColorPanel = nullptr;
+    zeroColorPanel       = nullptr;
 
     colorsSizer->Clear( true );
-    wxBoxSizer *itemSizer;
-    wxStaticText *itemText;
-    wxPanel *itemColor;
+    wxBoxSizer* itemSizer;
+    wxStaticText* itemText;
+    wxPanel* itemColor;
 
     auto addItem = [ & ]( const wxString& whichLabel, const rgb& whichColor )
     {
-      itemSizer = new wxBoxSizer(wxHORIZONTAL);
+      itemSizer = new wxBoxSizer( wxHORIZONTAL );
 
       itemText = new wxStaticText( colorsPanel, wxID_ANY, _T("") );
       itemText->SetLabel( whichLabel );
@@ -3608,43 +3974,47 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
       itemSizer->Add( itemColor );
       itemSizer->AddSpacer( 5 );
       itemSizer->Add( itemText, 1, wxGROW );
-      colorsSizer->Add( itemSizer, 0, wxGROW|wxALL, 2 );
+      colorsSizer->Add( itemSizer, 0, wxGROW | wxALL, 2 );
 
       return itemSizer;
     };
 
     auto addEventCallbacks = [ & ]( TSemanticValue whichValue, CustomColorSemValue::ColorType whichColorType )
     {
-      CustomColorSemValue *tmpItemSemValue = new CustomColorSemValue();
-      tmpItemSemValue->myColorType = whichColorType;
-      tmpItemSemValue->myValue = whichValue;
-      tmpItemSemValue->myPanel = itemColor;
-      tmpItemSemValue->myText = itemText;
-      tmpItemSemValue->originalFont = itemText->GetFont();
-      CustomColorSemValue *tmpTextSemValue = new CustomColorSemValue();
-      *tmpTextSemValue = *tmpItemSemValue;
-      if ( checkboxCustomPalette->IsChecked() )
+      CustomColorSemValue* tmpItemSemValue = new CustomColorSemValue();
+      tmpItemSemValue->myColorType         = whichColorType;
+      tmpItemSemValue->myValue             = whichValue;
+      tmpItemSemValue->myPanel             = itemColor;
+      tmpItemSemValue->myText              = itemText;
+      tmpItemSemValue->originalFont        = itemText->GetFont();
+      CustomColorSemValue* tmpTextSemValue = new CustomColorSemValue();
+      *tmpTextSemValue                     = *tmpItemSemValue;
+      if( checkboxCustomPalette->IsChecked() )
       {
-        itemColor->Connect( itemColor->GetId(), wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnItemColorLeftUp), tmpItemSemValue, this);
-        itemText->Connect( itemText->GetId(), wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnItemColorLeftUp), tmpTextSemValue, this);
+        itemColor->Connect( itemColor->GetId(), wxEVT_LEFT_UP, wxMouseEventHandler( gTimeline::OnItemColorLeftUp ), tmpItemSemValue, this );
+        itemText->Connect( itemText->GetId(), wxEVT_LEFT_UP, wxMouseEventHandler( gTimeline::OnItemColorLeftUp ), tmpTextSemValue, this );
       }
     };
 
     wxString tmpStr;
     rgb tmprgb;
 
-    if ( checkboxCustomPalette->IsChecked() )
+    if( checkboxCustomPalette->IsChecked() )
     {
-      tmpStr = "Background";
-      tmprgb = myWindow->getBackgroundColor();
-      wxBoxSizer *itemSizer = addItem( tmpStr, tmprgb );
-      backgroundColorPanel = itemColor;
-      wxCheckBox *backgroundAsZeroCheck = new wxCheckBox( colorsPanel, wxID_ANY, "As zero" );
+      tmpStr                            = "Background";
+      tmprgb                            = myWindow->getBackgroundColor();
+      wxBoxSizer* itemSizer             = addItem( tmpStr, tmprgb );
+      backgroundColorPanel              = itemColor;
+      wxCheckBox* backgroundAsZeroCheck = new wxCheckBox( colorsPanel, wxID_ANY, "As zero" );
       backgroundAsZeroCheck->SetValue( myWindow->getBackgroundAsZero() );
-      backgroundAsZeroCheck->Connect( backgroundAsZeroCheck->GetId(), wxEVT_CHECKBOX, wxCommandEventHandler(gTimeline::OnBackgroundAsZeroCheckClick), nullptr, this );
+      backgroundAsZeroCheck->Connect( backgroundAsZeroCheck->GetId(),
+                                      wxEVT_CHECKBOX,
+                                      wxCommandEventHandler( gTimeline::OnBackgroundAsZeroCheckClick ),
+                                      nullptr,
+                                      this );
       itemSizer->Add( backgroundAsZeroCheck );
       addEventCallbacks( 0, CustomColorSemValue::ColorType::BACKGROUND );
-      colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+      colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW | wxALL, 2 );
 
       tmpStr.Clear();
       if( myWindow->isFunctionLineColorSet() )
@@ -3654,7 +4024,7 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
       tmprgb = myWindow->getAxisColor();
       addItem( tmpStr, tmprgb );
       addEventCallbacks( 0, CustomColorSemValue::ColorType::AXIS );
-      colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+      colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW | wxALL, 2 );
     }
 
     if( myWindow->isPunctualColorSet() && checkboxCustomPalette->IsChecked() )
@@ -3668,24 +4038,24 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
     else if( myWindow->isFusedLinesColorSet() )
     {
       TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-      TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
-      vector<TObjectOrder> selected;
+      TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
+      vector< TObjectOrder > selected;
       myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
 
       size_t i = 0;
-      for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+      for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
       {
         if( i > MAX_LEGEND_COLORS )
           break;
 
         tmpStr.Clear();
         tmpStr = wxString::FromUTF8( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
-        tmprgb = myWindow->getSemanticColor().calcColor( (*it) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) );
+        tmprgb = myWindow->getSemanticColor().calcColor( ( *it ) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) );
         addItem( tmpStr, tmprgb );
-        addEventCallbacks( (*it) + 1, CustomColorSemValue::ColorType::SEMANTIC_VALUE );
+        addEventCallbacks( ( *it ) + 1, CustomColorSemValue::ColorType::SEMANTIC_VALUE );
 
         if( i < selected.size() - 1 )
-          colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+          colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW | wxALL, 2 );
         ++i;
       }
     }
@@ -3694,19 +4064,20 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
       int endLimit = 0;
 
       string tmpstr;
-      auto it = semanticValuesToColor.lower_bound( myWindow->getMinimumY() );
-      auto endIt = semanticValuesToColor.upper_bound( myWindow->getMaximumY() );
+      auto it     = semanticValuesToColor.lower_bound( myWindow->getMinimumY() );
+      auto endIt  = semanticValuesToColor.upper_bound( myWindow->getMaximumY() );
       auto lastIt = endIt;
-      if( !semanticValuesToColor.empty() ) --lastIt;
+      if( !semanticValuesToColor.empty() )
+        --lastIt;
       for( ; it != endIt; ++it )
       {
         if( endLimit > MAX_LEGEND_COLORS )
           break;
         else
           ++endLimit;
-        
+
         tmpStr.Clear();
-        tmpStr = wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, it->first, true, precision,false ).c_str() );
+        tmpStr = wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, it->first, true, precision, false ).c_str() );
         tmprgb = myWindow->getSemanticColor().calcColor( it->first, myWindow->getMinimumY(), myWindow->getMaximumY() );
         addItem( tmpStr, tmprgb );
         if( it->first == 0.0 )
@@ -3715,19 +4086,19 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
         addEventCallbacks( it->first, CustomColorSemValue::ColorType::SEMANTIC_VALUE );
 
         if( it != lastIt )
-          colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+          colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW | wxALL, 2 );
       }
     }
     else if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
     {
       tmpStr.Clear();
-      tmpStr << wxT("< ") << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, lastMin, false, precision, false ).c_str() );
+      tmpStr << wxT( "< " ) << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, lastMin, false, precision, false ).c_str() );
       tmprgb = myWindow->getSemanticColor().calcColor( lastMin - 1, lastMin, lastMax );
       addItem( tmpStr, tmprgb );
 
-      colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+      colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW | wxALL, 2 );
 
-      TSemanticValue step = ( lastMax - lastMin ) / 20.0;
+      TSemanticValue step           = ( lastMax - lastMin ) / 20.0;
       TSemanticValue lastValueToUse = 0.0;
       for( int i = 0; i <= 20; ++i )
       {
@@ -3739,7 +4110,7 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
         }
         else
           lastValueToUse = valueToUse = ( i * step ) + lastMin;
-        
+
         tmpStr.Clear();
         tmpStr << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, valueToUse, false, precision, false ).c_str() );
         tmprgb = myWindow->getSemanticColor().calcColor( valueToUse, lastMin, lastMax );
@@ -3751,11 +4122,11 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
           addEventCallbacks( valueToUse, CustomColorSemValue::ColorType::SEMANTIC_VALUE );
         }
 
-        colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+        colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW | wxALL, 2 );
       }
 
       tmpStr.Clear();
-      tmpStr << wxT("> ") << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, lastMax, false, precision, false ).c_str() );
+      tmpStr << wxT( "> " ) << wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, lastMax, false, precision, false ).c_str() );
       tmprgb = myWindow->getSemanticColor().calcColor( lastMax + 1, lastMin, lastMax );
       addItem( tmpStr, tmprgb );
     }
@@ -3766,7 +4137,7 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
     panelSelectedColor->Enable( false );
   }
   forceRedoColorsPanel = false;
-  redoColorsPanel = false;
+  redoColorsPanel      = false;
 }
 
 
@@ -3775,11 +4146,11 @@ void gTimeline::drawCommunicationLines( bool draw )
   wxMemoryDC bufferDraw;
 
   myWindow->setDrawCommLines( draw );
-  
+
   if( !myWindow->getReady() )
     return;
-  
-  bufferDraw.SelectObject(wxNullBitmap);
+
+  bufferDraw.SelectObject( wxNullBitmap );
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 
@@ -3800,11 +4171,11 @@ void gTimeline::drawEventFlags( bool draw )
   wxMemoryDC bufferDraw;
 
   myWindow->setDrawFlags( draw );
-  
+
   if( !myWindow->getReady() )
     return;
-  
-  bufferDraw.SelectObject(wxNullBitmap);
+
+  bufferDraw.SelectObject( wxNullBitmap );
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 
@@ -3845,44 +4216,44 @@ wxString gTimeline::buildFormattedFileName() const
 void gTimeline::saveImageDialog( wxString whichFileName )
 {
   wxString imageName;
-  wxString tmpSuffix; 
+  wxString tmpSuffix;
 
   setEnableDestroyButton( false );
   imageName = buildFormattedFileName();
-    
+
 
   wxFileName startingDir( wxString::FromUTF8( myWindow->getTrace()->getFileName().c_str() ) );
   wxString defaultDir = startingDir.GetPath();
 
   TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
-  
+
   wxString legendSuffix = _( ".code_legend" );
-  if ( myWindow->isGradientColorSet() )
-     legendSuffix= _( ".gradient_legend" );
-  else if ( myWindow->isNotNullGradientColorSet() )
-     legendSuffix= _( ".nn_gradient_legend" );
-  else if ( myWindow->isAlternativeGradientColorSet() )
-     legendSuffix= _( ".alt_gradient_legend" );
+  if( myWindow->isGradientColorSet() )
+    legendSuffix = _( ".gradient_legend" );
+  else if( myWindow->isNotNullGradientColorSet() )
+    legendSuffix = _( ".nn_gradient_legend" );
+  else if( myWindow->isAlternativeGradientColorSet() )
+    legendSuffix = _( ".alt_gradient_legend" );
 
   SaveImageDialog saveDialog( this, defaultDir, imageName, false, legendSuffix );
-  if ( saveDialog.ShowModal() != wxID_OK )
+  if( saveDialog.ShowModal() != wxID_OK )
   {
     setEnableDestroyButton( true );
     return;
   }
 
   filterIndex = TImageFormat( saveDialog.GetFilterIndex() ); // TImageFormat::PNG; //TImageFormat( saveDialog.GetFilterIndex() );
-  
 
-  if ( saveDialog.DialogSavesImage() )
+
+  if( saveDialog.DialogSavesImage() )
   {
     imageName = saveDialog.GetImageFilePath(); // .GetPath();
     saveImage( imageName, filterIndex );
   }
 
-  if ( saveDialog.DialogSavesLegend() )
+  if( saveDialog.DialogSavesLegend() )
   {
-    imageName = saveDialog.GetLegendFilePath(); // .GetPath();
+    imageName               = saveDialog.GetLegendFilePath(); // .GetPath();
     bool appendLegendSuffix = false;
     saveImageLegend( imageName, filterIndex, appendLegendSuffix );
   }
@@ -3891,14 +4262,14 @@ void gTimeline::saveImageDialog( wxString whichFileName )
 void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
 {
   wxString imagePath;
- /* TImageFormat filterIndex;*/
+  /* TImageFormat filterIndex;*/
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    //filterIndex =  TImageFormat::PNG;
+    // filterIndex =  TImageFormat::PNG;
   }
   else
   {
@@ -3907,24 +4278,21 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
     wxString defaultDir;
 
     imageName = buildFormattedFileName();
- 
-  #ifdef _WIN32
-    defaultDir = _(".\\");
-  #else
-    defaultDir = _("./");
-  #endif
+
+#ifdef _WIN32
+    defaultDir = _( ".\\" );
+#else
+    defaultDir = _( "./" );
+#endif
 
     filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
-    tmpSuffix = _(".") +
-            wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-    imagePath = imageName + tmpSuffix;
+    tmpSuffix   = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    imagePath   = imageName + tmpSuffix;
   }
-  
+
   // Get title
-  wxString longTitle = wxString::FromUTF8(
-          ( myWindow->getName() + " @ " +
-            myWindow->getTrace()->getTraceNameNumbered() ).c_str());
-  wxString shortTitle = wxString::FromUTF8( ( myWindow->getName() ).c_str() );
+  wxString longTitle    = wxString::FromUTF8( ( myWindow->getName() + " @ " + myWindow->getTrace()->getTraceNameNumbered() ).c_str() );
+  wxString shortTitle   = wxString::FromUTF8( ( myWindow->getName() ).c_str() );
   wxString writtenTitle = longTitle;
 
   // Get colors
@@ -3935,17 +4303,17 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
   wxFont titleFont = semanticFont;
 
   // Get dimensions
-  wxImage img = drawImage.ConvertToImage();
-  int timelineWidth = img.GetWidth();
+  wxImage img        = drawImage.ConvertToImage();
+  int timelineWidth  = img.GetWidth();
   int timelineHeight = img.GetHeight();
 
-  int titleMargin = 5; // used in 4 sides
-  int titleHeigth = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
-  int titleWidth = timelineWidth;
+  int titleMargin        = 5;                                              // used in 4 sides
+  int titleHeigth        = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
+  int titleWidth         = timelineWidth;
   int titleWritableWidth = titleWidth - ( 2 * titleMargin );
 
   int imageHeigth = titleHeigth + timelineHeight;
-  int imageWidth = timelineWidth;
+  int imageWidth  = timelineWidth;
 
   // Build DC for title
   wxBitmap titleBitmap( titleWidth, titleHeigth );
@@ -3955,9 +4323,9 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
   titleDC.SetFont( titleFont );
   wxSize titleSize = titleDC.GetTextExtent( writtenTitle );
 
-  if ( titleSize.GetWidth() > titleWritableWidth )
+  if( titleSize.GetWidth() > titleWritableWidth )
   {
-    titleSize = titleDC.GetTextExtent( shortTitle );
+    titleSize    = titleDC.GetTextExtent( shortTitle );
     writtenTitle = shortTitle;
   }
 
@@ -3998,13 +4366,13 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
 
   switch( filterIndex )
   {
-    case  TImageFormat::BMP:
+    case TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
       break;
-    case  TImageFormat::JPG:
+    case TImageFormat::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
       break;
-    case  TImageFormat::PNG:
+    case TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
     case TImageFormat::XPM:
@@ -4019,35 +4387,35 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
   wxImage baseLayer = imageBitmap.ConvertToImage();
 
   // Save timeline with gradient scale
-  if ( myWindow->isGradientColorSet() ||
-       myWindow->isNotNullGradientColorSet() ||
-       myWindow->isAlternativeGradientColorSet() )
+  if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
   {
-    ScaleImageVertical *tmpImage;
+    ScaleImageVertical* tmpImage;
 
     // Create DC for timeline image
     wxMemoryDC tmpTimelineDC( imageBitmap ); // reuse imageDC?
 
     // Create DC for scale
-    int wantedWidth = baseLayer.GetWidth();
+    int wantedWidth    = baseLayer.GetWidth();
     int backgroundMode = wxSOLID;
-    tmpImage = new ScaleImageHorizontalGradientColor(
-            myWindow,
-            semanticValuesToColor,
-            backgroundColour, foregroundColour, backgroundMode,
-            titleFont,
-            imagePath, wxString( _( "horiz.labels" ) ),
-            imageType,
-            wantedWidth );
+    tmpImage           = new ScaleImageHorizontalGradientColor( myWindow,
+                                                      semanticValuesToColor,
+                                                      backgroundColour,
+                                                      foregroundColour,
+                                                      backgroundMode,
+                                                      titleFont,
+                                                      imagePath,
+                                                      wxString( _( "horiz.labels" ) ),
+                                                      imageType,
+                                                      wantedWidth );
     tmpImage->process();
-    //tmpImage->save();
+    // tmpImage->save();
 
-    wxBitmap *tmpScale = tmpImage->getBitmap();
+    wxBitmap* tmpScale = tmpImage->getBitmap();
     wxMemoryDC tmpScaleDC( *tmpScale );
 
     // Create DC for destiny image
     int totalHeigth = baseLayer.GetHeight() + tmpScale->GetHeight();
-    int totalWidth  = baseLayer.GetWidth() > tmpScale->GetWidth() ? baseLayer.GetWidth(): tmpScale->GetWidth();
+    int totalWidth  = baseLayer.GetWidth() > tmpScale->GetWidth() ? baseLayer.GetWidth() : tmpScale->GetWidth();
     wxBitmap tmpScaledTimelineBitmap( totalWidth, totalHeigth );
     wxMemoryDC tmpScaledTimelineDC( tmpScaledTimelineBitmap );
     tmpScaledTimelineDC.SetBackground( backgroundColour );
@@ -4059,32 +4427,22 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
     int xdst = 0;
     int ydst = 0;
 
-    tmpScaledTimelineDC.Blit( xdst, ydst,
-                             imageBitmap.GetWidth(), imageBitmap.GetHeight(),
-                             &tmpTimelineDC,
-                             xsrc, ysrc );
+    tmpScaledTimelineDC.Blit( xdst, ydst, imageBitmap.GetWidth(), imageBitmap.GetHeight(), &tmpTimelineDC, xsrc, ysrc );
 
     xdst = totalWidth - tmpScale->GetWidth();
-    if ( xdst < 0 )
+    if( xdst < 0 )
     {
       xdst = 0;
     }
     ydst = imageBitmap.GetHeight();
-    tmpScaledTimelineDC.Blit( xdst, ydst,
-                              tmpScale->GetWidth(), tmpScale->GetHeight(),
-                              &tmpScaleDC,
-                              xsrc, ysrc );
+    tmpScaledTimelineDC.Blit( xdst, ydst, tmpScale->GetWidth(), tmpScale->GetHeight(), &tmpScaleDC, xsrc, ysrc );
 
-    //tmpScaledTimelineDC->SelectObject( wxNullBitmap );
+    // tmpScaledTimelineDC->SelectObject( wxNullBitmap );
 
     wxImage tmpScaledTimeline( tmpScaledTimelineBitmap.ConvertToImage() );
-    wxString currentFormat =
-            wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    TImageFormat( filterIndex ) ).c_str() );
-    wxString tmpScaledTimelinePath = wxFileName( imagePath ).GetPathWithSep() +
-                                     wxFileName( imagePath ).GetName() +
-                                     wxString( _(".w_legend.") ) +
-                                     currentFormat;
+    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getImageFileSuffix( TImageFormat( filterIndex ) ).c_str() );
+    wxString tmpScaledTimelinePath =
+      wxFileName( imagePath ).GetPathWithSep() + wxFileName( imagePath ).GetName() + wxString( _( ".w_legend." ) ) + currentFormat;
     tmpScaledTimeline.SaveFile( tmpScaledTimelinePath, imageType );
   }
 
@@ -4107,39 +4465,29 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
     imageName = whichFileName;
   else
     imageName = buildFormattedFileName();
-  
+
 #ifdef _WIN32
-  defaultDir = _(".\\");
+  defaultDir = _( ".\\" );
 #else
-  defaultDir = _("./");
+  defaultDir = _( "./" );
 #endif
 
-  tmpSuffix = _("");
-  if ( appendLegendSuffix )
+  tmpSuffix = _( "" );
+  if( appendLegendSuffix )
   {
-    tmpSuffix += _(".");
-    if ( myWindow->isGradientColorSet() )
+    tmpSuffix += _( "." );
+    if( myWindow->isGradientColorSet() )
+      tmpSuffix += wxString( _( "gradient_legend" ) ) + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    else if( myWindow->isNotNullGradientColorSet() )
       tmpSuffix +=
-              wxString( _( "gradient_legend" ) ) +
-              _(".") +
-              wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-    else if ( myWindow->isNotNullGradientColorSet() )
+        wxString( _( "nn_gradient_legend" ) ) + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    else if( myWindow->isAlternativeGradientColorSet() )
       tmpSuffix +=
-              wxString( _( "nn_gradient_legend" ) ) +
-              _(".") +
-              wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-    else if ( myWindow->isAlternativeGradientColorSet() )
-      tmpSuffix +=
-              wxString( _( "alt_gradient_legend" ) ) +
-              _(".") +
-              wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+        wxString( _( "alt_gradient_legend" ) ) + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     else
-      tmpSuffix +=
-              wxString( _( "code_legend" ) ) +
-              _(".") +
-              wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+      tmpSuffix += wxString( _( "code_legend" ) ) + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
   }
-  
+
   wxString imagePath = imageName + tmpSuffix;
 
   // Get colors
@@ -4155,15 +4503,15 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
   int backgroundMode = wxTRANSPARENT; // default
   switch( filterIndex )
   {
-    case  TImageFormat::BMP:
-      imageType = wxBITMAP_TYPE_BMP;
+    case TImageFormat::BMP:
+      imageType      = wxBITMAP_TYPE_BMP;
       backgroundMode = wxSOLID;
       break;
-    case  TImageFormat::JPG:
-      imageType = wxBITMAP_TYPE_JPEG;
+    case TImageFormat::JPG:
+      imageType      = wxBITMAP_TYPE_JPEG;
       backgroundMode = wxSOLID;
       break;
-    case  TImageFormat::PNG:
+    case TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
     case TImageFormat::XPM:
@@ -4174,55 +4522,65 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
       break;
   }
 
-  ScaleImageVertical *tmpImage;
-  if ( myWindow->isGradientColorSet() ||
-       myWindow->isNotNullGradientColorSet() ||
-       myWindow->isAlternativeGradientColorSet() )
+  ScaleImageVertical* tmpImage;
+  if( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
   {
-    tmpImage = new ScaleImageHorizontalGradientColor( myWindow, semanticValuesToColor,
-                                                       //backgroundColour, foregroundColour, backgroundMode,
-                                                       *wxWHITE, *wxBLACK, backgroundMode,
-                                                       titleFont,
-                                                       //imagePath, wxString( _( "horiz.labels.transp" ) ),
-                                                       imagePath, wxString( _( "" ) ),
-                                                       imageType );
-    tmpImage->process();
-    tmpImage->save();
-    delete tmpImage;
-   }
-  else if ( myWindow->isCodeColorSet() )
-  {
-    tmpImage = new ScaleImageVerticalCodeColor( myWindow, semanticValuesToColor,
-                                                 //backgroundColour, foregroundColour, backgroundMode,
-                                                 *wxWHITE, *wxBLACK, backgroundMode,
-                                                 titleFont,
-                                                 // imagePath, wxString( _( "vert.labels.transp" ) ),
-                                                 imagePath, wxString( _( "" ) ),
-                                                 imageType );
+    tmpImage = new ScaleImageHorizontalGradientColor( myWindow,
+                                                      semanticValuesToColor,
+                                                      // backgroundColour, foregroundColour, backgroundMode,
+                                                      *wxWHITE,
+                                                      *wxBLACK,
+                                                      backgroundMode,
+                                                      titleFont,
+                                                      // imagePath, wxString( _( "horiz.labels.transp" ) ),
+                                                      imagePath,
+                                                      wxString( _( "" ) ),
+                                                      imageType );
     tmpImage->process();
     tmpImage->save();
     delete tmpImage;
   }
-  else if ( myWindow->isFusedLinesColorSet() )
+  else if( myWindow->isCodeColorSet() )
+  {
+    tmpImage = new ScaleImageVerticalCodeColor( myWindow,
+                                                semanticValuesToColor,
+                                                // backgroundColour, foregroundColour, backgroundMode,
+                                                *wxWHITE,
+                                                *wxBLACK,
+                                                backgroundMode,
+                                                titleFont,
+                                                // imagePath, wxString( _( "vert.labels.transp" ) ),
+                                                imagePath,
+                                                wxString( _( "" ) ),
+                                                imageType );
+    tmpImage->process();
+    tmpImage->save();
+    delete tmpImage;
+  }
+  else if( myWindow->isFusedLinesColorSet() )
   {
     std::map< TSemanticValue, rgb > tmpObjects;
 
     TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-    TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
-    vector<TObjectOrder> selected;
+    TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
+    vector< TObjectOrder > selected;
     myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
 
-    for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+    for( vector< TObjectOrder >::iterator it = selected.begin(); it != selected.end(); ++it )
     {
-      rgb tmprgb = myWindow->getSemanticColor().calcColor( (*it) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1 );
-      tmpObjects[ (TSemanticValue)(*it) ] = tmprgb;
+      rgb tmprgb = myWindow->getSemanticColor().calcColor( ( *it ) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1 );
+      tmpObjects[ (TSemanticValue)( *it ) ] = tmprgb;
     }
-    tmpImage = new ScaleImageVerticalFusedLines( myWindow, tmpObjects,
-                                                 //backgroundColour, foregroundColour, backgroundMode,
-                                                 *wxWHITE, *wxBLACK, backgroundMode,
+    tmpImage = new ScaleImageVerticalFusedLines( myWindow,
+                                                 tmpObjects,
+                                                 // backgroundColour, foregroundColour, backgroundMode,
+                                                 *wxWHITE,
+                                                 *wxBLACK,
+                                                 backgroundMode,
                                                  titleFont,
                                                  // imagePath, wxString( _( "vert.labels.transp" ) ),
-                                                 imagePath, wxString( _( "" ) ),
+                                                 imagePath,
+                                                 wxString( _( "" ) ),
                                                  imageType );
     tmpImage->process();
     tmpImage->save();
@@ -4238,25 +4596,24 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
 //
 // ScaleImage
 //
-gTimeline::ScaleImageVertical::ScaleImageVertical(
-        Timeline* whichMyWindow,
-        const std::map< TSemanticValue, rgb >& whichSemanticValues,
-        wxColour whichBackground,
-        wxColour whichForeground,
-        int whichBackgroundMode,
-        wxFont whichTextFont,
-        wxString& whichImagePath,
-        const wxString& whichImageInfix,
-        wxBitmapType& whichImageType 
-        ) : myWindow( whichMyWindow ),
-            semValues( whichSemanticValues ),
-            background( whichBackground ),
-            foreground( whichForeground ),
-            backgroundMode( whichBackgroundMode ),
-            textFont( whichTextFont ),
-            imagePath( whichImagePath ),
-            imageInfix( whichImageInfix ),
-            imageType( whichImageType )
+gTimeline::ScaleImageVertical::ScaleImageVertical( Timeline* whichMyWindow,
+                                                   const std::map< TSemanticValue, rgb >& whichSemanticValues,
+                                                   wxColour whichBackground,
+                                                   wxColour whichForeground,
+                                                   int whichBackgroundMode,
+                                                   wxFont whichTextFont,
+                                                   wxString& whichImagePath,
+                                                   const wxString& whichImageInfix,
+                                                   wxBitmapType& whichImageType )
+  : myWindow( whichMyWindow )
+  , semValues( whichSemanticValues )
+  , background( whichBackground )
+  , foreground( whichForeground )
+  , backgroundMode( whichBackgroundMode )
+  , textFont( whichTextFont )
+  , imagePath( whichImagePath )
+  , imageInfix( whichImageInfix )
+  , imageType( whichImageType )
 {
 }
 
@@ -4271,13 +4628,10 @@ wxString gTimeline::ScaleImageVertical::buildScaleImagePath()
 {
   wxString scaleImagePath;
 
-  if ( imageInfix.IsEmpty() )
+  if( imageInfix.IsEmpty() )
     scaleImagePath = imagePath;
   else
-    scaleImagePath =
-            wxFileName( imagePath ).GetPathWithSep() +
-            wxFileName( imagePath ).GetName() +
-            _(".") + imageInfix + _(".") + tmpSuffix;
+    scaleImagePath = wxFileName( imagePath ).GetPathWithSep() + wxFileName( imagePath ).GetName() + _( "." ) + imageInfix + _( "." ) + tmpSuffix;
 
   return scaleImagePath;
 }
@@ -4289,10 +4643,10 @@ void gTimeline::ScaleImageVertical::bitmapToImage()
 
 #ifndef __WXMAC__
   // TODO: avoid to create/handle scaleMaskDC in all the other methods if wxTRANSPARENT
-  if ( backgroundMode == wxTRANSPARENT )
+  if( backgroundMode == wxTRANSPARENT )
   {
     scaleMaskDC->SelectObject( wxNullBitmap );
-    wxMask *mask  = new wxMask( *scaleMaskBitmap, *wxWHITE );
+    wxMask* mask = new wxMask( *scaleMaskBitmap, *wxWHITE );
     scaleBitmap->SetMask( mask );
   }
 #endif
@@ -4365,29 +4719,29 @@ void gTimeline::ScaleImageVertical::save()
 void gTimeline::ScaleImageVertical::init()
 {
   filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
-  //tmpSuffix = _("as_list.");
-  tmpSuffix = _("labels.");
+  // tmpSuffix = _("as_list.");
+  tmpSuffix = _( "labels." );
   tmpSuffix += wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-  
+
   currentMin = myWindow->getMinimumY();
   currentMax = myWindow->getMaximumY();
-  
-  precision = ParaverConfig::getInstance()->getTimelinePrecision();
+
+  precision    = ParaverConfig::getInstance()->getTimelinePrecision();
   symbolicDesc = true;
-  
-  //numSquares = 20;
-  extraPrefixOutlier = wxT("");
+
+  // numSquares = 20;
+  extraPrefixOutlier = wxT( "" );
 
   // n labels * label height + top + bottom
   titleMargin = 5; // used in 4 sides
-  
+
   // Colored rectangle size
-  widthRect = 10;
+  widthRect  = 10;
   heightRect = textFont.GetPointSize() + 3;
 
-  imageStepY = textFont.GetPointSize() + 2 * titleMargin;
+  imageStepY          = textFont.GetPointSize() + 2 * titleMargin;
   imageStepXRectangle = widthRect;
-  
+
   // Loop through labels
   xdst = titleMargin;
   ydst = titleMargin;
@@ -4401,7 +4755,7 @@ void gTimeline::ScaleImageVertical::computeMaxLabelSize()
   wxString maxLabel;
   size_t maxLengthLabel = 0;
   size_t curLengthLabel;
-  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
+  for( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
     // Get Labels
     curLabel = wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, it->first, symbolicDesc, precision, false ).c_str() );
@@ -4409,9 +4763,9 @@ void gTimeline::ScaleImageVertical::computeMaxLabelSize()
 
     // Get Longest label
     curLengthLabel = curLabel.Len();
-    if ( maxLengthLabel < curLengthLabel )
+    if( maxLengthLabel < curLengthLabel )
     {
-      maxLengthLabel = curLengthLabel;
+      maxLengthLabel                = curLengthLabel;
       semanticValueWithLongestLabel = it->first;
     }
   }
@@ -4420,13 +4774,13 @@ void gTimeline::ScaleImageVertical::computeMaxLabelSize()
   wxBitmap maxLabelBitmap( 1920, 64 );
   wxMemoryDC maxLabelDC( maxLabelBitmap );
   maxLabelDC.SetFont( textFont );
-  maxLabelSize = maxLabelDC.GetTextExtent( extraPrefixOutlier +
-                                           semanticValueLabel[ semanticValueWithLongestLabel ] );
+  maxLabelSize = maxLabelDC.GetTextExtent( extraPrefixOutlier + semanticValueLabel[ semanticValueWithLongestLabel ] );
 }
 
 
 void gTimeline::ScaleImageVertical::sortSemanticValues()
-{}
+{
+}
 
 
 void gTimeline::ScaleImageVertical::computeImageSize()
@@ -4434,7 +4788,7 @@ void gTimeline::ScaleImageVertical::computeImageSize()
   // Guess height
   imageHeight = semanticValueLabel.size() * imageStepY + ( 2 * titleMargin );
 
-  if ( drawOutliers )
+  if( drawOutliers )
     imageHeight += ( imageStepY + titleMargin ) * 2;
 
   imageWidth = maxLabelSize.GetWidth() + ( 2 * titleMargin ) + ( widthRect + titleMargin );
@@ -4445,10 +4799,10 @@ void gTimeline::ScaleImageVertical::createDC()
 {
   // Legend
   scaleBitmap = new wxBitmap( imageWidth, imageHeight );
-  scaleDC = new wxMemoryDC( *scaleBitmap );
+  scaleDC     = new wxMemoryDC( *scaleBitmap );
 
   scaleDC->SetFont( textFont );
-  if ( backgroundMode == wxSOLID )
+  if( backgroundMode == wxSOLID )
   {
     scaleDC->SetBackground( background );
     scaleDC->SetTextBackground( background );
@@ -4462,10 +4816,10 @@ void gTimeline::ScaleImageVertical::createDC()
   }
 
   scaleDC->Clear();
-  
+
   // Mask for legend
   scaleMaskBitmap = new wxBitmap( imageWidth, imageHeight );
-  scaleMaskDC = new wxMemoryDC( *scaleMaskBitmap );
+  scaleMaskDC     = new wxMemoryDC( *scaleMaskBitmap );
   scaleMaskDC->SetBackground( *wxWHITE_BRUSH );
   scaleMaskDC->SetBrush( *wxBLACK_BRUSH );
   scaleMaskDC->SetPen( *wxBLACK_PEN );
@@ -4477,7 +4831,7 @@ void gTimeline::ScaleImageVertical::createDC()
 
 void gTimeline::ScaleImageVertical::draw()
 {
-  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
+  for( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
     drawLabeledRectangle( it->second, semanticValueLabel[ it->first ] );
     ydst += imageStepY;
@@ -4485,17 +4839,13 @@ void gTimeline::ScaleImageVertical::draw()
 }
 
 
-void gTimeline::ScaleImageVertical::drawLabeledRectangle( rgb semanticColour,
-                                                          wxString semanticValueLabel,
-                                                          bool drawIt )
+void gTimeline::ScaleImageVertical::drawLabeledRectangle( rgb semanticColour, wxString semanticValueLabel, bool drawIt )
 {
-  scaleDC->SetBrush( wxColour( semanticColour.red,
-                                semanticColour.green,
-                                semanticColour.blue ) );
+  scaleDC->SetBrush( wxColour( semanticColour.red, semanticColour.green, semanticColour.blue ) );
   scaleDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
   scaleMaskDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
 
-  if ( drawIt )
+  if( drawIt )
   {
     // Write text
     scaleDC->DrawText( semanticValueLabel, xdst + widthRect + titleMargin, ydst );
@@ -4518,25 +4868,24 @@ void gTimeline::ScaleImageVertical::destroyDC()
 //
 // ScaleImageVerticalCodeColor
 //
-gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor(
-        Timeline* whichMyWindow, 
-        const std::map< TSemanticValue, rgb >& whichSemanticValues,
-        wxColour whichBackground,
-        wxColour whichForeground,
-        int whichBackgroundMode,
-        wxFont whichTextFont,
-        wxString& whichImagePath,
-        const wxString& whichImageInfix,
-        wxBitmapType& whichImageType 
-        ) : ScaleImageVertical( whichMyWindow,
-                                whichSemanticValues,
-                                whichBackground,
-                                whichForeground,
-                                whichBackgroundMode,
-                                whichTextFont,
-                                whichImagePath,
-                                whichImageInfix,
-                                whichImageType )
+gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor( Timeline* whichMyWindow,
+                                                                     const std::map< TSemanticValue, rgb >& whichSemanticValues,
+                                                                     wxColour whichBackground,
+                                                                     wxColour whichForeground,
+                                                                     int whichBackgroundMode,
+                                                                     wxFont whichTextFont,
+                                                                     wxString& whichImagePath,
+                                                                     const wxString& whichImageInfix,
+                                                                     wxBitmapType& whichImageType )
+  : ScaleImageVertical( whichMyWindow,
+                        whichSemanticValues,
+                        whichBackground,
+                        whichForeground,
+                        whichBackgroundMode,
+                        whichTextFont,
+                        whichImagePath,
+                        whichImageInfix,
+                        whichImageType )
 {
 }
 
@@ -4554,25 +4903,24 @@ void gTimeline::ScaleImageVerticalCodeColor::init()
 //
 // ScaleImageVerticalGradientColor
 //
-gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor(
-        Timeline* whichMyWindow, 
-        const std::map< TSemanticValue, rgb >& whichSemanticValues,
-        wxColour whichBackground,
-        wxColour whichForeground,
-        int whichBackgroundMode,
-        wxFont whichTextFont,
-        wxString& whichImagePath,
-        const wxString& whichImageInfix,
-        wxBitmapType& whichImageType 
-        ) : ScaleImageVertical( whichMyWindow,
-                                whichSemanticValues,
-                                whichBackground,
-                                whichForeground,
-                                whichBackgroundMode,
-                                whichTextFont,
-                                whichImagePath,
-                                whichImageInfix,
-                                whichImageType )
+gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor( Timeline* whichMyWindow,
+                                                                             const std::map< TSemanticValue, rgb >& whichSemanticValues,
+                                                                             wxColour whichBackground,
+                                                                             wxColour whichForeground,
+                                                                             int whichBackgroundMode,
+                                                                             wxFont whichTextFont,
+                                                                             wxString& whichImagePath,
+                                                                             const wxString& whichImageInfix,
+                                                                             wxBitmapType& whichImageType )
+  : ScaleImageVertical( whichMyWindow,
+                        whichSemanticValues,
+                        whichBackground,
+                        whichForeground,
+                        whichBackgroundMode,
+                        whichTextFont,
+                        whichImagePath,
+                        whichImageInfix,
+                        whichImageType )
 {
 }
 
@@ -4583,10 +4931,10 @@ void gTimeline::ScaleImageVerticalGradientColor::init()
 
   drawOutliers = true;
   symbolicDesc = false;
-  
+
   numSquaresWithoutOutliers = 20;
-  if ( myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
-    ++numSquaresWithoutOutliers; // 0 black
+  if( myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
+    ++numSquaresWithoutOutliers;                // 0 black
   totalSquares = numSquaresWithoutOutliers + 2; // gradient and outliers
 
   extraPrefixOutlier = wxT( "< " );
@@ -4600,7 +4948,7 @@ void gTimeline::ScaleImageVerticalGradientColor::sortSemanticValues()
   for( int i = 0; i < numSquaresWithoutOutliers; ++i )
   {
     TSemanticValue current = ( i * step ) + currentMin;
-    if ( current > currentMax )
+    if( current > currentMax )
       current = currentMax;
 
     semValues[ current ] = myWindow->getSemanticColor().calcColor( current, currentMin, currentMax );
@@ -4613,23 +4961,22 @@ void gTimeline::ScaleImageVerticalGradientColor::draw()
   // Bottom Outlier
   rgb tmprgb = myWindow->getSemanticColor().getBelowOutlierColor();
   wxString tmpSemanticValueLabel =
-           wxT( "< " ) +
-           wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, semValues.begin()->first, symbolicDesc, precision, false ).c_str() );
+    wxT( "< " ) + wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, semValues.begin()->first, symbolicDesc, precision, false ).c_str() );
   drawLabeledRectangle( tmprgb, tmpSemanticValueLabel );
   ydst += imageStepY;
-  
+
   // Values
-  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
+  for( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
-    drawLabeledRectangle( it->second, semanticValueLabel[ it->first ] );   
+    drawLabeledRectangle( it->second, semanticValueLabel[ it->first ] );
     ydst += imageStepY;
   }
 
   // Top outlier
   tmprgb = myWindow->getSemanticColor().getAboveOutlierColor();
   tmpSemanticValueLabel =
-          wxT( "> " ) +
-          wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, (--semValues.end())->first, symbolicDesc, precision, false ).c_str() );
+    wxT( "> " ) +
+    wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, ( --semValues.end() )->first, symbolicDesc, precision, false ).c_str() );
   drawLabeledRectangle( tmprgb, tmpSemanticValueLabel );
   ydst += imageStepY;
 }
@@ -4639,25 +4986,24 @@ void gTimeline::ScaleImageVerticalGradientColor::draw()
 //
 // ScaleImageVerticalFusedLines
 //
-gTimeline::ScaleImageVerticalFusedLines::ScaleImageVerticalFusedLines(
-        Timeline* whichMyWindow, 
-        const std::map< TSemanticValue, rgb >& whichSemanticValues,
-        wxColour whichBackground,
-        wxColour whichForeground,
-        int whichBackgroundMode,
-        wxFont whichTextFont,
-        wxString& whichImagePath,
-        const wxString& whichImageInfix,
-        wxBitmapType& whichImageType 
-        ) : ScaleImageVertical( whichMyWindow,
-                                whichSemanticValues,
-                                whichBackground,
-                                whichForeground,
-                                whichBackgroundMode,
-                                whichTextFont,
-                                whichImagePath,
-                                whichImageInfix,
-                                whichImageType )
+gTimeline::ScaleImageVerticalFusedLines::ScaleImageVerticalFusedLines( Timeline* whichMyWindow,
+                                                                       const std::map< TSemanticValue, rgb >& whichSemanticValues,
+                                                                       wxColour whichBackground,
+                                                                       wxColour whichForeground,
+                                                                       int whichBackgroundMode,
+                                                                       wxFont whichTextFont,
+                                                                       wxString& whichImagePath,
+                                                                       const wxString& whichImageInfix,
+                                                                       wxBitmapType& whichImageType )
+  : ScaleImageVertical( whichMyWindow,
+                        whichSemanticValues,
+                        whichBackground,
+                        whichForeground,
+                        whichBackgroundMode,
+                        whichTextFont,
+                        whichImagePath,
+                        whichImageInfix,
+                        whichImageType )
 {
 }
 
@@ -4677,7 +5023,7 @@ void gTimeline::ScaleImageVerticalFusedLines::computeMaxLabelSize()
   wxString maxLabel;
   size_t maxLengthLabel = 0;
   size_t curLengthLabel;
-  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
+  for( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
     // Get Labels
     curLabel = wxString::FromUTF8( LabelConstructor::objectLabel( it->first, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
@@ -4685,9 +5031,9 @@ void gTimeline::ScaleImageVerticalFusedLines::computeMaxLabelSize()
 
     // Get Longest label
     curLengthLabel = curLabel.Len();
-    if ( maxLengthLabel < curLengthLabel )
+    if( maxLengthLabel < curLengthLabel )
     {
-      maxLengthLabel = curLengthLabel;
+      maxLengthLabel                = curLengthLabel;
       semanticValueWithLongestLabel = it->first;
     }
   }
@@ -4696,34 +5042,32 @@ void gTimeline::ScaleImageVerticalFusedLines::computeMaxLabelSize()
   wxBitmap maxLabelBitmap( 1920, 64 );
   wxMemoryDC maxLabelDC( maxLabelBitmap );
   maxLabelDC.SetFont( textFont );
-  maxLabelSize = maxLabelDC.GetTextExtent( extraPrefixOutlier +
-                                           semanticValueLabel[ semanticValueWithLongestLabel ] );
+  maxLabelSize = maxLabelDC.GetTextExtent( extraPrefixOutlier + semanticValueLabel[ semanticValueWithLongestLabel ] );
 }
 
 //---------------------------------------------------------------------------------------------------
 //
 // ScaleImageHorizontalGradientColor
 //
-gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor(
-        Timeline* whichMyWindow, 
-        const std::map< TSemanticValue, rgb >& whichSemanticValues,
-        wxColour whichBackground,
-        wxColour whichForeground,
-        int whichBackgroundMode,
-        wxFont whichTextFont,
-        wxString& whichImagePath,
-        const wxString& whichImageInfix,
-        wxBitmapType& whichImageType,
-        int whichWantedWidth
-        ) : ScaleImageVerticalGradientColor( whichMyWindow,
-                                             whichSemanticValues,
-                                             whichBackground,
-                                             whichForeground,
-                                             whichBackgroundMode,
-                                             whichTextFont,
-                                             whichImagePath,
-                                             whichImageInfix,
-                                             whichImageType )
+gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor( Timeline* whichMyWindow,
+                                                                                 const std::map< TSemanticValue, rgb >& whichSemanticValues,
+                                                                                 wxColour whichBackground,
+                                                                                 wxColour whichForeground,
+                                                                                 int whichBackgroundMode,
+                                                                                 wxFont whichTextFont,
+                                                                                 wxString& whichImagePath,
+                                                                                 const wxString& whichImageInfix,
+                                                                                 wxBitmapType& whichImageType,
+                                                                                 int whichWantedWidth )
+  : ScaleImageVerticalGradientColor( whichMyWindow,
+                                     whichSemanticValues,
+                                     whichBackground,
+                                     whichForeground,
+                                     whichBackgroundMode,
+                                     whichTextFont,
+                                     whichImagePath,
+                                     whichImageInfix,
+                                     whichImageType )
 {
   wantedWidth = whichWantedWidth;
 }
@@ -4733,10 +5077,10 @@ void gTimeline::ScaleImageHorizontalGradientColor::init()
 {
   gTimeline::ScaleImageVerticalGradientColor::init();
 
-  widthRect = 20;
+  widthRect           = 20;
   imageStepXRectangle = widthRect;
-  outlierMargin = 2 * titleMargin;
-  SIZE_OF_TINY_MARK = 4;
+  outlierMargin       = 2 * titleMargin;
+  SIZE_OF_TINY_MARK   = 4;
 }
 
 
@@ -4746,30 +5090,28 @@ void gTimeline::ScaleImageHorizontalGradientColor::computeImageSize()
   imageHeight = heightRect + maxLabelSize.GetHeight() + 3 * titleMargin;
 
   // Width
-  if ( wantedWidth > 0 )
+  if( wantedWidth > 0 )
   {
     imageWidth = totalSquares * widthRect + 2 * outlierMargin + 2 * titleMargin;
-    if ( imageWidth > wantedWidth )
+    if( imageWidth > wantedWidth )
     {
       float MINIMUM_WIDTH_RECT = 10.0;
-      float variableWidthRect = (float)(( wantedWidth - 2 * outlierMargin - 2 * titleMargin ) / totalSquares );
-      while (( totalSquares > 0 ) &&
-             ( variableWidthRect < MINIMUM_WIDTH_RECT ) &&
-             ( variableWidthRect > 0.0 ))
+      float variableWidthRect  = (float)( ( wantedWidth - 2 * outlierMargin - 2 * titleMargin ) / totalSquares );
+      while( ( totalSquares > 0 ) && ( variableWidthRect < MINIMUM_WIDTH_RECT ) && ( variableWidthRect > 0.0 ) )
       {
         --totalSquares;
-        variableWidthRect = (float)(( wantedWidth - 2 * outlierMargin - 2 * titleMargin ) / totalSquares );
+        variableWidthRect = (float)( ( wantedWidth - 2 * outlierMargin - 2 * titleMargin ) / totalSquares );
       }
 
-      widthRect = rint( variableWidthRect );
+      widthRect           = rint( variableWidthRect );
       imageStepXRectangle = widthRect;
     }
-    else if ( imageWidth < wantedWidth )
+    else if( imageWidth < wantedWidth )
     {
-      int extraSquares = rint( floorf( float( ( wantedWidth - imageWidth ) / widthRect )));
+      int extraSquares = rint( floorf( float( ( wantedWidth - imageWidth ) / widthRect ) ) );
       totalSquares += extraSquares;
 
-      if ( myWindow->isNotNullGradientColorSet() )
+      if( myWindow->isNotNullGradientColorSet() )
         numSquaresWithoutOutliers = totalSquares - 3;
       else
         numSquaresWithoutOutliers = totalSquares - 2;
@@ -4788,25 +5130,25 @@ void gTimeline::ScaleImageHorizontalGradientColor::computeImageSize()
 void gTimeline::ScaleImageHorizontalGradientColor::draw()
 {
   // *** 1. Draw color scale ****************************************************************
-  
+
   int initialXdst = xdst;
-  
+
   // Bottom Outlier
   rgb tmprgb = myWindow->getSemanticColor().getBelowOutlierColor();
   drawRectangle( tmprgb );
   xdst += imageStepXRectangle + outlierMargin;
-  
+
   // Colors
-  int elem = 0;
-  int MIDDLE_POS = rint( numSquaresWithoutOutliers / 2 ) + 1; // 11 
-  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
+  int elem       = 0;
+  int MIDDLE_POS = rint( numSquaresWithoutOutliers / 2 ) + 1; // 11
+  for( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
     ++elem;
-    if ( it == semValues.begin() )
+    if( it == semValues.begin() )
       drawRectangle( it->second, FIRST );
-    else if ( it == --semValues.end() )
-      drawRectangle( it->second, LAST  );
-    else if ( elem == MIDDLE_POS )
+    else if( it == --semValues.end() )
+      drawRectangle( it->second, LAST );
+    else if( elem == MIDDLE_POS )
       drawRectangle( it->second, MIDDLE );
     else
       drawRectangle( it->second, ANY );
@@ -4818,32 +5160,32 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
   xdst += outlierMargin;
   tmprgb = myWindow->getSemanticColor().getAboveOutlierColor();
   drawRectangle( tmprgb );
-  
+
   // *** 2. Draw labels **********************************************************************
-  
+
   xdst = initialXdst;
   ydst += imageStepY - titleMargin + 2;
-  
+
   // Bottom Outlier
   wxString tmpSemanticValueLabel = wxT( "<" );
   drawLabel( tmpSemanticValueLabel );
   xdst += imageStepXRectangle + outlierMargin;
-  
+
   // Labels
   bool drawIt;
   elem = 0;
-  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
+  for( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
     ++elem;
     drawIt = it == semValues.begin() || elem == MIDDLE_POS || it == --semValues.end();
 
-    if ( it == semValues.begin() )
+    if( it == semValues.begin() )
       drawLabel( semanticValueLabel[ it->first ], drawIt, LEFT );
-    else if ( it == --semValues.end() )
+    else if( it == --semValues.end() )
     {
       drawLabel( semanticValueLabel[ it->first ], drawIt, RIGHT );
     }
-    else if ( elem == MIDDLE_POS )
+    else if( elem == MIDDLE_POS )
       drawLabel( semanticValueLabel[ it->first ], drawIt, CENTER );
     else
       drawLabel( semanticValueLabel[ it->first ], drawIt, LEFT );
@@ -4854,49 +5196,47 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
   // Top outlier
   xdst += outlierMargin;
   tmpSemanticValueLabel = wxT( ">" );
-  drawIt = true;
+  drawIt                = true;
   drawLabel( tmpSemanticValueLabel, drawIt, RIGHT );
 }
 
 
 void gTimeline::ScaleImageHorizontalGradientColor::drawRectangle( rgb semanticColour, TPosition position )
 {
-  scaleDC->SetBrush( wxColour( semanticColour.red,
-                               semanticColour.green,
-                               semanticColour.blue ) );
+  scaleDC->SetBrush( wxColour( semanticColour.red, semanticColour.green, semanticColour.blue ) );
   scaleDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
 
   scaleMaskDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
-  
+
   switch( position )
   {
     case FIRST:
-      scaleDC->DrawLine( xdst, ydst + heightRect,
-                         xdst, ydst + heightRect + SIZE_OF_TINY_MARK );
-      scaleMaskDC->DrawLine( xdst, ydst + heightRect,
-                             xdst, ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleDC->DrawLine( xdst, ydst + heightRect, xdst, ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleMaskDC->DrawLine( xdst, ydst + heightRect, xdst, ydst + heightRect + SIZE_OF_TINY_MARK );
       break;
     case MIDDLE:
-      scaleDC->DrawLine( xdst + ceil( (double)widthRect / 2 ), ydst + heightRect,
-                         xdst + ceil( (double)widthRect / 2 ), ydst + heightRect + SIZE_OF_TINY_MARK );
-      scaleMaskDC->DrawLine( xdst + ceil( (double)widthRect / 2 ), ydst + heightRect,
-                             xdst + ceil( (double)widthRect / 2 ), ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleDC->DrawLine( xdst + ceil( (double)widthRect / 2 ),
+                         ydst + heightRect,
+                         xdst + ceil( (double)widthRect / 2 ),
+                         ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleMaskDC->DrawLine( xdst + ceil( (double)widthRect / 2 ),
+                             ydst + heightRect,
+                             xdst + ceil( (double)widthRect / 2 ),
+                             ydst + heightRect + SIZE_OF_TINY_MARK );
       break;
     case LAST:
-      scaleDC->DrawLine( xdst + widthRect - 1, ydst + heightRect,
-                         xdst + widthRect - 1, ydst + heightRect + SIZE_OF_TINY_MARK );
-      scaleMaskDC->DrawLine( xdst + widthRect - 1, ydst + heightRect,
-                             xdst + widthRect - 1, ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleDC->DrawLine( xdst + widthRect - 1, ydst + heightRect, xdst + widthRect - 1, ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleMaskDC->DrawLine( xdst + widthRect - 1, ydst + heightRect, xdst + widthRect - 1, ydst + heightRect + SIZE_OF_TINY_MARK );
       break;
     default:
       break;
-  }  
+  }
 }
 
 
 void gTimeline::ScaleImageHorizontalGradientColor::drawLabel( wxString semanticValueLabel, bool writeIt, TAlign align )
 {
-  if ( writeIt )
+  if( writeIt )
   {
     wxSize labelSize = scaleDC->GetTextExtent( semanticValueLabel );
 
@@ -4917,13 +5257,13 @@ void gTimeline::ScaleImageHorizontalGradientColor::drawLabel( wxString semanticV
     }
 
     int tmpXdst = xdst;
-    if (( xdst - shiftLeft ) >= 0 )
+    if( ( xdst - shiftLeft ) >= 0 )
     {
       tmpXdst = xdst - shiftLeft;
     }
 
     // Write text
-    scaleDC->DrawText( semanticValueLabel, tmpXdst, ydst);
+    scaleDC->DrawText( semanticValueLabel, tmpXdst, ydst );
     scaleMaskDC->DrawText( semanticValueLabel, tmpXdst, ydst );
   }
 }
@@ -4943,9 +5283,9 @@ void gTimeline::saveText()
   fileName = buildFormattedFileName();
 
 #ifdef _WIN32
-  defaultDir = _(".\\");
+  defaultDir = _( ".\\" );
 #else
-  defaultDir = _("./");
+  defaultDir = _( "./" );
 #endif
   
   tmpSuffix = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ).c_str() );
@@ -4958,14 +5298,14 @@ void gTimeline::saveText()
   for ( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
     wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ), initWithDot ).c_str() );
-    tmpWildcard += currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
+    tmpWildcard += currentFormat.Upper() + _( " (*." ) + currentFormat + _( ")|*." ) + currentFormat + _( "|" );
 
     extensions.push_back( currentFormat );
   }
   tmpWildcard = tmpWildcard.BeforeLast( '|' );
 
   FileDialogExtension saveDialog( this,
-                                  _("Save as..."),
+                                  _( "Save as..." ),
                                   defaultDir,
                                   fileName + tmpSuffix,
                                   tmpWildcard,
@@ -4974,22 +5314,21 @@ void gTimeline::saveText()
                                   wxDefaultSize,
                                   _( "filedlg" ),
                                   extensions );
-                           
+
   saveDialog.SetFilterIndex( static_cast< int >( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ) );
-  
-  if ( saveDialog.ShowModal() == wxID_OK )
+
+  if( saveDialog.ShowModal() == wxID_OK )
   {
     // Set up progress controller
-    ProgressController *progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
+    ProgressController* progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
 
     if( gTimeline::dialogProgress == nullptr )
-      gTimeline::dialogProgress = new wxProgressDialog( wxT("Save Timeline Text"),
-                                                        wxT(""),
-                                                        MAX_PROGRESS_BAR_VALUE,
-                                                        this,
-                                                        wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
-                                                        wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
-                                                        wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+      gTimeline::dialogProgress =
+        new wxProgressDialog( wxT( "Save Timeline Text" ),
+                              wxT( "" ),
+                              MAX_PROGRESS_BAR_VALUE,
+                              this,
+                              wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
 
     progress->setHandler( gTimeline::dialogProgress, progressFunction );
 
@@ -4999,12 +5338,10 @@ void gTimeline::saveText()
     if( fileName.length() > 36 && fileName.find_last_of( PATH_SEP ) != string::npos )
     {
       string file = fileName.substr( fileName.find_last_of( PATH_SEP ) );
-      string tmp = fileName.substr( 0, fileName.find_last_of( PATH_SEP ) );
-      if ( tmp.find_last_of( PATH_SEP ) != string::npos )
+      string tmp  = fileName.substr( 0, fileName.find_last_of( PATH_SEP ) );
+      if( tmp.find_last_of( PATH_SEP ) != string::npos )
       {
-        reducePath = "/..." + fileName.substr( tmp.find_last_of( PATH_SEP ),
-                                                tmp.length() - tmp.find_last_of( PATH_SEP ) )
-                     + file;
+        reducePath = "/..." + fileName.substr( tmp.find_last_of( PATH_SEP ), tmp.length() - tmp.find_last_of( PATH_SEP ) ) + file;
       }
       else
       {
@@ -5014,21 +5351,21 @@ void gTimeline::saveText()
     else
       reducePath = fileName;
     reducePath += "\t";
-    
+
     gTimeline::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
     gTimeline::dialogProgress->Fit();
     gTimeline::dialogProgress->Show();
-  
+
     // Save timeline text
-    Output *output = Output::createOutput( (TOutput)saveDialog.GetFilterIndex() );
+    Output* output = Output::createOutput( (TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
-    
+
     // Clustering default options
     output->setWindowTimeUnits( false );
     
     output->dumpWindow( myWindow, fileName, CSVMetadataAction::MANUAL_ORIGIN_ID, progress );
     delete output;
-    
+
     // Delete progress controller
     gTimeline::dialogProgress->Show( false );
     delete gTimeline::dialogProgress;
@@ -5042,20 +5379,16 @@ void gTimeline::saveText()
 
 void gTimeline::saveCFG()
 {
-  vector< Timeline * > timelines;
+  vector< Timeline* > timelines;
   timelines.push_back( GetMyWindow() );
 
   setEnableDestroyButton( false );
 
   // TODO: use the window linked properties manager if any
   CFGS4DLinkedPropertiesManager dummyManager;
-  vector<CFGS4DLinkedPropertiesManager> dummyList;
+  vector< CFGS4DLinkedPropertiesManager > dummyList;
   dummyList.push_back( dummyManager );
-  paraverMain::myParaverMain->SaveConfigurationFile( (wxWindow *)this,
-                                                     SaveOptions(),
-                                                     timelines,
-                                                     vector< Histogram * >(),
-                                                     dummyList );
+  paraverMain::myParaverMain->SaveConfigurationFile( (wxWindow*)this, SaveOptions(), timelines, vector< Histogram* >(), dummyList );
 
   setEnableDestroyButton( true );
 }
@@ -5065,12 +5398,12 @@ void gTimeline::setEnableDestroyParents( bool value )
 {
   gWindow::setEnableDestroyButton( value );
 
-  if ( myWindow->getParent( 0 ) != nullptr )
+  if( myWindow->getParent( 0 ) != nullptr )
   {
     for( int i = 0; i < 2; ++i )
     {
       bool dummyFound;
-      gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getParent( i ), dummyFound );
+      gTimeline* tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getParent( i ), dummyFound );
       tmpTimeline->setEnableDestroyParents( value );
     }
   }
@@ -5079,11 +5412,11 @@ void gTimeline::setEnableDestroyParents( bool value )
 
 void gTimeline::setEnableDestroyButton( bool value )
 {
-  if ( myWindow->getChild() != nullptr )
+  if( myWindow->getChild() != nullptr )
   {
     // I'm inside a derived window => recursively navigate descendants looking for "final" child window
     bool dummyFound;
-    gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getChild(), dummyFound );
+    gTimeline* tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getChild(), dummyFound );
     tmpTimeline->setEnableDestroyButton( value );
   }
   else
@@ -5093,14 +5426,40 @@ void gTimeline::setEnableDestroyButton( bool value )
   }
 }
 
+void gTimeline::setEditMode( bool value )
+{
+  isEditMode = value;
+}
+bool gTimeline::getEditMode()
+{
+  return isEditMode;
+}
 
 void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
+  timerSize->Stop();
+
+  if( !splitChanged )
+  {
+    auto width  = drawZone->GetClientSize().GetWidth();
+    auto height = drawZone->GetClientSize().GetHeight();
+
+    if( width == myWindow->getWidth() && height == myWindow->getHeight() )
+    {
+      codeChangeSize = false;
+      return;
+    }
+    else
+    {
+      myWindow->setSize( width, height, !this->IsMaximized() && !codeChangeSize );
+    }
+  }
+
+
   if( myWindow->getReady() )
   {
-    if ( !wxparaverApp::mainWindow->GetSomeWinIsRedraw() )
+    if( !wxparaverApp::mainWindow->GetSomeWinIsRedraw() )
     {
-      timerSize->Stop();
 #ifdef _WIN32
       wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
       redraw();
@@ -5113,7 +5472,9 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
         wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
       }
       else
+      {
         myWindow->setRedraw( true );
+      }
 
       Refresh();
     }
@@ -5134,15 +5495,14 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   wxBitmap refreshImage( autoredraw_refresh_xpm );
   bool autoRedrawText = false;
 
-  if( motionEvent.GetX() < refreshImage.GetWidth() + 2 * drawBorder &&
-      motionEvent.GetY() < refreshImage.GetHeight() + 2 * drawBorder &&
+  if( motionEvent.GetX() < refreshImage.GetWidth() + 2 * drawBorder && motionEvent.GetY() < refreshImage.GetHeight() + 2 * drawBorder &&
       enabledAutoRedrawIcon )
   {
     autoRedrawText = true;
-    label = "Autoredraw disabled";
+    label          = "Autoredraw disabled";
   }
-  else if( motionEvent.GetX() < objectAxisPos + 1 || motionEvent.GetX() > bufferImage.GetWidth() - drawBorder ||
-           motionEvent.GetY() < drawBorder || motionEvent.GetY() > timeAxisPos - 1 )
+  else if( motionEvent.GetX() < objectAxisPos + 1 || motionEvent.GetX() > bufferImage.GetWidth() - drawBorder || motionEvent.GetY() < drawBorder ||
+           motionEvent.GetY() > timeAxisPos - 1 )
   {
     return;
   }
@@ -5150,8 +5510,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   {
     long beginX;
     PRV_UINT32 precision = 0;
-    TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                     ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+    TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) / ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
     TTime time;
 
     if( zooming )
@@ -5162,18 +5521,20 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
       else
         beginX -= objectAxisPos;
       time = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
-      label = wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit(), precision ).c_str() );
+      label =
+        wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit(), precision ).c_str() );
       label += wxT( " - " );
     }
     beginX = motionEvent.GetX();
     beginX -= objectAxisPos;
     time = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
-    label += wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit(), precision ).c_str() );
+    label +=
+      wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit(), precision ).c_str() );
   }
   else
   {
     TSemanticValue firstValue, secondValue;
-    Timeline *winToUse = myWindow;
+    Timeline* winToUse = myWindow;
     if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != nullptr )
       winToUse = myWindow->getPunctualColorWindow();
 
@@ -5181,16 +5542,16 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     {
 #ifdef __WXMAC__
       wxImage tmpImage = bufferImage.ConvertToImage();
-      tmpColor = wxColour( tmpImage.GetRed( motionEvent.GetX(), motionEvent.GetY() ),
-                         tmpImage.GetGreen( motionEvent.GetX(), motionEvent.GetY() ),
-                         tmpImage.GetBlue( motionEvent.GetX(), motionEvent.GetY() ) );
+      tmpColor         = wxColour( tmpImage.GetRed( motionEvent.GetX(), motionEvent.GetY() ),
+                           tmpImage.GetGreen( motionEvent.GetX(), motionEvent.GetY() ),
+                           tmpImage.GetBlue( motionEvent.GetX(), motionEvent.GetY() ) );
 /*
       wxBitmap tmpBmp = bufferImage.GetSubBitmap( wxRect(0, 0, bufferImage.GetWidth(), bufferImage.GetHeight()));
       wxAlphaPixelData tmpPixelData( tmpBmp );
       wxAlphaPixelData::Iterator itImage( tmpPixelData );
       itImage.Offset( tmpPixelData, motionEvent.GetX(), motionEvent.GetY() );
       tmpColor = wxColour( itImage.Red(), itImage.Green(), itImage.Blue() );*/
-#else  
+#else
       dc.GetPixel( motionEvent.GetX(), motionEvent.GetY(), &tmpColor );
 #endif
 
@@ -5204,7 +5565,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
         // CODE COLOR
         string tmpString;
         firstValue = *( semanticColorsToValue[ color ].begin() );
-        tmpString = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
+        tmpString  = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
         if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
           tmpString = LabelConstructor::transformToShort( tmpString );
         label = wxString::FromUTF8( tmpString.c_str() );
@@ -5213,11 +5574,17 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
       {
         // GRADIENT COLOR
         if( color == winToUse->getSemanticColor().getAboveOutlierColor() )
-          label = wxT( "> " ) + wxString::FromUTF8( LabelConstructor::semanticLabel( winToUse, winToUse->getMaximumY(), false,
-                                                                                      ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
+          label =
+            wxT( "> " ) +
+            wxString::FromUTF8(
+              LabelConstructor::semanticLabel( winToUse, winToUse->getMaximumY(), false, ParaverConfig::getInstance()->getTimelinePrecision(), false )
+                .c_str() );
         else if( color == winToUse->getSemanticColor().getBelowOutlierColor() )
-          label = wxT( "< " ) + wxString::FromUTF8( LabelConstructor::semanticLabel( winToUse, winToUse->getMinimumY(), false,
-                                                                                      ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
+          label =
+            wxT( "< " ) +
+            wxString::FromUTF8(
+              LabelConstructor::semanticLabel( winToUse, winToUse->getMinimumY(), false, ParaverConfig::getInstance()->getTimelinePrecision(), false )
+                .c_str() );
         else
           return;
       }
@@ -5227,20 +5594,22 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
         {
           string tmpString;
           firstValue = *( semanticColorsToValue[ color ].begin() );
-          tmpString = LabelConstructor::objectLabel( (TObjectOrder)firstValue, winToUse->getLevel(), winToUse->getTrace() );
-          label = wxString::FromUTF8( tmpString.c_str() );
+          tmpString  = LabelConstructor::objectLabel( (TObjectOrder)firstValue, winToUse->getLevel(), winToUse->getTrace() );
+          label      = wxString::FromUTF8( tmpString.c_str() );
         }
         else
         {
           // Gradient
           firstValue = *( semanticColorsToValue[ color ].begin() );
-          label = wxString::FromUTF8( LabelConstructor::semanticLabel( winToUse, firstValue, false,
-                                                                        ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
+          label      = wxString::FromUTF8(
+            LabelConstructor::semanticLabel( winToUse, firstValue, false, ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
           if( semanticColorsToValue[ color ].size() > 1 )
           {
             secondValue = *( --( semanticColorsToValue[ color ].end() ) );
-            label += wxT( " - " ) + wxString::FromUTF8( LabelConstructor::semanticLabel( winToUse, secondValue, false,
-                                                                                          ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
+            label += wxT( " - " ) +
+                     wxString::FromUTF8(
+                       LabelConstructor::semanticLabel( winToUse, secondValue, false, ParaverConfig::getInstance()->getTimelinePrecision(), false )
+                         .c_str() );
           }
         }
       }
@@ -5256,15 +5625,15 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
         if( objectHeight > 10 && getPixelFromFunctionLine( motionEvent.GetX(), motionEvent.GetY(), object, pixelPos ) )
         {
           firstValue = *( semanticPixelsToValue[ pixelPos ].begin() );
-          label = wxString::FromUTF8( LabelConstructor::semanticLabel( winToUse, firstValue, false,
-                                                                        ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                        false ).c_str() );
+          label      = wxString::FromUTF8(
+            LabelConstructor::semanticLabel( winToUse, firstValue, false, ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
           if( semanticPixelsToValue[ pixelPos ].size() > 1 )
           {
             secondValue = *( --( semanticPixelsToValue[ pixelPos ].end() ) );
-            label += wxT( " - " ) + wxString::FromUTF8( LabelConstructor::semanticLabel( winToUse, secondValue, false,
-                                                                                          ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                                          false ).c_str() );
+            label += wxT( " - " ) +
+                     wxString::FromUTF8(
+                       LabelConstructor::semanticLabel( winToUse, secondValue, false, ParaverConfig::getInstance()->getTimelinePrecision(), false )
+                         .c_str() );
           }
         }
         else
@@ -5273,21 +5642,21 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
       else
       {
         label = wxT( "ERROR: Zoom high!" );
-      }      
+      }
     }
   }
 
-// #ifndef __WXGTK__
-//   wxClientDC paintDC( drawZone );
-//   #ifdef __WXMAC__
-//   drawStackedImages( paintDC );
-//   #else
-//   paintDC.DrawBitmap( drawImage, 0, 0 );
-//   #endif
-// #else
+  // #ifndef __WXGTK__
+  //   wxClientDC paintDC( drawZone );
+  //   #ifdef __WXMAC__
+  //   drawStackedImages( paintDC );
+  //   #else
+  //   paintDC.DrawBitmap( drawImage, 0, 0 );
+  //   #endif
+  // #else
   wxClientDC paintDC( drawZone );
   paintDC.DrawBitmap( drawImage, 0, 0 );
-// #endif
+  // #endif
 
   paintDC.SetFont( semanticFont );
   wxSize objectExt = paintDC.GetTextExtent( label );
@@ -5314,12 +5683,36 @@ void gTimeline::OnTimerWheel( wxTimerEvent& event )
 #endif
   wheelZoomFactor = 1.0;
   myWindow->addZoom( wheelZoomBeginTime, wheelZoomEndTime, wheelZoomBeginObject, wheelZoomEndObject );
-  myWindow->setWindowBeginTime( wheelZoomBeginTime, true );
-  myWindow->setWindowEndTime( wheelZoomEndTime, true );
+  myWindow->setWindowBeginTime( wheelZoomBeginTime );
+  myWindow->setWindowEndTime( wheelZoomEndTime );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
+void gTimeline::OnTimerPosition( wxTimerEvent& event )
+{
+  if( this->IsShown() && myWindow->getReady() )
+  {
+    int currentDisplay = wxDisplay::GetFromWindow( this );
+    if( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+    {
+      wxDisplay tmpDisplay( currentDisplay );
+      auto posX = this->GetPosition().x - tmpDisplay.GetGeometry().x;
+      auto posY = this->GetPosition().y - tmpDisplay.GetGeometry().y;
+
+      int posXDiff = myWindow->getPosX() - this->GetPosition().x;
+      int posYDiff = myWindow->getPosY() - this->GetPosition().y;
+
+      if( !this->IsMaximized() && ( posXDiff != 0 || posYDiff != 0 ) && !newPositionApplied )
+        myWindow->addOffsetPosition( posXDiff, posYDiff );
+
+      newPositionApplied = false;
+      myWindow->setPosX( posX );
+      myWindow->setPosY( posY );
+    }
+  }
+  timerPosition->Stop();
+}
 /*!
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
  */
@@ -5333,11 +5726,20 @@ void gTimeline::OnCheckWhatWhereText( wxCommandEvent& event )
   checkWWText->Enable( false );
   checkWWShowDate->Enable( false );
   checkWWHex->Enable( false );
+  std::vector< std::pair< TWhatWhereLine, wxString > > tmpWhatWhereLines;
 
-  computeWhatWhere( whatWhereTime, whatWhereRow, whatWhereSemantic,
+  std::vector< Timeline* > groupTimelines;
+
+  computeWhatWhere( tmpWhatWhereLines,
+                    whatWhereTime,
+                    whatWhereRow,
+                    whatWhereSemantic,
                     checkWWText->IsChecked(),
                     checkWWShowDate->IsChecked(),
                     checkWWHex->IsChecked() );
+
+  whatWhereLines = tmpWhatWhereLines;
+
   printWhatWhere();
 
   checkWWSemantic->Enable( true );
@@ -5388,46 +5790,42 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
   wxMemoryDC dc( bufferImage );
   long X = event.GetX();
-  
-  if( X < objectAxisPos || X > dc.GetSize().GetWidth() - drawBorder
-      || event.GetY() < drawBorder || event.GetY() > timeAxisPos )
+
+  if( X < objectAxisPos || X > dc.GetSize().GetWidth() - drawBorder || event.GetY() < drawBorder || event.GetY() > timeAxisPos )
     return;
   else
     X -= objectAxisPos;
 
-  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) / ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
 
   TTime posTime = ( timeStep * X ) + myWindow->getWindowBeginTime();
 
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-  TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
-  vector<TObjectOrder> selected;
+  TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
+  vector< TObjectOrder > selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
-  double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
-  TObjectOrder posRow = TObjectOrder( floor( (event.GetY() - drawBorder - 1) / heightPerRow ) );
+  double heightPerRow     = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
+  TObjectOrder posRow     = TObjectOrder( floor( ( event.GetY() - drawBorder - 1 ) / heightPerRow ) );
 
   if( posRow >= numObjects )
     posRow = numObjects - 1;
-    
+
   posRow = selected[ posRow ];
 
   TEventType type;
   TEventValue value;
-  vector<TEventType> events;
+  vector< TEventType > events;
   wxString command;
 
   wxString alienApp;
   wxString alienType;
-  if ( wxGetEnv( wxString( wxT( "PARAVER_ALIEN_APP" ) ), &alienApp ) &&
-       wxGetEnv( wxString( wxT( "PARAVER_ALIEN_TYPE" ) ), &alienType ) )
+  if( wxGetEnv( wxString( wxT( "PARAVER_ALIEN_APP" ) ), &alienApp ) && wxGetEnv( wxString( wxT( "PARAVER_ALIEN_TYPE" ) ), &alienType ) )
   {
     long tmpType;
-    if (!alienType.ToLong(&tmpType))
+    if( !alienType.ToLong( &tmpType ) )
     {
-      wxMessageBox( _( "Unable to interpret $PARAVER_ALIEN_TYPE as an event type\n\nValue: " ) + alienType,
-                    _( "Application invocation" ) );
+      wxMessageBox( _( "Unable to interpret $PARAVER_ALIEN_TYPE as an event type\n\nValue: " ) + alienType, _( "Application invocation" ) );
       return;
     }
     else
@@ -5436,35 +5834,35 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
       if( myWindow->getTrace()->findLastEventValue( posRow, posTime, events, type, value ) )
       {
         string valueStr = LabelConstructor::eventValueLabel( myWindow, type, value );
-        if ( valueStr.empty() )
+        if( valueStr.empty() )
         {
-          command << alienApp <<  _(" ") << value;
+          command << alienApp << _( " " ) << value;
         }
         else
         {
-          command << alienApp <<  _(" ") << wxString::FromUTF8( valueStr.c_str() );
+          command << alienApp << _( " " ) << wxString::FromUTF8( valueStr.c_str() );
         }
-        
-        //wxString currentDir = wxGetCwd();
-        //wxString myTraceDir =
-        //        wxFileName ( wxString::FromUTF8( GetMyWindow()->getTrace()->getFileName().c_str() ) ).GetPath();
-        //wxSetWorkingDirectory( myTraceDir );
+
+        // wxString currentDir = wxGetCwd();
+        // wxString myTraceDir =
+        //         wxFileName ( wxString::FromUTF8( GetMyWindow()->getTrace()->getFileName().c_str() ) ).GetPath();
+        // wxSetWorkingDirectory( myTraceDir );
 
         std::string absolutePathCurrentTrace = GetMyWindow()->getTrace()->getFileName();
 #ifdef _WIN32
-        _putenv_s( "PARAVER_ALIEN_TRACE_FULL_PATH", (const char *)absolutePathCurrentTrace.c_str() );
+        _putenv_s( "PARAVER_ALIEN_TRACE_FULL_PATH", (const char*)absolutePathCurrentTrace.c_str() );
         wxExecute( command );
 #else
-        setenv( "PARAVER_ALIEN_TRACE_FULL_PATH", (const char *)absolutePathCurrentTrace.c_str(), 1 );
+        setenv( "PARAVER_ALIEN_TRACE_FULL_PATH", (const char*)absolutePathCurrentTrace.c_str(), 1 );
         if( wxExecute( command ) == 0 )
         {
         }
 #endif
-        //wxSetWorkingDirectory( currentDir );
+        // wxSetWorkingDirectory( currentDir );
       }
       else
       {
-        //wxMessageBox( _( "Unable to find $PARAVER_ALIEN_TYPE as an event type" ), _( "Alien application invocation" ) );
+        // wxMessageBox( _( "Unable to find $PARAVER_ALIEN_TYPE as an event type" ), _( "Alien application invocation" ) );
       }
     }
   }
@@ -5474,9 +5872,8 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
     if( myWindow->getTrace()->findLastEventValue( posRow, posTime, events, type, value ) )
     {
       string valueStr = LabelConstructor::eventValueLabel( myWindow, type, value );
-      string lineStr = valueStr.substr( 0, valueStr.find_first_of( ' ', 0 ) );
-      string fileStr = valueStr.substr( valueStr.find_first_of( '(', 0 ) + 1,
-                                           valueStr.length() - valueStr.find_first_of( '(', 0 ) - 2 );
+      string lineStr  = valueStr.substr( 0, valueStr.find_first_of( ' ', 0 ) );
+      string fileStr  = valueStr.substr( valueStr.find_first_of( '(', 0 ) + 1, valueStr.length() - valueStr.find_first_of( '(', 0 ) - 2 );
       wxDirDialog dirDialog( nullptr, _( "Choose the directory to find to source files" ) );
       if( dirDialog.ShowModal() == wxID_OK )
       {
@@ -5484,29 +5881,31 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
         wxString command;
 
         wxArrayString textEditor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalTextEditors(), "txt" );
-        bool cmdExecuted = false;
+        bool cmdExecuted         = false;
 
-        for (int idx = 0 ; !cmdExecuted && idx < textEditor.size(); ++idx)
+        for( int idx = 0; !cmdExecuted && idx < textEditor.size(); ++idx )
         {
 #ifdef _WIN32
           command << textEditor[ idx ] << path << _( "\\" ) << wxString::FromUTF8( fileStr.c_str() );
           cmdExecuted = ( wxExecute( command + wxT( " --version" ), wxEXEC_SYNC ) == 0 );
 #else
-          command << textEditor[ idx ] << _( " + " ) << wxString::FromUTF8( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromUTF8( fileStr.c_str() );
+          command << textEditor[ idx ] << _( " + " ) << wxString::FromUTF8( lineStr.c_str() ) << _( " " ) << path << _( "/" )
+                  << wxString::FromUTF8( fileStr.c_str() );
           cmdExecuted = ( wxExecute( command + wxT( " --version" ), wxEXEC_SYNC ) == 0 );
 #endif
-          if ( !cmdExecuted )
+          if( !cmdExecuted )
             command.Clear();
-          else 
+          else
             cmdExecuted = ( wxExecute( command ) != 0 );
         }
-        if ( !cmdExecuted )
-          wxMessageBox( _( "Unable to find an external app. Please check the external application's text editors list at Preferences." ), _( "No external app found" ) );
+        if( !cmdExecuted )
+          wxMessageBox( _( "Unable to find an external app. Please check the external application's text editors list at Preferences." ),
+                        _( "No external app found" ) );
       }
     }
     else
     {
-      wxMessageBox( _( "Event " ) + (wxString() << wxGetApp().GetEventTypeForCode()) + _( " not found." ), _( "Show source code" ) );
+      wxMessageBox( _( "Event " ) + ( wxString() << wxGetApp().GetEventTypeForCode() ) + _( " not found." ), _( "Show source code" ) );
     }
   }
 }
@@ -5520,28 +5919,28 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 {
   wxCommandEvent dummyEvent;
 
-  if( event.ControlDown() && event.GetKeyCode() == (long) 'C' )
+  if( event.ControlDown() && event.GetKeyCode() == (long)'C' )
   {
     OnPopUpCopy( dummyEvent );
     return;
   }
-  if( event.ControlDown() && event.GetKeyCode() == (long) 'V' )
+  if( event.ControlDown() && event.GetKeyCode() == (long)'V' )
   {
     if( gPasteWindowProperties::getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
       OnPopUpPasteDefaultSpecial( dummyEvent );
     return;
   }
-  if( event.ControlDown() && event.GetKeyCode() == (long) 'U' )
+  if( event.ControlDown() && event.GetKeyCode() == (long)'U' )
   {
     OnPopUpUndoZoom( dummyEvent );
     return;
   }
-  if( event.ControlDown() && event.GetKeyCode() == (long) 'R' )
+  if( event.ControlDown() && event.GetKeyCode() == (long)'R' )
   {
     OnPopUpRedoZoom( dummyEvent );
     return;
   }
-  if( event.ControlDown() && event.GetKeyCode() == (long) 'T' )
+  if( event.ControlDown() && event.GetKeyCode() == (long)'T' )
   {
     EnableTiming( !timing );
     return;
@@ -5550,19 +5949,19 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
   if( zooming && event.GetKeyCode() == WXK_ESCAPE )
   {
     escapePressed = true;
-    zooming = false;
+    zooming       = false;
 
     wxMemoryDC memdc( drawImage );
     memdc.SetBackgroundMode( wxTRANSPARENT );
     memdc.SetBackground( *wxTRANSPARENT_BRUSH );
     memdc.Clear();
-  #if wxTEST_GRAPHICS == 1
+#if wxTEST_GRAPHICS == 1
     wxGCDC dc( memdc );
     dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
-  #else
+#else
     wxDC& dc = memdc;
     dc.SetBrush( *wxTRANSPARENT_BRUSH );
-  #endif
+#endif
     dc.DrawBitmap( bufferImage, 0, 0, false );
     if( myWindow->getDrawFlags() )
       dc.DrawBitmap( eventImage, 0, 0, true );
@@ -5576,27 +5975,24 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 
 bool gTimeline::pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& onObject )
 {
-  if( x < objectAxisPos ||
-      x > bufferImage.GetWidth() - drawBorder )
+  if( x < objectAxisPos || x > bufferImage.GetWidth() - drawBorder )
     return false;
   else
     x -= objectAxisPos;
 
-  if( y > timeAxisPos ||
-      y < drawBorder )
+  if( y > timeAxisPos || y < drawBorder )
     return false;
 
-  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                   ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
-  onTime = ( timeStep * x ) + myWindow->getWindowBeginTime();
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) / ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
+  onTime         = ( timeStep * x ) + myWindow->getWindowBeginTime();
 
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-  TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
-  vector<TObjectOrder> selected;
+  TObjectOrder endRow   = myWindow->getZoomSecondDimension().second;
+  vector< TObjectOrder > selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
-  double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
-  endRow = TObjectOrder( floor( ( y - drawBorder - 1 ) / heightPerRow ) );
+  double heightPerRow     = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
+  endRow                  = TObjectOrder( floor( ( y - drawBorder - 1 ) / heightPerRow ) );
 
   if( endRow >= numObjects )
     endRow = numObjects - 1;
@@ -5613,47 +6009,42 @@ bool gTimeline::getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder w
 
   wxColour pixelColor;
   wxMemoryDC dc( bufferImage );
-  
+
   // Get 3 pixels  (top/center/bottom)
   std::vector< wxColour > nearbyPixels;
   int tmpY;
-  for ( int i = -1; i <= 1; ++i )
+  for( int i = -1; i <= 1; ++i )
   {
     tmpY = whichY + i;
-    dc.GetPixel( whichX, tmpY, &pixelColor ); 
-    if ( tmpY > drawBorder && tmpY < timeAxisPos && pixelColor == GetForegroundColour() ) 
+    dc.GetPixel( whichX, tmpY, &pixelColor );
+    if( tmpY > drawBorder && tmpY < timeAxisPos && pixelColor == GetForegroundColour() )
       nearbyPixels.push_back( pixelColor );
     else
       nearbyPixels.push_back( GetBackgroundColour() );
   }
 
   // 0-0-0 or 1-1-1 : Background or in the middle of a vertical line
-  if ( nearbyPixels[ 0 ] == nearbyPixels[ 1 ]  && 
-       nearbyPixels[ 1 ] == nearbyPixels[ 2 ] )
+  if( nearbyPixels[ 0 ] == nearbyPixels[ 1 ] && nearbyPixels[ 1 ] == nearbyPixels[ 2 ] )
   {
     return false;
   }
 
   // 0-0-1: Bottom
-  if ( nearbyPixels[ 0 ] == GetBackgroundColour() && 
-       nearbyPixels[ 1 ] == GetBackgroundColour() && 
-       nearbyPixels[ 2 ] == GetForegroundColour() ) 
+  if( nearbyPixels[ 0 ] == GetBackgroundColour() && nearbyPixels[ 1 ] == GetBackgroundColour() && nearbyPixels[ 2 ] == GetForegroundColour() )
   {
     whichPixelPos = objectHeight - ( whichY + 1 - minPos );
     return true;
   }
 
   // 1-0-0: Top
-  if ( nearbyPixels[ 0 ] == GetForegroundColour() && 
-       nearbyPixels[ 1 ] == GetBackgroundColour() && 
-       nearbyPixels[ 2 ] == GetBackgroundColour() ) 
+  if( nearbyPixels[ 0 ] == GetForegroundColour() && nearbyPixels[ 1 ] == GetBackgroundColour() && nearbyPixels[ 2 ] == GetBackgroundColour() )
   {
     whichPixelPos = objectHeight - ( whichY - 1 - minPos );
     return true;
   }
 
   // X-1-X: Is middle pixel the only one? ==> horizontal line
-  if ( nearbyPixels[ 1 ] == GetForegroundColour() ) 
+  if( nearbyPixels[ 1 ] == GetForegroundColour() )
   {
     whichPixelPos = objectHeight - ( whichY - minPos );
     return true;
@@ -5665,13 +6056,12 @@ bool gTimeline::getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder w
 
 TSemanticValue gTimeline::getSemanticValueFromFusedLines( int whichY )
 {
- TSemanticValue tmpSemantic = 0.0;
-  
+  TSemanticValue tmpSemantic = 0.0;
+
   if( myWindow->isFusedLinesColorSet() )
   {
-    TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
-                                  ( timeAxisPos - drawBorder );
-    tmpSemantic = myWindow->getMaximumY() - ( semanticStep * ( whichY - drawBorder - 1 ) );//( semanticStep * y ) + myWindow->getMinimumY();
+    TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) / ( timeAxisPos - drawBorder );
+    tmpSemantic = myWindow->getMaximumY() - ( semanticStep * ( whichY - drawBorder - 1 ) ); //( semanticStep * y ) + myWindow->getMinimumY();
   }
 
   return tmpSemantic;
@@ -5700,13 +6090,20 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   whatWhereText->Clear();
   whatWhereText->AppendText( _( "Working..." ) );
   Update();
-  computeWhatWhere( time, object, tmpSemantic, checkWWText->IsChecked(), checkWWShowDate->IsChecked(), checkWWHex->IsChecked() );
+
+  std::vector< std::pair< TWhatWhereLine, wxString > > tmpWhatWhereLines;
+
+  computeWhatWhere( tmpWhatWhereLines, time, object, tmpSemantic, checkWWText->IsChecked(), checkWWShowDate->IsChecked(), checkWWHex->IsChecked() );
+
+  whatWhereLines.clear();
+  whatWhereLines = tmpWhatWhereLines;
+
   printWhatWhere();
 }
 
 
 void gTimeline::drawTimeMarks( std::vector< TRecordTime > times,
-                               vector< TObjectOrder > &selectedObjects,
+                               vector< TObjectOrder >& selectedObjects,
                                bool drawXCross,
                                bool allObjects,
                                TObjectOrder lastFoundObject )
@@ -5715,11 +6112,11 @@ void gTimeline::drawTimeMarks( std::vector< TRecordTime > times,
 
   if( !myWindow->getReady() )
     return;
-    
-  if ( allObjects )
+
+  if( allObjects )
   {
     myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
-    lastFoundObject = selectedObjects.size() -1;
+    lastFoundObject = selectedObjects.size() - 1;
   }
 
   bufferDraw.SelectObject( wxNullBitmap );
@@ -5736,27 +6133,26 @@ void gTimeline::drawTimeMarks( std::vector< TRecordTime > times,
 
   for( std::vector< TRecordTime >::iterator it = times.begin(); it != times.end(); ++it )
   {
-    if ( *it >= myWindow->getWindowBeginTime() && *it <= myWindow->getWindowEndTime() )
+    if( *it >= myWindow->getWindowBeginTime() && *it <= myWindow->getWindowEndTime() )
     {
+      wxCoord xTime = ( ( ( *it - myWindow->getWindowBeginTime() ) * ( drawZone->GetSize().GetWidth() - objectAxisPos - drawBorder ) ) /
+                        ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) ) +
+                      objectAxisPos;
 
-      wxCoord xTime = ( ( ( *it - myWindow->getWindowBeginTime() ) * ( drawZone->GetSize().GetWidth() - objectAxisPos - drawBorder ) )
-                        / ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) )
-                      + objectAxisPos;
-
-      if ( drawXCross )
+      if( drawXCross )
       {
         // draw found object cross
         bufferDraw.SetPen( wxPen( *wxRED, 2 ) );
         bufferDraw.DrawLine( xTime - 5, objectPosList[ lastFoundObject ] - 5, xTime + 5, objectPosList[ lastFoundObject ] + 5 );
         bufferDraw.DrawLine( xTime - 5, objectPosList[ lastFoundObject ] + 5, xTime + 5, objectPosList[ lastFoundObject ] - 5 );
       }
-      
+
       // draw found time line
       bufferDraw.SetPen( wxPen( *wxRED, 2, wxPENSTYLE_SHORT_DASH ) );
       bufferDraw.DrawLine( xTime + 1, 0, xTime + 1, drawZone->GetSize().GetHeight() );
     }
   }
-  
+
   drawZone->Refresh();
 }
 
@@ -5766,45 +6162,42 @@ void gTimeline::OnFindDialog()
   FindDialog dialog( this );
   dialog.SetMyWindow( myWindow );
   dialog.InitControlsBeforeShow();
-  
+
   if( dialog.ShowModal() == wxID_OK )
   {
     TRecordTime beginTime, endTime;
     unsigned int objectSelection = dialog.choiceObjects->GetSelection();
-    vector<TObjectOrder> selectedObjects;
+    vector< TObjectOrder > selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
 
     if( dialog.radioObjects->GetValue() )
     {
       beginTime = myWindow->getWindowBeginTime();
-      endTime = myWindow->getWindowEndTime();
+      endTime   = myWindow->getWindowEndTime();
     }
     else if( dialog.radioEvents->GetValue() )
     {
       bool found = false;
       TRecordTime newFoundTime, timeToSearch;
-      set<TEventType> events = myWindow->getTrace()->getLoadedEvents();
-      set<TEventType>::iterator itEvt = events.begin();
-      int i = 0;
+      set< TEventType > events          = myWindow->getTrace()->getLoadedEvents();
+      set< TEventType >::iterator itEvt = events.begin();
+      int i                             = 0;
       while( i < dialog.choiceEventType->GetSelection() )
       {
-        ++i; ++itEvt;
+        ++i;
+        ++itEvt;
       }
       TEventType eventType = *itEvt;
-      if( lastEventFoundTime >= myWindow->getWindowBeginTime() &&
-          lastEventFoundTime <= myWindow->getWindowEndTime() )
+      if( lastEventFoundTime >= myWindow->getWindowBeginTime() && lastEventFoundTime <= myWindow->getWindowEndTime() )
         timeToSearch = lastEventFoundTime;
       else
         timeToSearch = myWindow->getWindowBeginTime();
-      
+
       if( dialog.checkNextObject->GetValue() )
       {
         while( !found && objectSelection < selectedObjects.size() )
         {
-          if( ( found = myWindow->getTrace()->findNextEvent( selectedObjects[ objectSelection ],
-                                                             timeToSearch,
-                                                             eventType,
-                                                             newFoundTime ) ) )
+          if( ( found = myWindow->getTrace()->findNextEvent( selectedObjects[ objectSelection ], timeToSearch, eventType, newFoundTime ) ) )
             break;
           ++objectSelection;
           timeToSearch = 0.0;
@@ -5812,23 +6205,20 @@ void gTimeline::OnFindDialog()
       }
       else
       {
-        found = myWindow->getTrace()->findNextEvent( selectedObjects[ objectSelection ],
-                                                     timeToSearch,
-                                                     eventType,
-                                                     newFoundTime );
+        found = myWindow->getTrace()->findNextEvent( selectedObjects[ objectSelection ], timeToSearch, eventType, newFoundTime );
       }
 
       if( !found )
       {
-        wxMessageBox( wxT( "Event '" ) + dialog.choiceEventType->GetStringSelection() + wxT( "' not found." ),
-                      wxT( "Not found" ) );
+        wxMessageBox( wxT( "Event '" ) + dialog.choiceEventType->GetStringSelection() + wxT( "' not found." ), wxT( "Not found" ) );
         return;
       }
 
       beginTime = newFoundTime - myWindow->getTrace()->getEndTime() * 0.001;
-      if( beginTime < 0.0 ) beginTime = 0.0;
+      if( beginTime < 0.0 )
+        beginTime = 0.0;
       endTime = newFoundTime + myWindow->getTrace()->getEndTime() * 0.001;
-      
+
       lastEventFoundTime = newFoundTime;
     }
     else if( dialog.radioSemantic->GetValue() )
@@ -5837,8 +6227,7 @@ void gTimeline::OnFindDialog()
       TRecordTime timeToSearch, duration;
       TSemanticValue valueToSearch;
 
-      if( lastSemanticFoundTime >= myWindow->getWindowBeginTime() &&
-          lastSemanticFoundTime <= myWindow->getWindowEndTime() )
+      if( lastSemanticFoundTime >= myWindow->getWindowBeginTime() && lastSemanticFoundTime <= myWindow->getWindowEndTime() )
         timeToSearch = lastSemanticFoundTime;
       else
         timeToSearch = myWindow->getWindowBeginTime();
@@ -5852,7 +6241,7 @@ void gTimeline::OnFindDialog()
         valueToSearch = dialog.comboSemanticValue->GetSelection() + myWindow->getMinimumY();
 
       duration = dialog.spinSemanticDuration->GetValue();
-      
+
       myWindow->init( timeToSearch, NOCREATE, false );
       myWindow->initRow( selectedObjects[ objectSelection ], timeToSearch, NOCREATE, false );
       while( lastSemanticFoundTime == myWindow->getBeginTime( selectedObjects[ objectSelection ] ) )
@@ -5867,15 +6256,15 @@ void gTimeline::OnFindDialog()
             if( myWindow->getValue( selectedObjects[ objectSelection ] ) == valueToSearch )
             {
               if( dialog.choiceDurationFunction->GetSelection() == 0 &&
-                  myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] )
-                  > duration )
+                  myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] ) >
+                    duration )
               {
                 found = true;
                 break;
               }
               else if( dialog.choiceDurationFunction->GetSelection() == 1 &&
-                       myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] )
-                       < duration )
+                       myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] ) <
+                         duration )
               {
                 found = true;
                 break;
@@ -5893,15 +6282,14 @@ void gTimeline::OnFindDialog()
           if( myWindow->getValue( selectedObjects[ objectSelection ] ) == valueToSearch )
           {
             if( dialog.choiceDurationFunction->GetSelection() == 0 &&
-                myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] )
-                > duration )
+                myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] ) > duration )
             {
               found = true;
               break;
             }
             else if( dialog.choiceDurationFunction->GetSelection() == 1 &&
-                     myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] )
-                     < duration )
+                     myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] ) <
+                       duration )
             {
               found = true;
               break;
@@ -5913,39 +6301,38 @@ void gTimeline::OnFindDialog()
 
       if( !found )
       {
-        wxMessageBox( wxT( "Semantic '" ) + dialog.comboSemanticValue->GetValue() + wxT( "' not found." ),
-                      wxT( "Not found" ) );
+        wxMessageBox( wxT( "Semantic '" ) + dialog.comboSemanticValue->GetValue() + wxT( "' not found." ), wxT( "Not found" ) );
         return;
       }
 
-      TRecordTime addTime = ( myWindow->getEndTime( selectedObjects[ objectSelection ] ) 
-                              - myWindow->getBeginTime( selectedObjects[ objectSelection ] ) )
-                            * 0.1;
-      if( myWindow->getBeginTime( selectedObjects[ objectSelection ] ) - myWindow->getEndTime( selectedObjects[ objectSelection ] )
-          <
+      TRecordTime addTime =
+        ( myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] ) ) * 0.1;
+      if( myWindow->getBeginTime( selectedObjects[ objectSelection ] ) - myWindow->getEndTime( selectedObjects[ objectSelection ] ) <
           ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) * 0.25 )
       {
         beginTime = myWindow->getBeginTime( selectedObjects[ objectSelection ] ) - addTime;
-        if( beginTime < 0.0 ) beginTime = 0.0;
+        if( beginTime < 0.0 )
+          beginTime = 0.0;
         endTime = myWindow->getEndTime( selectedObjects[ objectSelection ] ) + addTime;
       }
       else
       {
         beginTime = myWindow->getBeginTime( selectedObjects[ objectSelection ] ) - addTime;
-        if( beginTime < 0.0 ) beginTime = 0.0;
+        if( beginTime < 0.0 )
+          beginTime = 0.0;
         endTime = beginTime + ( ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) * 0.25 );
       }
 
       lastSemanticFoundTime = myWindow->getBeginTime( selectedObjects[ objectSelection ] );
     }
-    
+
     TObjectOrder first, last;
     unsigned int objectsToShow = floor( (double)( timeAxisPos - drawBorder ) / 20 );
 
     if( objectsToShow >= selectedObjects.size() )
     {
       first = selectedObjects[ 0 ];
-      last = selectedObjects[ selectedObjects.size() - 1 ];
+      last  = selectedObjects[ selectedObjects.size() - 1 ];
     }
     else if( dialog.choicePosition->GetSelection() == 0 ) // position begin
     {
@@ -5964,22 +6351,22 @@ void gTimeline::OnFindDialog()
         first = selectedObjects[ objectsToShow - objectSelection ];
     }
     else // position middle
-    { 
+    {
       objectsToShow /= 2;
       if( objectsToShow > objectSelection )
       {
         first = selectedObjects[ 0 ];
-        last = selectedObjects[ objectSelection + objectsToShow ];
+        last  = selectedObjects[ objectSelection + objectsToShow ];
       }
       else if( objectSelection + objectsToShow > selectedObjects.size() )
       {
         first = selectedObjects[ objectSelection - objectsToShow ];
-        last = selectedObjects[ selectedObjects.size() ];
+        last  = selectedObjects[ selectedObjects.size() ];
       }
       else
       {
         first = selectedObjects[ objectSelection - objectsToShow ];
-        last = selectedObjects[ objectSelection + objectsToShow ];
+        last  = selectedObjects[ objectSelection + objectsToShow ];
       }
     }
 
@@ -6005,7 +6392,7 @@ void gTimeline::OnFindDialog()
 
 void gTimeline::OnStaticSlopeUpdate( wxUpdateUIEvent& event )
 {
-  event.SetText( wxString( _( "Slope (by ")  ) + wxString( LABEL_TIMEUNIT[ myWindow->getTimeUnit() ].c_str(), wxConvUTF8 ) + wxString( _( ")" ) ) );
+  event.SetText( wxString( _( "Slope (by " ) ) + wxString( LABEL_TIMEUNIT[ myWindow->getTimeUnit() ].c_str(), wxConvUTF8 ) + wxString( _( ")" ) ) );
 }
 
 
@@ -6021,19 +6408,19 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   TObjectOrder newWheelZoomBeginObject;
   TObjectOrder newWheelZoomEndObject;
   bool zoomOut = event.GetWheelRotation() < 0;
-  bool zoomIn = !zoomOut;
+  bool zoomIn  = !zoomOut;
 
   if( !myWindow->getReady() || ParaverConfig::getInstance()->getDisableTimelineZoomMouseWheel() )
     return;
 
   if( zoomOut )
   {
-  //Uncomment if want more zoom out (image get really tiny)
-/*    if( newWheelFactor <= 0.2 )
-      newWheelFactor -= 0.01;
-    else*/
-      newWheelFactor -= 0.1;
-    if( newWheelFactor <= std::numeric_limits<double>::epsilon() )
+    // Uncomment if want more zoom out (image get really tiny)
+    /*    if( newWheelFactor <= 0.2 )
+          newWheelFactor -= 0.01;
+        else*/
+    newWheelFactor -= 0.1;
+    if( newWheelFactor <= std::numeric_limits< double >::epsilon() )
       return;
   }
   else
@@ -6068,24 +6455,24 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   else if( posX >= drawZone->GetClientSize().GetWidth() - drawBorder )
     posX = drawZone->GetClientSize().GetWidth() - drawBorder - 1;
   wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder;
-  double ratioLeft = ( (double)( posX - objectAxisPos - 1 ) / (double)pixelsWidth );
-  double ratioRight = 1.0 - ratioLeft;
-  ratioLeft = ratioLeft * ( 1 - 1 / wheelZoomFactorX );
-  ratioRight = ratioRight * ( 1 - 1 / wheelZoomFactorX );
-  
+  double ratioLeft    = ( (double)( posX - objectAxisPos - 1 ) / (double)pixelsWidth );
+  double ratioRight   = 1.0 - ratioLeft;
+  ratioLeft           = ratioLeft * ( 1 - 1 / wheelZoomFactorX );
+  ratioRight          = ratioRight * ( 1 - 1 / wheelZoomFactorX );
+
   wxCoord pixelsHeight = timeAxisPos;
-  double ratioUp = (double)event.GetY() / (double)pixelsHeight;
-  double ratioDown = 1.0 - ratioUp;
-  ratioUp = ratioUp * ( 1 - 1 / wheelZoomFactorY );
-  ratioDown = ratioDown * ( 1 - 1 / wheelZoomFactorY );
-  
+  double ratioUp       = (double)event.GetY() / (double)pixelsHeight;
+  double ratioDown     = 1.0 - ratioUp;
+  ratioUp              = ratioUp * ( 1 - 1 / wheelZoomFactorY );
+  ratioDown            = ratioDown * ( 1 - 1 / wheelZoomFactorY );
+
 #ifdef _WIN32
   if( wheelZoomObjects )
 #else
   if( event.ControlDown() )
 #endif
   {
-    vector<TObjectOrder> selectedObjects;
+    vector< TObjectOrder > selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(),
                                selectedObjects,
                                myWindow->getZoomSecondDimension().first,
@@ -6094,21 +6481,22 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
 
     TObjectOrder objectHeight = selectedObjects.size();
     PRV_INT64 dummyAppliedAmount;
-    newWheelZoomBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, (double)objectHeight * ratioUp, dummyAppliedAmount, myWindow->getLevel() );
-    newWheelZoomEndObject = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, - (double)objectHeight * ratioDown, dummyAppliedAmount, myWindow->getLevel() );
+    newWheelZoomBeginObject =
+      myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, (double)objectHeight * ratioUp, dummyAppliedAmount, myWindow->getLevel() );
+    newWheelZoomEndObject =
+      myWindow->shiftLast( myWindow->getZoomSecondDimension().second, -(double)objectHeight * ratioDown, dummyAppliedAmount, myWindow->getLevel() );
   }
   else
   {
     newWheelZoomBeginObject = myWindow->getZoomSecondDimension().first;
-    newWheelZoomEndObject = myWindow->getZoomSecondDimension().second;
+    newWheelZoomEndObject   = myWindow->getZoomSecondDimension().second;
   }
 
   newWheelZoomBeginTime = myWindow->getWindowBeginTime() + timeWidth * ratioLeft;
-  newWheelZoomEndTime = myWindow->getWindowEndTime() -  timeWidth * ratioRight;
+  newWheelZoomEndTime   = myWindow->getWindowEndTime() - timeWidth * ratioRight;
 
   // Current zoom time boundary check
-  if( newWheelZoomEndTime - newWheelZoomBeginTime < 10 || 
-      newWheelZoomEndTime < newWheelZoomBeginTime )
+  if( newWheelZoomEndTime - newWheelZoomBeginTime < 10 || newWheelZoomEndTime < newWheelZoomBeginTime )
     return;
 
   // Current zoom time correction
@@ -6127,12 +6515,12 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   }
 
   // Setting global parameters
-  wheelZoomFactor = newWheelFactor;
-  wheelZoomBeginTime = newWheelZoomBeginTime;
-  wheelZoomEndTime = newWheelZoomEndTime;
+  wheelZoomFactor      = newWheelFactor;
+  wheelZoomBeginTime   = newWheelZoomBeginTime;
+  wheelZoomEndTime     = newWheelZoomEndTime;
   wheelZoomBeginObject = newWheelZoomBeginObject;
-  wheelZoomEndObject = newWheelZoomEndObject;
-  
+  wheelZoomEndObject   = newWheelZoomEndObject;
+
   // Temp draw buffer re-scaled
   wxBitmap tmpBMP;
   tmpBMP.Create( pixelsWidth, pixelsHeight );
@@ -6197,7 +6585,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
 
 void gTimeline::MousePanMotion()
 {
-  wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder;
+  wxCoord pixelsWidth  = drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder;
   wxCoord pixelsHeight = timeAxisPos;
 
   // Temp draw buffer re-scaled
@@ -6233,7 +6621,7 @@ void gTimeline::MousePanMotion()
     dstY = 0;
     srcY = 0;
   }
-  
+
   wxCoord tmpBlitHeight;
   if( motionEvent.ControlDown() )
     tmpBlitHeight = pixelsHeight - ( zoomBeginY < motionEvent.GetY() ? motionEvent.GetY() - zoomBeginY : zoomBeginY - motionEvent.GetY() );
@@ -6241,18 +6629,18 @@ void gTimeline::MousePanMotion()
     tmpBlitHeight = pixelsHeight;
 
   // Control time limits
-  TRecordTime timeWidth = myWindow->getWindowEndTime() - myWindow->getWindowBeginTime();
+  TRecordTime timeWidth    = myWindow->getWindowEndTime() - myWindow->getWindowBeginTime();
   TRecordTime panBeginTime = myWindow->getWindowBeginTime() + ( zoomBeginX * timeWidth ) / pixelsWidth;
   TRecordTime panEndTime   = myWindow->getWindowBeginTime() + ( motionEvent.GetX() * timeWidth ) / pixelsWidth;
-  TRecordTime deltaTime = panEndTime - panBeginTime;
-  panBeginTime = myWindow->getWindowBeginTime() - deltaTime;
-  panEndTime   = myWindow->getWindowEndTime()   - deltaTime;
+  TRecordTime deltaTime    = panEndTime - panBeginTime;
+  panBeginTime             = myWindow->getWindowBeginTime() - deltaTime;
+  panEndTime               = myWindow->getWindowEndTime() - deltaTime;
   if( panBeginTime < 0 || panEndTime > myWindow->getTrace()->getEndTime() )
     return;
 
   // Control object limits
-  
-  
+
+
   tmpDC.Blit( dstX,
               dstY,
               pixelsWidth - ( zoomBeginX < motionEvent.GetX() ? motionEvent.GetX() - zoomBeginX : zoomBeginX - motionEvent.GetX() ),
@@ -6272,21 +6660,21 @@ void gTimeline::MousePanMotion()
 
 void gTimeline::MousePanLeftUp( wxMouseEvent& event )
 {
-  TRecordTime  panBeginTime;
-  TRecordTime  panEndTime;
+  TRecordTime panBeginTime;
+  TRecordTime panEndTime;
   TObjectOrder panBeginObject;
   TObjectOrder panEndObject;
-  wxCoord      pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder;
-  wxCoord      pixelsHeight = timeAxisPos;
-  
+  wxCoord pixelsWidth  = drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder;
+  wxCoord pixelsHeight = timeAxisPos;
+
   TRecordTime timeWidth = myWindow->getWindowEndTime() - myWindow->getWindowBeginTime();
-  panBeginTime = myWindow->getWindowBeginTime() + ( zoomBeginX * timeWidth ) / pixelsWidth;
-  panEndTime   = myWindow->getWindowBeginTime() + ( zoomEndX * timeWidth ) / pixelsWidth;
+  panBeginTime          = myWindow->getWindowBeginTime() + ( zoomBeginX * timeWidth ) / pixelsWidth;
+  panEndTime            = myWindow->getWindowBeginTime() + ( zoomEndX * timeWidth ) / pixelsWidth;
   TRecordTime deltaTime = panEndTime - panBeginTime;
-  
+
   panBeginTime = myWindow->getWindowBeginTime() - deltaTime;
-  panEndTime   = myWindow->getWindowEndTime()   - deltaTime;
-  
+  panEndTime   = myWindow->getWindowEndTime() - deltaTime;
+
   if( panBeginTime < 0 )
   {
     panBeginTime = 0;
@@ -6300,17 +6688,17 @@ void gTimeline::MousePanLeftUp( wxMouseEvent& event )
 
   if( event.ControlDown() )
   {
-    vector<TObjectOrder> selectedObjects;
+    vector< TObjectOrder > selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(),
                                selectedObjects,
                                myWindow->getZoomSecondDimension().first,
                                myWindow->getZoomSecondDimension().second,
                                true );
 
-    TObjectOrder objectHeight = selectedObjects.size();
+    TObjectOrder objectHeight   = selectedObjects.size();
     PRV_INT64 tmpPanBeginObject = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomBeginY * objectHeight ) / pixelsHeight;
     PRV_INT64 tmpPanEndObject   = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomEndY * objectHeight ) / pixelsHeight;
-    PRV_INT64 deltaObject = tmpPanEndObject - tmpPanBeginObject;
+    PRV_INT64 deltaObject       = tmpPanEndObject - tmpPanBeginObject;
 
     PRV_INT64 appliedDeltaObject;
     if( deltaObject < 0 )
@@ -6327,15 +6715,14 @@ void gTimeline::MousePanLeftUp( wxMouseEvent& event )
   else
   {
     panBeginObject = myWindow->getZoomSecondDimension().first;
-    panEndObject = myWindow->getZoomSecondDimension().second;
+    panEndObject   = myWindow->getZoomSecondDimension().second;
   }
-  
-  if( panBeginTime   != myWindow->getWindowBeginTime() ||
-      panBeginObject != myWindow->getZoomSecondDimension().first )
+
+  if( panBeginTime != myWindow->getWindowBeginTime() || panBeginObject != myWindow->getZoomSecondDimension().first )
   {
     myWindow->addZoom( panBeginTime, panEndTime, panBeginObject, panEndObject );
-    myWindow->setWindowBeginTime( panBeginTime, true );
-    myWindow->setWindowEndTime( panEndTime, true );
+    myWindow->setWindowBeginTime( panBeginTime );
+    myWindow->setWindowEndTime( panEndTime );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
@@ -6357,24 +6744,22 @@ void gTimeline::doDrawCaution( wxDC& whichDC )
     wxBitmap cautionImage( caution_yellow_xpm );
     whichDC.SetPen( wxPen( backgroundColour ) );
     whichDC.SetBrush( wxBrush( backgroundColour ) );
-    whichDC.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
-                      drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
-    whichDC.DrawBitmap( cautionImage,
-                   drawBorder,
-                   drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                   true );
+    whichDC.DrawRectangle( 0,
+                           drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
+                           drawBorder + cautionImage.GetWidth() + 2,
+                           drawZone->GetClientSize().GetHeight() );
+    whichDC.DrawBitmap( cautionImage, drawBorder, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder, true );
   }
   else if( drawCaution )
   {
     wxBitmap cautionImage( caution_xpm );
     whichDC.SetPen( wxPen( backgroundColour ) );
     whichDC.SetBrush( wxBrush( backgroundColour ) );
-    whichDC.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
-                            drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
-    whichDC.DrawBitmap( cautionImage,
-                         drawBorder,
-                         drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                         true );
+    whichDC.DrawRectangle( 0,
+                           drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
+                           drawBorder + cautionImage.GetWidth() + 2,
+                           drawZone->GetClientSize().GetHeight() );
+    whichDC.DrawBitmap( cautionImage, drawBorder, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder, true );
   }
 }
 
@@ -6385,9 +6770,9 @@ void gTimeline::doDrawCaution( wxDC& whichDC )
 
 void gTimeline::OnSliderSelectedColorUpdated( wxCommandEvent& event )
 {
-  int redColor = sliderSelectedRed->GetValue();
+  int redColor   = sliderSelectedRed->GetValue();
   int greenColor = sliderSelectedGreen->GetValue();
-  int blueColor = sliderSelectedBlue->GetValue();
+  int blueColor  = sliderSelectedBlue->GetValue();
 
   wxColor tmpColor( redColor, greenColor, blueColor );
   panelSelectedColor->SetBackgroundColour( tmpColor );
@@ -6400,9 +6785,9 @@ void gTimeline::OnSliderSelectedColorUpdated( wxCommandEvent& event )
   textSelectedBlue->ChangeValue( wxString::Format( wxT( "%i" ), blueColor ) );
 
   rgb tmpRGBColor;
-  tmpRGBColor.red = redColor;
+  tmpRGBColor.red   = redColor;
   tmpRGBColor.green = greenColor;
-  tmpRGBColor.blue = blueColor;
+  tmpRGBColor.blue  = blueColor;
   if( selectedCustomColor->myColorType == CustomColorSemValue::ColorType::BACKGROUND )
   {
     myWindow->setCustomBackgroundColor( tmpRGBColor );
@@ -6476,9 +6861,9 @@ void gTimeline::OnCheckboxCustomPaletteClick( wxCommandEvent& event )
 {
   myWindow->setUseCustomPalette( event.IsChecked() );
 
-  if ( !event.IsChecked() )
+  if( !event.IsChecked() )
   {
-    enableApplyButton = false;
+    enableApplyButton   = false;
     selectedCustomColor = nullptr;
     sliderSelectedRed->SetValue( 0 );
     sliderSelectedGreen->SetValue( 0 );
@@ -6500,6 +6885,7 @@ void gTimeline::OnCheckboxCustomPaletteClick( wxCommandEvent& event )
 void gTimeline::OnButtonCustomPaletteApplyClick( wxCommandEvent& event )
 {
   enableApplyButton = false;
+  myWindow->setCustomPalette( myWindow->getSemanticColor().getCustomPalette() );
 
   myWindow->setForceRedraw( true );
 }
@@ -6550,9 +6936,9 @@ void gTimeline::OnTextSelectedColorUpdated( wxCommandEvent& event )
   sliderSelectedBlue->SetValue( blueColor );
 
   rgb tmpRGBColor;
-  tmpRGBColor.red = redColor;
+  tmpRGBColor.red   = redColor;
   tmpRGBColor.green = greenColor;
-  tmpRGBColor.blue = blueColor;
+  tmpRGBColor.blue  = blueColor;
   if( selectedCustomColor->myColorType == CustomColorSemValue::ColorType::BACKGROUND )
     myWindow->setCustomBackgroundColor( tmpRGBColor );
   else if( selectedCustomColor->myColorType == CustomColorSemValue::ColorType::AXIS )
@@ -6561,6 +6947,10 @@ void gTimeline::OnTextSelectedColorUpdated( wxCommandEvent& event )
     myWindow->getSemanticColor().setCustomColor( selectedCustomColor->myValue, tmpRGBColor );
 
   enableApplyButton = true;
+}
+
+void gTimeline::OnActivateWindow( wxActivateEvent& event )
+{
 }
 
 

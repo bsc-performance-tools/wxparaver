@@ -22,7 +22,8 @@
 \*****************************************************************************/
 
 #include <wx/arrstr.h>
-#include <wx/utils.h> 
+#include <wx/log.h>
+#include <wx/utils.h>
 
 #include <algorithm>
 #include <set>
@@ -129,12 +130,12 @@ bool verifyFolding( const Trace& whichTrace )
 }
 
 
-bool verifyProfet( const Trace& whichTrace )
+bool verifyMess( const Trace& whichTrace )
 {
   const auto& traceEvents = whichTrace.getLoadedEvents();
 
-  constexpr size_t PROFET_LABELS_SIZE = 2;
-  const std::array< std::string, PROFET_LABELS_SIZE > profetReadLabels { "Read", "read" };
+  constexpr size_t MESS_LABELS_SIZE = 2;
+  const std::array< std::string, MESS_LABELS_SIZE > messReadLabels { "Read", "read" };
 
   std::string strTraceEvent;
   for( auto itTraceEvent = traceEvents.begin(); itTraceEvent != traceEvents.end(); ++itTraceEvent )
@@ -143,7 +144,7 @@ bool verifyProfet( const Trace& whichTrace )
       continue;
     strTraceEvent.clear();
     whichTrace.getEventLabels().getEventTypeLabel( *itTraceEvent, strTraceEvent );
-    if( std::any_of( profetReadLabels.begin(), profetReadLabels.end(), [&]( const auto& el ) { return strTraceEvent.find( el ) != std::string::npos; } ) )
+    if( std::any_of( messReadLabels.begin(), messReadLabels.end(), [&]( const auto& el ) { return strTraceEvent.find( el ) != std::string::npos; } ) )
     {
       if( strTraceEvent.find( "DRAM" ) != std::string::npos )
         return true;
@@ -172,7 +173,7 @@ const std::array< std::function< bool( const Trace& ) >, (int)TExternalAppID::NU
   {},                   // PRVSTATS
   { verifyClustering }, // CLUSTERING
   { verifyFolding },    // FOLDING
-  { verifyProfet },     // PROFET
+  { verifyMess },       // MESS
   { verifyCARM },       // CARM
   {},                   // USER_COMMAND
   {},                   // DIMEMAS_GUI
@@ -197,6 +198,7 @@ wxString ExternalApps::getApplicationCheckBin( TExternalAppID whichApp )
 bool ExternalApps::existCommand( const wxString& program )
 {
   static wxArrayString tmpOutput, tmpErrors;
+  wxLogNull dummyLog;
   return wxExecute( program + " --version", tmpOutput, tmpErrors, wxEXEC_SYNC ) == 0;
 }
 

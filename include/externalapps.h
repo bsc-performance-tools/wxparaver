@@ -39,9 +39,9 @@ enum class TExternalAppID
   PRVSTATS,
   CLUSTERING,
   FOLDING,
-  PROFET,
+  MESS,
   CARM,
-    // <-- add new apps here at most
+  // <-- add new apps here at most
   USER_COMMAND,
 
   // --- Called by different widget ---
