@@ -189,7 +189,7 @@ class TreeBrowserItemData : public wxTreeItemData
   private:
     wxString desc;
     gTimeline* myTimeline = nullptr;
-    gHistogram* myHisto = nullptr;
+    gHistogram* myHisto   = nullptr;
 };
 
 

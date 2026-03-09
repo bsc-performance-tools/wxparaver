@@ -230,8 +230,8 @@ wxProgressDialog *paraverMain::dialogProgress = nullptr;
 
 wxSize paraverMain::defaultTitleBarSize = wxSize( 0, 0 );
 
-Timeline *paraverMain::beginDragWindow = nullptr;
-Timeline *paraverMain::endDragWindow   = nullptr;
+Timeline *paraverMain::beginDragWindow     = nullptr;
+Timeline *paraverMain::endDragWindow       = nullptr;
 Histogram *paraverMain::beginDragHistogram = nullptr;
 Histogram *paraverMain::endDragHistogram   = nullptr;
 
@@ -409,6 +409,8 @@ paraverMain::~paraverMain()
     int id          = tmp->GetId();
     Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousCFGsClick );
   }
+
+  SyncWindows::getInstance()->removeAllGroups();
 
   for( vector< Trace * >::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     delete *it;
@@ -2377,10 +2379,10 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
   }
   else if( gTimeline *timeline = itemSelected->getTimeline() )
   {
-    currentTimeline = timeline->GetMyWindow();
-    beginDragWindow = timeline->GetMyWindow();
-    currentWindow   = (wxWindow *)timeline;
-    currentHisto    = nullptr;
+    currentTimeline    = timeline->GetMyWindow();
+    beginDragWindow    = timeline->GetMyWindow();
+    currentWindow      = (wxWindow *)timeline;
+    currentHisto       = nullptr;
     beginDragHistogram = nullptr;
 
     if( timeline->IsShown() )
@@ -2395,7 +2397,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent &event )
     currentHisto  = histo->GetHistogram();
     currentWindow = (wxWindow *)histo;
 
-    beginDragWindow = nullptr;
+    beginDragWindow    = nullptr;
     beginDragHistogram = histo->GetHistogram();
 
     if( histo->IsShown() )
@@ -2456,7 +2458,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent &event )
     {
       Histogram *tmpHisto = histo->GetHistogram();
 
-      beginDragWindow = nullptr;
+      beginDragWindow    = nullptr;
       beginDragHistogram = histo->GetHistogram();
 
       tmpHisto->setShowWindow( !tmpHisto->getShowWindow() );
@@ -2467,7 +2469,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent &event )
     {
       Timeline *tmpWin = timeline->GetMyWindow();
 
-      beginDragWindow = timeline->GetMyWindow();
+      beginDragWindow    = timeline->GetMyWindow();
       beginDragHistogram = nullptr;
 
       tmpWin->setShowWindow( !tmpWin->getShowWindow() );
@@ -3266,10 +3268,10 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent &event )
       }
       else if( item->getHistogram() != nullptr )
       {
-        currentWindow   = item->getHistogram();
-        currentHisto    = item->getHistogram()->GetHistogram();
+        currentWindow      = item->getHistogram();
+        currentHisto       = item->getHistogram()->GetHistogram();
         beginDragHistogram = currentHisto;
-        currentTimeline = nullptr;
+        currentTimeline    = nullptr;
       }
     }
   }
@@ -3810,7 +3812,7 @@ void paraverMain::OnTreeBeginDrag( wxTreeEvent &event )
     wxTreeCtrl *tmpTree           = static_cast< wxTreeCtrl * >( event.GetEventObject() );
     TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
 
-    beginDragWindow = nullptr;
+    beginDragWindow    = nullptr;
     beginDragHistogram = nullptr;
 
     if( itemData != nullptr )
@@ -3865,12 +3867,12 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
     wxTreeCtrl *tmpTree           = static_cast< wxTreeCtrl * >( event.GetEventObject() );
     TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
 
-    endDragWindow = nullptr;
+    endDragWindow    = nullptr;
     endDragHistogram = nullptr;
 
     if( gTimeline *timeline = itemData->getTimeline() )
     {
-      if ( beginDragWindow != nullptr )
+      if( beginDragWindow != nullptr )
       {
         endDragWindow = timeline->GetMyWindow();
         if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace(), endDragWindow->isLevelProcessModel() ) &&
@@ -3884,7 +3886,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
     }
     else if( gHistogram *histogram = itemData->getHistogram() )
     {
-      if ( beginDragHistogram != nullptr )
+      if( beginDragHistogram != nullptr )
       {
         Histogram *endDragHistogram = histogram->GetHistogram();
 
@@ -3938,7 +3940,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
           tmpDerivedHistogram->setSemanticSortReverse( beginDragHistogram->getSemanticSortReverse() );
 
           // Position
-          bool found = false;
+          bool found             = false;
           gHistogram *tmpParent1 = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), beginDragHistogram, found );
           wxSize titleBarSize    = tmpParent1->GetSize() - tmpParent1->GetClientSize();
           if( titleBarSize.GetHeight() == 0 )
@@ -4451,10 +4453,10 @@ void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent &event )
   }
   else if( currentHisto != nullptr )
   {
-    bool found = false;
+    bool found               = false;
     gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), currentHisto, found );
     if( tmpHistogram != nullptr )
-      tmpEnableButtonDestroy   = tmpHistogram->getEnableDestroyButton();
+      tmpEnableButtonDestroy = tmpHistogram->getEnableDestroyButton();
   }
   else // Both null
   {
@@ -4861,9 +4863,9 @@ void paraverMain::OnSignal()
     }
     else // Histogram
     {
-      bool found = false;
+      bool found               = false;
       gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), currentHisto, found );
-      if ( tmpHistogram != nullptr )
+      if( tmpHistogram != nullptr )
       {
         // Zoom
         currentHisto->setWindowBeginTime( currentSignal.beginTime );
@@ -4984,13 +4986,13 @@ void paraverMain::OnSyncWindows( int groupId )
     {
       auto *histogram = histo->GetHistogram();
 
-    //   if( !histogram->isSync() || histogram->getSyncGroup() != wichGroup )
-    //     unsetSelected = false;
-    // }
-    // else if ( gTreeLink *tmpLink = itemData->getTreeLink() )
-    // {
-    //   gHistogram *histo = tmpLink->getWindowLinked();
-    //   auto *histogram = histo->GetHistogram();
+      //   if( !histogram->isSync() || histogram->getSyncGroup() != wichGroup )
+      //     unsetSelected = false;
+      // }
+      // else if ( gTreeLink *tmpLink = itemData->getTreeLink() )
+      // {
+      //   gHistogram *histo = tmpLink->getWindowLinked();
+      //   auto *histogram = histo->GetHistogram();
 
       if( !histogram->isSync() || histogram->getSyncGroup() != wichGroup )
         unsetSelected = false;
@@ -5105,7 +5107,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
       tmpFiles.push_back( tmpNameOut );
     }
   }
-  catch( const std::exception& e )
+  catch( const std::exception &e )
   {
     paraverMain::dialogProgress->Show( false );
     delete paraverMain::dialogProgress;
