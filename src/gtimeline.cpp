@@ -885,13 +885,12 @@ void gTimeline::redraw()
                                        commsToDraw,
                                        progress );
 
-    anyRowWithAllSemanticValuesZero = !rowWithSemanticValuesNotZero.empty() &&
-                                      std::any_of( selectedSet.cbegin(), selectedSet.cend(),
-                                                   [this]
-                                                   ( auto e )
-                                                   { 
-                                                     return rowWithSemanticValuesNotZero[ e ] == 0;
-                                                   } );
+    anyRowWithAllSemanticValuesZero = !rowWithSemanticValuesNotZero.empty() && std::any_of( selectedSet.cbegin(),
+                                                                                            selectedSet.cend(),
+                                                                                            [ this ]( auto e )
+                                                                                            {
+                                                                                              return rowWithSemanticValuesNotZero[ e ] == 0;
+                                                                                            } );
   }
 
   // Draw before any row
@@ -1115,11 +1114,11 @@ bool gTimeline::drawAxis( wxDC& dc, vector< TObjectOrder >& selected )
       break;
 
     case TObjectAxisSize::CUSTOM_PERC:
-      {
-        PRV_UINT16 customSize = myWindow->getObjectAxisCustomSize();
-        objectExt = wxSize( dc.GetSize().GetWidth() * customSize / 100.0, 0 );
-      }
-      break;
+    {
+      PRV_UINT16 customSize = myWindow->getObjectAxisCustomSize();
+      objectExt             = wxSize( dc.GetSize().GetWidth() * customSize / 100.0, 0 );
+    }
+    break;
 
     default:
       break;
@@ -2125,7 +2124,7 @@ gTimeline* gTimeline::clone( Timeline* clonedWindow, wxWindow* parent, wxTreeIte
   clonedTimeline->SetClientSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
 
   clonedTimeline->setRowWithSemanticValuesNotZero( rowWithSemanticValuesNotZero );
-  
+
   clonedWindow->setPixelSize( myWindow->getPixelSize() );
 
   // add to loaded windows list
@@ -2257,10 +2256,19 @@ void gTimeline::OnPopUpHideEmptyObjects( wxCommandEvent& event )
   vector< bool > tmpSelectedRows;
   myWindow->getSelectedRows( myWindow->getLevel(), tmpSelectedRows );
 
-  std::transform( tmpSelectedRows.begin(), tmpSelectedRows.end(), rowWithSemanticValuesNotZero.begin(), tmpSelectedRows.begin(), std::logical_and<>() );
+  std::transform( tmpSelectedRows.begin(),
+                  tmpSelectedRows.end(),
+                  rowWithSemanticValuesNotZero.begin(),
+                  tmpSelectedRows.begin(),
+                  std::logical_and<>() );
 
   // If no object have values, show all of them. Otherwise a segfault can occur if no objects are shown.
-  if( !std::any_of( tmpSelectedRows.cbegin(), tmpSelectedRows.cend(), []( bool i ){ return i; } ) )
+  if( !std::any_of( tmpSelectedRows.cbegin(),
+                    tmpSelectedRows.cend(),
+                    []( bool i )
+                    {
+                      return i;
+                    } ) )
   {
     tmpSelectedRows.flip();
   }
@@ -2389,7 +2397,7 @@ void gTimeline::OnPopUpPasteDuration( wxCommandEvent& event )
 {
   gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
   pasteActions->paste( this, "Duration" );
-  myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
+  myWindow->addZoom( myWindow->getWindowBeginTime(), myWindow->getWindowEndTime() );
   myWindow->setRedraw( true );
 }
 
@@ -3402,7 +3410,7 @@ void gTimeline::computeWhatWhere( std::vector< std::pair< TWhatWhereLine, wxStri
   std::vector< Timeline* > groupTimelines;
   if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_INFO_PANEL ) )
   {
-    groupTimelines = SyncWindows::getInstance()->getGroupWindows<Timeline>( myWindow->getSyncGroup() );
+    groupTimelines = SyncWindows::getInstance()->getGroupWindows< Timeline >( myWindow->getSyncGroup() );
 
     auto it = std::find( groupTimelines.begin(), groupTimelines.end(), myWindow );
     if( it != groupTimelines.end() )
