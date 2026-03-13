@@ -42,17 +42,21 @@
 #  include <process.h>
 #endif
 
+#include <wx/arrstr.h>
 #include <wx/filefn.h> // wxPathList
 #include <wx/mimetype.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h>
 #include <wx/utils.h> // wxGetEnv
+#include <wx/validate.h>
 
 // Validators
+#include "runscript.h"
+
 #include "cfg.h"
 #include "filter.h"
 #include "gtimeline.h"
-#include "runscript.h"
+#include "labelconstructor.h"
 #include "utils/traceparser/pcffileparser.h"
 #include "windows_tree.h"
 #include "wxparaverapp.h"
@@ -62,8 +66,6 @@
 #include <iostream>
 #include <regex>
 #include <vector>
-#include <wx/arrstr.h>
-#include <wx/validate.h>
 
 using namespace std;
 
@@ -182,12 +184,16 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
   EVT_UPDATE_UI( ID_MESS_ADDITIONAL_PLOTS, RunScript::OnMessAdditionalPlotsUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_CARM_USE_WINDOW_COLORS, RunScript::OnCheckboxCarmUseWindowColorsUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, RunScript::OnCheckboxCarmUseSemanticWindowUpdate )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
   EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
   EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
+  EVT_BUTTON( ID_BUTTON_CARM_SYNC, RunScript::OnButtonCarmSyncClick )
+  EVT_UPDATE_UI( ID_BUTTON_CARM_SYNC, RunScript::OnButtonCarmSyncUpdate )
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
   EVT_UPDATE_UI( ID_BUTTON_EXIT, RunScript::OnButtonExitUpdate )
@@ -291,6 +297,7 @@ void RunScript::Init()
 {
   // clang-format off
 ////@begin RunScript member initialisation
+  carmWindow = nullptr;
   myProcess = nullptr;
   myProcessPid = 0;
   choiceApplication = NULL;
@@ -367,11 +374,17 @@ void RunScript::Init()
   textCtrlMessCFG = NULL;
   fileBrowserButtonMessCFG = NULL;
   checkMessAdditionalPlots = NULL;
+  carmSection = NULL;
+  textCtrlCarmMinBurstDuration = NULL;
+  checkCarmUseWindowColors = NULL;
+  checkCarmUseSemanticWindow = NULL;
+  checkCarmAccumulateValues = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
   buttonKill = NULL;
   buttonClearLog = NULL;
+  buttonCarmSync = NULL;
   listboxRunLog = NULL;
   buttonExit = NULL;
 ////@end RunScript member initialisation
@@ -993,6 +1006,44 @@ void RunScript::CreateControls( std::vector< bool > whichAcceptableApps )
   checkMessAdditionalPlots->SetValue(false);
   itemBoxSizer6->Add(checkMessAdditionalPlots, 12, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+  carmSection = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(carmSection, 0, wxGROW|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
+  carmSection->Add(itemBoxSizer10, 0, wxGROW|wxALL, 0);
+
+  wxStaticText* itemStaticText11 = new wxStaticText( itemDialog1, wxID_STATIC, _("Min.Burst Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(itemStaticText11, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  textCtrlCarmMinBurstDuration = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CARM_MIN_BURST_DURATION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(textCtrlCarmMinBurstDuration, 5, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxStaticText* itemStaticText1 = new wxStaticText( itemDialog1, wxID_STATIC, _("us"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(itemStaticText1, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  itemBoxSizer10->Add(5, 5, 6, wxGROW|wxALL, 0);
+
+  wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
+  carmSection->Add(itemBoxSizer11, 1, wxGROW|wxALL, 0);
+
+  itemBoxSizer11->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer11->Add(itemBoxSizer13, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  checkCarmUseWindowColors = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_WINDOW_COLORS, _("Use window colors"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCarmUseWindowColors->SetValue(true);
+  itemBoxSizer13->Add(checkCarmUseWindowColors, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 3);
+
+  checkCarmUseSemanticWindow = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, _("Use semantic window"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCarmUseSemanticWindow->SetValue(true);
+  itemBoxSizer13->Add(checkCarmUseSemanticWindow, 0, wxALIGN_CENTER_VERTICAL|wxALL, 3);
+
+  checkCarmAccumulateValues = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_ACCUMULATE_VALUES, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCarmAccumulateValues->SetValue(false);
+  checkCarmAccumulateValues->Enable(false);
+  itemBoxSizer13->Add(checkCarmAccumulateValues, 0, wxALIGN_CENTER_VERTICAL|wxALL, 3);
+
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
 
@@ -1010,7 +1061,9 @@ void RunScript::CreateControls( std::vector< bool > whichAcceptableApps )
   itemBoxSizer128->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer131 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer131, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer2->Add(itemBoxSizer131, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+
+  itemBoxSizer131->Add(5, 5, 4, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
@@ -1030,6 +1083,14 @@ void RunScript::CreateControls( std::vector< bool > whichAcceptableApps )
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
   itemBoxSizer131->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+
+  itemBoxSizer131->Add(5, 5, 4, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  buttonCarmSync = new wxButton( itemDialog1, ID_BUTTON_CARM_SYNC, _("Time Sync"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    buttonCarmSync->SetToolTip(_("Writes file paraver_sync.csv containing window time unit and window begin/end times. This file is written in the carm subdir that is placed under source trace path."));
+  buttonCarmSync->Show(false);
+  itemBoxSizer131->Add(buttonCarmSync, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
   if (RunScript::ShowToolTips())
@@ -1103,6 +1164,13 @@ void RunScript::CreateControls( std::vector< bool > whichAcceptableApps )
   fileBrowserButtonMessCFG->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonMessCFG->Enable();
 
+  if ( whichAcceptableApps.empty() )
+  {
+    checkCarmUseWindowColors->Disable();
+    checkCarmUseSemanticWindow->Disable();
+    checkCarmAccumulateValues->Disable();
+  }
+
   // Filter forbidden chars
   wxArrayString forbidden;
   forbidden.Add( _( "-" ) );
@@ -1114,6 +1182,7 @@ void RunScript::CreateControls( std::vector< bool > whichAcceptableApps )
   clusteringTextBoxRefinementEpsilonMin->SetValidator( validator );
   clusteringTextBoxRefinementEpsilonMax->SetValidator( validator );
   clusteringTextBoxNumberOfSamples->SetValidator( validator );
+  textCtrlCarmMinBurstDuration->SetValidator( validator );
 
   choiceApplication->Select( 0 );
 
@@ -1477,6 +1546,32 @@ wxString RunScript::GetCommand( wxString& command, wxString& parameters, TExtern
 
       break;
 
+    case TExternalAppID::CARM:
+      command = ExternalApps::getApplicationBin( TExternalAppID::CARM );
+
+      parameters = wxString( wxT("") );
+
+      tmpValue.Clear();
+      tmpValue = textCtrlCarmMinBurstDuration->GetValue(); // us
+      if ( !tmpValue.IsEmpty() )
+        parameters += wxString( wxT( " --min_dur " ) ) + tmpValue;
+
+      if ( checkCarmUseWindowColors->IsChecked() && !carmLabelsCSV.IsEmpty() )
+        parameters += wxString( wxT( " --color_csv " ) );
+
+      if ( checkCarmUseSemanticWindow->IsChecked() && !carmSemanticCSV.IsEmpty() )
+      {
+        parameters += wxString( wxT( " --mask_csv " ) );
+
+        if ( checkCarmAccumulateValues->IsChecked() )
+          parameters += wxString( wxT( " -ac" ) );
+      }
+
+      parameters += wxString( wxT( " --csv " ) ) + doubleQuote( carmSemanticCSV );
+      parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
+
+      break;
+
     case TExternalAppID::USER_COMMAND:
 
       tmpParams  = expandVariables( textCtrlDefaultParameters->GetValue() );
@@ -1602,6 +1697,7 @@ wxString RunScript::GetReachableCommand( TExternalAppID selectedApp )
 
         break;
 
+      case TExternalAppID::CARM:
       case TExternalAppID::CLUSTERING:
       case TExternalAppID::FOLDING:
       case TExternalAppID::USER_COMMAND:
@@ -1725,6 +1821,10 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       active &= !textCtrlMessOutputTrace->IsEmpty();
       break;
 
+    case TExternalAppID::CARM:
+      active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
+      break;
+
     case TExternalAppID::USER_COMMAND:
       active &= !textCtrlDefaultParameters->GetValue().IsEmpty();
       break;
@@ -1843,6 +1943,8 @@ void RunScript::adaptWindowToApplicationSelection()
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
 
     case TExternalAppID::PRVSTATS:
@@ -1860,11 +1962,14 @@ void RunScript::adaptWindowToApplicationSelection()
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
 
     case TExternalAppID::CLUSTERING:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
+      buttonCarmSync->Hide();
 
       if( textCtrlClusteringOutputTrace->IsEmpty() )
       {
@@ -1904,17 +2009,30 @@ void RunScript::adaptWindowToApplicationSelection()
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
 
     case TExternalAppID::MESS:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
+      buttonCarmSync->Hide();
 
       if( textCtrlMessOutputTrace->IsEmpty() && !textCtrlTrace->IsEmpty() )
       {
         wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
         textCtrlMessOutputTrace->SetValue( tmpFilename.GetName() + wxString( wxT( ".mess.prv" ) ) );
       }
+      break;
+
+    case TExternalAppID::CARM:
+      labelTextCtrlDefaultParameters->Hide();
+      textCtrlDefaultParameters->Hide();
+      buttonCarmSync->Show();
+
+      checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
+                                         checkCarmUseSemanticWindow->IsChecked() );
+
       break;
 
     case TExternalAppID::USER_COMMAND:
@@ -1930,6 +2048,8 @@ void RunScript::adaptWindowToApplicationSelection()
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
   }
 
@@ -1939,6 +2059,7 @@ void RunScript::adaptWindowToApplicationSelection()
   adaptClusteringAlgorithmParameters();
   foldingSection->Show( currentApp == TExternalAppID::FOLDING );
   messSection->Show( currentApp == TExternalAppID::MESS );
+  carmSection->Show( currentApp == TExternalAppID::CARM );
 
   Layout();
 }
@@ -2059,6 +2180,7 @@ void RunScript::InitOutputLinks()
   applicationLinkMaker[ TExternalAppID::CLUSTERING ]   = makeLinkComponentsClustering;
   applicationLinkMaker[ TExternalAppID::FOLDING ]      = makeLinkComponentsFolding;
   applicationLinkMaker[ TExternalAppID::MESS ]         = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponents;
   applicationLinkMaker[ TExternalAppID::USER_COMMAND ] = makeLinkComponents;
 
   // These applications aren't executed by "Run" button, so will not generate links
@@ -2079,7 +2201,7 @@ void RunScript::InitOutputLinks()
   outputLinks = {
     { "http", TTagPosition::PREFIX, httpLink }, { ".prv", TTagPosition::SUFFIX, skipLink },     { ".prv.gz", TTagPosition::SUFFIX, skipLink },
     { ".cfg", TTagPosition::SUFFIX, skipLink }, { ".xml", TTagPosition::SUFFIX, skipLink },     { ".csv", TTagPosition::SUFFIX, skipLink },
-    { ".dat", TTagPosition::SUFFIX, skipLink }, { ".gnuplot", TTagPosition::SUFFIX, skipLink }, { ".pdf", TTagPosition::SUFFIX, skipLink },
+    { ".dat", TTagPosition::SUFFIX, skipLink }, { ".gnuplot", TTagPosition::SUFFIX, skipLink }, { ".pdf", TTagPosition::SUFFIX, skipLink }
   };
 }
 
@@ -2326,7 +2448,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     if( currentWindow != nullptr )
       currentWindow->setEnableDestroyButton( true );
   }
-  else if( matchHrefExtension( event, wxT( ".prv" ) ) || matchHrefExtension( event, wxT( ".prv.gz" ) ) )
+  else if( matchHrefExtension( event, wxT( ".prv" ) ) || matchHrefExtension( event, wxT( ".prv.gz" ) ) ||
+           ( currentApp == TExternalAppID::CARM && matchHrefExtension( event, wxT( ".csv" ) ) ) )
   {
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
@@ -2471,6 +2594,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else
   {
+    // Load as text
     event.Skip();
   }
 }
@@ -2572,8 +2696,8 @@ void RunScript::setTrace( wxString whichTrace )
 
 void RunScript::setApp( TExternalAppID whichApp )
 {
-  int tmpSelection = 0;
-  for( int i = 0; i < choiceApplication->GetCount(); ++i )
+  unsigned int tmpSelection = 0;
+  for( unsigned int i = 0; i < choiceApplication->GetCount(); ++i )
   {
     if( (long int)choiceApplication->GetClientData( i ) == static_cast< long int >( whichApp ) )
     {
@@ -2616,6 +2740,14 @@ void RunScript::setFolding( wxString whichFoldingCSV )
 void RunScript::setMess()
 {
   setApp( TExternalAppID::MESS );
+}
+
+
+void RunScript::setCarm( const wxString& whichCarmSemanticCSV, const wxString& whichCarmLabelsCSV )
+{
+  carmSemanticCSV = whichCarmSemanticCSV;
+  carmLabelsCSV = whichCarmLabelsCSV;
+  setApp( TExternalAppID::CARM );
 }
 
 
@@ -2904,3 +3036,83 @@ TExternalAppID RunScript::getSelectedApp() const
 {
   return static_cast< TExternalAppID >( (long int)choiceApplication->GetClientData( choiceApplication->GetSelection() ) );
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW
+ */
+
+void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
+{
+  checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
+                                     checkCarmUseSemanticWindow->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_WINDOW_COLORS
+ */
+
+void RunScript::OnCheckboxCarmUseWindowColorsUpdate( wxUpdateUIEvent& event )
+{
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CARM_SYNC
+ */
+
+void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
+{
+  // Get window
+  Timeline *sourceWindow = GetCarmWindow();
+  bool dummyfound;
+  gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
+
+  // Publish data
+  wxFileName tmpTraceName( fileBrowserButtonTrace->GetPath() );  // contains carm subdir due to chop in sequenceCarm.
+  tmpTraceName.ClearExt();
+  std::string auxName = sourceWindow->getName() + "_";
+  std::replace( auxName.begin(), auxName.end(), ',', '-' );
+  std::replace( auxName.begin(), auxName.end(), ' ', '_' );
+  std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ).mb_str() ) +
+                                auxName.c_str() +
+                                std::string( tmpTraceName.GetFullName().mb_str() );
+  std::string syncFilename = tmpFileBaseName + ".paraver_sync.csv";
+
+  ofstream syncFile( syncFilename, ios::trunc );
+  if ( syncFile.good() )
+  {
+    CFGLoader::dumpTimeUnits( currentWindow->GetMyWindow()->getTimeUnit(), syncFile );
+    syncFile << std::endl;
+
+    // Set precision.
+    std::stringstream tmpTime( "" );
+    bool useLocale = false;
+    TTimeUnit traceOrigUnit  = currentWindow->GetMyWindow()->getTrace()->getTimeUnit();
+    TTimeUnit windowDestUnit = currentWindow->GetMyWindow()->getTimeUnit();
+    LabelConstructor::presetBaseFormat( tmpTime, LabelConstructor::timePrecisionsConversionTable[ traceOrigUnit ][ windowDestUnit ], useLocale );
+
+    // Write window times.
+    tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
+    tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() )   << std::endl;
+    syncFile << tmpTime.str();
+  }
+  else
+  {
+    ShowWarning( wxString( wxT( "Unable to write CARM synchronization file:\n" ) ) + 
+                 wxString( syncFilename.c_str(), wxConvUTF8 ) );
+  }
+  syncFile.close();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_CARM_SYNC
+ */
+
+void RunScript::OnButtonCarmSyncUpdate( wxUpdateUIEvent& event )
+{
+  buttonCarmSync->Enable( GetCarmWindow() != nullptr );
+}
+

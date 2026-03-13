@@ -61,6 +61,7 @@
 #include "filedialogext.h"
 #include "output.h"
 #include "paravermain.h"
+#include "ParaverMetadataManager.h"
 #include "popupmenu.h"
 #include "progresscontroller.h"
 #include "saveimagedialog.h"
@@ -2090,6 +2091,16 @@ void gTimeline::OnPopUpCopy( wxCommandEvent& event )
 }
 
 
+gTimeline *gTimeline::clone( Trace *newTrace, TTimeUnit whichTimeUnit, bool mustRedraw )
+{
+  return clone( myWindow->clone( newTrace, whichTimeUnit ),
+                parent,
+                getAllTracesTree()->GetRootItem(),
+                getSelectedTraceTree( newTrace )->GetRootItem(),
+                mustRedraw ); 
+}
+
+
 // simple windows can let this method do the entire work passing a nullptr clonedWindow
 // derived windows must pass existing clonedWindow, because Timeline::clone is recursive
 gTimeline* gTimeline::clone( Timeline* clonedWindow, wxWindow* parent, wxTreeItemId idRoot1, wxTreeItemId idRoot2, bool mustRedraw )
@@ -2149,7 +2160,6 @@ gTimeline* gTimeline::clone( Timeline* clonedWindow, wxWindow* parent, wxTreeIte
     currentPage->CollapseAllChildren( currentWindowId2 );
   }
 
-
   clonedTimeline->SetBufferImage( bufferImage );
   clonedTimeline->SetCommImage( commImage );
   clonedTimeline->SetEventImage( eventImage );
@@ -2167,6 +2177,7 @@ gTimeline* gTimeline::clone( Timeline* clonedWindow, wxWindow* parent, wxTreeIte
   clonedTimeline->redoColorsPanel = true;
 
   clonedTimeline->myWindow->setReady( myWindow->getReady() );
+
   if( mustRedraw )
   {
     if( myWindow->getShowWindow() )
@@ -2189,6 +2200,7 @@ void gTimeline::OnPopUpClone( wxCommandEvent& event )
 {
   clone( nullptr, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem() );
 }
+
 
 void gTimeline::OnPopUpRename( wxCommandEvent& event )
 {
@@ -2939,6 +2951,9 @@ void gTimeline::OnPopUpRunApp( wxCommandEvent& event )
       break;
     case ID_MENU_MESS:
       SequenceDriver::sequenceMess( this );
+      break;
+    case ID_MENU_CARM:
+      SequenceDriver::sequenceCarm( this );
       break;
     case ID_MENU_USER_COMMAND:
       SequenceDriver::sequenceUserCommand( this );
@@ -5280,17 +5295,17 @@ void gTimeline::saveText()
 #else
   defaultDir = _( "./" );
 #endif
-
-  tmpSuffix =
-    _( "." ) + wxString::FromUTF8( LabelConstructor::getDataFileSuffix( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ).c_str() );
+  
+  tmpSuffix = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ).c_str() );
 
   // Builds following wildcard: _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" )
   // Also fills extension
   wxString tmpWildcard;
   vector< wxString > extensions;
-  for( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
+  bool initWithDot = false;
+  for ( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
-    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ) ).c_str() );
+    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ), initWithDot ).c_str() );
     tmpWildcard += currentFormat.Upper() + _( " (*." ) + currentFormat + _( ")|*." ) + currentFormat + _( "|" );
 
     extensions.push_back( currentFormat );
@@ -5355,9 +5370,8 @@ void gTimeline::saveText()
 
     // Clustering default options
     output->setWindowTimeUnits( false );
-
-
-    output->dumpWindow( myWindow, fileName, progress );
+    
+    output->dumpWindow( myWindow, fileName, CSVMetadataAction::MANUAL_ORIGIN_ID, progress );
     delete output;
 
     // Delete progress controller
@@ -5561,7 +5575,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
         firstValue = *( semanticColorsToValue[ color ].begin() );
         tmpString  = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
         if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
-          LabelConstructor::transformToShort( tmpString );
+          tmpString = LabelConstructor::transformToShort( tmpString );
         label = wxString::FromUTF8( tmpString.c_str() );
       }
       else if( winToUse->isColorOutlier( color ) )

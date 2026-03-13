@@ -154,6 +154,7 @@
 #define ID_MENU_PASTE_OBJECT_AXIS                          30118
 #define ID_MENU_HIDE_EMPTY_OBJECTS                         30119
 #define ID_MENU_SAVE_SYNCHRONIZED_WINDOWS_TO_CFG           30120
+#define ID_MENU_CARM                                       30121 
 
 #define ID_MENU_SYNC_GROUP_BASE        31000
 #define ID_MENU_SYNC_REMOVE_GROUP_BASE 32000

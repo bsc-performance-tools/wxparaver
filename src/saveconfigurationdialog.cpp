@@ -421,9 +421,9 @@ bool SaveConfigurationDialog::TransferDataToWindow()
   if( !items.empty() )
     listHistograms->InsertItems( items, 0 );
 
-  optRelativeBegin->SetValue( options.windowBeginTimeRelative );
-  optRelativeEnd->SetValue( options.windowScaleRelative );
-  optComputeSemantic->SetValue( options.windowComputeYMaxOnLoad );
+  optRelativeBegin->SetValue( options.timelineBeginTimeRelative );
+  optRelativeEnd->SetValue( options.timelineScaleRelative );
+  optComputeSemantic->SetValue( options.timelineComputeYMaxOnLoad );
   radioAllTrace->SetValue( options.histoAllTrace );
   optComputeGradient->SetValue( options.histoComputeGradient );
 
@@ -453,13 +453,13 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   }
   selectedHistograms.clear();
   selectedHistograms = tmpHistograms;
-
-  options.windowBeginTimeRelative = optRelativeBegin->GetValue();
-  options.windowScaleRelative     = optRelativeEnd->GetValue();
-  options.windowComputeYMaxOnLoad = optComputeSemantic->GetValue();
-  options.histoAllTrace           = radioAllTrace->GetValue();
-  options.histoComputeGradient    = optComputeGradient->GetValue();
-  options.description             = std::string( textDescription->GetValue().mb_str() );
+  
+  options.timelineBeginTimeRelative = optRelativeBegin->GetValue();
+  options.timelineScaleRelative     = optRelativeEnd->GetValue();
+  options.timelineComputeYMaxOnLoad = optComputeSemantic->GetValue();
+  options.histoAllTrace             = radioAllTrace->GetValue();
+  options.histoComputeGradient      = optComputeGradient->GetValue();
+  options.description               = std::string( textDescription->GetValue().mb_str() );
 
   // CFG4D
   options.enabledCFG4DMode = checkboxSaveCFGBasicMode->GetValue();

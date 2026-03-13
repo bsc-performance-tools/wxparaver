@@ -1042,7 +1042,8 @@ class gTimeline : public wxFrame, public gWindow
                         TObjectOrder lastFoundObject = TObjectOrder( 0 ) );
     void OnFindDialog();
 
-    gTimeline* clone( Timeline* clonedWindow, wxWindow* parent, wxTreeItemId idRoot1, wxTreeItemId idRoot2, bool mustRedraw = true );
+    gTimeline *clone( Trace *newTrace, TTimeUnit whichTimeUnit, bool mustRedraw = true );
+    gTimeline *clone( Timeline* clonedWindow, wxWindow* parent, wxTreeItemId idRoot1, wxTreeItemId idRoot2, bool mustRedraw = true );
 
     void rightDownManager();
 

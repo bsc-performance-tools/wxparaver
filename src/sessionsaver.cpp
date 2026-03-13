@@ -33,16 +33,18 @@
 #  include "wx/wx.h"
 #endif
 
+#include <wx/filename.h>
+
+#include "sessionsaver.h"
+
 #include "cfg.h"
 #include "histogram.h"
 #include "loadedwindows.h"
-#include "sessionsaver.h"
 #include "window.h"
 #include "wxparaverapp.h"
 
 #include <fstream>
 #include <string>
-#include <wx/filename.h>
 
 using namespace std;
 
@@ -112,7 +114,10 @@ void SessionSaver::SaveSession_v2( wxString onFile, const vector< Trace * > &tra
     CFGS4DLinkedPropertiesManager dummyManager;
     vector< CFGS4DLinkedPropertiesManager > dummyList;
     dummyList.push_back( dummyManager );
-    CFGLoader::saveCFG( string( cfgFileName.GetFullPath().mb_str() ), SaveOptions(), vTimelines, vHistograms, dummyList );
+    std::ofstream cfgFile( string( cfgFileName.GetFullPath().mb_str() ).c_str() );
+    if ( cfgFile.good() )
+      CFGLoader::saveCFG( cfgFile, SaveOptions(), vTimelines, vHistograms, dummyList );
+    cfgFile.close();
   }
 
   file.close();

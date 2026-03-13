@@ -1397,6 +1397,13 @@ void gPopUpMenu::buildPopUpRunApp()
                        &gPopUpMenu::OnPopUpRunApp,
                        ID_MENU_MESS );
 
+    if( suitableApps[ (int)TExternalAppID::CARM ] )
+      this->buildItem( popUpMenuRun,
+                       ExternalApps::getApplicationLabel( TExternalAppID::CARM ),
+                       wxITEM_NORMAL,
+                       &gPopUpMenu::OnPopUpRunApp,
+                       ID_MENU_CARM );
+
     this->buildItem( popUpMenuRun,
                      ExternalApps::getApplicationLabel( TExternalAppID::USER_COMMAND ),
                      wxITEM_NORMAL,
