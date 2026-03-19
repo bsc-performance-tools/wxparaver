@@ -545,7 +545,8 @@ class gHistogram: public wxFrame, public gWindow
 
     void saveCFG();
     void saveImageDialog( wxString whichFileName = _( "" ) );
-    void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG );
+    // void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG );
+    std::optional< bool > saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool copyToClipboard = false );
     void saveText( bool onlySelectedPlane = false );
 
     void rightDownManager();

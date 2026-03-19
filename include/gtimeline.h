@@ -1054,7 +1054,8 @@ class gTimeline : public wxFrame, public gWindow
     void EnableTiming( bool state );
     void OnItemColorLeftUp( wxMouseEvent& event );
 
-    void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG );
+    // void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool copyToClipboard = false );
+    std::optional< bool > saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool copyToClipboard = false );
     void saveImageLegend( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool appendLegendSuffix = true );
     void saveImageDialog( wxString whichFileName = _( "" ) );
 

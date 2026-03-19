@@ -1414,6 +1414,13 @@ void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
 void gHistogram::OnPopUpCopy( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->copy( this );
+  bool copyToClipboard = true;
+  auto copiedToClipboard = saveImage( _( "" ), {}, copyToClipboard );
+  if( !copiedToClipboard.value() )
+    wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
+                  _( "Copy Histogram Properties" ),
+                  wxOK | wxICON_WARNING,
+                  this );
 }
 
 
@@ -3474,7 +3481,8 @@ void gHistogram::saveImageDialog( wxString whichFileName )
 }
 
 
-void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
+// void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
+std::optional< bool > gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex, bool copyToClipboard )
 {
   wxString imagePath;
   // TImageFormat filterIndex;
@@ -3621,9 +3629,27 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
   }
 
   wxImage baseLayer = imageBitmap.ConvertToImage();
-  baseLayer.SaveFile( imagePath, imageType );
+
+  bool copiedToClipboard = false;
+  if( !copyToClipboard )
+  {
+    // Save image without scale to file.
+    baseLayer.SaveFile( imagePath, imageType );
+  }
+  else
+  {
+    // Copy image to clipboard.
+    if ( wxTheClipboard->Open() )
+    {
+      copiedToClipboard = wxTheClipboard->SetData( new wxBitmapDataObject( imageBitmap ) );
+
+      wxTheClipboard->Close();
+    }
+  }
 
   setEnableDestroyButton( true );
+
+  return ( copyToClipboard ? std::optional{ copiedToClipboard } : std::nullopt );
 }
 
 

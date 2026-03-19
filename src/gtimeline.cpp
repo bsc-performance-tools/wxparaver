@@ -49,6 +49,7 @@
 #include "wxparaverapp.h"
 
 #include <algorithm>
+#include <wx/clipbrd.h>
 #include <wx/dcbuffer.h>
 #include <wx/display.h>
 #include <wx/filename.h>
@@ -2088,6 +2089,13 @@ void gTimeline::OnMove( wxMoveEvent& event )
 void gTimeline::OnPopUpCopy( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->copy( this );
+  bool copyToClipboard = true;
+  auto copiedToClipboard = saveImage( _( "" ), {}, copyToClipboard );
+  if( !copiedToClipboard.value() )
+    wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
+                  _( "Copy Timeline Properties" ),
+                  wxOK | wxICON_WARNING,
+                  this );
 }
 
 
@@ -4267,7 +4275,8 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   }
 }
 
-void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
+// void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex, bool copyToClipboard )
+std::optional< bool > gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex, bool copyToClipboard )
 {
   wxString imagePath;
   /* TImageFormat filterIndex;*/
@@ -4454,10 +4463,26 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
     tmpScaledTimeline.SaveFile( tmpScaledTimelinePath, imageType );
   }
 
-  // Save timeline image without scale
-  baseLayer.SaveFile( imagePath, imageType );
+  bool copiedToClipboard = false;
+  if( !copyToClipboard )
+  {
+    // Save image without scale to file.
+    baseLayer.SaveFile( imagePath, imageType );
+  }
+  else
+  {
+    // Copy image to clipboard.
+    if ( wxTheClipboard->Open() )
+    {
+      copiedToClipboard = wxTheClipboard->SetData( new wxBitmapDataObject( imageBitmap ) );
+
+      wxTheClipboard->Close();
+    }
+  }
 
   setEnableDestroyButton( true );
+
+  return ( copyToClipboard ? std::optional{ copiedToClipboard } : std::nullopt );
 }
 
 
