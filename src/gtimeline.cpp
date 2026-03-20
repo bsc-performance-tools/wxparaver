@@ -2089,7 +2089,8 @@ void gTimeline::OnMove( wxMoveEvent& event )
 void gTimeline::OnPopUpCopy( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->copy( this );
-  bool copyToClipboard = true;
+
+  bool copyToClipboard   = true;
   auto copiedToClipboard = saveImage( _( "" ), {}, copyToClipboard );
   if( !copiedToClipboard.value() )
     wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
