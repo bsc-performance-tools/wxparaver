@@ -3482,7 +3482,6 @@ void gHistogram::saveImageDialog( wxString whichFileName )
 }
 
 
-// void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
 std::optional< bool > gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex, bool copyToClipboard )
 {
   wxString imagePath;

@@ -4276,7 +4276,7 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   }
 }
 
-// void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex, bool copyToClipboard )
+
 std::optional< bool > gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex, bool copyToClipboard )
 {
   wxString imagePath;
