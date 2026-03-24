@@ -3629,6 +3629,7 @@ std::optional< bool > gHistogram::saveImage( wxString whichFileName, TImageForma
       break;
   }
 
+  imageDC.SelectObject( wxNullBitmap );
   wxImage baseLayer = imageBitmap.ConvertToImage();
 
   bool copiedToClipboard = false;
