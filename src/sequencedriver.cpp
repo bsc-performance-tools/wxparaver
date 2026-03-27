@@ -266,7 +266,8 @@ bool CreateTimelineCarmAction::execute( std::string whichTrace )
   bool usingWholeTrace = ( ( UsingWholeTraceState * )tmpSequence->getState( TSequenceStates::usingWholeTraceState ) )->getData();
   if ( !usingWholeTrace )
   {
-    if ( !wxparaverApp::mainWindow->DoLoadTrace( whichTrace ) )
+    bool allowTraceSizeCheck = false;
+    if ( !wxparaverApp::mainWindow->DoLoadTrace( whichTrace, allowTraceSizeCheck ) )
       return errorFound;
   
     // Create copy of source window but using whichTrace.

@@ -861,7 +861,7 @@ void paraverMain::DoLoadSession( const string &whichFileName )
 }
 
 
-std::optional< Trace * > paraverMain::DoLoadTrace( const string &path )
+std::optional< Trace * > paraverMain::DoLoadTrace( const string &path, bool allowCheckTraceSize )
 {
   Trace *tr = nullptr;
   std::optional< Trace * > returnTrace;
@@ -880,7 +880,8 @@ std::optional< Trace * > paraverMain::DoLoadTrace( const string &path )
   string tmpPath = std::string( tmpFileName.GetFullPath().mb_str() );
 
   TTraceSize traceSize = localKernel->getTraceSize( tmpPath );
-  if( !localKernel->checkTraceSize( tmpPath, ParaverConfig::getInstance()->getFiltersFilterTraceUpToMB() * 1E6 ) )
+  if( allowCheckTraceSize && 
+      !localKernel->checkTraceSize( tmpPath, ParaverConfig::getInstance()->getFiltersFilterTraceUpToMB() * 1E6 ) )
   {
     wxString tmpSize;
     tmpSize << rint( traceSize / 1E6 );

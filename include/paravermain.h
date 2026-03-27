@@ -608,7 +608,7 @@ class paraverMain : public wxFrame
     void OnSyncNewGroup();
 
     void DoLoadSession( const std::string& whichFileName );
-    std::optional< Trace* > DoLoadTrace( const std::string& path );
+    std::optional< Trace* > DoLoadTrace( const std::string& path, bool allowTraceSizeCheck = true );
     void UnloadTrace( int whichTrace );
     bool DoLoadCFG( const std::string& path, std::optional< Trace* > whichTrace = {} );
 
