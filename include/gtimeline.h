@@ -955,6 +955,7 @@ class gTimeline : public wxFrame, public gWindow
     void OnPopUpPasteFilterAll( wxCommandEvent& event );
     void OnPopUpPasteFilterCommunications( wxCommandEvent& event );
     void OnPopUpPasteFilterEvents( wxCommandEvent& event );
+    void OnPopUpPasteObjectAxis( wxCommandEvent& event );
     void OnPopUpClone( wxCommandEvent& event );
     void OnPopUpRename( wxCommandEvent& event );
     void OnPopUpFitTimeScale( wxCommandEvent& event );
@@ -962,6 +963,7 @@ class gTimeline : public wxFrame, public gWindow
     void OnPopUpFitSemanticScaleMax( wxCommandEvent& event );
     void OnPopUpFitSemanticScale( wxCommandEvent& event );
     void OnPopUpFitObjects( wxCommandEvent& event );
+    void OnPopUpHideEmptyObjects( wxCommandEvent& event );
     void OnPopUpViewCommunicationLines( wxCommandEvent& event );
     void OnPopUpViewEventFlags( wxCommandEvent& event );
     void OnPopUpFunctionLineColor( wxCommandEvent& event );
@@ -1015,6 +1017,7 @@ class gTimeline : public wxFrame, public gWindow
     void OnPopUpLabels( wxCommandEvent& event );
 
     void OnPopUpObjectAxis( wxCommandEvent& event );
+    void OnPopUpObjectAxisCustom( wxCommandEvent& event );
 
     void OnPopUpRunApp( wxCommandEvent& event );
 
@@ -1042,6 +1045,7 @@ class gTimeline : public wxFrame, public gWindow
                         TObjectOrder lastFoundObject = TObjectOrder( 0 ) );
     void OnFindDialog();
 
+    gTimeline* clone( Trace* newTrace, TTimeUnit whichTimeUnit, bool mustRedraw = true );
     gTimeline* clone( Timeline* clonedWindow, wxWindow* parent, wxTreeItemId idRoot1, wxTreeItemId idRoot2, bool mustRedraw = true );
 
     void rightDownManager();
@@ -1053,11 +1057,10 @@ class gTimeline : public wxFrame, public gWindow
     void EnableTiming( bool state );
     void OnItemColorLeftUp( wxMouseEvent& event );
 
+    std::optional< bool > saveImageWindows( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool copyToClipboard = false );
+    void saveImageLegend( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool appendLegendSuffix = true );
 
-  void saveImageWindows( wxString whichFileName );
-  void saveImageLegend( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool appendLegendSuffix = true );
-
-  void openSaveImageDialog( wxString whichFileName = _( "" ) );
+    void openSaveImageDialog( wxString whichFileName = _( "" ) );
 
     void saveText();
     void saveCFG();
@@ -1067,6 +1070,16 @@ class gTimeline : public wxFrame, public gWindow
     void setEditMode( bool value );
     bool getEditMode();
 
+    void setRowWithSemanticValuesNotZero( const std::vector< int >& whichRows )
+    {
+      rowWithSemanticValuesNotZero = whichRows;
+    }
+    // std::vector<int> &getRowWithSemanticValuesNotZero() { return rowWithSemanticValuesNotZero; }
+    bool getAnyRowWithAllSemanticValuesZero()
+    {
+      return anyRowWithAllSemanticValuesZero;
+    }
+    // ------->
     static wxProgressDialog* dialogProgress;
     static int numberOfProgressDialogUsers;
 
@@ -1175,6 +1188,10 @@ class gTimeline : public wxFrame, public gWindow
   ////@end gTimeline member variables
     // clang-format on
 
+    // "Hide Empty Rows" feature.
+    std::vector< int > rowWithSemanticValuesNotZero = {};
+    bool anyRowWithAllSemanticValuesZero            = false;
+
     class CustomColorSemValue : public wxObject
     {
       public:
@@ -1196,7 +1213,7 @@ class gTimeline : public wxFrame, public gWindow
     // colorsPanel update info
     bool forceRedoColorsPanel;
     bool enableApplyButton;
-    bool codeChangeSize = true;
+    bool codeChangeSize = false;
     SemanticInfoType lastType;
     TSemanticValue lastMin;
     TSemanticValue lastMax;
@@ -1290,5 +1307,5 @@ class gTimeline : public wxFrame, public gWindow
                         int imageStepXRectangle,
                         bool drawLabel );
 
-  void setEnableDestroyParents( bool value );
+    void setEnableDestroyParents( bool value );
 };

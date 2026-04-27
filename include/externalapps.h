@@ -35,16 +35,17 @@ class trace;
 enum class TExternalAppID
 {
   // --- Called through RunScript choice selector widget --- 
-  DIMEMAS = 0,  // Dimemas
-  PRVSTATS,     // prvstats
-  CLUSTERING,   // Clustering
-  FOLDING,      // Folding
-  MESS,       // Mess
-    // <-- add new apps here at most
-  USER_COMMAND, // User command
+  DIMEMAS = 0,
+  PRVSTATS,
+  CLUSTERING,
+  FOLDING,
+  MESS,
+  CARM,
+  // <-- add new apps here at most
+  USER_COMMAND,
 
   // --- Called by different widget ---
-  DIMEMAS_GUI,  // DimemasGui   invoked through button
+  DIMEMAS_GUI,  // DimemasGui invoked through button
 
   NUMBER_APPS
 };

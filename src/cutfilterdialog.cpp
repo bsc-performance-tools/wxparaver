@@ -25,41 +25,46 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 #include "wx/imaglist.h"
 ////@end includes
-
-#include <cmath>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <wx/filedlg.h>
-#include <wx/regex.h>
-#include <wx/filename.h>
+// clang-format on
 
 #include "cutfilterdialog.h"
-#include "paraverconfig.h"
+#include "rowsselectiondialog.h"
 #include "kernelconnection.h"
-//#include "wxparaverapp.h"
-#include "loadedwindows.h"
-#include "runscript.h"
-#include "histogram.h"
+#include "paraverconfig.h"
+
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/regex.h>
+// #include "wxparaverapp.h"
 #include "filedialogext.h"
 #include "gtimeline.h"
+#include "histogram.h"
 #include "labelconstructor.h"
+#include "loadedwindows.h"
+#include "runscript.h"
 
+// clang-format off
 ////@begin XPM images
 #include "../icons/arrow_up.xpm"
 #include "../icons/arrow_down.xpm"
 ////@end XPM images
+// clang-format on
 
 using namespace std;
 
@@ -75,7 +80,9 @@ IMPLEMENT_DYNAMIC_CLASS( CutFilterDialog, wxDialog )
  */
 
 BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
+EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_OBJECTS, CutFilterDialog::OnButtonCutterSelectObjectsClick )
 
+// clang-format off
 ////@begin CutFilterDialog event table entries
   EVT_INIT_DIALOG( CutFilterDialog::OnInitDialog )
   EVT_IDLE( CutFilterDialog::OnIdle )
@@ -116,6 +123,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_BUTTON( wxID_APPLY, CutFilterDialog::OnApplyClick )
   EVT_UPDATE_UI( wxID_APPLY, CutFilterDialog::OnApplyUpdate )
 ////@end CutFilterDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -129,18 +137,17 @@ CutFilterDialog::CutFilterDialog()
   Init();
 }
 
-CutFilterDialog::CutFilterDialog(
-        wxWindow* parent,
-        const wxString& whichXMLConfigurationFile, // useful when built from tutorial
-        wxWindowID id,
-        const wxString& caption,
-        const wxPoint& pos,
-        const wxSize& size,
-        long style )
+CutFilterDialog::CutFilterDialog( wxWindow* parent,
+                                  const wxString& whichXMLConfigurationFile, // useful when built from tutorial
+                                  wxWindowID id,
+                                  const wxString& caption,
+                                  const wxPoint& pos,
+                                  const wxSize& size,
+                                  long style )
 {
   Init();
   xmlConfigurationFile = whichXMLConfigurationFile;
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
 }
 
 
@@ -150,6 +157,7 @@ CutFilterDialog::CutFilterDialog(
 
 bool CutFilterDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin CutFilterDialog creation
   SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -161,6 +169,8 @@ bool CutFilterDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
   }
   Centre();
 ////@end CutFilterDialog creation
+  // clang-format on
+
   return true;
 }
 
@@ -181,6 +191,7 @@ CutFilterDialog::~CutFilterDialog()
 
 void CutFilterDialog::Init()
 {
+  // clang-format off
 ////@begin CutFilterDialog member initialisation
   changedXMLParameters = false;
   globalXMLsPath = "";
@@ -211,6 +222,10 @@ void CutFilterDialog::Init()
   textCutterBeginCut = NULL;
   textCutterEndCut = NULL;
   textCutterTasks = NULL;
+  radioCutterCutByApplication = NULL;
+  radioCutterCutByTask = NULL;
+  radioCutterCutByThread = NULL;
+  buttonCutterSelectObjects = NULL;
   buttonCutterSelectRegion = NULL;
   buttonCutterAllWindow = NULL;
   buttonCutterAllTrace = NULL;
@@ -260,24 +275,27 @@ void CutFilterDialog::Init()
   buttonSCKeepEventsDelete = NULL;
   buttonApply = NULL;
 ////@end CutFilterDialog member initialisation
+  // clang-format on
+
   outputPath = "";
   xmlConfigurationFile.Clear(); // paranoic
 
-  localKernel = paraverMain::myParaverMain->GetLocalKernel();
+  localKernel  = paraverMain::myParaverMain->GetLocalKernel();
   traceOptions = TraceOptions::create( GetLocalKernel() );
 
   // Constants for regular expressions
-  reAnySpaces =  wxString( wxT( "[[:space:]]*" ) );
-  reSomeNumbers =  wxString( wxT( "[[:digit:]]+" ) );
-  reType = reAnySpaces + reSomeNumbers + reAnySpaces;
+  reAnySpaces    = wxString( wxT( "[[:space:]]*" ) );
+  reSomeNumbers  = wxString( wxT( "[[:digit:]]+" ) );
+  reType         = reAnySpaces + reSomeNumbers + reAnySpaces;
   reNegativeSign = wxString( wxT( "[-]?" ) );
 
   reIntegerValue = reAnySpaces + reNegativeSign + reSomeNumbers + reAnySpaces;
-  reSomeIntegersSepByComma = wxString( wxT( "(" ) ) + reAnySpaces + wxString( wxT( "[,]" ) ) + reIntegerValue + wxString( wxT( ")*" ) ); //may be empty
+  reSomeIntegersSepByComma =
+    wxString( wxT( "(" ) ) + reAnySpaces + wxString( wxT( "[,]" ) ) + reIntegerValue + wxString( wxT( ")*" ) ); // may be empty
   reValuesSepByComma = reIntegerValue + reSomeIntegersSepByComma;
 
-  reSingleType = wxString( wxT( "^(" ) ) + reType + wxString( wxT( ")$" ) );
-  reRangeOfTypes = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[-]" ) ) + reType + wxString( wxT( ")$" ) );
+  reSingleType              = wxString( wxT( "^(" ) ) + reType + wxString( wxT( ")$" ) );
+  reRangeOfTypes            = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[-]" ) ) + reType + wxString( wxT( ")$" ) );
   reValuesSepByCommaForType = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[:]" ) ) + reValuesSepByComma + wxString( wxT( ")$" ) );
 
   cutterByTimePreviouslyChecked = true;
@@ -289,7 +307,8 @@ void CutFilterDialog::Init()
  */
 
 void CutFilterDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin CutFilterDialog content construction
   CutFilterDialog* itemDialog1 = this;
 
@@ -480,15 +499,34 @@ void CutFilterDialog::CreateControls()
     textCutterEndCut->SetToolTip(_("Final timestamp or percent for the cut."));
   itemBoxSizer49->Add(textCutterEndCut, 3, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
 
+  // Hierarchy Selection Radio Buttons
+  wxBoxSizer* itemBoxSizerHierarchy = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer40->Add(itemBoxSizerHierarchy, 0, wxGROW|wxALL, 2);
+  
+  radioCutterCutByApplication = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_APPLICATION, _("Application"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+  itemBoxSizerHierarchy->Add(radioCutterCutByApplication, 1, wxALIGN_LEFT|wxALL, 2);
+  
+  radioCutterCutByTask = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_TASK, _("Task"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioCutterCutByTask->SetValue(true);
+  itemBoxSizerHierarchy->Add(radioCutterCutByTask, 1, wxALIGN_LEFT|wxALL, 2);
+  
+  radioCutterCutByThread = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_THREAD, _("Thread"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizerHierarchy->Add(radioCutterCutByThread, 1, wxALIGN_LEFT|wxALL, 2);
+
   wxBoxSizer* itemBoxSizer52 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer40->Add(itemBoxSizer52, 0, wxGROW|wxALL, 2);
-  wxStaticText* itemStaticText53 = new wxStaticText( itemScrolledWindow38, wxID_STATIC, _("Tasks"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticText* itemStaticText53 = new wxStaticText( itemScrolledWindow38, wxID_STATIC, _("Selected Objects"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer52->Add(itemStaticText53, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   textCutterTasks = new wxTextCtrl( itemScrolledWindow38, ID_TEXTCTRL_CUTTER_TASKS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
-    textCutterTasks->SetToolTip(_("Keep only information of tasks specified, separated by commas. Ranges marked with \"-\" are allowed. I.e. \"1-32,33,64-128\". Leave it empty to select all the tasks."));
+    textCutterTasks->SetToolTip(_("Keep only information of selected objects, separated by commas.\nFormats:\n - Application: 1, 2\n - Task: 1.1, 1.2 (Appl.Task)\n - Thread: 1.1.1, 1.1.2 (Appl.Task.Thread)\nLeave it empty to select all."));
   itemBoxSizer52->Add(textCutterTasks, 1, wxGROW|wxALL, 2);
+
+  buttonCutterSelectObjects = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_SELECT_OBJECTS, _("Select..."), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    buttonCutterSelectObjects->SetToolTip(_("Select Application, Tasks and Threads from the list."));
+  itemBoxSizer52->Add(buttonCutterSelectObjects, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxStaticLine* itemStaticLine55 = new wxStaticLine( itemScrolledWindow38, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemStaticBoxSizer40->Add(itemStaticLine55, 0, wxGROW|wxALL, 5);
@@ -825,14 +863,14 @@ void CutFilterDialog::CreateControls()
   // Connect events and objects
   buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), NULL, this);
 ////@end CutFilterDialog content construction
-
+  // clang-format on
 
   // Other initializations
 
   // INDEX OF TABS
   // Current implementation uses static tabs for filters, so TABINDEX is constant
-  TABINDEX[ TraceCutter::getID() ] = 0;
-  TABINDEX[ TraceFilter::getID() ] = 1;
+  TABINDEX[ TraceCutter::getID() ]           = 0;
+  TABINDEX[ TraceFilter::getID() ]           = 1;
   TABINDEX[ TraceSoftwareCounters::getID() ] = 2;
 
   // TOOL NAMES
@@ -844,7 +882,7 @@ void CutFilterDialog::CreateControls()
   UpdateExecutionChain();
   EnableAllTabsFromToolsList();
 
-  //fileBrowserButtonInputTrace->SetPath( wxString::FromUTF8( paraverConfig->getGlobalTracesPath().c_str() ) );
+  // fileBrowserButtonInputTrace->SetPath( wxString::FromUTF8( paraverConfig->getGlobalTracesPath().c_str() ) );
 
   wxString tmpWildCard = wxT( "Paraver trace (*.prv;*.prv.gz;*.csv)|*.prv;*.prv.gz;*.csv|All files (*.*)|*.*" );
   fileBrowserButtonInputTrace->SetDialogMessage( _( "Load Trace" ) );
@@ -868,13 +906,13 @@ void CutFilterDialog::CreateControls()
 
   wxString directory;
 
-  if ( !xmlConfigurationFile.empty() )
+  if( !xmlConfigurationFile.empty() )
   {
     directory = xmlConfigurationFile;
   }
-  else if ( !globalXMLsPath.empty() )
+  else if( !globalXMLsPath.empty() )
   {
-    wxFileName auxDirectory( wxString( globalXMLsPath.c_str(), wxConvUTF8 )  );
+    wxFileName auxDirectory( wxString( globalXMLsPath.c_str(), wxConvUTF8 ) );
     if( !auxDirectory.IsDir() )
       auxDirectory = auxDirectory.GetPathWithSep();
     directory = auxDirectory.GetFullPath();
@@ -883,12 +921,12 @@ void CutFilterDialog::CreateControls()
 
 
   // Allow only numeric character for text boxes.
-  textCutterBeginCut->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  textCutterEndCut->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  textCutterTasks->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  textFilterMinBurstTime->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  textSCSamplingInterval->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  textSCMinimumBurstTime->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+  textCutterBeginCut->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
+  textCutterEndCut->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
+  // textCutterTasks->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
+  textFilterMinBurstTime->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
+  textSCSamplingInterval->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
+  textSCMinimumBurstTime->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
 }
 
 
@@ -907,6 +945,7 @@ bool CutFilterDialog::ShowToolTips()
 
 wxBitmap CutFilterDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin CutFilterDialog bitmap retrieval
   wxUnusedVar(name);
@@ -922,6 +961,7 @@ wxBitmap CutFilterDialog::GetBitmapResource( const wxString& name )
   }
   return wxNullBitmap;
 ////@end CutFilterDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -930,20 +970,22 @@ wxBitmap CutFilterDialog::GetBitmapResource( const wxString& name )
 
 wxIcon CutFilterDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin CutFilterDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end CutFilterDialog icon retrieval
+  // clang-format on
 }
 
 
-bool CutFilterDialog::isFileSelected( FileBrowserButton *fpc )
+bool CutFilterDialog::isFileSelected( FileBrowserButton* fpc )
 {
   wxString path = fpc->GetPath();
   wxFileName tmpName( path );
 
-  return !( path == _("") || tmpName.IsDir() );
+  return !( path == _( "" ) || tmpName.IsDir() );
 }
 
 
@@ -952,7 +994,7 @@ bool CutFilterDialog::isFileSelected( const string& fpc )
   wxString path = wxString( fpc.c_str(), wxConvUTF8 );
   wxFileName tmpName( path );
 
-  return !( path == _("") || tmpName.IsDir() );
+  return !( path == _( "" ) || tmpName.IsDir() );
 }
 
 
@@ -965,18 +1007,18 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
   if( waitingGlobalTiming )
   {
     TTime auxBeginTime = wxGetApp().GetGlobalTimingBegin();
-    TTime auxEndTime = wxGetApp().GetGlobalTimingEnd();
+    TTime auxEndTime   = wxGetApp().GetGlobalTimingEnd();
 
     // Avoid [ max, min ] times
-    if ( auxBeginTime > auxEndTime )
+    if( auxBeginTime > auxEndTime )
     {
       // Swap
       TTime tmpTime = auxBeginTime;
-      auxBeginTime = auxEndTime;
-      auxEndTime = tmpTime;
+      auxBeginTime  = auxEndTime;
+      auxEndTime    = tmpTime;
     }
 
-    if ( radioCutterCutByTime->GetValue() )
+    if( radioCutterCutByTime->GetValue() )
     {
       textCutterBeginCut->SetValue( formatTime( auxBeginTime ) );
       textCutterEndCut->SetValue( formatTime( auxEndTime ) );
@@ -986,14 +1028,14 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
       textCutterBeginCut->SetValue( formatPercent( auxBeginTime ) );
       textCutterEndCut->SetValue( formatPercent( auxEndTime ) );
     }
-    
+
     if( !wxGetApp().GetGlobalTiming() )
     {
-    //  radioCutterCutByTime->SetValue( true ); // why?
+      //  radioCutterCutByTime->SetValue( true ); // why?
       waitingGlobalTiming = false;
     }
-    
-   // wxGetApp().DeactivateGlobalTiming();
+
+    // wxGetApp().DeactivateGlobalTiming();
   }
 }
 
@@ -1007,30 +1049,30 @@ void CutFilterDialog::OnInitDialog( wxInitDialogEvent& event )
   fileBrowserButtonInputTrace->SetPath( wxString( nameSourceTrace.c_str(), wxConvUTF8 ) );
   checkLoadResultingTrace->SetValue( loadResultingTrace );
   checkRunAppWithResultingTrace->SetValue( runAppWithResultingTrace );
-  if ( globalXMLsPath.compare( "" ) == 0 )
+  if( globalXMLsPath.compare( "" ) == 0 )
     globalXMLsPath = nameSourceTrace;
 }
 
 
 // **********************************************************************************
 // **********************************************************************************
-//   ____      _   _            
-//  / ___|   _| |_| |_ ___ _ __ 
+//   ____      _   _
+//  / ___|   _| |_| |_ ___ _ __
 // | |  | | | | __| __/ _ \ '__|
-// | |__| |_| | |_| ||  __/ |   
-//  \____\__,_|\__|\__\___|_|   
-//                             
+// | |__| |_| | |_| ||  __/ |
+//  \____\__,_|\__|\__\___|_|
+//
 // **********************************************************************************
 // **********************************************************************************
 
 // wxString( "98,76") --> double( 98.76 )
-double CutFilterDialog::formatPercent(const wxString whichPercent )
+double CutFilterDialog::formatPercent( const wxString whichPercent )
 {
   TTime tmpTime;
 
   bool done = LabelConstructor::getTimeValue( std::string( whichPercent ),
-                                              NS,                 // dummy
-                                              PERCENT_PRECISION,  // dummy
+                                              NS,                // dummy
+                                              PERCENT_PRECISION, // dummy
                                               tmpTime );
   if( !done )
     whichPercent.ToDouble( &tmpTime );
@@ -1049,15 +1091,15 @@ wxString CutFilterDialog::formatPercent( double value )
   auxSStr << value;
   auxNumber << wxString::FromUTF8( auxSStr.str().c_str() );
 
- return auxNumber;
+  return auxNumber;
 }
 
 
-// wxString( "100,098.7654321" ) --> TTime( 100098.7654321 ) 
+// wxString( "100,098.7654321" ) --> TTime( 100098.7654321 )
 TTime CutFilterDialog::formatTime( const wxString whichTime )
 {
   TTime tmpTime;
-  Trace *tmpTrace = getTrace();
+  Trace* tmpTrace = getTrace();
 
   bool done = LabelConstructor::getTimeValue( std::string( whichTime ),
                                               tmpTrace != nullptr ? tmpTrace->getTimeUnit() : NS,
@@ -1074,7 +1116,7 @@ TTime CutFilterDialog::formatTime( const wxString whichTime )
 // TTime( 100098.7654321 ) --> wxString( "100,098.7654" ) (using timeline precision)
 wxString CutFilterDialog::formatTime( TTime whichTime )
 {
-  Trace *tmpTrace = getTrace();
+  Trace* tmpTrace = getTrace();
 
   return LabelConstructor::timeLabel( whichTime,
                                       tmpTrace != nullptr ? tmpTrace->getTimeUnit() : NS,
@@ -1089,24 +1131,23 @@ wxString CutFilterDialog::formatTime( TTime whichTime )
 void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
 {
   // if timeline is not on visible, show it
-  gTimeline * timeline = paraverMain::myParaverMain->GetSelectedTimeline();
-  
-  if ( timeline != nullptr && !timeline->IsShown() )  
+  gTimeline* timeline = paraverMain::myParaverMain->GetSelectedTimeline();
+
+  if( timeline != nullptr && !timeline->IsShown() )
   {
-    Timeline *tmpWin = timeline->GetMyWindow();
-    
+    Timeline* tmpWin = timeline->GetMyWindow();
+
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
 
     if( tmpWin->getShowWindow() )
       timeline->Raise();
-  } 
+  }
 
   radioCutterCutByTime->SetValue( true );
   wxGetApp().ActivateGlobalTiming( this );
-  waitingGlobalTiming = true;
+  waitingGlobalTiming           = true;
   cutterByTimePreviouslyChecked = true;
 }
-
 
 
 /*!
@@ -1118,8 +1159,8 @@ void CutFilterDialog::OnButtonCutterAllTraceClick( wxCommandEvent& event )
   radioCutterCutByTimePercent->SetValue( true );
   cutterByTimePreviouslyChecked = false;
 
-  textCutterBeginCut->SetValue( formatPercent( 0.0 ));
-  textCutterEndCut->SetValue( formatPercent( 100.0 ));
+  textCutterBeginCut->SetValue( formatPercent( 0.0 ) );
+  textCutterEndCut->SetValue( formatPercent( 100.0 ) );
 }
 
 
@@ -1136,9 +1177,16 @@ bool CutFilterDialog::CheckStringTasks( wxString taskStr )
 {
   if( taskStr == _( "" ) )
     return true;
-    
-  stringstream sstr( string( taskStr.mb_str() ) );
-  
+
+  wxString taskStrCopy = taskStr;
+
+  // Handle prefixes
+  if ( taskStrCopy.StartsWith( "A:" ) ) taskStrCopy = taskStrCopy.Mid( 2 );
+  else if ( taskStrCopy.StartsWith( "T:" ) ) taskStrCopy = taskStrCopy.Mid( 2 );
+  else if ( taskStrCopy.StartsWith( "Th:" ) ) taskStrCopy = taskStrCopy.Mid( 3 );
+
+  stringstream sstr( string( taskStrCopy.mb_str() ) );
+
   while( !sstr.eof() )
   {
     string tmpStr;
@@ -1167,23 +1215,21 @@ bool CutFilterDialog::CheckStringTasks( wxString taskStr )
 }
 
 
-void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
+void CutFilterDialog::CheckCutterOptions( bool& previousWarning )
 {
-  if ( !previousWarning &&
-       textCutterBeginCut->GetValue() == _("") &&
-       textCutterEndCut->GetValue() == _("") &&
-       textCutterTasks->GetValue() != _("") &&
-       CheckStringTasks( textCutterTasks->GetValue() ))
+  if( !previousWarning && textCutterBeginCut->GetValue() == _( "" ) && textCutterEndCut->GetValue() == _( "" ) &&
+      textCutterTasks->GetValue() != _( "" ) && CheckStringTasks( textCutterTasks->GetValue() ) )
   {
     wxMessageDialog message( this,
-                             _("Cutter:\nEmpty times.\n\nDo you want to cut these tasks"
-                               " all along the 100% of the trace?"),
-                             _("Warning"), wxYES_NO|wxYES_DEFAULT );
-    if ( message.ShowModal() == wxID_YES )
+                             _( "Cutter:\nEmpty times.\n\nDo you want to cut these tasks"
+                                " all along the 100% of the trace?" ),
+                             _( "Warning" ),
+                             wxYES_NO | wxYES_DEFAULT );
+    if( message.ShowModal() == wxID_YES )
     {
       radioCutterCutByTimePercent->SetValue( true );
-      textCutterBeginCut->SetValue( formatPercent( 0.0 ));
-      textCutterEndCut->SetValue( formatPercent( 100.0 ));
+      textCutterBeginCut->SetValue( formatPercent( 0.0 ) );
+      textCutterEndCut->SetValue( formatPercent( 100.0 ) );
     }
     else
     {
@@ -1195,24 +1241,24 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // tasks string
   if( !previousWarning && !CheckStringTasks( textCutterTasks->GetValue() ) )
   {
-    wxMessageDialog message( this, _("Cutter:\nNot allowed format in tasks text.\n\nPlease set it properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _( "Cutter:\nNot allowed format in tasks text.\n\nPlease set it properly." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textCutterTasks->SetFocus();
     previousWarning = true;
   }
 
   // Time region selected?
-  if ( !previousWarning && textCutterBeginCut->GetValue() == _("") )
+  if( !previousWarning && textCutterBeginCut->GetValue() == _( "" ) )
   {
-    wxMessageDialog message( this, _("Cutter:\nPlease set the initial time."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _( "Cutter:\nPlease set the initial time." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
   }
 
-  if ( !previousWarning && textCutterEndCut->GetValue() == _("") )
+  if( !previousWarning && textCutterEndCut->GetValue() == _( "" ) )
   {
-    wxMessageDialog message( this, _("Cutter:\nPlease set the final time."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _( "Cutter:\nPlease set the final time." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textCutterEndCut->SetFocus();
     previousWarning = true;
@@ -1223,9 +1269,9 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   readTimes( radioCutterCutByTime->GetValue(), cutterBeginTime, cutterEndTime );
 
   // negative times?
-  if ( !previousWarning && cutterBeginTime < 0.0 )
+  if( !previousWarning && cutterBeginTime < 0.0 )
   {
-    wxMessageDialog message( this, _("Cutter:\nTimes must be positive numbers.\n\nPlease set begin time properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _( "Cutter:\nTimes must be positive numbers.\n\nPlease set begin time properly." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
@@ -1233,20 +1279,23 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     textCutterBeginCut->SetValue( formatTime( 0.0 ) );
   }
 
-  if ( !previousWarning && cutterEndTime < 0.0 )
+  if( !previousWarning && cutterEndTime < 0.0 )
   {
-    wxMessageDialog message( this, _("Cutter:\nTimes must be positive numbers.\n\nPlease set end time properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _( "Cutter:\nTimes must be positive numbers.\n\nPlease set end time properly." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textCutterEndCut->SetFocus();
     previousWarning = true;
 
-    textCutterEndCut->SetValue(  formatTime( 0.0 ) );
+    textCutterEndCut->SetValue( formatTime( 0.0 ) );
   }
 
   // percent out of range?
-  if ( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterBeginTime > 100.0 )
+  if( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterBeginTime > 100.0 )
   {
-    wxMessageDialog message( this, _("Cutter:\nBegin time percent greater than 100 %.\n\nPlease set time percent properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this,
+                             _( "Cutter:\nBegin time percent greater than 100 %.\n\nPlease set time percent properly." ),
+                             _( "Warning" ),
+                             wxOK );
     message.ShowModal();
     radioCutterCutByTimePercent->SetFocus();
     previousWarning = true;
@@ -1254,9 +1303,9 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     textCutterBeginCut->SetValue( formatPercent( 100.0 ) );
   }
 
-  if ( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterEndTime > 100.0 )
+  if( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterEndTime > 100.0 )
   {
-    wxMessageDialog message( this, _("Cutter:\nEnd time percent greater than 100 %.\n\nPlease set time percent properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _( "Cutter:\nEnd time percent greater than 100 %.\n\nPlease set time percent properly." ), _( "Warning" ), wxOK );
     message.ShowModal();
     radioCutterCutByTimePercent->SetFocus();
     previousWarning = true;
@@ -1265,18 +1314,18 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   }
 
   // begin == end?
-  if ( !previousWarning && cutterBeginTime == cutterEndTime )
+  if( !previousWarning && cutterBeginTime == cutterEndTime )
   {
-    wxMessageDialog message( this, _("Cutter:\nSame time for both limits.\n\nPlease set time range properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _( "Cutter:\nSame time for both limits.\n\nPlease set time range properly." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
   }
 
   // begin > end?
-  if ( !previousWarning && cutterBeginTime > cutterEndTime ) // Idea: Maybe it could swap times in text boxes.
+  if( !previousWarning && cutterBeginTime > cutterEndTime ) // Idea: Maybe it could swap times in text boxes.
   {
-    wxMessageDialog message( this, _("Cutter:\nBegin time greater than end time.\n\nPlease set time range properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _( "Cutter:\nBegin time greater than end time.\n\nPlease set time range properly." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
@@ -1284,32 +1333,32 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
 }
 
 
-void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
+void CutFilterDialog::TransferCutterDataToWindow( TraceOptions* traceOptions )
 {
   stringstream aux;
 
-  aux.str("");
+  aux.str( "" );
   aux << traceOptions->get_max_trace_size();
   textCutterMaximumTraceSize->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
 
-  if ( traceOptions->get_by_time() )
+  if( traceOptions->get_by_time() )
     radioCutterCutByTime->SetValue( true );
   else
     radioCutterCutByTimePercent->SetValue( true );
 
-  if ( radioCutterCutByTime->GetValue() )
+  if( radioCutterCutByTime->GetValue() )
   {
     textCutterBeginCut->SetValue( formatTime( (TTime)traceOptions->get_min_cutting_time() ) );
-    textCutterEndCut->SetValue(  formatTime( (TTime)traceOptions->get_max_cutting_time() ) );
+    textCutterEndCut->SetValue( formatTime( (TTime)traceOptions->get_max_cutting_time() ) );
   }
   else
   {
     textCutterBeginCut->SetValue( formatPercent( (TTime)traceOptions->get_minimum_time_percentage() ) );
-    textCutterEndCut->SetValue(  formatPercent( (TTime)traceOptions->get_maximum_time_percentage() ) );
+    textCutterEndCut->SetValue( formatPercent( (TTime)traceOptions->get_maximum_time_percentage() ) );
   }
 
   checkCutterUseOriginalTime->SetValue( traceOptions->get_original_time() );
-  if ( traceOptions->get_original_time() )
+  if( traceOptions->get_original_time() )
   {
     checkCutterDontBreakStates->SetValue( false );
     checkCutterDontBreakStates->Disable();
@@ -1331,10 +1380,24 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 }
 
 
-Trace *CutFilterDialog::getTrace()
+Trace* CutFilterDialog::getTrace()
 {
-  Trace *tmpTrace = nullptr;
+  Trace* tmpTrace = nullptr;
 
+  string inputPath = string( fileBrowserButtonInputTrace->GetPath().mb_str() );
+  if( !inputPath.empty() )
+  {
+    for( Trace* t : paraverMain::myParaverMain->GetLoadedTraces() )
+    {
+      if( t != nullptr && t->getFileName() == inputPath )
+      {
+        tmpTrace = t;
+        break;
+      }
+    }
+    if( tmpTrace != nullptr )
+      return tmpTrace;
+  }
   if( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr )
     tmpTrace = paraverMain::myParaverMain->GetCurrentTimeline()->getTrace();
   else if( paraverMain::myParaverMain->GetCurrentHisto() != nullptr )
@@ -1344,24 +1407,24 @@ Trace *CutFilterDialog::getTrace()
 }
 
 
-void CutFilterDialog::readTimes( bool byTime, TTime &whichBeginTime, TTime &whichEndTime )
+void CutFilterDialog::readTimes( bool byTime, TTime& whichBeginTime, TTime& whichEndTime )
 {
   if( byTime )
   {
     whichBeginTime = formatTime( textCutterBeginCut->GetValue() );
-    whichEndTime = formatTime( textCutterEndCut->GetValue() );
+    whichEndTime   = formatTime( textCutterEndCut->GetValue() );
   }
   else
   {
     whichBeginTime = formatPercent( textCutterBeginCut->GetValue() );
-    whichEndTime = formatPercent( textCutterEndCut->GetValue() );
+    whichEndTime   = formatPercent( textCutterEndCut->GetValue() );
   }
 }
 
 
 void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
 {
-  if ( !previousWarning )
+  if( !previousWarning )
   {
     TTime tmpBeginTime, tmpEndTime;
 
@@ -1376,22 +1439,29 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     readTimes( byTime, tmpBeginTime, tmpEndTime );
     if( byTime )
     {
-      auxBeginTime = (unsigned long long) round( tmpBeginTime );
-      auxEndTime = (unsigned long long) round( tmpEndTime );
+      auxBeginTime    = (unsigned long long)round( tmpBeginTime );
+      auxEndTime      = (unsigned long long)round( tmpEndTime );
       auxBeginPercent = 0;
-      auxEndPercent = 0;
+      auxEndPercent   = 0;
     }
     else
     {
-      auxBeginTime = 0;
-      auxEndTime = 0;
-      auxBeginPercent = (unsigned long long) round( tmpBeginTime );
-      auxEndPercent = (unsigned long long) round( tmpEndTime );
+      auxBeginTime    = 0;
+      auxEndTime      = 0;
+      auxBeginPercent = (unsigned long long)round( tmpBeginTime );
+      auxEndPercent   = (unsigned long long)round( tmpEndTime );
     }
     traceOptions->set_min_cutting_time( auxBeginTime );
     traceOptions->set_max_cutting_time( auxEndTime );
     traceOptions->set_minimum_time_percentage( auxBeginPercent );
     traceOptions->set_maximum_time_percentage( auxEndPercent );
+
+    if( radioCutterCutByApplication->GetValue() )
+      traceOptions->set_cutter_mode( TraceOptions::CUT_MODE_APPLICATION );
+    else if( radioCutterCutByThread->GetValue() )
+      traceOptions->set_cutter_mode( TraceOptions::CUT_MODE_THREAD );
+    else
+      traceOptions->set_cutter_mode( TraceOptions::CUT_MODE_TASK );
 
     traceOptions->set_original_time( checkCutterUseOriginalTime->IsChecked() );
     traceOptions->set_break_states( !checkCutterDontBreakStates->IsChecked() );
@@ -1401,9 +1471,9 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_keep_all_events( checkCutterKeepEventsWithoutStates->IsChecked() );
 
 #ifdef UNICODE
-    traceOptions->set_tasks_list( (char *)textCutterTasks->GetValue().mb_str().data() );
+    traceOptions->set_tasks_list( (char*)textCutterTasks->GetValue().mb_str().data() );
 #else
-    traceOptions->set_tasks_list( (char *)textCutterTasks->GetValue().mb_str() );
+    traceOptions->set_tasks_list( (char*)textCutterTasks->GetValue().mb_str() );
 #endif
   }
 }
@@ -1411,12 +1481,12 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
 
 // **********************************************************************************
 // **********************************************************************************
-//  _____ _ _ _            
-// |  ___(_) | |_ ___ _ __ 
+//  _____ _ _ _
+// |  ___(_) | |_ ___ _ __
 // | |_  | | | __/ _ \ '__|
-// |  _| | | | ||  __/ |   
-// |_|   |_|_|\__\___|_|   
-//                                                    
+// |  _| | | | ||  __/ |
+// |_|   |_|_|\__\___|_|
+//
 // **********************************************************************************
 // **********************************************************************************
 
@@ -1454,7 +1524,6 @@ void CutFilterDialog::OnButtonFilterDeleteClick( wxCommandEvent& event )
 }
 
 
-
 void CutFilterDialog::CheckStatesList( size_t begin, bool value )
 {
   for( size_t i = begin; i < checkListFilterStates->GetCount(); ++i )
@@ -1469,7 +1538,7 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
 
   // Look for all the given states in the checkboxlist, and check them.
   while( s < 20 && statesList[ s ] != nullptr )
-  { 
+  {
     bool found = false;
     wxString stateNameToCheck( statesList[ s ], wxConvUTF8 );
     stateNameToCheck = stateNameToCheck.Trim( true ).Trim( false );
@@ -1498,13 +1567,13 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
     for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
     {
       wxString stateName = checkListFilterStates->GetString( i );
-      if( wxString("Running", wxConvUTF8) == stateName )
+      if( wxString( "Running", wxConvUTF8 ) == stateName )
         checkListFilterStates->Check( i );
     }
   }
 
   // Have we found new states? Add them to the botton and check them.
-  if ( newStates.GetCount() > 0 )
+  if( newStates.GetCount() > 0 )
   {
     checkListFilterStates->InsertItems( newStates, checkListFilterStates->GetCount() );
     CheckStatesList( oldMaxStates, !( checkListFilterStates->GetCount() == 0 ) );
@@ -1518,27 +1587,25 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
 
 void CutFilterDialog::OnButtonFilterAddClick( wxCommandEvent& event )
 {
-  wxTextEntryDialog textEntry( this, 
-                               wxString() << _("Allowed formats:\n")
-                                          << _(" Single event type: \'Type\'\n")
-                                          << _(" Range of event types: \'Begin type-End type\'\n")
-                                          << _(" Values for a single type: \'Type:Value 1,...,Value n\'"),
-                               _("Add events") );
-                               
+  wxTextEntryDialog textEntry( this,
+                               wxString() << _( "Allowed formats:\n" ) << _( " Single event type: \'Type\'\n" )
+                                          << _( " Range of event types: \'Begin type-End type\'\n" )
+                                          << _( " Values for a single type: \'Type:Value 1,...,Value n\'" ),
+                               _( "Add events" ) );
+
   if( textEntry.ShowModal() == wxID_OK )
   {
     wxString currentEntry( textEntry.GetValue() );
     if( !currentEntry.IsEmpty() )
     {
-      wxString allowedFormatsRE =
-          reSingleType + wxString( wxT( "|" ) ) + reRangeOfTypes + wxString( wxT( "|" ) ) + reValuesSepByCommaForType ;
+      wxString allowedFormatsRE = reSingleType + wxString( wxT( "|" ) ) + reRangeOfTypes + wxString( wxT( "|" ) ) + reValuesSepByCommaForType;
       if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
-        wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
+        wxMessageBox( _( "Text inserted doesn't fit the allowed formats" ), _( "Not allowed format" ) );
       }
       else
       {
-        currentEntry.Replace( _(" "), _("") );
+        currentEntry.Replace( _( " " ), _( "" ) );
         listboxFilterEvents->Append( currentEntry );
       }
     }
@@ -1590,9 +1657,7 @@ bool CutFilterDialog::CheckEventsLine( wxString eventsStr )
 }
 
 
-void CutFilterDialog::GetEventsFromLine( wxString eventsStr,
-                                         TraceOptions::TFilterTypes &eventTypes,
-                                         int &lastType )
+void CutFilterDialog::GetEventsFromLine( wxString eventsStr, TraceOptions::TFilterTypes& eventTypes, int& lastType )
 {
   if( eventsStr == _( "" ) )
     return;
@@ -1615,7 +1680,7 @@ void CutFilterDialog::GetEventsFromLine( wxString eventsStr,
       return;
     else
     {
-      eventTypes[ lastType ].type = tmpLong;
+      eventTypes[ lastType ].type     = tmpLong;
       eventTypes[ lastType ].max_type = 0;
     }
 
@@ -1641,7 +1706,7 @@ void CutFilterDialog::GetEventsFromLine( wxString eventsStr,
         return;
       else
       {
-        eventTypes[ lastType ].value[index++] = tmpLong;
+        eventTypes[ lastType ].value[ index++ ] = tmpLong;
       }
     }
     eventTypes[ lastType ].last_value = index;
@@ -1651,11 +1716,11 @@ void CutFilterDialog::GetEventsFromLine( wxString eventsStr,
 }
 
 
-void CutFilterDialog::GetEventsList( TraceOptions::TFilterTypes &eventTypes, int &lastType )
+void CutFilterDialog::GetEventsList( TraceOptions::TFilterTypes& eventTypes, int& lastType )
 {
   for( size_t i = 0; i < listboxFilterEvents->GetCount(); ++i )
   {
-    if ( CheckEventsLine( listboxFilterEvents->GetString( i ) ) )
+    if( CheckEventsLine( listboxFilterEvents->GetString( i ) ) )
     {
       GetEventsFromLine( listboxFilterEvents->GetString( i ), eventTypes, lastType );
     }
@@ -1668,19 +1733,19 @@ void CutFilterDialog::SetEventLine( TraceOptions::TFilterTypes eventTypes, int c
   stringstream auxLine;
 
   auxLine << eventTypes[ current ].type;
-  if ( eventTypes[ current ].max_type != 0 )
+  if( eventTypes[ current ].max_type != 0 )
   {
     auxLine << "-" << eventTypes[ current ].max_type;
   }
   else
   {
-    if ( eventTypes[ current ].last_value != 0 )
+    if( eventTypes[ current ].last_value != 0 )
     {
       auxLine << ":";
       for( int j = 0; j < eventTypes[ current ].last_value; ++j )
       {
         auxLine << eventTypes[ current ].value[ j ];
-        if ( j < eventTypes[ current ].last_value - 1 )
+        if( j < eventTypes[ current ].last_value - 1 )
         {
           auxLine << ",";
         }
@@ -1703,24 +1768,27 @@ void CutFilterDialog::SetEventsList( TraceOptions::TFilterTypes eventTypes, int 
 }
 
 
-void CutFilterDialog::CheckFilterOptions( bool &previousWarning )
+void CutFilterDialog::CheckFilterOptions( bool& previousWarning )
 {
   // No state selected?
-  if ( !previousWarning && !checkFilterDiscardStateRecords->IsChecked() )
+  if( !previousWarning && !checkFilterDiscardStateRecords->IsChecked() )
   {
     bool statesSelected = false;
-    for (size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+    for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
     {
-      if ( checkListFilterStates->IsChecked( i ) )
+      if( checkListFilterStates->IsChecked( i ) )
       {
         statesSelected = true;
         break;
       }
     }
 
-    if ( !statesSelected )
+    if( !statesSelected )
     {
-      wxMessageDialog message( this, _("Filter:\nNo state selected.\n\nPlease select at least one or\ndiscard all the state records."), _( "Warning" ), wxOK );
+      wxMessageDialog message( this,
+                               _( "Filter:\nNo state selected.\n\nPlease select at least one or\ndiscard all the state records." ),
+                               _( "Warning" ),
+                               wxOK );
       message.ShowModal();
       checkListFilterStates->SetFocus();
       previousWarning = true;
@@ -1730,27 +1798,30 @@ void CutFilterDialog::CheckFilterOptions( bool &previousWarning )
   // Min. burst time < 0
   double filterMinBurstTime;
   textFilterMinBurstTime->GetValue().ToDouble( &filterMinBurstTime );
-  if ( !previousWarning && !checkFilterDiscardStateRecords->IsChecked() && filterMinBurstTime < 0.0 )
+  if( !previousWarning && !checkFilterDiscardStateRecords->IsChecked() && filterMinBurstTime < 0.0 )
   {
-    wxMessageDialog message( this, _("Filter:\nTimes must be positive numbers.\n\nPlease set minimum burst time properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _( "Filter:\nTimes must be positive numbers.\n\nPlease set minimum burst time properly." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textFilterMinBurstTime->SetFocus();
     previousWarning = true;
   }
 
   // No events selected
-  if ( !previousWarning && !checkFilterDiscardEventRecords->IsChecked() && listboxFilterEvents->GetCount() == 0 )
+  if( !previousWarning && !checkFilterDiscardEventRecords->IsChecked() && listboxFilterEvents->GetCount() == 0 )
   {
-    wxMessageDialog message( this, _("Filter:\nThe list of events is empty.\n\nPlease add at least one event or\ndiscard all the event records."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this,
+                             _( "Filter:\nThe list of events is empty.\n\nPlease add at least one event or\ndiscard all the event records." ),
+                             _( "Warning" ),
+                             wxOK );
     message.ShowModal();
     buttonFilterAdd->SetFocus();
     previousWarning = true;
   }
 
   // Too much event lines
-  if ( !previousWarning && !checkFilterDiscardEventRecords->IsChecked() && listboxFilterEvents->GetCount() > 20 )
+  if( !previousWarning && !checkFilterDiscardEventRecords->IsChecked() && listboxFilterEvents->GetCount() > 20 )
   {
-    wxMessageDialog message( this, _("Filter:\nToo much event lines.\n\nPlease delete at least one line."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _( "Filter:\nToo much event lines.\n\nPlease delete at least one line." ), _( "Warning" ), wxOK );
     message.ShowModal();
     listboxFilterEvents->SetFocus();
     previousWarning = true;
@@ -1758,7 +1829,7 @@ void CutFilterDialog::CheckFilterOptions( bool &previousWarning )
 }
 
 
-void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
+void CutFilterDialog::TransferFilterDataToWindow( TraceOptions* traceOptions )
 {
   stringstream aux;
 
@@ -1779,9 +1850,9 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
     CheckStatesList( auxNames );
   }
 
-  aux.str("");
+  aux.str( "" );
   aux << traceOptions->get_min_state_time();
-  textFilterMinBurstTime->SetValue( wxString::FromUTF8( aux.str().c_str() ));
+  textFilterMinBurstTime->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
 
   // Events
   checkFilterDiscardListedEvents->SetValue( traceOptions->get_discard_given_types() );
@@ -1791,7 +1862,7 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
   SetEventsList( auxEvents, traceOptions->get_filter_last_type() );
 
   // Communications
-  aux.str("");
+  aux.str( "" );
   aux << traceOptions->get_min_comm_size();
   textFilterSize->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
 }
@@ -1799,7 +1870,7 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
 
 void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 {
-  if ( !previousWarning )
+  if( !previousWarning )
   {
     // Discard Records
     traceOptions->set_filter_states( !checkFilterDiscardStateRecords->IsChecked() );
@@ -1808,87 +1879,87 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 
     // filter_by_call_time is for all the record types, BUT:
     // 1) it uses a buffer (danger!)
-    // 2) it's undocumented 
+    // 2) it's undocumented
     // 3) if false => normal behaviour
     // Was it an experimental feature?
     traceOptions->set_filter_by_call_time( false );
 
-    //if ( !checkFilterDiscardStateRecords->IsChecked() )
+    // if ( !checkFilterDiscardStateRecords->IsChecked() )
     //{
-      bool allStatesSelected = true;
+    bool allStatesSelected = true;
+    for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+    {
+      if( !checkListFilterStates->IsChecked( i ) )
+      {
+        allStatesSelected = false;
+        break;
+      }
+    }
+
+    TraceOptions::TStateNames auxNames;
+    for( int i = 0; i < 20; ++i )
+      auxNames[ i ] = nullptr;
+
+    traceOptions->set_all_states( allStatesSelected );
+    if( allStatesSelected )
+    {
+#ifdef _WIN32
+      auxNames[ 0 ] = _strdup( "All" );
+#else
+      auxNames[ 0 ] = strdup( "All" );
+#endif
+    }
+    else
+    {
+      // Read selected states and fill vector
+      int pos = 0;
+
       for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
       {
-        if ( !checkListFilterStates->IsChecked( i ) )
+        if( checkListFilterStates->IsChecked( i ) )
         {
-          allStatesSelected = false;
-          break;
-        }
-      }
-
-      TraceOptions::TStateNames auxNames;
-      for( int i = 0; i < 20; ++i )
-        auxNames[ i ] = nullptr;
-        
-      traceOptions->set_all_states( allStatesSelected );
-      if ( allStatesSelected )
-      {
 #ifdef _WIN32
-        auxNames[ 0 ] = _strdup( "All" );
-#else
-        auxNames[ 0 ] = strdup( "All" );
-#endif
-      }
-      else
-      {
-        // Read selected states and fill vector
-        int pos = 0;
-
-        for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
-        {
-          if ( checkListFilterStates->IsChecked( i ) )
-          {
-#ifdef _WIN32
-            auxNames[ pos++ ] = _strdup( (char *)(checkListFilterStates->GetString( i ).mb_str().data() ));
+          auxNames[ pos++ ] = _strdup( (char*)( checkListFilterStates->GetString( i ).mb_str().data() ) );
 #elif defined UNICODE
-            auxNames[ pos++ ] = strdup( (char *)(checkListFilterStates->GetString( i ).mb_str().data() ));
+          auxNames[ pos++ ] = strdup( (char*)( checkListFilterStates->GetString( i ).mb_str().data() ) );
 #else
-            auxNames[ pos++ ] = strdup( (char *)(checkListFilterStates->GetString( i ).mb_str() ));
-#endif
-          }
-        }
-
-        if( pos == 0 )
-        {
-#ifdef _WIN32
-          auxNames[ 0 ] = _strdup( "Running" );
-#else
-          auxNames[ 0 ] = strdup( "Running" );
+          auxNames[ pos++ ] = strdup( (char*)( checkListFilterStates->GetString( i ).mb_str() ) );
 #endif
         }
-
-        traceOptions->set_state_names( auxNames );
-
-        unsigned long auxULong;
-        textFilterMinBurstTime->GetValue().ToULong( &auxULong );
-        traceOptions->set_min_state_time( (unsigned long long)auxULong );
       }
+
+      if( pos == 0 )
+      {
+#ifdef _WIN32
+        auxNames[ 0 ] = _strdup( "Running" );
+#else
+        auxNames[ 0 ] = strdup( "Running" );
+#endif
+      }
+
+      traceOptions->set_state_names( auxNames );
+
+      unsigned long auxULong;
+      textFilterMinBurstTime->GetValue().ToULong( &auxULong );
+      traceOptions->set_min_state_time( (unsigned long long)auxULong );
+    }
     //}
 
-    //if ( !checkFilterDiscardEventRecords->IsChecked() )
+    // if ( !checkFilterDiscardEventRecords->IsChecked() )
     //{
-      traceOptions->set_discard_given_types( checkFilterDiscardListedEvents->IsChecked() );
-      TraceOptions::TFilterTypes auxEvents;
-      int lastType = 0;
-      GetEventsList( auxEvents, lastType );
+    traceOptions->set_discard_given_types( checkFilterDiscardListedEvents->IsChecked() );
+    TraceOptions::TFilterTypes auxEvents;
+    int lastType = 0;
+    GetEventsList( auxEvents, lastType );
 
-      // To fix: always do set_filter_last_type first than set_filter_types
-      traceOptions->set_filter_last_type( lastType );
-      traceOptions->set_filter_types( auxEvents );
+    // To fix: always do set_filter_last_type first than set_filter_types
+    traceOptions->set_filter_last_type( lastType );
+    traceOptions->set_filter_types( auxEvents );
     //}
 
-    //if ( !checkFilterDiscardCommunicationRecords->IsChecked() )
+    // if ( !checkFilterDiscardCommunicationRecords->IsChecked() )
     //{
-      traceOptions->set_min_comm_size( textFilterSize->GetValue() );
+    traceOptions->set_min_comm_size( textFilterSize->GetValue() );
     //}
   }
 }
@@ -1896,12 +1967,12 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 /*
 // **********************************************************************************
 // **********************************************************************************
-//  ____         __ _                           ____                  _                
-// / ___|  ___  / _| |___      ____ _ _ __ ___ / ___|___  _   _ _ __ | |_ ___ _ __ ___ 
+//  ____         __ _                           ____                  _
+// / ___|  ___  / _| |___      ____ _ _ __ ___ / ___|___  _   _ _ __ | |_ ___ _ __ ___
 // \___ \ / _ \| |_| __\ \ /\ / / _` | '__/ _ \ |   / _ \| | | | '_ \| __/ _ \ '__/ __|
 //  ___) | (_) |  _| |_ \ V  V / (_| | | |  __/ |__| (_) | |_| | | | | ||  __/ |  \__ \
 // |____/ \___/|_|  \__| \_/\_/ \__,_|_|  \___|\____\___/ \__,_|_| |_|\__\___|_|  |___/
-//                                                                                    
+//
 // **********************************************************************************
 // **********************************************************************************
 */
@@ -1935,12 +2006,11 @@ void CutFilterDialog::OnPanelSoftwareCountersUpdate( wxUpdateUIEvent& event )
 
 void CutFilterDialog::OnButtonScCountEventsAddClick( wxCommandEvent& event )
 {
-  wxTextEntryDialog textEntry( this, 
-                               wxString() << _("Allowed formats:\n")
-                                          << _(" Single event type: \'Type\'\n")
-                                          << _(" Values for a single type: \'Type:Value 1,...,Value n\'"),
-                               _("Add events") );
-                               
+  wxTextEntryDialog textEntry( this,
+                               wxString() << _( "Allowed formats:\n" ) << _( " Single event type: \'Type\'\n" )
+                                          << _( " Values for a single type: \'Type:Value 1,...,Value n\'" ),
+                               _( "Add events" ) );
+
   if( textEntry.ShowModal() == wxID_OK )
   {
     wxString currentEntry( textEntry.GetValue() );
@@ -1949,11 +2019,11 @@ void CutFilterDialog::OnButtonScCountEventsAddClick( wxCommandEvent& event )
       wxString allowedFormatsRE = reSingleType + wxString( wxT( "|" ) ) + reValuesSepByCommaForType;
       if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
-        wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
+        wxMessageBox( _( "Text inserted doesn't fit the allowed formats" ), _( "Not allowed format" ) );
       }
       else
       {
-        currentEntry.Replace( _(" "), _("") );
+        currentEntry.Replace( _( " " ), _( "" ) );
         listSCCountEvents->Append( currentEntry );
       }
     }
@@ -1968,10 +2038,10 @@ void CutFilterDialog::OnButtonScCountEventsAddClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonScCountEventsDeleteClick( wxCommandEvent& event )
 {
   wxArrayInt selec;
-  
+
   if( listSCCountEvents->GetSelections( selec ) == 0 )
     return;
-    
+
   listSCCountEvents->Delete( selec[ 0 ] );
 }
 
@@ -1982,12 +2052,11 @@ void CutFilterDialog::OnButtonScCountEventsDeleteClick( wxCommandEvent& event )
 
 void CutFilterDialog::OnButtonScKeepEventsAddClick( wxCommandEvent& event )
 {
-  wxTextEntryDialog textEntry( this, 
-                               wxString() << _("Allowed formats:\n")
-                                          << _(" Single event type: \'Type\'\n")
-                                          << _(" Range of event types: \'Begin type-End type\'\n"),
-                               _("Add events") );
-                               
+  wxTextEntryDialog textEntry( this,
+                               wxString() << _( "Allowed formats:\n" ) << _( " Single event type: \'Type\'\n" )
+                                          << _( " Range of event types: \'Begin type-End type\'\n" ),
+                               _( "Add events" ) );
+
   if( textEntry.ShowModal() == wxID_OK )
   {
     wxString currentEntry( textEntry.GetValue() );
@@ -1996,11 +2065,11 @@ void CutFilterDialog::OnButtonScKeepEventsAddClick( wxCommandEvent& event )
       wxString allowedFormatsRE = reSingleType + wxString( wxT( "|" ) ) + reRangeOfTypes;
       if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
-        wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
+        wxMessageBox( _( "Text inserted doesn't fit the allowed formats" ), _( "Not allowed format" ) );
       }
       else
       {
-        currentEntry.Replace( _(" "), _("") );
+        currentEntry.Replace( _( " " ), _( "" ) );
         listSCKeepEvents->Append( currentEntry );
       }
     }
@@ -2015,20 +2084,20 @@ void CutFilterDialog::OnButtonScKeepEventsAddClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonScKeepEventsDeleteClick( wxCommandEvent& event )
 {
   wxArrayInt selec;
-  
+
   if( listSCKeepEvents->GetSelections( selec ) == 0 )
     return;
-    
+
   listSCKeepEvents->Delete( selec[ 0 ] );
 }
 
 
-void CutFilterDialog::SetSoftwareCountersEventsListToString( std::function<char *()> whichFunction, wxListBox *selectedEvents )
+void CutFilterDialog::SetSoftwareCountersEventsListToString( std::function< char*() > whichFunction, wxListBox* selectedEvents )
 {
   selectedEvents->Clear();
 
-  char *tmpStrLine = whichFunction();
-  if ( tmpStrLine != nullptr )
+  char* tmpStrLine = whichFunction();
+  if( tmpStrLine != nullptr )
   {
     std::string listEvents( tmpStrLine );
     stringstream auxList( listEvents );
@@ -2037,7 +2106,7 @@ void CutFilterDialog::SetSoftwareCountersEventsListToString( std::function<char 
       string tmpStr;
 
       std::getline( auxList, tmpStr, ';' );
-      selectedEvents->Append( wxString( tmpStr.c_str(), wxConvUTF8 ).Trim(true).Trim(false) );
+      selectedEvents->Append( wxString( tmpStr.c_str(), wxConvUTF8 ).Trim( true ).Trim( false ) );
     }
 
     free( tmpStrLine );
@@ -2045,7 +2114,7 @@ void CutFilterDialog::SetSoftwareCountersEventsListToString( std::function<char 
 }
 
 
-char *CutFilterDialog::GetSoftwareCountersEventsListToString( wxListBox *selectedEvents )
+char* CutFilterDialog::GetSoftwareCountersEventsListToString( wxListBox* selectedEvents )
 {
   string listStr;
 
@@ -2057,8 +2126,8 @@ char *CutFilterDialog::GetSoftwareCountersEventsListToString( wxListBox *selecte
     string auxLineStr = string( selectedEvents->GetString( i ).mb_str() );
 #endif
     listStr += auxLineStr;
-    if ( i != selectedEvents->GetCount() - 1 )
-      listStr += string(";");
+    if( i != selectedEvents->GetCount() - 1 )
+      listStr += string( ";" );
   }
 
 #ifdef _WIN32
@@ -2069,20 +2138,20 @@ char *CutFilterDialog::GetSoftwareCountersEventsListToString( wxListBox *selecte
 }
 
 
-void CutFilterDialog::CheckSoftwareCountersOptions( bool &previousWarning )
+void CutFilterDialog::CheckSoftwareCountersOptions( bool& previousWarning )
 {
   // Time region selected?
-  if ( !previousWarning && radioSCOnIntervals->GetValue() && textSCSamplingInterval->GetValue() == _("") )
+  if( !previousWarning && radioSCOnIntervals->GetValue() && textSCSamplingInterval->GetValue() == _( "" ) )
   {
-    wxMessageDialog message( this, _("Software Counters:\nPlease set the sampling interval time."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _( "Software Counters:\nPlease set the sampling interval time." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textSCSamplingInterval->SetFocus();
     previousWarning = true;
   }
 
-  if ( !previousWarning && radioSCOnStates->GetValue() && textSCMinimumBurstTime->GetValue() == _("")  )
+  if( !previousWarning && radioSCOnStates->GetValue() && textSCMinimumBurstTime->GetValue() == _( "" ) )
   {
-    wxMessageDialog message( this, _("Software Counters:\nPlease set the minimum burst time."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _( "Software Counters:\nPlease set the minimum burst time." ), _( "Warning" ), wxOK );
     message.ShowModal();
     textSCMinimumBurstTime->SetFocus();
     previousWarning = true;
@@ -2090,33 +2159,42 @@ void CutFilterDialog::CheckSoftwareCountersOptions( bool &previousWarning )
 
   // Are times set properly?
   double regionTime;
-  if ( !previousWarning && radioSCOnIntervals->GetValue() )
+  if( !previousWarning && radioSCOnIntervals->GetValue() )
     textSCSamplingInterval->GetValue().ToDouble( &regionTime );
   else
     textSCMinimumBurstTime->GetValue().ToDouble( &regionTime );
 
 
   // sampling interval <0  or Min. burst time < 0
-  if ( !previousWarning && regionTime < 0.0 )
+  if( !previousWarning && regionTime < 0.0 )
   {
-    if ( radioSCOnIntervals->GetValue() )
+    if( radioSCOnIntervals->GetValue() )
     {
-      wxMessageDialog message( this, _("Software Counters:\nTimes must be positive numbers.\n\nPlease set sampling interval burst time properly."), _("Warning"), wxOK );
+      wxMessageDialog message( this,
+                               _( "Software Counters:\nTimes must be positive numbers.\n\nPlease set sampling interval burst time properly." ),
+                               _( "Warning" ),
+                               wxOK );
       message.ShowModal();
       textSCSamplingInterval->SetFocus();
     }
     else
     {
-      wxMessageDialog message( this, _("Software Counters:\nTimes must be positive numbers.\n\nPlease set minimum burst time properly."), _("Warning"), wxOK );
+      wxMessageDialog message( this,
+                               _( "Software Counters:\nTimes must be positive numbers.\n\nPlease set minimum burst time properly." ),
+                               _( "Warning" ),
+                               wxOK );
       message.ShowModal();
       textSCMinimumBurstTime->SetFocus();
     }
     previousWarning = true;
   }
   // Empty list of events?
-  if ( !previousWarning && listSCAccumEvents->IsEmpty() && listSCCountEvents->IsEmpty() )
+  if( !previousWarning && listSCAccumEvents->IsEmpty() && listSCCountEvents->IsEmpty() )
   {
-    wxMessageDialog message( this, _("Software Counters:\nThe lists of event types are empty.\n\nPlease add at least one event type."), _("Warning"), wxOK );
+    wxMessageDialog message( this,
+                             _( "Software Counters:\nThe lists of event types are empty.\n\nPlease add at least one event type." ),
+                             _( "Warning" ),
+                             wxOK );
     message.ShowModal();
     buttonSCAccumEventsAdd->SetFocus();
     previousWarning = true;
@@ -2128,11 +2206,11 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
 {
   unsigned long auxULong;
 
-  if ( !previousWarning )
+  if( !previousWarning )
   {
     // Region
     traceOptions->set_sc_onInterval( radioSCOnIntervals->GetValue() );
-    
+
     textSCSamplingInterval->GetValue().ToULong( &auxULong );
     traceOptions->set_sc_sampling_interval( (unsigned long long)auxULong );
     textSCMinimumBurstTime->GetValue().ToULong( &auxULong );
@@ -2149,7 +2227,7 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
     traceOptions->set_sc_only_in_bursts( checkSCOnlyInBurstsCounting->IsChecked() );
 
     // Keep events
-    traceOptions->set_sc_types_kept( GetSoftwareCountersEventsListToString( listSCKeepEvents ));
+    traceOptions->set_sc_types_kept( GetSoftwareCountersEventsListToString( listSCKeepEvents ) );
 
     // Experimental feature?
     // traceOptions->set_sc_frequency( (int) scFrequency );
@@ -2157,27 +2235,37 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
 }
 
 
-void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions )
+void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions* traceOptions )
 {
   stringstream aux;
 
   // Region
-  if ( traceOptions->get_sc_onInterval() )
+  if( traceOptions->get_sc_onInterval() )
     radioSCOnIntervals->SetValue( true );
   else
     radioSCOnStates->SetValue( true );
 
-  aux.str("");
+  aux.str( "" );
   aux << traceOptions->get_sc_sampling_interval();
   textSCSamplingInterval->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
- 
-  aux.str("");
+
+  aux.str( "" );
   aux << traceOptions->get_sc_minimum_burst_time();
   textSCMinimumBurstTime->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
 
   // Selected events
-  SetSoftwareCountersEventsListToString( [&traceOptions](){ return traceOptions->get_sc_accum_types(); }, listSCAccumEvents );
-  SetSoftwareCountersEventsListToString( [&traceOptions](){ return traceOptions->get_sc_count_types(); }, listSCCountEvents );
+  SetSoftwareCountersEventsListToString(
+    [ &traceOptions ]()
+    {
+      return traceOptions->get_sc_accum_types();
+    },
+    listSCAccumEvents );
+  SetSoftwareCountersEventsListToString(
+    [ &traceOptions ]()
+    {
+      return traceOptions->get_sc_count_types();
+    },
+    listSCCountEvents );
 
   // Options
   checkSCRemoveStates->SetValue( traceOptions->get_sc_remove_states() );
@@ -2186,7 +2274,12 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
   checkSCOnlyInBurstsCounting->SetValue( traceOptions->get_sc_only_in_bursts() );
 
   // Keep events
-  SetSoftwareCountersEventsListToString( [&traceOptions](){ return traceOptions->get_sc_types_kept(); }, listSCKeepEvents );
+  SetSoftwareCountersEventsListToString(
+    [ &traceOptions ]()
+    {
+      return traceOptions->get_sc_types_kept();
+    },
+    listSCKeepEvents );
 
   // Experimental feature?
   // traceOptions->set_sc_frequency( (int) scFrequency );
@@ -2195,12 +2288,12 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
 /*
 // **********************************************************************************
 // **********************************************************************************
-//   ____                                      
-//  / ___|___  _ __ ___  _ __ ___   ___  _ __  
-// | |   / _ \| '_ ` _ \| '_ ` _ \ / _ \| '_ \ 
+//   ____
+//  / ___|___  _ __ ___  _ __ ___   ___  _ __
+// | |   / _ \| '_ ` _ \| '_ ` _ \ / _ \| '_ \
 // | |__| (_) | | | | | | | | | | | (_) | | | |
 //  \____\___/|_| |_| |_|_| |_| |_|\___/|_| |_|
-//                                             
+//
 // **********************************************************************************
 // **********************************************************************************
 */
@@ -2214,14 +2307,16 @@ void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
     // Fill new list, in order, and keeping the non-selected in listToolOrder
     for( size_t i = 0; i < order.size(); ++i )
     {
-      auxListToolOrder.push_back( order[i] );
-      listToolOrder.erase( find( listToolOrder.begin(), listToolOrder.end(), order[i]));
+      auxListToolOrder.push_back( order[ i ] );
+      auto it = find( listToolOrder.begin(), listToolOrder.end(), order[ i ] );
+      if( it != listToolOrder.end() )
+        listToolOrder.erase( it );
     }
 
     // Add the non-selected to the end of the vector and remember if they were checked
     for( size_t i = 0; i < listToolOrder.size(); ++i )
     {
-      auxListToolOrder.push_back( listToolOrder[i] );
+      auxListToolOrder.push_back( listToolOrder[ i ] );
     }
 
     // Set the new vector
@@ -2233,7 +2328,7 @@ void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
     {
       checkListExecutionChain->Check( i, true );
     }
-    
+
     // But keep the remembered check state of the unused tools.
     for( size_t i = order.size(); i < checkListExecutionChain->GetCount(); ++i )
     {
@@ -2255,26 +2350,26 @@ void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
   // first, test if all parameters are ready
   bool previousWarning = false;
 
-  //CheckCommonOptions( previousWarning, true );
-  //TransferWindowToCommonData( previousWarning );
+  // CheckCommonOptions( previousWarning, true );
+  // TransferWindowToCommonData( previousWarning );
   TransferToolOrderToCommonData();
 
-  if ( !previousWarning )
+  if( !previousWarning )
   {
     // Which tools are selected?
-    for ( vector< string >::const_iterator it = filterToolOrder.begin(); it != filterToolOrder.end(); ++it )
+    for( vector< string >::const_iterator it = filterToolOrder.begin(); it != filterToolOrder.end(); ++it )
     {
-      if ( *it == TraceCutter::getID() )
+      if( *it == TraceCutter::getID() )
       {
         CheckCutterOptions( previousWarning );
         TransferWindowToCutterData( previousWarning );
       }
-      else if ( *it == TraceFilter::getID() )
+      else if( *it == TraceFilter::getID() )
       {
         CheckFilterOptions( previousWarning );
         TransferWindowToFilterData( previousWarning );
       }
-      else if ( *it == TraceSoftwareCounters::getID() )
+      else if( *it == TraceSoftwareCounters::getID() )
       {
         CheckSoftwareCountersOptions( previousWarning );
         TransferWindowToSoftwareCountersData( previousWarning );
@@ -2285,9 +2380,9 @@ void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
     }
   }
 
-  if ( !previousWarning )
+  if( !previousWarning )
   {
-    wxFileName auxDirectory( wxString( globalXMLsPath.c_str(), wxConvUTF8 )); 
+    wxFileName auxDirectory( wxString( globalXMLsPath.c_str(), wxConvUTF8 ) );
 
     if( !auxDirectory.IsDir() )
       auxDirectory = auxDirectory.GetPathWithSep();
@@ -2297,24 +2392,24 @@ void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
     std::vector< wxString > extensions;
     extensions.push_back( wxT( "xml" ) );
     FileDialogExtension xmlSelectionDialog( this,
-                          _( "Save XML Cut/Filter configuration file" ),
-                          directory,
-                          _( "" ),
-                          wildcard,
-                          wxFD_SAVE|wxFD_CHANGE_DIR,
-                          wxDefaultPosition,
-                          wxDefaultSize,
-                          _( "filedlg" ),
-                          extensions );
+                                            _( "Save XML Cut/Filter configuration file" ),
+                                            directory,
+                                            _( "" ),
+                                            wildcard,
+                                            wxFD_SAVE | wxFD_CHANGE_DIR,
+                                            wxDefaultPosition,
+                                            wxDefaultSize,
+                                            _( "filedlg" ),
+                                            extensions );
 
     if( xmlSelectionDialog.ShowModal() == wxID_OK )
     {
       wxString path( xmlSelectionDialog.GetPath() );
-      traceOptions->saveXML( filterToolOrder, string( path.mb_str()) );
+      traceOptions->saveXML( filterToolOrder, string( path.mb_str() ) );
 
       // we must add the proper slash to enter the directory next time
       globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
-      newXMLsPath = true;
+      newXMLsPath    = true;
 
       fileBrowserButtonXML->SetPath( path );
     }
@@ -2322,9 +2417,9 @@ void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
 }
 
 
-bool CutFilterDialog::GetLoadedXMLPath( string &XMLPath )
+bool CutFilterDialog::GetLoadedXMLPath( string& XMLPath )
 {
-  if ( newXMLsPath )
+  if( newXMLsPath )
   {
     XMLPath = globalXMLsPath;
   }
@@ -2341,7 +2436,7 @@ void CutFilterDialog::OnBitmapbuttonPushDownFilterClick( wxCommandEvent& event )
 {
   int lastItemSelected = checkListExecutionChain->GetSelection();
 
-  if ( lastItemSelected != wxNOT_FOUND && lastItemSelected < 2  && lastItemSelected > -1 )
+  if( lastItemSelected != wxNOT_FOUND && lastItemSelected < 2 && lastItemSelected > -1 )
   {
     // Save current check state, because UpdateToolList clears it
     vector< bool > checked;
@@ -2353,8 +2448,8 @@ void CutFilterDialog::OnBitmapbuttonPushDownFilterClick( wxCommandEvent& event )
     bool auxSecond = checkListExecutionChain->IsChecked( lastItemSelected + 1 );
 
     // Swap the names in the string
-    string auxNameFirst = listToolOrder[ lastItemSelected ];
-    listToolOrder[ lastItemSelected ] =  listToolOrder[ lastItemSelected + 1 ];
+    string auxNameFirst                   = listToolOrder[ lastItemSelected ];
+    listToolOrder[ lastItemSelected ]     = listToolOrder[ lastItemSelected + 1 ];
     listToolOrder[ lastItemSelected + 1 ] = auxNameFirst;
 
     // Rebuild list
@@ -2378,7 +2473,7 @@ void CutFilterDialog::OnBitmapbuttonPushDownFilterClick( wxCommandEvent& event )
 const vector< string > CutFilterDialog::changeToolsNameToID( const vector< string >& listToolWithNames )
 {
   vector< string > listToolWithIDs;
-  for ( vector< string >::const_iterator it = listToolWithNames.begin(); it != listToolWithNames.end(); ++it )
+  for( vector< string >::const_iterator it = listToolWithNames.begin(); it != listToolWithNames.end(); ++it )
   {
     listToolWithIDs.push_back( GetLocalKernel()->getToolID( *it ) );
   }
@@ -2390,7 +2485,7 @@ const vector< string > CutFilterDialog::changeToolsNameToID( const vector< strin
 const vector< string > CutFilterDialog::changeToolsIDsToNames( const vector< string >& listToolIDs )
 {
   vector< string > listToolWithNames;
-  for ( vector< string >::const_iterator it = listToolIDs.begin(); it != listToolIDs.end(); ++it )
+  for( vector< string >::const_iterator it = listToolIDs.begin(); it != listToolIDs.end(); ++it )
   {
     listToolWithNames.push_back( GetLocalKernel()->getToolName( *it ) );
   }
@@ -2404,9 +2499,9 @@ bool CutFilterDialog::isExecutionChainEmpty()
   // Any tool selected?
   bool emptyChain = true;
 
-  for ( size_t i = 0; i < checkListExecutionChain->GetCount(); ++i )
+  for( size_t i = 0; i < checkListExecutionChain->GetCount(); ++i )
   {
-    if ( checkListExecutionChain->IsChecked( (int)i ) )
+    if( checkListExecutionChain->IsChecked( (int)i ) )
     {
       emptyChain = false;
       break;
@@ -2423,7 +2518,7 @@ void CutFilterDialog::ChangePageSelectionFromTabsToToolsOrderList()
 
   for( vector< string >::iterator it = listToolOrder.begin(); it != listToolOrder.end(); ++it )
   {
-    if ( *it == string( notebookTools->GetPageText( notebookTools->GetSelection() ).mb_str()) )
+    if( *it == string( notebookTools->GetPageText( notebookTools->GetSelection() ).mb_str() ) )
     {
       checkListExecutionChain->SetSelection( pos );
       break; // you can't have two of them at the same time
@@ -2440,8 +2535,8 @@ void CutFilterDialog::ChangePageSelectionFromTabsToToolsOrderList()
 void CutFilterDialog::OnCheckListExecutionChainSelected( wxCommandEvent& event )
 {
   int iSel = event.GetSelection();
-  
-  if ( iSel > -1 )
+
+  if( iSel > -1 )
     ChangePageSelectionFromToolsOrderListToTabs( iSel );
 }
 
@@ -2472,18 +2567,14 @@ bool CutFilterDialog::globalEnable()
 // saveGeneratedName = false => useful to compute new ouput trace name,
 //   (i.e. when filter execution chain modified ).
 // saveGeneratedName = true => just before real trace save
-void CutFilterDialog::setOutputName( bool enable,
-                                     bool saveGeneratedName,
-                                     const string& sourceTrace )
+void CutFilterDialog::setOutputName( bool enable, bool saveGeneratedName, const string& sourceTrace )
 {
-  if ( enable )
+  if( enable )
   {
     TransferToolOrderToCommonData();
 
-    string currentDstTrace =
-            GetLocalKernel()->getNewTraceName(
-                    sourceTrace, outputPath, filterToolOrder, saveGeneratedName );
-    wxString outputName = wxString( currentDstTrace.c_str(), wxConvUTF8 );
+    string currentDstTrace = GetLocalKernel()->getNewTraceName( sourceTrace, outputPath, filterToolOrder, saveGeneratedName );
+    wxString outputName    = wxString( currentDstTrace.c_str(), wxConvUTF8 );
     fileBrowserButtonOutputTrace->SetPath( outputName );
 
     outputPath = std::string( wxFileName( wxString( currentDstTrace.c_str(), wxConvUTF8 ) ).GetPathWithSep().mb_str() );
@@ -2497,7 +2588,7 @@ void CutFilterDialog::setOutputName( bool enable,
 void CutFilterDialog::OnChecklistboxExecutionChainDoubleClicked( wxCommandEvent& event )
 {
   int iSel = event.GetSelection();
-  if ( iSel > -1 )
+  if( iSel > -1 )
   {
     checkListExecutionChain->Check( iSel, !checkListExecutionChain->IsChecked( iSel ) );
     enableOutputTraceWidgets( globalEnable() );
@@ -2526,7 +2617,7 @@ void CutFilterDialog::OnChecklistboxExecutionChainToggled( wxCommandEvent& event
 {
   int iSel = event.GetSelection();
 
-  if ( iSel > -1 )
+  if( iSel > -1 )
   {
     UpdateOutputTraceName();
     EnableToolTab( iSel );
@@ -2541,7 +2632,7 @@ void CutFilterDialog::OnBitmapbuttonPushUpFilterClick( wxCommandEvent& event )
 {
   int lastItemSelected = checkListExecutionChain->GetSelection();
 
-  if ( lastItemSelected != wxNOT_FOUND && lastItemSelected > 0 )
+  if( lastItemSelected != wxNOT_FOUND && lastItemSelected > 0 )
   {
     // Save current check state, because UpdateExecutionChain clears it
     vector< bool > checked;
@@ -2553,9 +2644,9 @@ void CutFilterDialog::OnBitmapbuttonPushUpFilterClick( wxCommandEvent& event )
     bool auxSecond = checkListExecutionChain->IsChecked( lastItemSelected );
 
     // Swap the names in the string
-    string auxNameFirst = listToolOrder[ lastItemSelected - 1 ];
-    listToolOrder[ lastItemSelected - 1 ] =  listToolOrder[ lastItemSelected ];
-    listToolOrder[ lastItemSelected ] = auxNameFirst;
+    string auxNameFirst                   = listToolOrder[ lastItemSelected - 1 ];
+    listToolOrder[ lastItemSelected - 1 ] = listToolOrder[ lastItemSelected ];
+    listToolOrder[ lastItemSelected ]     = auxNameFirst;
 
     // Rebuild list
     UpdateExecutionChain();
@@ -2583,7 +2674,7 @@ void CutFilterDialog::UpdateExecutionChain()
   {
     stringstream aux;
     aux << order++;
-    items.Add(  wxString::FromUTF8( aux.str().c_str() ) + _( ".- " ) + wxString::FromUTF8( (*it).c_str() ) );
+    items.Add( wxString::FromUTF8( aux.str().c_str() ) + _( ".- " ) + wxString::FromUTF8( ( *it ).c_str() ) );
   }
 
   checkListExecutionChain->Clear();
@@ -2595,7 +2686,7 @@ void CutFilterDialog::ChangePageSelectionFromToolsOrderListToTabs( int selected 
 {
   for( size_t i = 0; i < notebookTools->GetPageCount(); ++i )
   {
-    if ( listToolOrder[ selected ] == string( notebookTools->GetPageText( i ).mb_str()) )
+    if( listToolOrder[ selected ] == string( notebookTools->GetPageText( i ).mb_str() ) )
     {
       notebookTools->ChangeSelection( i );
     }
@@ -2605,10 +2696,10 @@ void CutFilterDialog::ChangePageSelectionFromToolsOrderListToTabs( int selected 
 
 void CutFilterDialog::EnableSingleTab( int selected )
 {
-  string id = GetLocalKernel()->getToolID( listToolOrder[ selected ] );
-  int iTab = TABINDEX[ id ];
+  string id      = GetLocalKernel()->getToolID( listToolOrder[ selected ] );
+  int iTab       = TABINDEX[ id ];
   bool isChecked = checkListExecutionChain->IsChecked( selected );
-  (notebookTools->GetPage( iTab ))->Enable( isChecked );
+  ( notebookTools->GetPage( iTab ) )->Enable( isChecked );
 }
 
 
@@ -2625,14 +2716,14 @@ void CutFilterDialog::EnableAllTabsFromToolsList()
 }
 
 
-void CutFilterDialog::CheckCommonOptions( bool &previousWarning, bool showWarning )
+void CutFilterDialog::CheckCommonOptions( bool& previousWarning, bool showWarning )
 {
   // Any trace selected?
-  if ( !previousWarning && !isFileSelected( fileBrowserButtonInputTrace ) )
+  if( !previousWarning && !isFileSelected( fileBrowserButtonInputTrace ) )
   {
-    if ( showWarning )
+    if( showWarning )
     {
-      wxMessageDialog message( this, _("Missing trace name.\nPlease choose the source trace."), _("Warning"), wxOK );
+      wxMessageDialog message( this, _( "Missing trace name.\nPlease choose the source trace." ), _( "Warning" ), wxOK );
       message.ShowModal();
     }
 
@@ -2640,11 +2731,11 @@ void CutFilterDialog::CheckCommonOptions( bool &previousWarning, bool showWarnin
     previousWarning = true;
   }
 
-  if ( !previousWarning && !isFileSelected( fileBrowserButtonOutputTrace ) )
+  if( !previousWarning && !isFileSelected( fileBrowserButtonOutputTrace ) )
   {
-    if ( showWarning )
+    if( showWarning )
     {
-      wxMessageDialog message( this, _("Missing trace name.\nPlease choose name for final trace."), _("Warning"), wxOK );
+      wxMessageDialog message( this, _( "Missing trace name.\nPlease choose name for final trace." ), _( "Warning" ), wxOK );
       message.ShowModal();
     }
 
@@ -2652,11 +2743,11 @@ void CutFilterDialog::CheckCommonOptions( bool &previousWarning, bool showWarnin
     previousWarning = true;
   }
 
-  if ( !previousWarning && isExecutionChainEmpty() )
+  if( !previousWarning && isExecutionChainEmpty() )
   {
-    if ( showWarning )
+    if( showWarning )
     {
-      wxMessageDialog message( this, _("No utility selected.\nPlease choose the utilities to apply."), _( "Warning" ), wxOK );
+      wxMessageDialog message( this, _( "No utility selected.\nPlease choose the utilities to apply." ), _( "Warning" ), wxOK );
       message.ShowModal();
     }
 
@@ -2670,12 +2761,11 @@ void CutFilterDialog::TransferToolOrderToCommonData()
 {
   filterToolOrder.clear();
 
-  for ( size_t i = 0; i < listToolOrder.size(); ++i )
+  for( size_t i = 0; i < listToolOrder.size(); ++i )
   {
-    if ( checkListExecutionChain->IsChecked( i ) )
+    if( checkListExecutionChain->IsChecked( i ) )
     {
-      filterToolOrder.push_back(
-              GetLocalKernel()->getToolID( listToolOrder[ i ] ));
+      filterToolOrder.push_back( GetLocalKernel()->getToolID( listToolOrder[ i ] ) );
     }
   }
 }
@@ -2683,11 +2773,11 @@ void CutFilterDialog::TransferToolOrderToCommonData()
 
 void CutFilterDialog::TransferWindowToCommonData( bool previousWarning )
 {
-  if ( !previousWarning )
+  if( !previousWarning )
   {
-    nameSourceTrace = std::string( fileBrowserButtonInputTrace->GetPath().mb_str() );
-    nameDestinyTrace = std::string( fileBrowserButtonOutputTrace->GetPath().mb_str() );
-    loadResultingTrace = checkLoadResultingTrace->IsChecked();
+    nameSourceTrace          = std::string( fileBrowserButtonInputTrace->GetPath().mb_str() );
+    nameDestinyTrace         = std::string( fileBrowserButtonOutputTrace->GetPath().mb_str() );
+    loadResultingTrace       = checkLoadResultingTrace->IsChecked();
     runAppWithResultingTrace = checkRunAppWithResultingTrace->IsChecked();
 
     TransferToolOrderToCommonData();
@@ -2713,26 +2803,26 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
 {
   // To avoid annoying multiple warning windows at the same time, and also final filter creation
   bool previousWarning = false;
-  
+
   CheckCommonOptions( previousWarning, true );
   TransferWindowToCommonData( previousWarning );
 
-  if ( !previousWarning )
+  if( !previousWarning )
   {
     // Which tools are selected?
-    for ( vector< string >::const_iterator it = filterToolOrder.begin(); it != filterToolOrder.end(); ++it )
+    for( vector< string >::const_iterator it = filterToolOrder.begin(); it != filterToolOrder.end(); ++it )
     {
-      if ( *it == TraceCutter::getID() )
+      if( *it == TraceCutter::getID() )
       {
         CheckCutterOptions( previousWarning );
         TransferWindowToCutterData( previousWarning );
       }
-      else if ( *it == TraceFilter::getID() )
+      else if( *it == TraceFilter::getID() )
       {
         CheckFilterOptions( previousWarning );
         TransferWindowToFilterData( previousWarning );
       }
-      else if ( *it == TraceSoftwareCounters::getID() )
+      else if( *it == TraceSoftwareCounters::getID() )
       {
         CheckSoftwareCountersOptions( previousWarning );
         TransferWindowToSoftwareCountersData( previousWarning );
@@ -2744,11 +2834,12 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
 
     if( !previousWarning )
     {
-      paraverMain::myParaverMain->OnOKCutFilterDialog( this );
-
-      // TODO: Move destruction responsibility away from same class
-      //       Also check traceOptions destruction.
-      delete this; 
+      if( paraverMain::myParaverMain->OnOKCutFilterDialog( this ) )
+      {
+        // TODO: Move destruction responsibility away from same class
+        //       Also check traceOptions destruction.
+        delete this;
+      }
     }
   }
 }
@@ -2812,7 +2903,7 @@ void CutFilterDialog::OnCheckboxFilterDiscardCommunicationUpdate( wxUpdateUIEven
 
 void CutFilterDialog::OnCheckboxCheckCutterOriginalTimeUpdate( wxUpdateUIEvent& event )
 {
-  if ( checkCutterUseOriginalTime->IsChecked() )
+  if( checkCutterUseOriginalTime->IsChecked() )
   {
     checkCutterDontBreakStates->SetValue( false );
     checkCutterDontBreakStates->Disable();
@@ -2826,17 +2917,17 @@ void CutFilterDialog::OnCheckboxCheckCutterOriginalTimeUpdate( wxUpdateUIEvent& 
 
 void CutFilterDialog::SetXMLFile( const wxString& whichXMLFile, bool refresh )
 {
-  wxString xmlSuffix = _(".xml");
+  wxString xmlSuffix = _( ".xml" );
   wxString pathWithExtension;
-      
-  if ( whichXMLFile.EndsWith( xmlSuffix )) 
+
+  if( whichXMLFile.EndsWith( xmlSuffix ) )
   {
     wxString tmpFile = wxFileName( whichXMLFile ).GetFullPath();
-    if ( wxFileName::IsFileReadable( tmpFile ) )
+    if( wxFileName::IsFileReadable( tmpFile ) )
     {
       fileBrowserButtonXML->SetPath( tmpFile );
-      
-      if ( refresh )
+
+      if( refresh )
         TransferXMLFileToWindow( tmpFile );
     }
   }
@@ -2852,15 +2943,15 @@ void CutFilterDialog::TransferDataToWindow( vector< string > order, TraceOptions
 
   for( size_t i = 0; i < order.size(); ++i )
   {
-    if ( order[ i ] == TraceCutter::getID() )
+    if( order[ i ] == TraceCutter::getID() )
     {
       TransferCutterDataToWindow( traceOptions );
     }
-    else if ( order[ i ] == TraceFilter::getID() )
+    else if( order[ i ] == TraceFilter::getID() )
     {
       TransferFilterDataToWindow( traceOptions );
     }
-    else if ( order[ i ] == TraceSoftwareCounters::getID() )
+    else if( order[ i ] == TraceSoftwareCounters::getID() )
     {
       TransferSoftwareCountersDataToWindow( traceOptions );
     }
@@ -2868,13 +2959,12 @@ void CutFilterDialog::TransferDataToWindow( vector< string > order, TraceOptions
     {
     }
   }
-  
-  Thaw();  
+
+  Thaw();
 }
 
 
-void CutFilterDialog::UpdateGuiXMLSectionFromFile( TraceOptions *traceOptions,
-                                                    vector< string > &toolIDsOrder )
+void CutFilterDialog::UpdateGuiXMLSectionFromFile( TraceOptions* traceOptions, vector< string >& toolIDsOrder )
 {
   TransferDataToWindow( toolIDsOrder, traceOptions );
   EnableAllTabsFromToolsList();
@@ -2884,15 +2974,15 @@ void CutFilterDialog::UpdateGuiXMLSectionFromFile( TraceOptions *traceOptions,
 
 void CutFilterDialog::UpdateGlobalXMLPath( const wxString& whichPath )
 {
- // we must add the proper slash to enter the directory next time
-  //globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
+  // we must add the proper slash to enter the directory next time
+  // globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
   wxFileName auxDirectory( whichPath );
   if( !auxDirectory.IsDir() )
     auxDirectory = auxDirectory.GetPathWithSep();
   wxString directory( auxDirectory.GetFullPath() );
 
   globalXMLsPath = string( directory.mb_str() ) + PATH_SEP;
-  newXMLsPath = true;
+  newXMLsPath    = true;
 }
 
 
@@ -2906,19 +2996,16 @@ void CutFilterDialog::EnableToolTab( int i )
 void CutFilterDialog::UpdateOutputTraceName()
 {
   bool allowChangeOutputTrace = globalEnable();
-  if ( allowChangeOutputTrace )
+  if( allowChangeOutputTrace )
   {
     enableOutputTraceWidgets( allowChangeOutputTrace );
-    setOutputName( allowChangeOutputTrace,
-                   false,
-                   std::string( fileBrowserButtonInputTrace->GetPath().mb_str() ) );
+    setOutputName( allowChangeOutputTrace, false, std::string( fileBrowserButtonInputTrace->GetPath().mb_str() ) );
   }
 }
 
 
 // Needed by sequence!
-void CutFilterDialog::TransferTraceOptionsToWindow( TraceOptions *traceOptions, 
-                                                     vector< string > &whichToolIDsOrder )
+void CutFilterDialog::TransferTraceOptionsToWindow( TraceOptions* traceOptions, vector< string >& whichToolIDsOrder )
 {
   UpdateGuiXMLSectionFromFile( traceOptions, whichToolIDsOrder );
 }
@@ -2926,16 +3013,16 @@ void CutFilterDialog::TransferTraceOptionsToWindow( TraceOptions *traceOptions,
 
 void CutFilterDialog::TransferXMLFileToWindow( const wxString& whichXMLFile )
 {
-  if ( traceOptions != nullptr )
+  if( traceOptions != nullptr )
   {
     delete traceOptions;
     traceOptions = TraceOptions::create( GetLocalKernel() );
   }
-  
+
 #ifdef UNICODE
-  vector< string > toolIDsOrder = traceOptions->parseDoc( (char *)whichXMLFile.mb_str().data() );
+  vector< string > toolIDsOrder = traceOptions->parseDoc( (char*)whichXMLFile.mb_str().data() );
 #else
-  vector< string > toolIDsOrder = traceOptions->parseDoc( (char *)whichXMLFile.c_str() );
+  vector< string > toolIDsOrder = traceOptions->parseDoc( (char*)whichXMLFile.c_str() );
 #endif
 
   UpdateGuiXMLSectionFromFile( traceOptions, toolIDsOrder );
@@ -2985,32 +3072,124 @@ void CutFilterDialog::OnButtonCutterAllWindowClick( wxCommandEvent& event )
 {
   if( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr )
   {
-    textCutterBeginCut->SetValue(
-            LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentTimeline()->getWindowBeginTime(),
-                                         paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getTimeUnit(),
-                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
-    textCutterEndCut->SetValue(
-            LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime(),
-                                         paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getTimeUnit(),
-                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
+    textCutterBeginCut->SetValue( LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentTimeline()->getWindowBeginTime(),
+                                                               paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getTimeUnit(),
+                                                               ParaverConfig::getInstance()->getTimelinePrecision() ) );
+    textCutterEndCut->SetValue( LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime(),
+                                                             paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getTimeUnit(),
+                                                             ParaverConfig::getInstance()->getTimelinePrecision() ) );
 
     radioCutterCutByTime->SetValue( true );
     cutterByTimePreviouslyChecked = true;
   }
   else if( paraverMain::myParaverMain->GetCurrentHisto() != nullptr )
   {
-    textCutterBeginCut->SetValue(
-            LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentHisto()->getBeginTime(),
-                                         paraverMain::myParaverMain->GetCurrentHisto()->getTrace()->getTimeUnit(),
-                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
-    textCutterEndCut->SetValue(
-            LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentHisto()->getEndTime(),
-                                         paraverMain::myParaverMain->GetCurrentHisto()->getTrace()->getTimeUnit(),
-                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
+    textCutterBeginCut->SetValue( LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentHisto()->getBeginTime(),
+                                                               paraverMain::myParaverMain->GetCurrentHisto()->getTrace()->getTimeUnit(),
+                                                               ParaverConfig::getInstance()->getTimelinePrecision() ) );
+    textCutterEndCut->SetValue( LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentHisto()->getEndTime(),
+                                                             paraverMain::myParaverMain->GetCurrentHisto()->getTrace()->getTimeUnit(),
+                                                             ParaverConfig::getInstance()->getTimelinePrecision() ) );
 
     radioCutterCutByTime->SetValue( true );
     cutterByTimePreviouslyChecked = true;
   }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_OBJECTS
+ */
+
+void CutFilterDialog::OnButtonCutterSelectObjectsClick( wxCommandEvent& event )
+{
+  Trace* tmpTrace = getTrace();
+  if ( tmpTrace == nullptr )
+  {
+    wxMessageBox( _("Please load a trace/window to select objects."), _("Error"), wxOK | wxICON_ERROR );
+    return;
+  }
+
+  // Determine level
+  TTraceLevel level = TTraceLevel::TASK;
+  int pageIndex = 1;
+  if( radioCutterCutByApplication->GetValue() )
+  {
+     level = TTraceLevel::APPLICATION;
+     pageIndex = 0;
+  }
+  else if( radioCutterCutByThread->GetValue() )
+  {
+     level = TTraceLevel::THREAD;
+     pageIndex = 2;
+  }
+
+  // Use a local SelectionManagement object that stays alive while ShowModal blocks.
+  // This prevents the dangling reference crash in RowsSelectionDialog.
+  SelectionManagement< TObjectOrder, TTraceLevel > selectionMgr;
+  selectionMgr.init( tmpTrace );
+  
+  RowsSelectionDialog *myDialog = new RowsSelectionDialog( tmpTrace, true, selectionMgr );
+  myDialog->GetBookCtrl()->SetSelection( pageIndex );
+  
+  if ( myDialog->ShowModal() == wxID_OK )
+  {
+      // Check which tab is actually selected
+      int selectedPage = myDialog->GetBookCtrl()->GetSelection();
+      
+      if ( selectedPage == 0 )
+      {
+         level = TTraceLevel::APPLICATION;
+         radioCutterCutByApplication->SetValue( true );
+      }
+      else if ( selectedPage == 2 )
+      {
+         level = TTraceLevel::THREAD;
+         radioCutterCutByThread->SetValue( true );
+      }
+      else
+      {
+         level = TTraceLevel::TASK;
+         radioCutterCutByTask->SetValue( true );
+      }
+
+      wxArrayInt selections;
+      myDialog->GetSelections( level, selections );
+
+      wxString result = "";
+      
+      if ( selections.GetCount() > 0 ) {
+         for(size_t i=0; i<selections.GetCount(); i++) {
+             if(i>0) result += ",";
+             
+             TObjectOrder globalID = selections[i] + 1;
+             
+             if ( level == TTraceLevel::APPLICATION )
+             {
+                result += wxString::Format("%d", globalID);
+             }
+             else if ( level == TTraceLevel::TASK )
+             {
+                TApplOrder appl;
+                TTaskOrder task;
+                tmpTrace->getTaskLocation( selections[i], appl, task );
+                result += wxString::Format("%d.%d", appl + 1, task + 1);
+             }
+             else if ( level == TTraceLevel::THREAD )
+             {
+                TApplOrder appl;
+                TTaskOrder task;
+                TThreadOrder thread;
+                tmpTrace->getThreadLocation( selections[i], appl, task, thread );
+                result += wxString::Format("%d.%d.%d", appl + 1, task + 1, thread + 1);
+             }
+         }
+      }
+      
+      textCutterTasks->SetValue( result );
+  }
+  
+  myDialog->Destroy();
 }
 
 
@@ -3022,17 +3201,14 @@ void CutFilterDialog::OnButtonCutterAllWindowUpdate( wxUpdateUIEvent& event )
 {
   buttonCutterAllWindow->Enable( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr ||
                                  paraverMain::myParaverMain->GetCurrentHisto() != nullptr );
-
 }
 
 
 void CutFilterDialog::swapTimeAndPercent()
 {
-  Trace *tmpTrace = getTrace();
+  Trace* tmpTrace = getTrace();
 
-  if ( tmpTrace != nullptr &&
-       !textCutterBeginCut->GetValue().IsEmpty() &&
-       !textCutterEndCut->GetValue().IsEmpty() )
+  if( tmpTrace != nullptr && !textCutterBeginCut->GetValue().IsEmpty() && !textCutterEndCut->GetValue().IsEmpty() )
   {
     bool byTime = radioCutterCutByTime->GetValue();
 
@@ -3044,15 +3220,15 @@ void CutFilterDialog::swapTimeAndPercent()
     wxString beginValue;
     wxString endValue;
     TTime maxTraceTime = tmpTrace->getEndTime();
-    if ( byTime )
+    if( byTime )
     {
       beginValue = formatTime( ( auxBeginTime / 100.0 ) * maxTraceTime );
-      endValue = formatTime( ( auxEndTime / 100.0 ) * maxTraceTime );
+      endValue   = formatTime( ( auxEndTime / 100.0 ) * maxTraceTime );
     }
     else
     {
       beginValue = formatPercent( 100.0 * ( auxBeginTime / maxTraceTime ) );
-      endValue = formatPercent( 100.0 * ( auxEndTime / maxTraceTime ) );
+      endValue   = formatPercent( 100.0 * ( auxEndTime / maxTraceTime ) );
     }
 
     // Set
@@ -3062,15 +3238,14 @@ void CutFilterDialog::swapTimeAndPercent()
 }
 
 
-
 /*!
  * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CUTTER_CUT_BY_TIME
  */
 
 void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& event )
 {
-  if ( !cutterByTimePreviouslyChecked )
-    swapTimeAndPercent(); 
+  if( !cutterByTimePreviouslyChecked )
+    swapTimeAndPercent();
 
   cutterByTimePreviouslyChecked = true;
 }
@@ -3082,8 +3257,8 @@ void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& even
 
 void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& event )
 {
-  if ( cutterByTimePreviouslyChecked )
-    swapTimeAndPercent(); 
+  if( cutterByTimePreviouslyChecked )
+    swapTimeAndPercent();
 
   cutterByTimePreviouslyChecked = false;
 }
@@ -3095,11 +3270,11 @@ void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& e
 
 void CutFilterDialog::OnKeyDown( wxKeyEvent& event )
 {
-  if ( ( (wxKeyEvent&) event ).GetKeyCode() == WXK_ESCAPE )
+  if( ( (wxKeyEvent&)event ).GetKeyCode() == WXK_ESCAPE )
   {
-    if ( wxGetApp().GetGlobalTiming() )
+    if( wxGetApp().GetGlobalTiming() )
       wxGetApp().DeactivateGlobalTiming();
-  } 
+  }
 }
 
 
@@ -3119,12 +3294,11 @@ void CutFilterDialog::OnCheckboxCutterKeepEventsUpdate( wxUpdateUIEvent& event )
 
 void CutFilterDialog::OnButtonScAccumEventsAddClick( wxCommandEvent& event )
 {
-  wxTextEntryDialog textEntry( this, 
-                               wxString() << _("Allowed formats:\n")
-                                          << _(" Single event type: \'Type\'\n")
-                                          << _(" Values for a single type: \'Type:Value 1,...,Value n\'"),
-                               _("Add events") );
-                               
+  wxTextEntryDialog textEntry( this,
+                               wxString() << _( "Allowed formats:\n" ) << _( " Single event type: \'Type\'\n" )
+                                          << _( " Values for a single type: \'Type:Value 1,...,Value n\'" ),
+                               _( "Add events" ) );
+
   if( textEntry.ShowModal() == wxID_OK )
   {
     wxString currentEntry( textEntry.GetValue() );
@@ -3133,11 +3307,11 @@ void CutFilterDialog::OnButtonScAccumEventsAddClick( wxCommandEvent& event )
       wxString allowedFormatsRE = reSingleType + wxString( wxT( "|" ) ) + reValuesSepByCommaForType;
       if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
-        wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
+        wxMessageBox( _( "Text inserted doesn't fit the allowed formats" ), _( "Not allowed format" ) );
       }
       else
       {
-        currentEntry.Replace( _(" "), _("") );
+        currentEntry.Replace( _( " " ), _( "" ) );
         listSCAccumEvents->Append( currentEntry );
       }
     }
@@ -3152,10 +3326,9 @@ void CutFilterDialog::OnButtonScAccumEventsAddClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonScAccumEventsDeleteClick( wxCommandEvent& event )
 {
   wxArrayInt selec;
-  
+
   if( listSCAccumEvents->GetSelections( selec ) == 0 )
     return;
-    
+
   listSCAccumEvents->Delete( selec[ 0 ] );
 }
-

@@ -280,382 +280,398 @@ class gHistogram: public wxFrame, public gWindow
     /// wxEVT_UPDATE_UI event handler for wxID_CONTROLWARNING
     void OnControlWarningUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for wxID_3DWARNING
-  void On3dWarningUpdate( wxUpdateUIEvent& event );
+    /// wxEVT_UPDATE_UI event handler for wxID_3DWARNING
+    void On3dWarningUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_AUTOREDRAW
-  void OnAutoredrawUpdate( wxUpdateUIEvent& event );
+    /// wxEVT_UPDATE_UI event handler for ID_AUTOREDRAW
+    void OnAutoredrawUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_LEFT_DOWN event handler for ID_AUTOREDRAW
-  void OnAutoredrawLeftDown( wxMouseEvent& event );
+    /// wxEVT_LEFT_DOWN event handler for ID_AUTOREDRAW
+    void OnAutoredrawLeftDown( wxMouseEvent& event );
 
-////@end gHistogram event handler declarations
+    ////@end gHistogram event handler declarations
+    // clang-format on
 
-  void OnRangeSelect( wxGridRangeSelectEvent& event );
+    void OnRangeSelect( wxGridRangeSelectEvent& event );
 
-  void OnMove (wxMoveEvent &event);
+    void OnMove( wxMoveEvent& event );
 
-  ////@begin gHistogram member function declarations
+    // clang-format off
+    ////@begin gHistogram member function declarations
 
-  wxBitmap GetDrawImage() const { return drawImage ; }
-  void SetDrawImage(wxBitmap value) { drawImage = value ; }
+    wxBitmap GetDrawImage() const
+    {
+      return drawImage;
+    }
+    void SetDrawImage( wxBitmap value )
+    {
+      drawImage = value;
+    }
 
-  bool GetEscapePressed() const { return escapePressed ; }
-  void SetEscapePressed(bool value) { escapePressed = value ; }
+    bool GetEscapePressed() const
+    {
+      return escapePressed;
+    }
+    void SetEscapePressed( bool value )
+    {
+      escapePressed = value;
+    }
 
-  double GetLastPosZoomX() const { return lastPosZoomX ; }
-  void SetLastPosZoomX(double value) { lastPosZoomX = value ; }
+    double GetLastPosZoomX() const
+    {
+      return lastPosZoomX;
+    }
+    void SetLastPosZoomX( double value )
+    {
+      lastPosZoomX = value;
+    }
 
-  double GetLastPosZoomY() const { return lastPosZoomY ; }
-  void SetLastPosZoomY(double value) { lastPosZoomY = value ; }
+    double GetLastPosZoomY() const
+    {
+      return lastPosZoomY;
+    }
+    void SetLastPosZoomY( double value )
+    {
+      lastPosZoomY = value;
+    }
 
-  Histogram* GetHistogram() const { return myHistogram ; }
-  void SetHistogram(Histogram* value) { myHistogram = value ; }
+    Histogram* GetHistogram() const
+    {
+      return myHistogram;
+    }
+    void SetHistogram( Histogram* value )
+    {
+      myHistogram = value;
+    }
 
-  bool GetOpenControlActivated () const
-  {
-    return openControlActivated;
-  }
-  void SetOpenControlActivated (bool value)
-  {
-    openControlActivated = value;
-  }
+    bool GetOpenControlActivated() const
+    {
+      return openControlActivated;
+    }
+    void SetOpenControlActivated( bool value )
+    {
+      openControlActivated = value;
+    }
 
-  bool GetReady () const
-  {
-    return ready;
-  }
-  void SetReady (bool value)
-  {
-    ready = value;
-  }
+    bool GetReady() const
+    {
+      return ready;
+    }
+    void SetReady( bool value )
+    {
+      ready = value;
+    }
 
-  wxStopWatch *GetRedrawStopWatch () const
-  {
-    return redrawStopWatch;
-  }
-  void SetRedrawStopWatch (wxStopWatch *value)
-  {
-    redrawStopWatch = value;
-  }
+    wxStopWatch* GetRedrawStopWatch() const
+    {
+      return redrawStopWatch;
+    }
+    void SetRedrawStopWatch( wxStopWatch* value )
+    {
+      redrawStopWatch = value;
+    }
 
-  std::vector<TObjectOrder> GetSelectedRows () const
-  {
-    return selectedRows;
-  }
-  void SetSelectedRows (std::vector<TObjectOrder> value)
-  {
-    selectedRows = value;
-  }
+    HistoTableBase* GetTableBase() const
+    {
+      return tableBase;
+    }
+    void SetTableBase( HistoTableBase* value )
+    {
+      tableBase = value;
+    }
 
-  HistoTableBase *GetTableBase () const
-  {
-    return tableBase;
-  }
-  void SetTableBase (HistoTableBase *value)
-  {
-    tableBase = value;
-  }
+    double GetZommCellHeight() const
+    {
+      return zoomCellHeight;
+    }
+    void SetZommCellHeight( double value )
+    {
+      zoomCellHeight = value;
+    }
 
-  wxTimer *GetTimerZoom () const
-  {
-    return timerZoom;
-  }
-  void SetTimerZoom (wxTimer *value)
-  {
-    timerZoom = value;
-  }
+    double GetZoomCellWidth() const
+    {
+      return zoomCellWidth;
+    }
+    void SetZoomCellWidth( double value )
+    {
+      zoomCellWidth = value;
+    }
 
-  wxTimer *GetTimerSize () const
-  {
-    return timerSize;
-  }
-  void SetTimerSize (wxTimer *value)
-  {
-    timerSize = value;
-  }
+    bool GetZoomDragging() const
+    {
+      return zoomDragging;
+    }
+    void SetZoomDragging( bool value )
+    {
+      zoomDragging = value;
+    }
 
-  wxTimer *GetTimerPosition () const
-  {
-    return timerPosition;
-  }
-  void SetTimerPosition (wxTimer *value)
-  {
-    timerPosition = value;
-  }
+    wxBitmap GetZoomImage() const
+    {
+      return zoomImage;
+    }
+    void SetZoomImage( wxBitmap value )
+    {
+      zoomImage = value;
+    }
 
-  double GetZommCellHeight () const
-  {
-    return zoomCellHeight;
-  }
-  void SetZommCellHeight (double value)
-  {
-    zoomCellHeight = value;
-  }
+    wxPoint GetZoomPointBegin() const
+    {
+      return zoomPointBegin;
+    }
+    void SetZoomPointBegin( wxPoint value )
+    {
+      zoomPointBegin = value;
+    }
 
-  double GetZoomCellWidth () const
-  {
-    return zoomCellWidth;
-  }
-  void SetZoomCellWidth (double value)
-  {
-    zoomCellWidth = value;
-  }
+    wxPoint GetZoomPointEnd() const
+    {
+      return zoomPointEnd;
+    }
+    void SetZoomPointEnd( wxPoint value )
+    {
+      zoomPointEnd = value;
+    }
 
-  bool GetZoomDragging () const
-  {
-    return zoomDragging;
-  }
-  void SetZoomDragging (bool value)
-  {
-    zoomDragging = value;
-  }
+    /// Retrieves bitmap resources
+    wxBitmap GetBitmapResource( const wxString& name );
 
-  wxBitmap GetZoomImage () const
-  {
-    return zoomImage;
-  }
-  void SetZoomImage (wxBitmap value)
-  {
-    zoomImage = value;
-  }
-
-  wxPoint GetZoomPointBegin () const
-  {
-    return zoomPointBegin;
-  }
-  void SetZoomPointBegin (wxPoint value)
-  {
-    zoomPointBegin = value;
-  }
-
-  wxPoint GetZoomPointEnd () const
-  {
-    return zoomPointEnd;
-  }
-  void SetZoomPointEnd (wxPoint value)
-  {
-    zoomPointEnd = value;
-  }
-
-  /// Retrieves bitmap resources
-  wxBitmap GetBitmapResource( const wxString& name );
-
-  /// Retrieves icon resources
-  wxIcon GetIconResource( const wxString& name );
-////@end gHistogram member function declarations
-
-  std::map< TSemanticValue, rgb > GetSemanticValuesToColorControl() const
-  {
-    return semanticValuesToColorControl;
-  }
-  void SetSemanticValuesToColorControl( std::map< TSemanticValue, rgb > value )
-  {
-    semanticValuesToColorControl = value;
-  }
-
-  std::map< TSemanticValue, rgb > GetSemanticValuesToColorData() const
-  {
-    return semanticValuesToColorData;
-  }
-  void SetSemanticValuesToColorData( std::map< TSemanticValue, rgb > value )
-  {
-    semanticValuesToColorData = value;
-  }
+    /// Retrieves icon resources
+    wxIcon GetIconResource( const wxString& name );
+    ////@end gHistogram member function declarations
+    // clang-format on
 
 
-  const SelectionManagement<THistogramColumn, int> &GetColumnSelection () const
-  {
-    return columnSelection;
-  }
-  void SetColumnSelection (const SelectionManagement<THistogramColumn, int> &value)
-  {
-    columnSelection = value;
-  }
+    std::map< TSemanticValue, rgb > GetSemanticValuesToColorControl() const
+    {
+      return semanticValuesToColorControl;
+    }
+    void SetSemanticValuesToColorControl( std::map< TSemanticValue, rgb > value )
+    {
+      semanticValuesToColorControl = value;
+    }
 
-  void execute();
-  void InitHistogramCallbacks();
-  void initColumnSelection();
-  void fillGrid();
-  void fillZoom();
-  
-  /// Should we show tooltips?
-  static bool ShowToolTips();
+    std::map< TSemanticValue, rgb > GetSemanticValuesToColorData() const
+    {
+      return semanticValuesToColorData;
+    }
+    void SetSemanticValuesToColorData( std::map< TSemanticValue, rgb > value )
+    {
+      semanticValuesToColorData = value;
+    }
 
+    const SelectionManagement< THistogramColumn, int >& GetColumnSelection() const
+    {
+      return columnSelection;
+    }
+    void SetColumnSelection( const SelectionManagement< THistogramColumn, int >& value )
+    {
+      columnSelection = value;
+    }
 
-  // Pop Up Menu Methods
-  void OnPopUpCopy( wxCommandEvent& event );
-  void OnPopUpPaste( wxCommandEvent& event );
-  void OnPopUpPasteDefaultSpecial( wxCommandEvent& event );
-  void OnPopUpPasteSpecial( wxCommandEvent& event );
-  void OnPopUpPasteTime( wxCommandEvent& event );
-  void OnPopUpPasteObjects( wxCommandEvent& event );
-  void OnPopUpPasteSize( wxCommandEvent& event );
-  void OnPopUpPasteDuration( wxCommandEvent& event );
-  void OnPopUpPasteSemanticScale( wxCommandEvent& event );
-  void OnPopUpPasteSemanticSort( wxCommandEvent& event );
-  void OnPopUpPasteControlScale( wxCommandEvent& event );
-  void OnPopUpPaste3DScale( wxCommandEvent& event );
-  void OnPopUpPasteControlDimensions( wxCommandEvent& event );
+    void execute();
 
-  void OnPopUpClone( wxCommandEvent& event );
-  void OnPopUpRename( wxCommandEvent& event );
-  void OnPopUpFitTimeScale( wxCommandEvent& event );
-  void OnPopUpFitObjects( wxCommandEvent& event );
-  void OnPopUpRowSelection( wxCommandEvent& event );
-  void OnPopUpAutoControlScale( wxCommandEvent& event );
-  void OnPopUpAutoControlScaleZero( wxCommandEvent& event );
-  void OnPopUpAuto3DScale( wxCommandEvent& event );
-  void OnPopUpAutoDataGradient( wxCommandEvent& event );
+    void InitHistogramCallbacks();
+    void initColumnSelection();
+    void fillGrid();
+    void fillZoom();
 
-  void OnPopUpColor2D( wxCommandEvent& event );
-  void OnPopUpGradientFunction( wxCommandEvent& event );
+    gHistogram* clone( Histogram* clonedHistogram = nullptr, bool showWindow = true );
 
-  void OnPopUpUndoZoom( wxCommandEvent& event );
-  void OnPopUpRedoZoom( wxCommandEvent& event );
-
-  void OnPopUpDrawModeSemanticLast( wxCommandEvent& event );
-  void OnPopUpDrawModeSemanticRandom( wxCommandEvent& event );
-  void OnPopUpDrawModeSemanticRandomNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeSemanticMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeSemanticMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeSemanticAbsoluteMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeSemanticAbsoluteMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeSemanticAverage( wxCommandEvent& event );
-  void OnPopUpDrawModeSemanticAverageNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeSemanticMode( wxCommandEvent& event );
-
-  void OnPopUpDrawModeObjectsLast( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsRandom( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsRandomNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsAverage( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsAverageNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeObjectsMode( wxCommandEvent& event );
-
-  void OnPopUpDrawModeBothLast( wxCommandEvent& event );
-  void OnPopUpDrawModeBothRandom( wxCommandEvent& event );
-  void OnPopUpDrawModeBothRandomNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeBothMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeBothMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeBothAbsoluteMaximum( wxCommandEvent& event );
-  void OnPopUpDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeBothAverage( wxCommandEvent& event );
-  void OnPopUpDrawModeBothAverageNotZero( wxCommandEvent& event );
-  void OnPopUpDrawModeBothMode( wxCommandEvent& event );
-
-  void OnPopUpPixelSize( wxCommandEvent& event );
-  
-  void OnPopUpSynchronize( wxCommandEvent& event );
-  void OnPopUpSynchronizeById( TGroupId& wichGroup );
-  void OnPopUpSynchronizeById( TGroupId& wichGroup, bool isSynchronized );
+    /// Should we show tooltips?
+    static bool ShowToolTips();
 
 
+    // Pop Up Menu Methods
+    void OnPopUpCopy( wxCommandEvent& event );
+    void OnPopUpPaste( wxCommandEvent& event );
+    void OnPopUpPasteDefaultSpecial( wxCommandEvent& event );
+    void OnPopUpPasteSpecial( wxCommandEvent& event );
+    void OnPopUpPasteTime( wxCommandEvent& event );
+    void OnPopUpPasteObjects( wxCommandEvent& event );
+    void OnPopUpPasteSize( wxCommandEvent& event );
+    void OnPopUpPasteDuration( wxCommandEvent& event );
+    void OnPopUpPasteSemanticScale( wxCommandEvent& event );
+    void OnPopUpPasteSemanticSort( wxCommandEvent& event );
+    void OnPopUpPasteControlScale( wxCommandEvent& event );
+    void OnPopUpPaste3DScale( wxCommandEvent& event );
+    void OnPopUpPasteControlDimensions( wxCommandEvent& event );
 
-  void OnPopUpRemoveGroup( wxCommandEvent& event );
-  void OnPopUpRemoveAllGroups( wxCommandEvent& event );
+    void OnPopUpClone( wxCommandEvent& event );
+    void OnPopUpRename( wxCommandEvent& event );
+    void OnPopUpFitTimeScale( wxCommandEvent& event );
+    void OnPopUpFitObjects( wxCommandEvent& event );
+    void OnPopUpRowSelection( wxCommandEvent& event );
+    void OnPopUpAutoControlScale( wxCommandEvent& event );
+    void OnPopUpAutoControlScaleZero( wxCommandEvent& event );
+    void OnPopUpAuto3DScale( wxCommandEvent& event );
+    void OnPopUpAutoDataGradient( wxCommandEvent& event );
 
-  void OnPopUpSavePlaneAsText( wxCommandEvent& event );
-  
-  void OnPopUpSaveCFG( wxCommandEvent& event );
-  void OnPopUpSaveImageDialog( wxCommandEvent& event );
-  
-  void OnMenuGradientFunction( TGradientFunction function );
-  
-  void saveCFG();
-  void saveImageDialog( wxString whichFileName = _( "" ) );
-  void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
-  void saveText( bool onlySelectedPlane = false );
+    void OnPopUpColor2D( wxCommandEvent& event );
+    void OnPopUpGradientFunction( wxCommandEvent& event );
 
-  void rightDownManager();
+    void OnPopUpUndoZoom( wxCommandEvent& event );
+    void OnPopUpRedoZoom( wxCommandEvent& event );
 
-  static wxProgressDialog *dialogProgress;
-  static int numberOfProgressDialogUsers;
+    void OnPopUpDrawModeSemanticLast( wxCommandEvent& event );
+    void OnPopUpDrawModeSemanticRandom( wxCommandEvent& event );
+    void OnPopUpDrawModeSemanticRandomNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeSemanticMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeSemanticMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeSemanticAbsoluteMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeSemanticAbsoluteMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeSemanticAverage( wxCommandEvent& event );
+    void OnPopUpDrawModeSemanticAverageNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeSemanticMode( wxCommandEvent& event );
 
-  std::vector< TObjectOrder > getSelectedRows();
-  virtual void setSelectedRows( std::vector< bool > &selected );
-  virtual void setSelectedRows( std::vector< TObjectOrder > &selected );
+    void OnPopUpDrawModeObjectsLast( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsRandom( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsRandomNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsAverage( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsAverageNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeObjectsMode( wxCommandEvent& event );
 
-  void setEditMode (bool value);
-  bool getEditMode ();
+    void OnPopUpDrawModeBothLast( wxCommandEvent& event );
+    void OnPopUpDrawModeBothRandom( wxCommandEvent& event );
+    void OnPopUpDrawModeBothRandomNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeBothMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeBothMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeBothAbsoluteMaximum( wxCommandEvent& event );
+    void OnPopUpDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeBothAverage( wxCommandEvent& event );
+    void OnPopUpDrawModeBothAverageNotZero( wxCommandEvent& event );
+    void OnPopUpDrawModeBothMode( wxCommandEvent& event );
 
-  void EnableCustomSortOption();
-  void DisableCustomSortOption ();
-  ////@begin gHistogram member variables
-  wxPanel* panelToolbar;
-  wxToolBar* tbarHisto;
-  wxChoice* choiceSortBy;
-  wxPanel* panelData;
-  wxBoxSizer* mainSizer;
-  wxScrolledWindow* zoomHisto;
-  wxGrid* gridHisto;
-  wxBoxSizer* warningSizer;
-  wxStaticBitmap* controlWarning;
-  wxStaticBitmap* xtraWarning;
-  wxStaticBitmap* autoRedrawIcon;
-  wxStatusBar* histoStatus;
-private:
-  bool codeChangeSize = false;
-  bool isEditMode = false;
-  bool newPositionApplied = false;
-  wxBitmap drawImage;
-  bool escapePressed;
-  double lastPosZoomX;
-  double lastPosZoomY;
-  Histogram* myHistogram;
-  bool openControlActivated;
-  bool ready;
-  wxStopWatch * redrawStopWatch;
-  std::vector<TObjectOrder> selectedRows;
-  HistoTableBase* tableBase;
-  wxTimer * timerZoom;
-  wxTimer *timerSize;
-  wxTimer *timerPosition;
+    void OnPopUpPixelSize( wxCommandEvent& event );
 
-  double zoomCellHeight;
-  double zoomCellWidth;
-  bool zoomDragging;
-  wxBitmap zoomImage;
-  wxPoint zoomPointBegin;
-  wxPoint zoomPointEnd;
-////@end gHistogram member variables
-  wxWindow *parent; // for clone
-  bool forceAutohideColumns;
+    void OnPopUpSynchronize( wxCommandEvent& event );
+    void OnPopUpSynchronizeById( TGroupId& wichGroup );
+    void OnPopUpSynchronizeById( TGroupId& wichGroup, bool isSynchronized );
 
-  std::map< TSemanticValue, rgb > semanticValuesToColorControl;
-  std::map< TSemanticValue, rgb > semanticValuesToColorData;
+    void OnPopUpRemoveGroup( wxCommandEvent& event );
+    void OnPopUpRemoveAllGroups( wxCommandEvent& event );
+
+    void OnPopUpSavePlaneAsText( wxCommandEvent& event );
+
+    void OnPopUpSaveCFG( wxCommandEvent& event );
+    void OnPopUpSaveImageDialog( wxCommandEvent& event );
+
+    void OnMenuGradientFunction( TGradientFunction function );
+
+    void saveCFG();
+    void saveImageDialog( wxString whichFileName = _( "" ) );
+    std::optional< bool > saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex = TImageFormat::PNG, bool copyToClipboard = false );
+    void saveText( bool onlySelectedPlane = false );
+
+    void rightDownManager();
+
+    static wxProgressDialog* dialogProgress;
+    static int numberOfProgressDialogUsers;
+
+    void setEditMode( bool value );
+    bool getEditMode();
+
+    std::vector< TObjectOrder > getSelectedRows();
+    virtual void setSelectedRows( std::vector< bool >& selected );
+    virtual void setSelectedRows( std::vector< TObjectOrder >& selected );
+
+    void EnableCustomSortOption();
+    void DisableCustomSortOption();
+
+    void setDerivedOperation( const std::string& whichOperation );
+    void adaptControlsForDerivedHistogram();
 
 
-  std::vector<THistogramColumn> noVoidSemRanges;
+    // clang-format off
+    ////@begin gHistogram member variables
+    wxPanel* panelToolbar;
+    wxToolBar* tbarHisto;
+    wxChoice* choiceSortBy;
+    wxPanel* panelData;
+    wxBoxSizer* mainSizer;
+    wxScrolledWindow* zoomHisto;
+    wxGrid* gridHisto;
+    wxBoxSizer* warningSizer;
+    wxStaticBitmap* controlWarning;
+    wxStaticBitmap* xtraWarning;
+    wxStaticBitmap* autoRedrawIcon;
+    wxStatusBar* histoStatus;
 
-  SelectionManagement<THistogramColumn,int> columnSelection;
+  private:
+    wxBitmap drawImage;
+    bool escapePressed;
+    double lastPosZoomX;
+    double lastPosZoomY;
+    Histogram* myHistogram;
+    bool openControlActivated;
+    bool ready;
+    wxStopWatch* redrawStopWatch;
+    HistoTableBase* tableBase;
+    double zoomCellHeight;
+    double zoomCellWidth;
+    bool zoomDragging;
+    wxBitmap zoomImage;
+    wxPoint zoomPointBegin;
+    wxPoint zoomPointEnd;
+    ////@end gHistogram member variables
+    // clang-format on
 
-  // Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
-  wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;
+    wxWindow* parent; // for clone
+    bool forceAutohideColumns;
+    bool isEditMode         = false;
+    bool newPositionApplied = false;
+    bool codeChangeSize     = true;
 
-  void updateHistogram();
+    wxTimer* timerSize;
+    wxTimer* timerZoom;
+    wxTimer* timerPosition;
 
-  void OnTimerSize (wxTimerEvent &event);
-  void OnTimerZoom (wxTimerEvent &event);
-  void OnTimerPosition (wxTimerEvent &event);
+    std::map< TSemanticValue, rgb > semanticValuesToColorControl;
+    std::map< TSemanticValue, rgb > semanticValuesToColorData;
 
-  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const std::vector<THistogramColumn>& noVoidSemRanges ) const;
+    std::vector< THistogramColumn > noVoidSemRanges;
 
-  THistogramColumn getSemanticSortedRealColumn( THistogramColumn whichCol, const std::vector<THistogramColumn>& noVoidSemRanges  ) const;
-  void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
-                   std::vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
+    SelectionManagement< THistogramColumn, int > columnSelection;
 
-  void openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
-                                 THistogramColumn& columnBegin, THistogramColumn& columnEnd,
-                                 TObjectOrder& objectBegin, TObjectOrder& objectEnd, bool zoomxy  );
-  void openControlMinMaxParam( THistogramColumn& columnBegin, THistogramColumn& columnEnd,
-                               TParamValue& minParam, TParamValue& maxParam );
-  void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
-                          TObjectOrder objectBegin, TObjectOrder objectEnd );
+    std::vector< TObjectOrder > selectedRows;
 
-  void zoom (THistogramLimit newColumnBegin, THistogramLimit newColumnEnd,
-             TObjectOrder newObjectBegin, TObjectOrder newObjectEnd, THistogramLimit newDelta = -1.0);
+    // Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
+    wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;
+
+    void updateHistogram( bool updateParents = true );
+
+    void OnTimerSize( wxTimerEvent& event );
+    void OnTimerZoom( wxTimerEvent& event );
+    void OnTimerPosition( wxTimerEvent& event );
+
+    TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const std::vector< THistogramColumn >& noVoidSemRanges ) const;
+
+    THistogramColumn getSemanticSortedRealColumn( THistogramColumn whichCol, const std::vector< THistogramColumn >& noVoidSemRanges ) const;
+    void drawColumn( THistogramColumn beginColumn,
+                     THistogramColumn endColumn,
+                     std::vector< THistogramColumn >& selectedColumns,
+                     wxMemoryDC& bufferDraw );
+
+    void openControlGetParameters( int xBegin,
+                                   int xEnd,
+                                   int yBegin,
+                                   int yEnd,
+                                   THistogramColumn& columnBegin,
+                                   THistogramColumn& columnEnd,
+                                   TObjectOrder& objectBegin,
+                                   TObjectOrder& objectEnd,
+                                   bool zoomxy );
+    void openControlMinMaxParam( THistogramColumn& columnBegin, THistogramColumn& columnEnd, TParamValue& minParam, TParamValue& maxParam );
+    void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd, TObjectOrder objectBegin, TObjectOrder objectEnd );
+
+    void zoom( THistogramLimit newColumnBegin,
+               THistogramLimit newColumnEnd,
+               TObjectOrder newObjectBegin,
+               TObjectOrder newObjectEnd,
+               THistogramLimit newDelta = -1.0 );
 };

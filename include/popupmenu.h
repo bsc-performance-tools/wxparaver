@@ -150,9 +150,14 @@
 #define ID_HIDE_SELECTED_WINDOWS                           30114
 #define ID_SHOW_SELECTED_WINDOWS_TRACE                     30115
 #define ID_HIDE_SELECTED_WINDOWS_TRACE                     30116
+#define ID_MENU_OBJECT_AXIS_CUSTOM                         30117
+#define ID_MENU_PASTE_OBJECT_AXIS                          30118
+#define ID_MENU_HIDE_EMPTY_OBJECTS                         30119
+#define ID_MENU_SAVE_SYNCHRONIZED_WINDOWS_TO_CFG           30120
+#define ID_MENU_CARM                                       30121
 
-#define ID_MENU_SYNC_GROUP_BASE        31000
-#define ID_MENU_SYNC_REMOVE_GROUP_BASE 32000
+#define ID_MENU_SYNC_GROUP_BASE            31000
+#define ID_MENU_SYNC_REMOVE_GROUP_BASE     32000
 #define ID_MENU_SYNC_PROPERTIES_GROUP_BASE 31500
 
 enum class PopUpMenuType
@@ -223,6 +228,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuPaste;
     wxMenu *popUpMenuPasteFilter;
     wxMenu *popUpMenuFitSemantic;
+    wxMenu *popUpMenuObjects;
     wxMenu *popUpMenuShowWindows;
     wxMenu *popUpMenuDrawMode;
     wxMenu *popUpMenuDrawModeTime;
@@ -235,6 +241,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuLabels;
     wxMenu *popUpMenuObjectAxis;
     wxMenu *popUpMenuSave;
+    wxMenu *popUpMenuSaveConfiguration;
     wxMenu *popUpMenuRun;
     wxMenu *popUpMenuSync;
     wxMenu *popUpMenuSyncRemove;
@@ -243,11 +250,17 @@ class gPopUpMenu : public wxMenu
 
     bool checkAllowedProperties( const char *property );
 
-    bool allWindowsHas( std::vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function );
-    bool allWindowsHas( std::vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function );
+    bool allWindowsHave( std::vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function );
+    bool allWindowsHave( std::vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function );
 
     template< typename... Funcs >
-    bool allWindowHas( Funcs &&...funcs );
+    bool allWindowsHave( Funcs &&...funcs );
+
+    bool anyWindowHas( std::vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function );
+    bool anyWindowHas( std::vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function );
+
+    template< typename... Funcs >
+    bool anyWindowHas( Funcs &&...funcs );
 
 
     // builder methods
@@ -313,16 +326,21 @@ class gPopUpMenu : public wxMenu
     void OnPopUpPasteFilterCommunications( wxCommandEvent &event );
     void OnPopUpPasteFilterEvents( wxCommandEvent &event );
 
-    // HISGORAM
+    // HISTOGRAM
     void OnPopUpPasteControlScale( wxCommandEvent &event );
     void OnPopUpPaste3DScale( wxCommandEvent &event );
     void OnPopUpPasteControlDimensions( wxCommandEvent &event );
+    void OnPopUpPasteObjectAxis( wxCommandEvent &event );
 
     // MIX
     void OnPopUpClone( wxCommandEvent &event );
     void OnPopUpRename( wxCommandEvent &event );
     void OnPopUpFitTimeScale( wxCommandEvent &event );
+
+    // MIX
     void OnPopUpFitObjects( wxCommandEvent &event );
+    // TIMELINE
+    void OnPopUpHideEmptyObjects( wxCommandEvent &event );
 
     // TIMELINE
     void OnPopUpFitSemanticScaleMin( wxCommandEvent &event );
@@ -406,6 +424,7 @@ class gPopUpMenu : public wxMenu
     // Timeline
     void OnPopUpLabels( wxCommandEvent &event );
     void OnPopUpObjectAxis( wxCommandEvent &event );
+    void OnPopUpObjectAxisCustom( wxCommandEvent &event );
     void OnPopUpRunApp( wxCommandEvent &event );
 
     void OnPopUpTiming( wxCommandEvent &event );
@@ -413,6 +432,7 @@ class gPopUpMenu : public wxMenu
 
     // MIX
     void OnPopUpSaveCFG( wxCommandEvent &event );
+    void OnPopUpSynchronizedWindowsSaveCFG( wxCommandEvent &event );
     void OnPopUpSaveImageDialog( wxCommandEvent &event );
 
     // Timeline

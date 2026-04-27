@@ -42,6 +42,7 @@
 #include <string>
 #include <wx/filename.h>
 #include <wx/process.h>
+#include <wx/progdlg.h>
 
 class RunScript;
 
@@ -156,11 +157,16 @@ class wxHtmlWindow;
 #define ID_TEXTCTRL_MESS_CONFIG_FILE 10011
 #define ID_BUTTON_MESS_CONFIG_FILE 10012
 #define ID_MESS_ADDITIONAL_PLOTS 10013
+#define ID_TEXTCTRL_CARM_MIN_BURST_DURATION 10014
+#define ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW 10015
+#define ID_CHECKBOX_CARM_ACCUMULATE_VALUES 10016
+#define ID_CHECKBOX_CARM_USE_WINDOW_COLORS 10017
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
 #define ID_BUTTON_KILL 10232
 #define ID_BUTTON_CLEAR_LOG 10202
+#define ID_BUTTON_CARM_SYNC 10018
 #define ID_LISTBOX_RUN_LOG 10199
 #define ID_BUTTON_EXIT 10206
 #define SYMBOL_RUNSCRIPT_STYLE wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX|wxTAB_TRAVERSAL
@@ -295,6 +301,12 @@ class RunScript : public wxDialog
   /// wxEVT_UPDATE_UI event handler for ID_MESS_ADDITIONAL_PLOTS
   void OnMessAdditionalPlotsUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_WINDOW_COLORS
+  void OnCheckboxCarmUseWindowColorsUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW
+  void OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
   void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
 
@@ -313,6 +325,12 @@ class RunScript : public wxDialog
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLEAR_LOG
   void OnButtonClearLogClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CARM_SYNC
+  void OnButtonCarmSyncClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_CARM_SYNC
+  void OnButtonCarmSyncUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_HTML_LINK_CLICKED event handler for ID_LISTBOX_RUN_LOG
   void OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event );
 
@@ -327,6 +345,9 @@ class RunScript : public wxDialog
 
     // clang-format off
   ////@begin RunScript member function declarations
+
+  Timeline * GetCarmWindow() const { return carmWindow ; }
+  void SetCarmWindow(Timeline * value) { carmWindow = value ; }
 
   RunningProcess * GetMyProcess() const { return myProcess ; }
   void SetMyProcess(RunningProcess * value) { myProcess = value ; }
@@ -356,6 +377,7 @@ class RunScript : public wxDialog
     void setClustering( wxString whichClusteringCSV );
     void setFolding( wxString whichFoldingCSV );
     void setMess();
+    void setCarm( const wxString& whichCarmSemanticCSV, const wxString& whichCarmLabelsCSV );
     void setUserCommand();
 
     void closeWindow();
@@ -437,14 +459,21 @@ class RunScript : public wxDialog
   wxTextCtrl* textCtrlMessCFG;
   FileBrowserButton* fileBrowserButtonMessCFG;
   wxCheckBox* checkMessAdditionalPlots;
+  wxBoxSizer* carmSection;
+  wxTextCtrl* textCtrlCarmMinBurstDuration;
+  wxCheckBox* checkCarmUseWindowColors;
+  wxCheckBox* checkCarmUseSemanticWindow;
+  wxCheckBox* checkCarmAccumulateValues;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
   wxButton* buttonKill;
   wxButton* buttonClearLog;
+  wxButton* buttonCarmSync;
   wxHtmlWindow* listboxRunLog;
   wxButton* buttonExit;
 private:
+  Timeline * carmWindow;
   RunningProcess * myProcess;
   long myProcessPid;
   ////@end RunScript member variables
@@ -485,6 +514,10 @@ private:
 
     // MESS
     wxString lastProcessedTrace;
+
+    // CARM
+    wxString carmSemanticCSV = wxT( "" );
+    wxString carmLabelsCSV   = wxT( "" );
 
     wxProgressDialog* progressBar;
 

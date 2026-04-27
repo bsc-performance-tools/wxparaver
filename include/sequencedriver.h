@@ -117,7 +117,7 @@ class RunAppFoldingAction: public TraceToTraceAction
 
 
 /****************************************************************************
- ********              RunMessAction                             ********
+ ********              RunMessAction                                 ********
  ****************************************************************************/
 class RunMessAction: public TraceToTraceAction
 {
@@ -125,6 +125,72 @@ class RunMessAction: public TraceToTraceAction
     RunMessAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
     {}
     ~RunMessAction()
+    {}
+
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
+
+    virtual bool execute( std::string whichTrace ) override;
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
+ ********              CreateTimelineCarmAction                      ********
+ ****************************************************************************/
+class CreateTimelineCarmAction: public TraceToTraceAction
+{
+  public:
+    CreateTimelineCarmAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~CreateTimelineCarmAction()
+    {}
+
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
+
+    virtual bool execute( std::string whichTrace ) override;
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
+ ********              RunCarmAction                               ********
+ ****************************************************************************/
+class RunCarmAction: public TraceToTraceAction
+{
+  public:
+    RunCarmAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~RunCarmAction()
+    {}
+
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
+
+    virtual bool execute( std::string whichTrace ) override;
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
+ ********              SetCSVRunCarmDialogAction                     ********
+ ****************************************************************************/
+class SetCSVFileNameRunCarmDialogAction: public TraceToTraceAction
+{
+  public:
+    SetCSVFileNameRunCarmDialogAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~SetCSVFileNameRunCarmDialogAction()
     {}
 
     virtual std::vector<TSequenceStates> getStateDependencies() const override;
@@ -193,6 +259,7 @@ class SequenceDriver
     static void sequenceDimemas( gTimeline *whichTimeline );
     static void sequenceFolding( gTimeline *whichTimeline );
     static void sequenceMess( gTimeline *whichTimeline );
+    static void sequenceCarm( gTimeline *whichTimeline );
     static void sequenceUserCommand( gTimeline *whichTimeline );
 
     //static void sequenceTraceShifter( std::string trace,

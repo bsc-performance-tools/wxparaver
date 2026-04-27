@@ -25,24 +25,28 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 #include <wx/regex.h>
 
+// clang-format off
 ////@begin includes
 #include "wx/imaglist.h"
 ////@end includes
+// clang-format on
 
 #include "eventlabels.h"
 #include "labelconstructor.h"
 #include "traceinformationdialog.h"
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 
 /*!
@@ -58,9 +62,11 @@ IMPLEMENT_DYNAMIC_CLASS( TraceInformationDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( TraceInformationDialog, wxDialog )
 
+// clang-format off
 ////@begin TraceInformationDialog event table entries
   EVT_LISTBOX( ID_LISTBOX_TYPES, TraceInformationDialog::OnListboxTypesSelected )
 ////@end TraceInformationDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -74,12 +80,18 @@ TraceInformationDialog::TraceInformationDialog()
   Init();
 }
 
-TraceInformationDialog::TraceInformationDialog( wxWindow* parent, Trace* whichTrace, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+TraceInformationDialog::TraceInformationDialog( wxWindow* parent,
+                                                Trace* whichTrace,
+                                                wxWindowID id,
+                                                const wxString& caption,
+                                                const wxPoint& pos,
+                                                const wxSize& size,
+                                                long style )
 {
   Init();
-  myTrace = whichTrace;
+  myTrace            = whichTrace;
   wxString myCaption = "Trace Information: " + myTrace->getTraceName();
-  Create(parent, id, myCaption, pos, size, style);
+  Create( parent, id, myCaption, pos, size, style );
 
 
   // Writing text at constructor
@@ -90,8 +102,9 @@ TraceInformationDialog::TraceInformationDialog( wxWindow* parent, Trace* whichTr
  * TraceInformationDialog creator
  */
 
-bool TraceInformationDialog::Create(wxWindow *parent, wxWindowID id, const wxString &caption, const wxPoint &pos, const wxSize &size, long style)
+bool TraceInformationDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin TraceInformationDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -103,6 +116,7 @@ bool TraceInformationDialog::Create(wxWindow *parent, wxWindowID id, const wxStr
   }
   Centre();
 ////@end TraceInformationDialog creation
+  // clang-format on
   return true;
 }
 
@@ -113,8 +127,10 @@ bool TraceInformationDialog::Create(wxWindow *parent, wxWindowID id, const wxStr
 
 TraceInformationDialog::~TraceInformationDialog()
 {
+  // clang-format off
 ////@begin TraceInformationDialog destruction
 ////@end TraceInformationDialog destruction
+  // clang-format on
 }
 
 
@@ -124,6 +140,7 @@ TraceInformationDialog::~TraceInformationDialog()
 
 void TraceInformationDialog::Init()
 {
+  // clang-format off
 ////@begin TraceInformationDialog member initialisation
   sizerMain = NULL;
   GeneralInfoSizer = NULL;
@@ -137,6 +154,7 @@ void TraceInformationDialog::Init()
   listTypes = NULL;
   listValues = NULL;
 ////@end TraceInformationDialog member initialisation
+  // clang-format on
   myTrace = nullptr;
 }
 
@@ -146,7 +164,8 @@ void TraceInformationDialog::Init()
  */
 
 void TraceInformationDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin TraceInformationDialog content construction
   TraceInformationDialog* itemDialog1 = this;
 
@@ -224,6 +243,7 @@ void TraceInformationDialog::CreateControls()
   itemStdDialogButtonSizer1->Realize();
 
 ////@end TraceInformationDialog content construction
+  // clang-format on
 
   wxFont tmpFont = listTypes->GetFont();
   tmpFont.SetFamily( wxFONTFAMILY_TELETYPE );
@@ -232,16 +252,15 @@ void TraceInformationDialog::CreateControls()
 
   wxString tmpStr;
   myTrace->getEventLabels().getTypes(
-    [&]( TEventType type, const std::string& label )
+    [ & ]( TEventType type, const std::string& label )
     {
       tmpStr.Clear();
       tmpStr << type << "   " << label;
       listTypesStrings.Add( tmpStr );
 
       eventTypes.push_back( type );
-    }
-  );  
-  if ( !listTypesStrings.IsEmpty() )
+    } );
+  if( !listTypesStrings.IsEmpty() )
     listTypes->InsertItems( listTypesStrings, 0 );
 }
 
@@ -261,11 +280,13 @@ bool TraceInformationDialog::ShowToolTips()
 
 wxBitmap TraceInformationDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin TraceInformationDialog bitmap retrieval
   wxUnusedVar(name);
   return wxNullBitmap;
 ////@end TraceInformationDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -274,25 +295,27 @@ wxBitmap TraceInformationDialog::GetBitmapResource( const wxString& name )
 
 wxIcon TraceInformationDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin TraceInformationDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end TraceInformationDialog icon retrieval
+  // clang-format on
 }
 
 
 wxString TraceInformationDialog::FormatTraceSize( double traceByteSize )
 {
-  if ( traceByteSize > 1E12 )
+  if( traceByteSize > 1E12 )
     return wxString::Format( wxT( "%.2f TB" ), double( traceByteSize ) / 1E12 );
-  else if ( traceByteSize > 1E9 )
+  else if( traceByteSize > 1E9 )
     return wxString::Format( wxT( "%.2f GB" ), double( traceByteSize ) / 1E9 );
-  else if ( traceByteSize > 1E6 )
+  else if( traceByteSize > 1E6 )
     return wxString::Format( wxT( "%.2f MB" ), double( traceByteSize ) / 1E6 );
-  else if ( traceByteSize > 1E3 )
+  else if( traceByteSize > 1E3 )
     return wxString::Format( wxT( "%.2f kB" ), double( traceByteSize ) / 1E3 );
-  
+
   return wxString::Format( wxT( "%.2f Bytes" ), double( traceByteSize ) );
 }
 
@@ -300,121 +323,121 @@ void TraceInformationDialog::DisplayTraceInformation()
 {
   // General Info
   ptime headerTime = myTrace->getTraceTime();
-  ptime clickTime = headerTime ;// + boost::posix_time::nanoseconds( (long) myTrace->traceUnitsToCustomUnits( whichTime, myTrace->getTimeUnit() ) );
+  ptime clickTime  = headerTime; // + boost::posix_time::nanoseconds( (long) myTrace->traceUnitsToCustomUnits( whichTime, myTrace->getTimeUnit() ) );
 
   wxString formattedCreationTime = wxString::FromUTF8( LabelConstructor::timeLabel( clickTime, 0 ).c_str() ).BeforeFirst( ',' );
   wxString formattedDurationTime = wxString::FromUTF8( LabelConstructor::timeLabel( myTrace->getEndTime(), myTrace->getTimeUnit(), 0 ).c_str() );
 
   wxString traceSize = FormatTraceSize( myTrace->getTraceSize() );
-/*
-  TraceGeneralInfo->WriteText( "Name: " );
-  TraceGeneralInfo->BeginBold(); 
-  TraceGeneralInfo->WriteText( myTrace->getTraceName() + "\n" );
-  TraceGeneralInfo->EndBold();
-*/
+  /*
+    TraceGeneralInfo->WriteText( "Name: " );
+    TraceGeneralInfo->BeginBold();
+    TraceGeneralInfo->WriteText( myTrace->getTraceName() + "\n" );
+    TraceGeneralInfo->EndBold();
+  */
   TraceGeneralInfo->WriteText( "Path: " );
-  TraceGeneralInfo->BeginBold(); 
+  TraceGeneralInfo->BeginBold();
   TraceGeneralInfo->WriteText( wxString( myTrace->getFileName() ).BeforeLast( '/' ) + "\n" );
   TraceGeneralInfo->EndBold();
-  
+
   TraceGeneralInfo->WriteText( "Size: " );
-  TraceGeneralInfo->BeginBold(); 
+  TraceGeneralInfo->BeginBold();
   TraceGeneralInfo->WriteText( traceSize + "\n" );
   TraceGeneralInfo->EndBold();
-  
+
   TraceGeneralInfo->WriteText( "Date of creation: " );
-  TraceGeneralInfo->BeginBold(); 
+  TraceGeneralInfo->BeginBold();
   TraceGeneralInfo->WriteText( formattedCreationTime + "\n" );
   TraceGeneralInfo->EndBold();
 
   TraceGeneralInfo->WriteText( "Duration: " );
-  TraceGeneralInfo->BeginBold(); 
+  TraceGeneralInfo->BeginBold();
   TraceGeneralInfo->WriteText( formattedDurationTime /*+ "\n"*/ );
   TraceGeneralInfo->EndBold();
-  
-/*  
-  //TODO
-    // ADD: Trace filesize, num records state/evt/comms (not available today)
-    // RMV: state/evts?
-  std::vector< TState > stateVec;
-  std::vector< TEventType > eventVec;
-  myTrace->getStateLabels().getStates( stateVec );
-  myTrace->getEventLabels().getTypes( eventVec );
 
-  TraceGeneralInfo->WriteText( "States: " );
-  TraceGeneralInfo->BeginBold(); 
-  TraceGeneralInfo->WriteText( wxString::Format( wxT( "%i\n" ), stateVec.size() ) );
-  TraceGeneralInfo->EndBold();
+  /*
+    //TODO
+      // ADD: Trace filesize, num records state/evt/comms (not available today)
+      // RMV: state/evts?
+    std::vector< TState > stateVec;
+    std::vector< TEventType > eventVec;
+    myTrace->getStateLabels().getStates( stateVec );
+    myTrace->getEventLabels().getTypes( eventVec );
 
-  TraceGeneralInfo->WriteText( "Events: " );
-  TraceGeneralInfo->BeginBold(); 
-  TraceGeneralInfo->WriteText( wxString::Format( wxT( "%i" ), eventVec.size() ) );
-  TraceGeneralInfo->EndBold();
-*/
+    TraceGeneralInfo->WriteText( "States: " );
+    TraceGeneralInfo->BeginBold();
+    TraceGeneralInfo->WriteText( wxString::Format( wxT( "%i\n" ), stateVec.size() ) );
+    TraceGeneralInfo->EndBold();
+
+    TraceGeneralInfo->WriteText( "Events: " );
+    TraceGeneralInfo->BeginBold();
+    TraceGeneralInfo->WriteText( wxString::Format( wxT( "%i" ), eventVec.size() ) );
+    TraceGeneralInfo->EndBold();
+  */
 
   MetadataInfoSizer->Show( false );
 
-/*
-  // Metadata
-  MetadataInfo->BeginBold(); 
-  MetadataInfo->WriteText( "CUTTER\n" );
-  MetadataInfo->EndBold(); 
+  /*
+    // Metadata
+    MetadataInfo->BeginBold();
+    MetadataInfo->WriteText( "CUTTER\n" );
+    MetadataInfo->EndBold();
 
-  //MetadataInfo->BeginListStyle( ... ); 
-    MetadataInfo->WriteText( "Begin time: " );
-    MetadataInfo->BeginBold(); 
-    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterBeginTime() ) );
-    MetadataInfo->EndBold(); 
+    //MetadataInfo->BeginListStyle( ... );
+      MetadataInfo->WriteText( "Begin time: " );
+      MetadataInfo->BeginBold();
+      MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterBeginTime() ) );
+      MetadataInfo->EndBold();
 
-    MetadataInfo->WriteText( "End time: " );
-    MetadataInfo->BeginBold(); 
-    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterEndTime() ) );
-    MetadataInfo->EndBold(); 
+      MetadataInfo->WriteText( "End time: " );
+      MetadataInfo->BeginBold();
+      MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterEndTime() ) );
+      MetadataInfo->EndBold();
 
-    MetadataInfo->WriteText( "Offset: " );
-    MetadataInfo->BeginBold(); 
-    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterOffset() ) );
-    MetadataInfo->EndBold(); 
+      MetadataInfo->WriteText( "Offset: " );
+      MetadataInfo->BeginBold();
+      MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterOffset() ) );
+      MetadataInfo->EndBold();
 
-    MetadataInfo->WriteText( "Last begin time: " );
-    MetadataInfo->BeginBold(); 
-    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterLastBeginTime() ) );
-    MetadataInfo->EndBold(); 
+      MetadataInfo->WriteText( "Last begin time: " );
+      MetadataInfo->BeginBold();
+      MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterLastBeginTime() ) );
+      MetadataInfo->EndBold();
 
-    MetadataInfo->WriteText( "Last end time: " );
-    MetadataInfo->BeginBold(); 
-    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterLastEndTime() ) );
-    MetadataInfo->EndBold(); 
+      MetadataInfo->WriteText( "Last end time: " );
+      MetadataInfo->BeginBold();
+      MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterLastEndTime() ) );
+      MetadataInfo->EndBold();
 
-    MetadataInfo->WriteText( "Last offset: " );
-    MetadataInfo->BeginBold(); 
-    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterLastOffset() ) );
-    MetadataInfo->EndBold(); 
-  //MetadataInfo->EndListStyle(); 
-*/
+      MetadataInfo->WriteText( "Last offset: " );
+      MetadataInfo->BeginBold();
+      MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterLastOffset() ) );
+      MetadataInfo->EndBold();
+    //MetadataInfo->EndListStyle();
+  */
   // Process Model
 
   ProcessModelInfo->WriteText( "Applications: " );
-  ProcessModelInfo->BeginBold(); 
-  ProcessModelInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->totalApplications() ) ); 
+  ProcessModelInfo->BeginBold();
+  ProcessModelInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->totalApplications() ) );
   ProcessModelInfo->EndBold();
-  
+
   ProcessModelInfo->WriteText( "Tasks: " );
-  ProcessModelInfo->BeginBold(); 
-  ProcessModelInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->totalTasks() ) ); 
+  ProcessModelInfo->BeginBold();
+  ProcessModelInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->totalTasks() ) );
   ProcessModelInfo->EndBold();
-  
+
   ProcessModelInfo->WriteText( "Threads: " );
-  ProcessModelInfo->BeginBold(); 
-  ProcessModelInfo->WriteText( wxString::Format( wxT( "%i" ), myTrace->totalThreads() ) ); 
+  ProcessModelInfo->BeginBold();
+  ProcessModelInfo->WriteText( wxString::Format( wxT( "%i" ), myTrace->totalThreads() ) );
   ProcessModelInfo->EndBold();
-  
+
 
   // Resource Model
-  if ( myTrace->existResourceInfo() )
+  if( myTrace->existResourceInfo() )
   {
     int numRacks = getRackInformation();
-    if ( numRacks > 0 )
+    if( numRacks > 0 )
     {
       ResourceModelInfo->WriteText( "Racks: " );
       ResourceModelInfo->BeginBold();
@@ -423,14 +446,14 @@ void TraceInformationDialog::DisplayTraceInformation()
     }
 
     ResourceModelInfo->WriteText( "Nodes: " );
-    ResourceModelInfo->BeginBold(); 
-    ResourceModelInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->totalNodes() ) ); 
-    ResourceModelInfo->EndBold(); 
+    ResourceModelInfo->BeginBold();
+    ResourceModelInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->totalNodes() ) );
+    ResourceModelInfo->EndBold();
 
     ResourceModelInfo->WriteText( "CPUs: " );
-    ResourceModelInfo->BeginBold(); 
-    ResourceModelInfo->WriteText( wxString::Format( wxT( "%i" ), myTrace->totalCPUs() ) ); 
-    ResourceModelInfo->EndBold(); 
+    ResourceModelInfo->BeginBold();
+    ResourceModelInfo->WriteText( wxString::Format( wxT( "%i" ), myTrace->totalCPUs() ) );
+    ResourceModelInfo->EndBold();
   }
   else
   {
@@ -440,38 +463,38 @@ void TraceInformationDialog::DisplayTraceInformation()
 
 int TraceInformationDialog::getRackInformation()
 {
-/*
-  int numRack;
-  std::vector< std::string > NodeSet;
-  for ( TThreadOrder i = 0; i < myTrace->totalCPUs(); i += (myTrace->totalCPUs() / myTrace->totalNodes() ) )
-  {
-    TNodeOrder NID = myTrace->getNodeFromThread( i );
-    NodeSet.push_back( myTrace->getRowLabel( NODE, NID ) );
-  }
-
-  // regex time: from the set, sort them by racks
-  wxRegEx reMN4( "^s[0-9]+r[0-9]+b[0-9]+" );
-  int idx = 0;
-
-  std::set<long> rackSet;
-  for  (std::vector< std::string >::iterator it = NodeSet.begin(); it != NodeSet.end(); ++it )
-  {
-    wxString nodeName( ( *it ).c_str(), wxConvUTF8 );
-
-    long rackID;
-    if ( reMN4.Matches( nodeName ) )
+  /*
+    int numRack;
+    std::vector< std::string > NodeSet;
+    for ( TThreadOrder i = 0; i < myTrace->totalCPUs(); i += (myTrace->totalCPUs() / myTrace->totalNodes() ) )
     {
-      //computerID = "MN4";
-      //nodeName.AfterFirst( 's' ).BeforeFirst( 'r' ).ToLong( &switchID );
-      nodeName.AfterFirst( 'r' ).BeforeFirst( 'b' ).ToLong( &rackID );
-      //nodeName.AfterFirst( 'b' ).ToLong( &nodeID );
-      rackSet.insert( rackID );
-      //rackID = rackID + ( 1000*switchID );
+      TNodeOrder NID = myTrace->getNodeFromThread( i );
+      NodeSet.push_back( myTrace->getRowLabel( NODE, NID ) );
     }
-    //else if ( reMT.Matches( nodeName ) ) {}
 
-  }
-*/
+    // regex time: from the set, sort them by racks
+    wxRegEx reMN4( "^s[0-9]+r[0-9]+b[0-9]+" );
+    int idx = 0;
+
+    std::set<long> rackSet;
+    for  (std::vector< std::string >::iterator it = NodeSet.begin(); it != NodeSet.end(); ++it )
+    {
+      wxString nodeName( ( *it ).c_str(), wxConvUTF8 );
+
+      long rackID;
+      if ( reMN4.Matches( nodeName ) )
+      {
+        //computerID = "MN4";
+        //nodeName.AfterFirst( 's' ).BeforeFirst( 'r' ).ToLong( &switchID );
+        nodeName.AfterFirst( 'r' ).BeforeFirst( 'b' ).ToLong( &rackID );
+        //nodeName.AfterFirst( 'b' ).ToLong( &nodeID );
+        rackSet.insert( rackID );
+        //rackID = rackID + ( 1000*switchID );
+      }
+      //else if ( reMT.Matches( nodeName ) ) {}
+
+    }
+  */
   return 0;
 }
 
@@ -488,14 +511,11 @@ void TraceInformationDialog::OnListboxTypesSelected( wxCommandEvent& event )
   listValues->Clear();
 
   myTrace->getEventLabels().getValues( eventTypes[ event.GetSelection() ],
-    [&]( TEventValue value, const std::string& label )
-    {
-      tmpStr.Clear();
-      tmpStr << value << "   " << label;
-      listValuesStrings.Add( tmpStr );
-    }
-  );
+                                       [ & ]( TEventValue value, const std::string& label )
+                                       {
+                                         tmpStr.Clear();
+                                         tmpStr << value << "   " << label;
+                                         listValuesStrings.Add( tmpStr );
+                                       } );
   listValues->Append( listValuesStrings );
 }
-
-

@@ -189,7 +189,7 @@ class TreeBrowserItemData : public wxTreeItemData
   private:
     wxString desc;
     gTimeline* myTimeline = nullptr;
-    gHistogram* myHisto = nullptr;
+    gHistogram* myHisto   = nullptr;
 };
 
 
@@ -386,6 +386,9 @@ class paraverMain : public wxFrame
   /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserPageChanged( wxChoicebookEvent& event );
 
+  /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER
+  void OnChoicewinbrowserPageChanging( wxChoicebookEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserUpdate( wxUpdateUIEvent& event );
 
@@ -409,6 +412,7 @@ class paraverMain : public wxFrame
 
     /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
     void OnTreeSelChanged( wxTreeEvent& event );
+    void OnTreeSelChanging( wxTreeEvent& event );
 
     void OnMenuLoadAutoSavedSession( wxCommandEvent& event );
     void OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event );
@@ -604,7 +608,7 @@ class paraverMain : public wxFrame
     void OnSyncNewGroup();
 
     void DoLoadSession( const std::string& whichFileName );
-    std::optional< Trace* > DoLoadTrace( const std::string& path );
+    std::optional< Trace* > DoLoadTrace( const std::string& path, bool allowTraceSizeCheck = true );
     void UnloadTrace( int whichTrace );
     bool DoLoadCFG( const std::string& path, std::optional< Trace* > whichTrace = {} );
 
@@ -622,7 +626,7 @@ class paraverMain : public wxFrame
                                         TraceOptions* traceOptions,
                                         const std::string& xmlFile,
                                         std::vector< std::string >& filterToolOrder );
-    void OnOKCutFilterDialog( CutFilterDialog* cutFilterDialog );
+    bool OnOKCutFilterDialog( CutFilterDialog* cutFilterDialog );
     void ShowCutTraceWindow( const std::string& filename = "", bool loadTrace = true, const std::string& xmlFile = "", bool modalDialog = false );
 
     bool getAutoRedraw() const;
@@ -655,8 +659,13 @@ class paraverMain : public wxFrame
     static int initialPosY;
     static Timeline* beginDragWindow;
     static Timeline* endDragWindow;
+    static Histogram* beginDragHistogram;
+    static Histogram* endDragHistogram;
     static bool disableUserMessages;
     static bool stopOnIdle;
+
+    static std::vector< std::pair< std::string, const char** > > icons;
+    static std::map< std::string, size_t > iconPosByName;
 
     static bool IsSessionValid();
     static void ValidateSession( bool setValidate );
@@ -732,6 +741,7 @@ private:
     SessionInfo sessionInfo;
     bool firstSave;
     bool selectionChanging = false;
+    PRV_UINT16 numNewDerivedHistogram = 0;
 
     wxSingleInstanceChecker* instChecker;
     std::map< std::string, PRV_UINT32 > traceInstance;

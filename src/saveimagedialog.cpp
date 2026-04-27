@@ -32,16 +32,20 @@
 #  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 #include "wx/imaglist.h"
 ////@end includes
+// clang-format on
 
 #include "labelconstructor.h"
 #include "saveimagedialog.h"
 #include "wxparaverapp.h"
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 
 /*!
@@ -57,6 +61,7 @@ IMPLEMENT_DYNAMIC_CLASS( SaveImageDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
 
+// clang-format off
 ////@begin SaveImageDialog event table entries
 EVT_TEXT_ENTER( ID_TEXTPATH, SaveImageDialog::OnTextpathEnter )
 EVT_UPDATE_UI( ID_FILENAVIGATOR, SaveImageDialog::OnFilenavigatorUpdate )
@@ -72,6 +77,7 @@ EVT_BUTTON( wxID_OK, SaveImageDialog::OnOkClick )
 EVT_UPDATE_UI( wxID_OK, SaveImageDialog::OnOkUpdate )
 EVT_BUTTON( wxID_CANCEL, SaveImageDialog::OnCancelClick )
 ////@end SaveImageDialog event table entries
+// clang-format on
 
 EVT_FILECTRL_SELECTIONCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
 EVT_FILECTRL_FOLDERCHANGED( ID_FILENAVIGATOR, SaveImageDialog::OnFileNavigatorChanged )
@@ -121,8 +127,9 @@ SaveImageDialog::SaveImageDialog( wxWindow* parent,
 
 bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
-  ////@begin SaveImageDialog creation
-  SetExtraStyle( wxWS_EX_VALIDATE_RECURSIVELY | wxWS_EX_BLOCK_EVENTS );
+  // clang-format off
+////@begin SaveImageDialog creation
+  SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
@@ -131,7 +138,9 @@ bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
     GetSizer()->SetSizeHints( this );
   }
   Centre();
-  ////@end SaveImageDialog creation
+////@end SaveImageDialog creation
+  // clang-format on
+
   return true;
 }
 
@@ -142,8 +151,10 @@ bool SaveImageDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
 
 SaveImageDialog::~SaveImageDialog()
 {
-  ////@begin SaveImageDialog destruction
-  ////@end SaveImageDialog destruction
+  // clang-format off
+////@begin SaveImageDialog destruction
+////@end SaveImageDialog destruction
+  // clang-format on
 }
 
 
@@ -153,18 +164,19 @@ SaveImageDialog::~SaveImageDialog()
 
 void SaveImageDialog::Init()
 {
-  ////@begin SaveImageDialog member initialisation
-  sizerMain                = NULL;
-  sizerPath                = NULL;
-  textPath                 = NULL;
-  fileNavigator            = NULL;
-  imageToSaveSizer         = NULL;
-  imageSizer               = NULL;
-  imageCheckbox            = NULL;
-  imageFileName            = NULL;
-  legendSizer              = NULL;
-  legendCheckbox           = NULL;
-  legendFileName           = NULL;
+  // clang-format off
+////@begin SaveImageDialog member initialisation
+  sizerMain = NULL;
+  sizerPath = NULL;
+  textPath = NULL;
+  fileNavigator = NULL;
+  imageToSaveSizer = NULL;
+  imageSizer = NULL;
+  imageCheckbox = NULL;
+  imageFileName = NULL;
+  legendSizer = NULL;
+  legendCheckbox = NULL;
+  legendFileName = NULL;
   legendControlSizer       = NULL;
   legendControlCheckbox    = NULL;
   legendControlFileName    = NULL;
@@ -179,9 +191,10 @@ void SaveImageDialog::Init()
   widgetTopCompose1        = NULL;
   shrinkLabelCheckBox      = NULL;
   buttonSelectLegendValues = NULL;
-  buttonSave               = NULL;
-  buttonCancel             = NULL;
-  ////@end SaveImageDialog member initialisation
+  buttonSave = NULL;
+  buttonCancel = NULL;
+////@end SaveImageDialog member initialisation
+  // clang-format on
 }
 
 
@@ -191,7 +204,8 @@ void SaveImageDialog::Init()
 
 void SaveImageDialog::CreateControls()
 {
-  ////@begin SaveImageDialog content construction
+  // clang-format off
+////@begin SaveImageDialog content construction
   SaveImageDialog* itemDialog1 = this;
 
   wxBoxSizer* itemBoxSizer1 = new wxBoxSizer( wxVERTICAL );
@@ -354,7 +368,8 @@ void SaveImageDialog::CreateControls()
                                    NULL,
                                    this );
   drawWindowAndScale->Connect( ID_SCROLLEDWINDOWANDCALE, wxEVT_PAINT, wxPaintEventHandler( SaveImageDialog::OnPaintWindowScale ), NULL, this );
-  ////@end SaveImageDialog content construction
+////@end SaveImageDialog content construction
+  // clang-format on
   fileTypeText = _( ".png" );
 
 #if !defined( __WXGTK3__ ) && !defined( __WXOSX__ ) && !defined( __WXMSW__ )
@@ -571,10 +586,12 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
 
 void SaveImageDialog::OnCancelClick( wxCommandEvent& event )
 {
-  ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
+  // clang-format off
+////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
   // Before editing this code, remove the block markers.
   event.Skip();
-  ////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
+////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SaveImageDialog.
+  // clang-format on
 }
 
 
@@ -593,11 +610,13 @@ bool SaveImageDialog::ShowToolTips()
 
 wxBitmap SaveImageDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
   ////@begin SaveImageDialog bitmap retrieval
   wxUnusedVar( name );
   return wxNullBitmap;
-  ////@end SaveImageDialog bitmap retrieval
+////@end SaveImageDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -606,11 +625,13 @@ wxBitmap SaveImageDialog::GetBitmapResource( const wxString& name )
 
 wxIcon SaveImageDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
   ////@begin SaveImageDialog icon retrieval
   wxUnusedVar( name );
   return wxNullIcon;
-  ////@end SaveImageDialog icon retrieval
+////@end SaveImageDialog icon retrieval
+  // clang-format on
 }
 
 wxString SaveImageDialog::GetImageFilePath()

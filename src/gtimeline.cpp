@@ -34,9 +34,11 @@
 #include <wx/dcgraph.h>
 #include <wx/version.h>
 
+// clang-format off
 ////@begin includes
 #include "wx/imaglist.h"
 ////@end includes
+// clang-format on
 #include "config_traits.h"
 #include "drawmode.h"
 #include "finddialog.h"
@@ -47,12 +49,14 @@
 #include "wxparaverapp.h"
 
 #include <algorithm>
+#include <wx/clipbrd.h>
 #include <wx/dcbuffer.h>
 #include <wx/display.h>
 #include <wx/filename.h>
 #include <wx/statline.h>
 #include <wx/valnum.h>
-//#include "windows_tree.h" --> to .gtimeline.h
+// #include "windows_tree.h" --> to .gtimeline.h
+#include "ParaverMetadataManager.h"
 #include "autoredraw_refresh.xpm"
 #include "caution.xpm"
 #include "caution_yellow.xpm"
@@ -86,13 +90,15 @@ using namespace std;
 #ifdef __WXMAC__
 constexpr int TIMER_SIZE_DURATION = 750;
 #else
-constexpr int TIMER_SIZE_DURATION = 250;
+constexpr int TIMER_SIZE_DURATION = 150;
 #endif
 
 constexpr size_t MAX_LEGEND_COLORS = 512;
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 
 /*!
@@ -108,6 +114,7 @@ IMPLEMENT_CLASS( gTimeline, wxFrame )
 
 BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 EVT_MOVE( gTimeline::OnMove )
+// clang-format off
 ////@begin gTimeline event table entries
 EVT_CLOSE( gTimeline::OnCloseWindow )
 EVT_IDLE( gTimeline::OnIdle )
@@ -147,6 +154,7 @@ EVT_TEXT( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdated )
 EVT_UPDATE_UI( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdate )
 EVT_ACTIVATE( gTimeline::OnActivateWindow )
 ////@end gTimeline event table entries
+// clang-format on
 
 EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
 EVT_TIMER( ID_TIMER_MOTION, gTimeline::OnTimerMotion )
@@ -183,11 +191,13 @@ gTimeline::gTimeline( wxWindow* whichParent, wxWindowID id, const wxString& capt
 
 bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
   ////@begin gTimeline creation
   wxFrame::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
   ////@end gTimeline creation
+  // clang-format on
   splitter->Unsplit();
   redrawStopWatch->Pause();
   return true;
@@ -200,8 +210,10 @@ bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption
 
 gTimeline::~gTimeline()
 {
+  // clang-format off
   ////@begin gTimeline destruction
   ////@end gTimeline destruction
+  // clang-format on
   gPasteWindowProperties::getInstance()->verifyRemove( this );
 
   delete timerMotion;
@@ -219,6 +231,7 @@ gTimeline::~gTimeline()
 
 void gTimeline::Init()
 {
+  // clang-format off
   ////@begin gTimeline member initialisation
   canRedraw                = false;
   drawCaution              = false;
@@ -288,6 +301,7 @@ void gTimeline::Init()
   sliderSelectedBlue       = NULL;
   textSelectedBlue         = NULL;
   ////@end gTimeline member initialisation
+  // clang-format on
 
   zoomXY = false;
   bufferImage.Create( 1, 1 );
@@ -329,6 +343,7 @@ void gTimeline::Init()
 
 void gTimeline::CreateControls()
 {
+  // clang-format off
   ////@begin gTimeline content construction
   gTimeline* itemFrame1 = this;
 
@@ -566,6 +581,7 @@ void gTimeline::CreateControls()
   drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler( gTimeline::OnScrolledWindowMouseWheel ), NULL, this );
   drawZone->Connect( ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler( gTimeline::OnScrolledWindowKeyDown ), NULL, this );
   ////@end gTimeline content construction
+  // clang-format on
 
   SetMinSize( wxSize( 100, 50 ) );
 
@@ -601,11 +617,13 @@ bool gTimeline::ShowToolTips()
 
 wxBitmap gTimeline::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
   ////@begin gTimeline bitmap retrieval
   wxUnusedVar( name );
   return wxNullBitmap;
   ////@end gTimeline bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -614,11 +632,13 @@ wxBitmap gTimeline::GetBitmapResource( const wxString& name )
 
 wxIcon gTimeline::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
   ////@begin gTimeline icon retrieval
   wxUnusedVar( name );
   return wxNullIcon;
   ////@end gTimeline icon retrieval
+  // clang-format on
 }
 
 
@@ -657,7 +677,6 @@ void gTimeline::redraw()
   redoColorsPanel       = true;
   enableApplyButton     = false;
   enabledAutoRedrawIcon = false;
-
   semanticValuesToColor.clear();
   semanticColorsToValue.clear();
   semanticPixelsToValue.clear();
@@ -724,7 +743,6 @@ void gTimeline::redraw()
     maxObj = endRow; // something!!
   else
     maxObj = selectedSet[ selectedSet.size() - 1 ];
-
   bufferImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   commImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
@@ -796,9 +814,9 @@ void gTimeline::redraw()
   eventmaskdc.SetPen( *wxWHITE_PEN );
   eventmaskdc.SetBrush( *wxWHITE_BRUSH );
 
-  float magnify  = float( myWindow->getPixelSize() );
-  TTime timeStep = ( ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) * magnify ) /
-                   ( drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder - magnify );
+  float magnify     = float( myWindow->getPixelSize() );
+  TTime timeStep    = ( ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) * magnify ) /
+                      ( drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder - magnify );
   PRV_INT32 timePos = objectAxisPos + 1;
 
   vector< vector< TSemanticValue > > valuesToDraw;
@@ -830,6 +848,30 @@ void gTimeline::redraw()
   }
   else
   {
+    // Efficient resize and set to 0.
+    if( rowWithSemanticValuesNotZero.empty() )
+    {
+      // Expand and reset to 0.
+      rowWithSemanticValuesNotZero.resize( selected.size(), 0 );
+    }
+    else if( rowWithSemanticValuesNotZero.size() == selected.size() )
+    {
+      // Reuse! Just reset to 0.
+      std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+    }
+    else if( rowWithSemanticValuesNotZero.size() > selected.size() )
+    {
+      // Shrink and reset to 0.
+      rowWithSemanticValuesNotZero.resize( selected.size() );
+      std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+    }
+    else // rowWithSemanticValuesNotZero.size() < selected.size()
+    {
+      // Reset to 0 and then expand setting new added to 0.
+      std::fill( rowWithSemanticValuesNotZero.begin(), rowWithSemanticValuesNotZero.end(), 0 );
+      rowWithSemanticValuesNotZero.resize( selected.size(), 0 );
+    }
+
     myWindow->computeSemanticParallel( selectedSet,
                                        selected,
                                        timeStep,
@@ -839,9 +881,17 @@ void gTimeline::redraw()
                                        maxObj,
                                        drawCaution,
                                        valuesToDraw,
+                                       rowWithSemanticValuesNotZero,
                                        eventsToDraw,
                                        commsToDraw,
                                        progress );
+
+    anyRowWithAllSemanticValuesZero = !rowWithSemanticValuesNotZero.empty() && std::any_of( selectedSet.cbegin(),
+                                                                                            selectedSet.cend(),
+                                                                                            [ this ]( auto e )
+                                                                                            {
+                                                                                              return rowWithSemanticValuesNotZero[ e ] == 0;
+                                                                                            } );
   }
 
   // Draw before any row
@@ -960,7 +1010,10 @@ void gTimeline::redraw()
 
   drawZone->Refresh();
 
-  SetFocus();
+  if( codeChangeSize )
+    codeChangeSize = false;
+  else
+    SetFocus();
 }
 
 
@@ -1060,6 +1113,13 @@ bool gTimeline::drawAxis( wxDC& dc, vector< TObjectOrder >& selected )
     case TObjectAxisSize::TWENTYFIVE_PERC:
       objectExt = wxSize( dc.GetSize().GetWidth() * 0.25, 0 );
       break;
+
+    case TObjectAxisSize::CUSTOM_PERC:
+    {
+      PRV_UINT16 customSize = myWindow->getObjectAxisCustomSize();
+      objectExt             = wxSize( dc.GetSize().GetWidth() * customSize / 100.0, 0 );
+    }
+    break;
 
     default:
       break;
@@ -1650,7 +1710,13 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
  */
 void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
+  int width  = event.GetSize().GetWidth();
+  int height = event.GetSize().GetHeight();
+
   timerSize->StartOnce( TIMER_SIZE_DURATION );
+  wxSize ev     = event.GetSize();
+  wxSize real   = GetSize();
+  wxSize client = GetClientSize();
 
   event.Skip();
 }
@@ -2023,6 +2089,24 @@ void gTimeline::OnMove( wxMoveEvent& event )
 void gTimeline::OnPopUpCopy( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->copy( this );
+
+  bool copyToClipboard   = true;
+  auto copiedToClipboard = saveImageWindows( _( "" ), {}, copyToClipboard );
+  if( !copiedToClipboard.value() )
+    wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
+                  _( "Copy Timeline Properties" ),
+                  wxOK | wxICON_WARNING,
+                  this );
+}
+
+
+gTimeline* gTimeline::clone( Trace* newTrace, TTimeUnit whichTimeUnit, bool mustRedraw )
+{
+  return clone( myWindow->clone( newTrace, whichTimeUnit ),
+                parent,
+                getAllTracesTree()->GetRootItem(),
+                getSelectedTraceTree( newTrace )->GetRootItem(),
+                mustRedraw );
 }
 
 
@@ -2047,6 +2131,9 @@ gTimeline* gTimeline::clone( Timeline* clonedWindow, wxWindow* parent, wxTreeIte
   clonedTimeline->SetMyWindow( clonedWindow );
   clonedTimeline->InitMyWindowCallbacks();
   clonedTimeline->SetClientSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
+
+  clonedTimeline->setRowWithSemanticValuesNotZero( rowWithSemanticValuesNotZero );
+
   clonedWindow->setPixelSize( myWindow->getPixelSize() );
 
   // add to loaded windows list
@@ -2082,7 +2169,6 @@ gTimeline* gTimeline::clone( Timeline* clonedWindow, wxWindow* parent, wxTreeIte
     currentPage->CollapseAllChildren( currentWindowId2 );
   }
 
-
   clonedTimeline->SetBufferImage( bufferImage );
   clonedTimeline->SetCommImage( commImage );
   clonedTimeline->SetEventImage( eventImage );
@@ -2100,6 +2186,7 @@ gTimeline* gTimeline::clone( Timeline* clonedWindow, wxWindow* parent, wxTreeIte
   clonedTimeline->redoColorsPanel = true;
 
   clonedTimeline->myWindow->setReady( myWindow->getReady() );
+
   if( mustRedraw )
   {
     if( myWindow->getShowWindow() )
@@ -2122,6 +2209,7 @@ void gTimeline::OnPopUpClone( wxCommandEvent& event )
 {
   clone( nullptr, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem() );
 }
+
 
 void gTimeline::OnPopUpRename( wxCommandEvent& event )
 {
@@ -2168,6 +2256,34 @@ void gTimeline::OnPopUpFitObjects( wxCommandEvent& event )
                      myWindow->getZoomFirstDimension().second,
                      TObjectOrder( 0 ),
                      myWindow->getWindowLevelObjects() - 1 );
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
+void gTimeline::OnPopUpHideEmptyObjects( wxCommandEvent& event )
+{
+  vector< bool > tmpSelectedRows;
+  myWindow->getSelectedRows( myWindow->getLevel(), tmpSelectedRows );
+
+  std::transform( tmpSelectedRows.begin(),
+                  tmpSelectedRows.end(),
+                  rowWithSemanticValuesNotZero.begin(),
+                  tmpSelectedRows.begin(),
+                  std::logical_and<>() );
+
+  // If no object have values, show all of them. Otherwise a segfault can occur if no objects are shown.
+  if( !std::any_of( tmpSelectedRows.cbegin(),
+                    tmpSelectedRows.cend(),
+                    []( bool i )
+                    {
+                      return i;
+                    } ) )
+  {
+    tmpSelectedRows.flip();
+  }
+
+  myWindow->setSelectedRows( myWindow->getLevel(), tmpSelectedRows );
+
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
@@ -2290,7 +2406,7 @@ void gTimeline::OnPopUpPasteDuration( wxCommandEvent& event )
 {
   gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
   pasteActions->paste( this, "Duration" );
-  myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
+  myWindow->addZoom( myWindow->getWindowBeginTime(), myWindow->getWindowEndTime() );
   myWindow->setRedraw( true );
 }
 
@@ -2328,6 +2444,14 @@ void gTimeline::OnPopUpPasteFilterCommunications( wxCommandEvent& event )
 void gTimeline::OnPopUpPasteFilterEvents( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Events" );
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
+
+void gTimeline::OnPopUpPasteObjectAxis( wxCommandEvent& event )
+{
+  gPasteWindowProperties::getInstance()->paste( this, STR_OBJECT_AXIS );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
@@ -2711,6 +2835,109 @@ void gTimeline::OnPopUpObjectAxis( wxCommandEvent& event )
   }
 
   myWindow->setRedraw( true );
+
+  // Broadcast to sync group if this property is selected
+  if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_OBJECT_AXIS ) )
+  {
+    SyncWindows::getInstance()->broadcastObjectAxisAll( myWindow->getSyncGroup() );
+  }
+}
+
+
+void gTimeline::OnPopUpObjectAxisCustom( wxCommandEvent& event )
+{
+  // Build message showing current object axis setting
+  wxString currentSetting;
+  TObjectAxisSize currentMode = myWindow->getObjectAxisSize();
+  switch( currentMode )
+  {
+    case TObjectAxisSize::CURRENT_LEVEL:
+      currentSetting = _( "Fit Current Level" );
+      break;
+    case TObjectAxisSize::ALL_LEVELS:
+      currentSetting = _( "Fit All Levels" );
+      break;
+    case TObjectAxisSize::ZERO_PERC:
+      currentSetting = _( "0%" );
+      break;
+    case TObjectAxisSize::FIVE_PERC:
+      currentSetting = _( "5%" );
+      break;
+    case TObjectAxisSize::TEN_PERC:
+      currentSetting = _( "10%" );
+      break;
+    case TObjectAxisSize::TWENTYFIVE_PERC:
+      currentSetting = _( "25%" );
+      break;
+    case TObjectAxisSize::CUSTOM_PERC:
+      currentSetting = wxString::Format( _( "Custom: %d%%" ), myWindow->getObjectAxisCustomSize() );
+      break;
+    default:
+      currentSetting = _( "Unknown" );
+      break;
+  }
+
+  // Pre-fill with stored custom value only if CUSTOM_PERC is active
+  wxString defaultValue = wxEmptyString;
+  if( currentMode == TObjectAxisSize::CUSTOM_PERC )
+  {
+    defaultValue = wxString::Format( wxT( "%d" ), myWindow->getObjectAxisCustomSize() );
+  }
+
+  wxString message = wxString::Format( _( "Current Object Axis: %s\n\nEnter custom percentage (1-100):" ), currentSetting );
+
+  wxTextEntryDialog dialog( this, message, _( "Custom Object Axis Percentage" ), defaultValue );
+
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString value = dialog.GetValue();
+    long numValue;
+
+    if( !value.ToLong( &numValue ) )
+    {
+      wxMessageBox( _( "Please enter a valid integer value." ), _( "Invalid Input" ), wxOK | wxICON_ERROR, this );
+      return;
+    }
+
+    if( numValue < 1 || numValue > 100 )
+    {
+      wxMessageBox( _( "Value must be between 1 and 100." ), _( "Invalid Range" ), wxOK | wxICON_ERROR, this );
+      return;
+    }
+
+    // Store the custom value
+    myWindow->setObjectAxisCustomSize( static_cast< PRV_UINT16 >( numValue ) );
+
+    // Check if value matches a preset - if so, switch to that preset mode
+    if( numValue == 0 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::ZERO_PERC );
+    }
+    else if( numValue == 5 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::FIVE_PERC );
+    }
+    else if( numValue == 10 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::TEN_PERC );
+    }
+    else if( numValue == 25 )
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::TWENTYFIVE_PERC );
+    }
+    else
+    {
+      myWindow->setObjectAxisSize( TObjectAxisSize::CUSTOM_PERC );
+    }
+
+    myWindow->setRedraw( true );
+
+    // Broadcast to sync group if this property is selected
+    if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_OBJECT_AXIS ) )
+    {
+      SyncWindows::getInstance()->broadcastObjectAxisAll( myWindow->getSyncGroup() );
+    }
+  }
 }
 
 
@@ -2733,6 +2960,9 @@ void gTimeline::OnPopUpRunApp( wxCommandEvent& event )
       break;
     case ID_MENU_MESS:
       SequenceDriver::sequenceMess( this );
+      break;
+    case ID_MENU_CARM:
+      SequenceDriver::sequenceCarm( this );
       break;
     case ID_MENU_USER_COMMAND:
       SequenceDriver::sequenceUserCommand( this );
@@ -3186,26 +3416,26 @@ void gTimeline::computeWhatWhere( std::vector< std::pair< TWhatWhereLine, wxStri
 
   if( myWindow->isFusedLinesColorSet() )
     return;
-  std::vector< Timeline* > groupWindows;
+  std::vector< Timeline* > groupTimelines;
   if( myWindow->isSync() && SyncWindows::getInstance()->isPropertySelected( myWindow->getSyncGroup(), SyncPropertiesType::SYNC_INFO_PANEL ) )
   {
-    groupWindows = SyncWindows::getInstance()->getGroupTimelineWindows( myWindow->getSyncGroup() );
+    groupTimelines = SyncWindows::getInstance()->getGroupWindows< Timeline >( myWindow->getSyncGroup() );
 
-    auto it = std::find( groupWindows.begin(), groupWindows.end(), myWindow );
-    if( it != groupWindows.end() )
+    auto it = std::find( groupTimelines.begin(), groupTimelines.end(), myWindow );
+    if( it != groupTimelines.end() )
     {
       // Rotate the range so that `it` becomes the first element
-      std::rotate( groupWindows.begin(), it, it + 1 );
+      std::rotate( groupTimelines.begin(), it, it + 1 );
     }
   }
   else
   {
-    groupWindows.push_back( myWindow );
+    groupTimelines.push_back( myWindow );
   }
 
-  for( auto& itWindowsGroup : groupWindows )
+  for( auto& itWindowsGroup : groupTimelines )
   {
-    if( groupWindows.size() > 1 )
+    if( groupTimelines.size() > 1 )
     {
       wxString name;
       name << _( "---------------------- Window Name: " ) << wxString::FromUTF8( itWindowsGroup->getName().c_str() )
@@ -3580,16 +3810,16 @@ void gTimeline::printWWRecords( Timeline* temporalWindow,
 void gTimeline::resizeDrawZone( int width, int height )
 {
   codeChangeSize = true;
-  canRedraw = false;
+  canRedraw      = false;
 
   if( !splitter->IsSplit() )
   {
     drawZone->SetClientSize( width, height );
-    #ifndef _WIN32
-      this->SetClientSize( width, height );
-    #else
-      this->SetSize( width, height );
-    #endif
+#ifndef _WIN32
+    this->SetClientSize( width, height );
+#else
+    this->SetSize( width, height );
+#endif
     canRedraw    = true;
     splitChanged = true;
   }
@@ -3604,9 +3834,6 @@ void gTimeline::resizeDrawZone( int width, int height )
     this->SetClientSize( width, height + infoZoneLastSize + 5 );
 #endif
   }
-  myWindow->setWidth( width, false );
-  myWindow->setHeight( height, false );
-  canRedraw = true;
 }
 
 bool gTimeline::IsSplit() const
@@ -3651,13 +3878,12 @@ void gTimeline::Unsplit()
 
   splitter->Unsplit( infoZone );
 
-
   /*#ifdef _WIN32
     this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() -
                                                            infoZone->GetClientSize().GetHeight() );
   #else*/
   this->SetClientSize( this->GetClientSize().GetWidth(), myWindow->getHeight() );
-  //#endif
+  // #endif
 
   drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
   this->Thaw();
@@ -4081,7 +4307,7 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
 }
 
 
-void gTimeline::saveImageWindows( wxString whichFileName )
+std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, TImageFormat filterIndex, bool copyToClipboard )
 {
   wxString imagePath;
   /* TImageFormat filterIndex;*/
@@ -4128,7 +4354,20 @@ void gTimeline::saveImageWindows( wxString whichFileName )
 
   WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
   newWindowImage.generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
-  newWindowImage.saveImageWindows( imagePath );
+
+  bool copiedToClipboard = false;
+  if( !copyToClipboard )
+  {
+    newWindowImage.saveImageWindows( imagePath );
+  }
+  else
+  {
+    // Copy image to clipboard.
+  }
+
+  setEnableDestroyButton( true );
+
+  return ( copyToClipboard ? std::optional{ copiedToClipboard } : std::nullopt );
 }
 
 
@@ -4224,16 +4463,16 @@ void gTimeline::saveText()
   defaultDir = _( "./" );
 #endif
 
-  tmpSuffix =
-    _( "." ) + wxString::FromUTF8( LabelConstructor::getDataFileSuffix( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ).c_str() );
+  tmpSuffix = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ).c_str() );
 
   // Builds following wildcard: _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" )
   // Also fills extension
   wxString tmpWildcard;
   vector< wxString > extensions;
+  bool initWithDot = false;
   for( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
-    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ) ).c_str() );
+    wxString currentFormat = wxString::FromUTF8( LabelConstructor::getDataFileSuffix( TTextFormat( i ), initWithDot ).c_str() );
     tmpWildcard += currentFormat.Upper() + _( " (*." ) + currentFormat + _( ")|*." ) + currentFormat + _( "|" );
 
     extensions.push_back( currentFormat );
@@ -4299,8 +4538,7 @@ void gTimeline::saveText()
     // Clustering default options
     output->setWindowTimeUnits( false );
 
-
-    output->dumpWindow( myWindow, fileName, progress );
+    output->dumpWindow( myWindow, fileName, CSVMetadataAction::MANUAL_ORIGIN_ID, progress );
     delete output;
 
     // Delete progress controller
@@ -4382,12 +4620,14 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
     auto height = drawZone->GetClientSize().GetHeight();
 
     if( width == myWindow->getWidth() && height == myWindow->getHeight() )
+    {
+      codeChangeSize = false;
       return;
-
-    myWindow->setHeight( height, !this->IsMaximized() && !codeChangeSize );
-    myWindow->setWidth( width, !this->IsMaximized() && !codeChangeSize );
-
-    codeChangeSize = false;
+    }
+    else
+    {
+      myWindow->setSize( width, height, !this->IsMaximized() && !codeChangeSize );
+    }
   }
 
 
@@ -4478,8 +4718,8 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
 #ifdef __WXMAC__
       wxImage tmpImage = bufferImage.ConvertToImage();
       tmpColor         = wxColour( tmpImage.GetRed( motionEvent.GetX(), motionEvent.GetY() ),
-                           tmpImage.GetGreen( motionEvent.GetX(), motionEvent.GetY() ),
-                           tmpImage.GetBlue( motionEvent.GetX(), motionEvent.GetY() ) );
+                                   tmpImage.GetGreen( motionEvent.GetX(), motionEvent.GetY() ),
+                                   tmpImage.GetBlue( motionEvent.GetX(), motionEvent.GetY() ) );
 /*
       wxBitmap tmpBmp = bufferImage.GetSubBitmap( wxRect(0, 0, bufferImage.GetWidth(), bufferImage.GetHeight()));
       wxAlphaPixelData tmpPixelData( tmpBmp );
@@ -4502,7 +4742,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
         firstValue = *( semanticColorsToValue[ color ].begin() );
         tmpString  = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
         if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
-          LabelConstructor::transformToShort( tmpString );
+          tmpString = LabelConstructor::transformToShort( tmpString );
         label = wxString::FromUTF8( tmpString.c_str() );
       }
       else if( winToUse->isColorOutlier( color ) )

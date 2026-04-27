@@ -76,7 +76,7 @@ gPopUpMenu::gPopUpMenu( std::vector< gWindowGenericItem > argWindowGenericList )
 gPopUpMenu::gPopUpMenu( gHistogram *wichHistogramDerivedList )
 {
   typeDataPopup = PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE;
-  windowGenericList.emplace_back( wichHistogramDerivedList ); // Implicitly creates a variant with gTimeline*
+  windowGenericList.emplace_back( wichHistogramDerivedList ); // Implicitly creates a variant with gHistogram*
 }
 
 gPopUpMenu::gPopUpMenu( gTimeline *wichTimelineDerivedList )
@@ -92,6 +92,7 @@ void gPopUpMenu::initializePopUpMenu()
   INIT_WXMENU( popUpMenuPaste );
   INIT_WXMENU( popUpMenuPasteFilter );
   INIT_WXMENU( popUpMenuFitSemantic );
+  INIT_WXMENU( popUpMenuObjects );
   INIT_WXMENU( popUpMenuShowWindows );
   INIT_WXMENU( popUpMenuDrawMode );
   INIT_WXMENU( popUpMenuDrawModeTime );
@@ -102,6 +103,7 @@ void gPopUpMenu::initializePopUpMenu()
   INIT_WXMENU( popUpMenuLabels );
   INIT_WXMENU( popUpMenuObjectAxis );
   INIT_WXMENU( popUpMenuSave );
+  INIT_WXMENU( popUpMenuSaveConfiguration );
   INIT_WXMENU( popUpMenuRun );
   INIT_WXMENU( popUpMenuSync );
   INIT_WXMENU( popUpMenuColor2D );
@@ -207,7 +209,7 @@ void gPopUpMenu ::buildPopUpMenuView()
                                                  wxITEM_CHECK,
                                                  &gPopUpMenu::OnPopUpViewCommunicationLines,
                                                  ID_MENU_VIEW_COMMUNICATION_LINES,
-                                                 allWindowHas(
+                                                 allWindowsHave(
                                                    []( gTimeline *win )
                                                    {
                                                      return win->GetMyWindow()->getDrawCommLines();
@@ -222,7 +224,7 @@ void gPopUpMenu ::buildPopUpMenuView()
                                                  wxITEM_CHECK,
                                                  &gPopUpMenu::OnPopUpViewEventFlags,
                                                  ID_MENU_VIEW_EVENT_FLAGS,
-                                                 allWindowHas(
+                                                 allWindowsHave(
                                                    []( gTimeline *win )
                                                    {
                                                      return win->GetMyWindow()->getDrawFlags();
@@ -257,6 +259,8 @@ void gPopUpMenu ::buildPopUpMenuPaste()
     { popUpMenuPaste, _( STR_DURATION ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteDuration, ID_MENU_PASTE_DURATION },
 
     { popUpMenuPaste, _( STR_SEMANTIC_SCALE ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteSemanticScale, ID_MENU_PASTE_SEMANTIC_SCALE },
+
+    { popUpMenuPaste, _( STR_OBJECT_AXIS ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpPasteObjectAxis, ID_MENU_PASTE_OBJECT_AXIS },
   };
 
   std::vector< BuildMenuItem > pasteItemsBasicHistogram = {
@@ -309,7 +313,7 @@ void gPopUpMenu ::buildPopUpMenuColor()
       wxITEM_CHECK,
       &gPopUpMenu::OnPopUpFunctionLineColor,
       ID_MENU_VIEW_FUNCTION_LINE,
-      allWindowHas(
+      allWindowsHave(
         []( gTimeline *win )
         {
           return win->GetMyWindow()->isFunctionLineColorSet();
@@ -324,7 +328,7 @@ void gPopUpMenu ::buildPopUpMenuColor()
       wxITEM_CHECK,
       &gPopUpMenu::OnPopUpFusedLinesColor,
       ID_MENU_VIEW_FUSED_LINES,
-      allWindowHas(
+      allWindowsHave(
         []( gTimeline *win )
         {
           return win->GetMyWindow()->isFusedLinesColorSet();
@@ -339,7 +343,7 @@ void gPopUpMenu ::buildPopUpMenuColor()
       wxITEM_CHECK,
       &gPopUpMenu::OnPopUpPunctualColor,
       ID_MENU_PUNCTUAL,
-      allWindowHas(
+      allWindowsHave(
         []( gTimeline *win )
         {
           return win->GetMyWindow()->isPunctualColorSet();
@@ -355,7 +359,7 @@ void gPopUpMenu ::buildPopUpMenuColor()
                                                            wxITEM_CHECK,
                                                            &gPopUpMenu::OnPopUpCodeColor,
                                                            ID_MENU_CODE_COLOR,
-                                                           allWindowHas(
+                                                           allWindowsHave(
                                                              []( gTimeline *win )
                                                              {
                                                                return win->GetMyWindow()->isCodeColorSet();
@@ -370,7 +374,7 @@ void gPopUpMenu ::buildPopUpMenuColor()
                                                            wxITEM_CHECK,
                                                            &gPopUpMenu::OnPopUpGradientColor,
                                                            ID_MENU_GRADIENT_COLOR,
-                                                           allWindowHas(
+                                                           allWindowsHave(
                                                              []( gTimeline *win )
                                                              {
                                                                return win->GetMyWindow()->isGradientColorSet();
@@ -385,7 +389,7 @@ void gPopUpMenu ::buildPopUpMenuColor()
                                                            wxITEM_CHECK,
                                                            &gPopUpMenu::OnPopUpNotNullGradientColor,
                                                            ID_MENU_NOT_NULL_GRADIENT_COLOR,
-                                                           allWindowHas(
+                                                           allWindowsHave(
                                                              []( gTimeline *win )
                                                              {
                                                                return win->GetMyWindow()->isNotNullGradientColorSet();
@@ -400,7 +404,7 @@ void gPopUpMenu ::buildPopUpMenuColor()
                                                            wxITEM_CHECK,
                                                            &gPopUpMenu::OnPopUpAlternativeGradientColor,
                                                            ID_MENU_ALTERNATIVE_GRADIENT_COLOR,
-                                                           allWindowHas(
+                                                           allWindowsHave(
                                                              []( gTimeline *win )
                                                              {
                                                                return win->GetMyWindow()->isAlternativeGradientColorSet();
@@ -495,7 +499,7 @@ void gPopUpMenu ::buildPopUpMenuShowWindows()
   AppendSubMenu( popUpMenuShowWindows, _( STR_SHOW_WINDOWS_STATE ) );
 }
 
-void gPopUpMenu ::buildPopUpMenuFitSemantic()
+void gPopUpMenu::buildPopUpMenuFitSemantic()
 {
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE )
   {
@@ -513,17 +517,26 @@ void gPopUpMenu ::buildPopUpMenuFitSemantic()
   }
 }
 
-void gPopUpMenu ::buildPopUpMenuFitObjects()
+void gPopUpMenu::buildPopUpMenuFitObjects()
 {
-  std::vector< BuildMenuItem > fitItemsCommon = {
-    { this, _( STR_FIT_TIME ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpFitTimeScale, wxID_ZOOM_100 },
-
-    { this, _( STR_FIT_OBJECTS ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpFitObjects, ID_MENU_FIT_OBJECTS }
-  };
+  std::vector< BuildMenuItem > fitItemsCommon = { { this, _( STR_FIT_TIME ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpFitTimeScale, wxID_ZOOM_100 } };
 
   buildListOfItems( fitItemsCommon );
 
-  this->buildItem( this, _( "Select Objects..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRowSelection, ID_MENU_ROW_SELECTION );
+  std::vector< BuildMenuItem > objectsItems = {
+    { popUpMenuObjects, _( STR_FIT_OBJECTS ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpFitObjects, ID_MENU_FIT_OBJECTS },
+    { popUpMenuObjects, _( "Select Objects..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpRowSelection, ID_MENU_ROW_SELECTION }
+  };
+
+  if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE )
+  {
+    objectsItems.push_back(
+      { popUpMenuObjects, _( "Hide Empty Objects" ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpHideEmptyObjects, ID_MENU_HIDE_EMPTY_OBJECTS } );
+  }
+
+  buildListOfItems( objectsItems );
+
+  AppendSubMenu( popUpMenuObjects, _( STR_MENU_OBJECTS ) );
 
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE )
   {
@@ -532,7 +545,7 @@ void gPopUpMenu ::buildPopUpMenuFitObjects()
                                                          wxITEM_CHECK,
                                                          &gPopUpMenu::OnPopUpAutoControlScale,
                                                          ID_MENU_AUTO_CONTROL_SCALE,
-                                                         allWindowHas(
+                                                         allWindowsHave(
                                                            []( gHistogram *win )
                                                            {
                                                              return win->GetHistogram()->getCompute2DScale();
@@ -547,7 +560,7 @@ void gPopUpMenu ::buildPopUpMenuFitObjects()
                                                          wxITEM_CHECK,
                                                          &gPopUpMenu::OnPopUpAutoControlScaleZero,
                                                          ID_MENU_AUTO_CONTROL_SCALE_ZERO,
-                                                         allWindowHas(
+                                                         allWindowsHave(
                                                            []( gHistogram *win )
                                                            {
                                                              return win->GetHistogram()->getCompute2DScaleZero();
@@ -562,7 +575,7 @@ void gPopUpMenu ::buildPopUpMenuFitObjects()
                                                          wxITEM_CHECK,
                                                          &gPopUpMenu::OnPopUpAutoDataGradient,
                                                          ID_MENU_AUTO_DATA_GRADIENT,
-                                                         allWindowHas(
+                                                         allWindowsHave(
                                                            []( gHistogram *win )
                                                            {
                                                              return win->GetHistogram()->getComputeGradient();
@@ -574,7 +587,7 @@ void gPopUpMenu ::buildPopUpMenuFitObjects()
 
     buildListOfItems( fitItemsHistogram );
 
-    if( allWindowHas(
+    if( allWindowsHave(
           []( gHistogram *win )
           {
             return win->GetHistogram()->getThreeDimensions();
@@ -589,7 +602,7 @@ void gPopUpMenu ::buildPopUpMenuFitObjects()
                        wxITEM_CHECK,
                        &gPopUpMenu::OnPopUpAuto3DScale,
                        ID_MENU_AUTO_3D_SCALE,
-                       allWindowHas(
+                       allWindowsHave(
                          []( gHistogram *win )
                          {
                            return win->GetHistogram()->getCompute3DScale();
@@ -890,7 +903,7 @@ void gPopUpMenu ::buildPopUpMenuDrawMode()
     if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE )
     {
       Enable( tmpDrawModeSubMenu->GetId(),
-              ( allWindowHas(
+              ( allWindowsHave(
                 []( gTimeline *window )
                 {
                   return ( ( !window->GetMyWindow()->isPunctualColorSet() ) || ( window->GetMyWindow()->getPunctualColorWindow() != nullptr ) );
@@ -1035,7 +1048,7 @@ void gPopUpMenu ::buildPopUpMenuGradientFunction()
                                                   wxITEM_CHECK,
                                                   &gPopUpMenu::OnPopUpSemanticScaleMinAtZero,
                                                   ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO,
-                                                  allWindowHas(
+                                                  allWindowsHave(
                                                     []( gTimeline *window )
                                                     {
                                                       return window->GetMyWindow()->getSemanticScaleMinAtZero();
@@ -1077,6 +1090,18 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis()
       }
     }
 
+    // Build custom label for Object Axis custom option
+    wxString customLabel;
+    if( objectAxis == TObjectAxisSize::CUSTOM_PERC )
+    {
+      PRV_UINT16 customSize = ( std::get< gTimeline * >( *windowGenericList.begin() ) )->GetMyWindow()->getObjectAxisCustomSize();
+      customLabel           = wxString::Format( wxT( "Custom %d" ), customSize ) + wxT( "%" );
+    }
+    else
+    {
+      customLabel = _( "Custom..." );
+    }
+
     std::vector< BuildMenuItem > objectAxisItems = {
       { popUpMenuObjectAxis,
         _( "Fit Current Level" ),
@@ -1107,11 +1132,25 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis()
         ( objectAxis == TObjectAxisSize::FIVE_PERC && isSync ) },
 
       { popUpMenuObjectAxis,
+        _( "10%" ),
+        wxITEM_CHECK,
+        &gPopUpMenu::OnPopUpObjectAxis,
+        ID_MENU_OBJECT_AXIS_TEN,
+        ( objectAxis == TObjectAxisSize::TEN_PERC && isSync ) },
+
+      { popUpMenuObjectAxis,
         _( "25%" ),
         wxITEM_CHECK,
         &gPopUpMenu::OnPopUpObjectAxis,
         ID_MENU_OBJECT_AXIS_TWENTYFIVE,
         ( objectAxis == TObjectAxisSize::TWENTYFIVE_PERC && isSync ) },
+
+      { popUpMenuObjectAxis,
+        customLabel,
+        wxITEM_CHECK,
+        &gPopUpMenu::OnPopUpObjectAxisCustom,
+        ID_MENU_OBJECT_AXIS_CUSTOM,
+        ( objectAxis == TObjectAxisSize::CUSTOM_PERC && isSync ) },
     };
 
     buildListOfItems( objectAxisItems );
@@ -1122,9 +1161,20 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis()
 
 void gPopUpMenu ::buildPopUpMenuSave()
 {
-  std::vector< BuildMenuItem > saveMenuItems = {
-    { popUpMenuSave, _( "Configuration..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveCFG, ID_MENU_SAVE_TIMELINE_AS_CFG },
+  std::vector< BuildMenuItem > saveConfigurationItems = {
+    { popUpMenuSaveConfiguration, _( "Selected Windows..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveCFG, ID_MENU_SAVE_TIMELINE_AS_CFG },
+    { popUpMenuSaveConfiguration,
+      _( STR_SAVE_SYNCHRONIZATION_GROUP ),
+      wxITEM_NORMAL,
+      &gPopUpMenu::OnPopUpSynchronizedWindowsSaveCFG,
+      ID_MENU_SAVE_SYNCHRONIZED_WINDOWS_TO_CFG }
   };
+
+  buildListOfItems( saveConfigurationItems );
+
+  popUpMenuSave->AppendSubMenu( popUpMenuSaveConfiguration, _( "Configuration" ) );
+
+  std::vector< BuildMenuItem > saveMenuItems = {};
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE )
   {
     saveMenuItems.push_back( { popUpMenuSave, _( "Image..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveImageDialog, ID_MENU_SAVE_IMAGE } );
@@ -1166,7 +1216,7 @@ void gPopUpMenu ::buildPopUpMenuLabels()
                                                         wxITEM_CHECK,
                                                         &gPopUpMenu::OnPopUpLabels,
                                                         ID_MENU_LABELS_ALL,
-                                                        allWindowHas(
+                                                        allWindowsHave(
                                                           []( gTimeline *win )
                                                           {
                                                             return win->GetMyWindow()->getObjectLabels() == TObjectLabels::ALL_LABELS;
@@ -1181,7 +1231,7 @@ void gPopUpMenu ::buildPopUpMenuLabels()
                                                         wxITEM_CHECK,
                                                         &gPopUpMenu::OnPopUpLabels,
                                                         ID_MENU_LABELS_SPACED,
-                                                        allWindowHas(
+                                                        allWindowsHave(
                                                           []( gTimeline *win )
                                                           {
                                                             return win->GetMyWindow()->getObjectLabels() == TObjectLabels::SPACED_LABELS;
@@ -1196,7 +1246,7 @@ void gPopUpMenu ::buildPopUpMenuLabels()
                                                         wxITEM_CHECK,
                                                         &gPopUpMenu::OnPopUpLabels,
                                                         ID_MENU_LABELS_POWER2,
-                                                        allWindowHas(
+                                                        allWindowsHave(
                                                           []( gTimeline *win )
                                                           {
                                                             return win->GetMyWindow()->getObjectLabels() == TObjectLabels::POWER2_LABELS;
@@ -1267,8 +1317,6 @@ void gPopUpMenu ::buildPopUpMenuSync()
       break;
     }
   }
-
-  bool checked;
 
   for( vector< TGroupId >::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
@@ -1352,6 +1400,13 @@ void gPopUpMenu::buildPopUpRunApp()
                        &gPopUpMenu::OnPopUpRunApp,
                        ID_MENU_MESS );
 
+    if( suitableApps[ (int)TExternalAppID::CARM ] )
+      this->buildItem( popUpMenuRun,
+                       ExternalApps::getApplicationLabel( TExternalAppID::CARM ),
+                       wxITEM_NORMAL,
+                       &gPopUpMenu::OnPopUpRunApp,
+                       ID_MENU_CARM );
+
     this->buildItem( popUpMenuRun,
                      ExternalApps::getApplicationLabel( TExternalAppID::USER_COMMAND ),
                      wxITEM_NORMAL,
@@ -1370,7 +1425,7 @@ void gPopUpMenu::buildPopUpExtraPanel()
                                                      wxITEM_CHECK,
                                                      &gPopUpMenu::OnPopUpTiming,
                                                      ID_MENU_TIMING,
-                                                     allWindowHas(
+                                                     allWindowsHave(
                                                        []( gTimeline *win )
                                                        {
                                                          return win->GetTiming();
@@ -1385,7 +1440,7 @@ void gPopUpMenu::buildPopUpExtraPanel()
                                                      wxITEM_CHECK,
                                                      &gPopUpMenu::OnPopUpInfoPanel,
                                                      ID_MENU_INFO_PANEL,
-                                                     allWindowHas(
+                                                     allWindowsHave(
                                                        []( gTimeline *win )
                                                        {
                                                          return win->IsSplit();
@@ -1416,18 +1471,18 @@ wxMenuItem *gPopUpMenu::buildItem( wxMenu *baseMenuContainer,
     newMenuItem->Check( isChecked );
   }
 
-//#ifdef _WIN32
-//  Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
-//#else
+  // #ifdef _WIN32
+  //   Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );
+  // #else
   baseMenuContainer->Bind( wxEVT_COMMAND_MENU_SELECTED, callbackFunctionMenuItem, this, windowId );
 
-//#endif
+  // #endif
 
   return newMenuItem;
 }
 
 template< typename... Funcs >
-bool gPopUpMenu::allWindowHas( Funcs &&...funcs )
+bool gPopUpMenu::allWindowsHave( Funcs &&...funcs )
 {
   auto visitor = overloads{ std::forward< Funcs >( funcs )... };
 
@@ -1439,22 +1494,22 @@ bool gPopUpMenu::allWindowHas( Funcs &&...funcs )
                       } );
 }
 
-bool gPopUpMenu::allWindowsHas( vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function )
+bool gPopUpMenu::allWindowsHave( vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function )
 {
   for( auto *timeline : timelineWindows )
   {
-    if( function( timeline ) == false )
+    if( !function( timeline ) )
     {
       return false;
     }
   }
   return true;
 }
-bool gPopUpMenu::allWindowsHas( vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function )
+bool gPopUpMenu::allWindowsHave( vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function )
 {
   for( auto *histogram : histogramWindows )
   {
-    if( function( histogram ) == false )
+    if( !function( histogram ) )
     {
       return false;
     }
@@ -1462,8 +1517,48 @@ bool gPopUpMenu::allWindowsHas( vector< gHistogram * > histogramWindows, std::fu
   return true;
 }
 
+
+bool gPopUpMenu::anyWindowHas( vector< gTimeline * > timelineWindows, std::function< bool( gTimeline * ) > function )
+{
+  for( auto *timeline : timelineWindows )
+  {
+    if( function( timeline ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool gPopUpMenu::anyWindowHas( vector< gHistogram * > histogramWindows, std::function< bool( gHistogram * ) > function )
+{
+  for( auto *histogram : histogramWindows )
+  {
+    if( function( histogram ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+template< typename... Funcs >
+bool gPopUpMenu::anyWindowHas( Funcs &&...funcs )
+{
+  auto visitor = overloads{ std::forward< Funcs >( funcs )... };
+
+  return std::any_of( windowGenericList.begin(),
+                      windowGenericList.end(),
+                      [ & ]( const gWindowGenericItem &item )
+                      {
+                        return std::visit( visitor, item );
+                      } );
+}
+
+
 /*************************************************************/
-/*************ENABLE POP UP MENU FUNCTIONALLITIES*************/
+/*************ENABLE POP UP MENU FUNCTIONALITIES**************/
 /*************************************************************/
 
 bool gPopUpMenu::checkAllowedProperties( const char *property )
@@ -1489,39 +1584,32 @@ bool gPopUpMenu::checkAllowedProperties( const char *property )
 
 void gPopUpMenu::enablePopUpMenu()
 {
-  auto tryToEnableItem = [ & ]( wxMenu *menuComponent, char *itemName ) -> void
-  {
-    int itemId = FindItem( _( itemName ) );
-    if( itemId != wxNOT_FOUND )
-    {
-      menuComponent->Enable( itemId, true );
-    }
-  };
-
-  gPasteWindowProperties *sharedProperties = gPasteWindowProperties::getInstance();
-
   this->Enable( FindItem( _( STR_PASTE ) ), checkAllowedProperties( STR_PASTE ) );
   this->Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ), checkAllowedProperties( STR_PASTE_DEFAULT_SPECIAL ) );
   this->Enable( FindItem( _( STR_PASTE_SPECIAL ) ), checkAllowedProperties( STR_PASTE_SPECIAL ) );
 
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE )
   {
-    this->Enable( FindItem( _( STR_CONTROL_SCALE ) ), checkAllowedProperties( STR_CONTROL_SCALE ) );
+    bool isDerivedHistogram = std::get< gHistogram * >( *windowGenericList.begin() )->GetHistogram()->isDerivedHistogram();
+
+    this->Enable( FindItem( _( STR_CONTROL_SCALE ) ), !isDerivedHistogram && checkAllowedProperties( STR_CONTROL_SCALE ) );
     this->Enable( FindItem( _( STR_PASTE_SEMANTIC_SORT ) ), checkAllowedProperties( STR_PASTE_SEMANTIC_SORT ) );
     this->Enable( FindItem( _( STR_CONTROL_DIMENSIONS ) ), checkAllowedProperties( STR_CONTROL_DIMENSIONS ) );
 
-    this->Enable( FindItem( _( STR_AUTOFIT_CONTROL_ZERO ) ),
-                  allWindowHas(
-                    []( gHistogram *win )
-                    {
-                      return win->GetHistogram()->getCompute2DScale();
-                    },
-                    []( gTimeline *win )
-                    {
-                      return true;
-                    } ) );
+    this->Enable( FindItem( _( STR_FIT_TIME ) ), !isDerivedHistogram );
 
-    if( allWindowHas(
+    this->Enable( FindItem( _( STR_AUTOFIT_CONTROL_ZERO ) ),
+                  !isDerivedHistogram && allWindowsHave(
+                                           []( gHistogram *win )
+                                           {
+                                             return win->GetHistogram()->getCompute2DScale();
+                                           },
+                                           []( gTimeline *win )
+                                           {
+                                             return true;
+                                           } ) );
+
+    if( allWindowsHave(
           []( gHistogram *win )
           {
             return win->GetHistogram()->getThreeDimensions();
@@ -1536,6 +1624,28 @@ void gPopUpMenu::enablePopUpMenu()
     else
     {
       this->Enable( FindItem( _( STR_3D_SCALE ) ), false );
+    }
+
+    // TODO: may need fine tuning
+    if( isDerivedHistogram )
+    {
+      auto mainParentSynchGroup = std::get< gHistogram * >( *windowGenericList.begin() )->GetHistogram()->getParent( 0 )->getSyncGroup();
+      this->Enable( FindItem( _( STR_SYNCHRONIZE ) ),
+                    allWindowsHave(
+                      [ mainParentSynchGroup ]( gHistogram *win )
+                      {
+                        auto parents = win->GetHistogram()->getParents();
+                        return std::all_of( parents.cbegin(),
+                                            parents.cend(),
+                                            [ mainParentSynchGroup ]( auto p )
+                                            {
+                                              return p->isSync() && p->getSyncGroup() == mainParentSynchGroup;
+                                            } );
+                      },
+                      []( gTimeline *win )
+                      {
+                        return true;
+                      } ) );
     }
   }
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE )
@@ -1553,8 +1663,19 @@ void gPopUpMenu::enablePopUpMenu()
 
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE )
   {
+    this->Enable( FindItem( _( "Hide Empty Objects" ) ),
+                  anyWindowHas(
+                    []( gTimeline *win )
+                    {
+                      return win->getAnyRowWithAllSemanticValuesZero();
+                    },
+                    []( gHistogram *win )
+                    {
+                      return false;
+                    } ) );
+
     popUpMenuColor->Enable( FindItem( _( "Punctual Window..." ) ),
-                            allWindowHas(
+                            allWindowsHave(
                               []( gTimeline *window )
                               {
                                 return window->GetMyWindow()->isPunctualColorSet();
@@ -1565,7 +1686,7 @@ void gPopUpMenu::enablePopUpMenu()
                               } ) );
 
     popUpMenuColor->Enable( FindItem( _( "Gradient Function" ) ),
-                            ( allWindowHas(
+                            ( allWindowsHave(
                                 []( gTimeline *window )
                                 {
                                   return window->GetMyWindow()->isGradientColorSet();
@@ -1574,7 +1695,7 @@ void gPopUpMenu::enablePopUpMenu()
                                 {
                                   return true;
                                 } ) ||
-                              allWindowHas(
+                              allWindowsHave(
                                 []( gTimeline *window )
                                 {
                                   return window->GetMyWindow()->isNotNullGradientColorSet();
@@ -1583,7 +1704,7 @@ void gPopUpMenu::enablePopUpMenu()
                                 {
                                   return true;
                                 } ) ||
-                              allWindowHas(
+                              allWindowsHave(
                                 []( gTimeline *window )
                                 {
                                   return window->GetMyWindow()->isAlternativeGradientColorSet();
@@ -1592,7 +1713,7 @@ void gPopUpMenu::enablePopUpMenu()
                                 {
                                   return true;
                                 } ) ||
-                              allWindowHas(
+                              allWindowsHave(
                                 []( gTimeline *window )
                                 {
                                   return window->GetMyWindow()->isFunctionLineColorSet();
@@ -1601,7 +1722,7 @@ void gPopUpMenu::enablePopUpMenu()
                                 {
                                   return true;
                                 } ) ||
-                              allWindowHas(
+                              allWindowsHave(
                                 []( gTimeline *window )
                                 {
                                   return window->GetMyWindow()->isPunctualColorSet();
@@ -1612,7 +1733,7 @@ void gPopUpMenu::enablePopUpMenu()
                                 } ) ) );
 
     popUpMenuColor->Enable( FindItem( _( "Semantic scale min at 0" ) ),
-                            ( allWindowHas(
+                            ( allWindowsHave(
                                 []( gTimeline *window )
                                 {
                                   return window->GetMyWindow()->isFunctionLineColorSet();
@@ -1621,7 +1742,7 @@ void gPopUpMenu::enablePopUpMenu()
                                 {
                                   return true;
                                 } ) ||
-                              allWindowHas(
+                              allWindowsHave(
                                 []( gTimeline *window )
                                 {
                                   return window->GetMyWindow()->isFusedLinesColorSet();
@@ -1630,7 +1751,7 @@ void gPopUpMenu::enablePopUpMenu()
                                 {
                                   return true;
                                 } ) ||
-                              allWindowHas(
+                              allWindowsHave(
                                 []( gTimeline *window )
                                 {
                                   return window->GetMyWindow()->isPunctualColorSet();
@@ -1662,6 +1783,13 @@ void gPopUpMenu::enablePopUpMenu()
 
   bool tmpEnableRemoveGroup = SyncWindows::getInstance()->getNumGroups() > 1 || SyncWindows::getInstance()->getNumWindows( 0 ) > 0;
   popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), tmpEnableRemoveGroup );
+
+  if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE )
+    this->Enable( FindItem( _( STR_SAVE_SYNCHRONIZATION_GROUP ) ),
+                  ( std::get< gTimeline * >( *windowGenericList.begin() ) )->GetMyWindow()->isSync() );
+  else if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE )
+    this->Enable( FindItem( _( STR_SAVE_SYNCHRONIZATION_GROUP ) ),
+                  ( std::get< gHistogram * >( *windowGenericList.begin() ) )->GetHistogram()->isSync() );
 }
 
 void gPopUpMenu::enableItemByTag( const std::string tag, bool enable )
@@ -1801,7 +1929,6 @@ bool gPopUpMenu ::isSelectObjectsAvailable()
   bool isProcessModel;
 
   Trace *trace = nullptr;
-  TTraceLevel dataLevel;
 
   auto isProcessModelCheck = [ & ]( TTraceLevel traceLevel ) -> bool
   {
@@ -1876,7 +2003,6 @@ bool gPopUpMenu ::isShowTraceWindowsAvailable()
 
 void gPopUpMenu ::createRowSelectionDialog()
 {
-  bool isInitialized  = false;
   bool isProcessModel = false;
   Trace *trace        = nullptr;
 
@@ -1920,9 +2046,6 @@ void gPopUpMenu ::createRowSelectionDialog()
 
     intersectedSelection = matrix_intersection( tmpWindowSelection, intersectedSelection );
   }
-
-  TTraceLevel beginLevel;
-  TTraceLevel endLevel;
 
   intersectionSelectedRows.init( trace );
 
@@ -1999,7 +2122,7 @@ bool gPopUpMenu::ZoomAwareTransferData( RowsSelectionDialog *myDialog )
   auto isZoomAware = true;
   bool applyZoom   = true;
 
-  isZoomAware = allWindowHas(
+  isZoomAware = allWindowsHave(
     [ myDialog ]( gHistogram *histogram )
     {
       return myDialog->isZoomAwareTransferData( histogram->GetHistogram()->getCurrentZoomRange() );
@@ -2043,17 +2166,6 @@ void gPopUpMenu ::transferDataSelectionToObjects( RowsSelectionDialog *myDialog,
   {
     std::vector< bool > whichSelected;
     intersectionSelectedRows->getSelected( whichSelected, whichLevel );
-
-    auto visitor = overloads{ []( gHistogram *histogram )
-                              {
-                                return histogram->GetHistogram();
-                              },
-                              []( gTimeline *timeline )
-                              {
-                                return timeline->GetMyWindow();
-                              }
-
-    };
 
     gTimeline *tmpTimeline;
     gHistogram *tmpHistogram;
@@ -2241,7 +2353,7 @@ void gPopUpMenu::OnPopUpPasteFilterEvents( wxCommandEvent &event )
     } );
 }
 
-// HISGORAM
+// HISTOGRAM
 void gPopUpMenu::OnPopUpPasteControlScale( wxCommandEvent &event )
 {
   onAllWindowsCall(
@@ -2274,6 +2386,17 @@ void gPopUpMenu::OnPopUpPasteControlDimensions( wxCommandEvent &event )
     },
     []( gTimeline *item )
     {
+    } );
+}
+void gPopUpMenu::OnPopUpPasteObjectAxis( wxCommandEvent &event )
+{
+  onAllWindowsCall(
+    []( gHistogram *item )
+    {
+    },
+    [ &event ]( gTimeline *item )
+    {
+      item->OnPopUpPasteObjectAxis( event );
     } );
 }
 
@@ -2311,6 +2434,18 @@ void gPopUpMenu::OnPopUpFitObjects( wxCommandEvent &event )
     [ &event ]( auto &item )
     {
       item->OnPopUpFitObjects( event );
+    } );
+}
+
+void gPopUpMenu::OnPopUpHideEmptyObjects( wxCommandEvent &event )
+{
+  onAllWindowsCall(
+    [ &event ]( gTimeline *item )
+    {
+      item->OnPopUpHideEmptyObjects( event );
+    },
+    [ &event ]( gHistogram *item )
+    {
     } );
 }
 
@@ -3093,6 +3228,17 @@ void gPopUpMenu::OnPopUpObjectAxis( wxCommandEvent &event )
     {
     } );
 }
+void gPopUpMenu::OnPopUpObjectAxisCustom( wxCommandEvent &event )
+{
+  onAllWindowsCall(
+    [ &event ]( gTimeline *item )
+    {
+      item->OnPopUpObjectAxisCustom( event );
+    },
+    []( gHistogram *item )
+    {
+    } );
+}
 void gPopUpMenu::OnPopUpRunApp( wxCommandEvent &event )
 {
   onAllWindowsCall(
@@ -3130,6 +3276,28 @@ void gPopUpMenu::OnPopUpInfoPanel( wxCommandEvent &event )
 }
 
 // Mix
+
+void gPopUpMenu::OnPopUpSynchronizedWindowsSaveCFG( wxCommandEvent &event )
+{
+  // PRECOND: window is synchronized
+  SaveOptions options;
+
+  TGroupId currentSyncGroup{};
+  if( auto windowItem = std::get_if< gTimeline * >( &( windowGenericList.front() ) ) )
+    currentSyncGroup = ( *windowItem )->GetMyWindow()->getSyncGroup();
+  else if( auto windowItem = std::get_if< gHistogram * >( &( windowGenericList.front() ) ) )
+    currentSyncGroup = ( *windowItem )->GetHistogram()->getSyncGroup();
+
+  vector< Timeline * > windows     = SyncWindows::getInstance()->getGroupWindows< Timeline >( currentSyncGroup );
+  vector< Histogram * > histograms = SyncWindows::getInstance()->getGroupWindows< Histogram >( currentSyncGroup );
+
+  CFGS4DLinkedPropertiesManager dummyManager;
+  vector< CFGS4DLinkedPropertiesManager > dummyList;
+  dummyList.push_back( dummyManager );
+
+  paraverMain::myParaverMain->SaveConfigurationFile( nullptr, options, windows, histograms, dummyList );
+}
+
 
 void gPopUpMenu::OnPopUpSaveCFG( wxCommandEvent &event )
 {

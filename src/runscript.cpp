@@ -25,30 +25,41 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 #include "wx/imaglist.h"
 ////@end includes
+// clang-format on
 
 #ifdef _WIN32
-#include <process.h>
+#  include <process.h>
 #endif
 
-#include <wx/utils.h> // wxGetEnv
-#include <wx/txtstrm.h>
+#include <wx/arrstr.h>
 #include <wx/filefn.h> // wxPathList
 #include <wx/mimetype.h>
 #include <wx/tokenzr.h>
+#include <wx/txtstrm.h>
+#include <wx/utils.h> // wxGetEnv
+#include <wx/validate.h>
 
 // Validators
-#include <wx/arrstr.h>
-#include <wx/validate.h>
+#include "runscript.h"
+
+#include "cfg.h"
+#include "filter.h"
+#include "gtimeline.h"
+#include "labelconstructor.h"
+#include "utils/traceparser/pcffileparser.h"
+#include "windows_tree.h"
+#include "wxparaverapp.h"
 
 #include <algorithm>
 #include <functional>
@@ -56,30 +67,23 @@
 #include <regex>
 #include <vector>
 
-#include "wxparaverapp.h"
-#include "runscript.h"
-#include "filter.h"
-#include "cfg.h"
-#include "windows_tree.h"
-#include "gtimeline.h"
-
-#include "utils/traceparser/pcffileparser.h"
-
 using namespace std;
 
+// clang-format off
 ////@begin XPM images
 #include "../icons/app_edit.xpm"
 ////@end XPM images
+// clang-format on
 
 BEGIN_EVENT_TABLE( RunningProcess, wxProcess )
-  EVT_TIMER( ID_TIMER_MESSAGE, RunningProcess::OnTimerMessage )
+EVT_TIMER( ID_TIMER_MESSAGE, RunningProcess::OnTimerMessage )
 END_EVENT_TABLE()
 
-wxString RunScript::clusteringXML = wxString( wxT("") );
+wxString RunScript::clusteringXML = wxString( wxT( "" ) );
 
 void RunningProcess::OnTerminate( int pid, int status )
 {
-  while ( HasInput() )
+  while( HasInput() )
     ;
 
   parent->OnProcessTerminated( pid );
@@ -88,7 +92,7 @@ void RunningProcess::OnTerminate( int pid, int status )
 
 bool RunningProcess::HasInput()
 {
-  bool hasInput = false;
+  bool hasInput           = false;
   static bool clearOutMsg = false;
 
   if( clearOutMsg )
@@ -97,7 +101,7 @@ bool RunningProcess::HasInput()
     outMsg.Clear();
   }
 
-  if ( IsInputAvailable() )
+  if( IsInputAvailable() )
   {
     wxTextInputStream tis( *GetInputStream() );
 
@@ -117,7 +121,7 @@ bool RunningProcess::HasInput()
     hasInput = true;
   }
 
-  if ( IsErrorAvailable() )
+  if( IsErrorAvailable() )
   {
     wxTextInputStream tis( *GetErrorStream() );
 
@@ -160,7 +164,7 @@ IMPLEMENT_DYNAMIC_CLASS( RunScript, wxDialog )
  */
 BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
-
+// clang-format off
 ////@begin RunScript event table entries
   EVT_CLOSE( RunScript::OnCloseWindow )
   EVT_IDLE( RunScript::OnIdle )
@@ -180,16 +184,21 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
   EVT_UPDATE_UI( ID_MESS_ADDITIONAL_PLOTS, RunScript::OnMessAdditionalPlotsUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_CARM_USE_WINDOW_COLORS, RunScript::OnCheckboxCarmUseWindowColorsUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, RunScript::OnCheckboxCarmUseSemanticWindowUpdate )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
   EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
   EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
+  EVT_BUTTON( ID_BUTTON_CARM_SYNC, RunScript::OnButtonCarmSyncClick )
+  EVT_UPDATE_UI( ID_BUTTON_CARM_SYNC, RunScript::OnButtonCarmSyncUpdate )
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
   EVT_UPDATE_UI( ID_BUTTON_EXIT, RunScript::OnButtonExitUpdate )
 ////@end RunScript event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -204,7 +213,7 @@ RunScript::RunScript()
 
 
 RunScript::RunScript( wxWindow* parent,
-                      std::vector<bool> whichAcceptableApps,
+                      std::vector< bool > whichAcceptableApps,
                       wxWindowID id,
                       const wxString& caption,
                       const wxPoint& pos,
@@ -212,7 +221,7 @@ RunScript::RunScript( wxWindow* parent,
                       long style )
 {
   Init();
-  Create(parent, whichAcceptableApps, id, caption, pos, size, style);
+  Create( parent, whichAcceptableApps, id, caption, pos, size, style );
 }
 
 
@@ -225,14 +234,14 @@ RunScript::RunScript( wxWindow* parent,
                       long style )
 {
   Init();
-  Create(parent, {}, id, caption, pos, size, style);
-  
-  if ( !whichTrace.IsEmpty() )
+  Create( parent, {}, id, caption, pos, size, style );
+
+  if( !whichTrace.IsEmpty() )
   {
     fileBrowserButtonTrace->SetPath( whichTrace );
   }
 
-  helpOption = false; 
+  helpOption = false;
 }
 
 
@@ -240,13 +249,14 @@ RunScript::RunScript( wxWindow* parent,
  * RunScript creator
  */
 bool RunScript::Create( wxWindow* parent,
-                        std::vector<bool> whichAcceptableApps,
+                        std::vector< bool > whichAcceptableApps,
                         wxWindowID id,
                         const wxString& caption,
                         const wxPoint& pos,
                         const wxSize& size,
                         long style )
 {
+  // clang-format off
 ////@begin RunScript creation
   SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -258,6 +268,7 @@ bool RunScript::Create( wxWindow* parent,
   }
   Centre();
 ////@end RunScript creation
+  // clang-format on
 
   SetSize( wxSize( 600, 700 ) );
 
@@ -270,8 +281,10 @@ bool RunScript::Create( wxWindow* parent,
  */
 RunScript::~RunScript()
 {
+  // clang-format off
 ////@begin RunScript destruction
 ////@end RunScript destruction
+  // clang-format on
   if( progressBar != nullptr )
     delete progressBar;
 }
@@ -282,7 +295,9 @@ RunScript::~RunScript()
  */
 void RunScript::Init()
 {
+  // clang-format off
 ////@begin RunScript member initialisation
+  carmWindow = nullptr;
   myProcess = nullptr;
   myProcessPid = 0;
   choiceApplication = NULL;
@@ -359,52 +374,62 @@ void RunScript::Init()
   textCtrlMessCFG = NULL;
   fileBrowserButtonMessCFG = NULL;
   checkMessAdditionalPlots = NULL;
+  carmSection = NULL;
+  textCtrlCarmMinBurstDuration = NULL;
+  checkCarmUseWindowColors = NULL;
+  checkCarmUseSemanticWindow = NULL;
+  checkCarmAccumulateValues = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
   buttonKill = NULL;
   buttonClearLog = NULL;
+  buttonCarmSync = NULL;
   listboxRunLog = NULL;
   buttonExit = NULL;
 ////@end RunScript member initialisation
+  // clang-format on
 
   progressBar = nullptr;
 
-  wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"),
-                                   _(".cfg"),
-                                   _(".xml"),
-                                   _(".csv"), _(".dat"),
-                                   _(".gnuplot"),
-                                   _(".pdf"),
-                                   _("_time_mark"), _("_time_range_mark"),
-                                   _("_link_to_clustered_trace")};
+  wxString extensionsAllowed[] = { _( ".prv" ),
+                                   _( ".prv.gz" ),
+                                   _( ".cfg" ),
+                                   _( ".xml" ),
+                                   _( ".csv" ),
+                                   _( ".dat" ),
+                                   _( ".gnuplot" ),
+                                   _( ".pdf" ),
+                                   _( "_time_mark" ),
+                                   _( "_time_range_mark" ),
+                                   _( "_link_to_clustered_trace" ) };
 
   extensions = wxArrayString( (size_t)11, extensionsAllowed );
 
   InitOutputLinks();
 
   // Names of environment variables
-  environmentVariable[ TEnvironmentVar::PATH ]         = wxString( wxT("PATH") );
-  environmentVariable[ TEnvironmentVar::PARAVER_HOME ] = wxString( wxT("PARAVER_HOME") );
-  environmentVariable[ TEnvironmentVar::DIMEMAS_HOME ] = wxString( wxT("DIMEMAS_HOME") );
+  environmentVariable[ TEnvironmentVar::PATH ]         = wxString( wxT( "PATH" ) );
+  environmentVariable[ TEnvironmentVar::PARAVER_HOME ] = wxString( wxT( "PARAVER_HOME" ) );
+  environmentVariable[ TEnvironmentVar::DIMEMAS_HOME ] = wxString( wxT( "DIMEMAS_HOME" ) );
 
-  tagFoldingOutputDirectory = wxString( wxT("Output directory:") );
+  tagFoldingOutputDirectory = wxString( wxT( "Output directory:" ) );
 
-  wxString tmpTimeMarkTags[] = { _("start @"), _("found @") };
-  timeMarkTags = wxArrayString( (size_t)2, tmpTimeMarkTags );
-  iterationTag = wxString( wxT("Iteration_") );
-  punctualTimeTag = timeMarkTags[0];
-  rangeTimeTag    = timeMarkTags[1];
+  wxString tmpTimeMarkTags[] = { _( "start @" ), _( "found @" ) };
+  timeMarkTags               = wxArrayString( (size_t)2, tmpTimeMarkTags );
+  iterationTag               = wxString( wxT( "Iteration_" ) );
+  punctualTimeTag            = timeMarkTags[ 0 ];
+  rangeTimeTag               = timeMarkTags[ 1 ];
 
   pidDimemasGUI = 0;
 
   std::stringstream tmpPID;
 #ifdef _WIN32
   tmpPID << _getpid();
-  _putenv_s( "PARAVER_LOADED", (const char *)std::string( tmpPID.str() ).c_str() );
+  _putenv_s( "PARAVER_LOADED", (const char*)std::string( tmpPID.str() ).c_str() );
 #else
   tmpPID << ::getpid();
-  setenv( "PARAVER_LOADED", (const char *)std::string( tmpPID.str() ).c_str(), 1 );
+  setenv( "PARAVER_LOADED", (const char*)std::string( tmpPID.str() ).c_str(), 1 );
 #endif
 }
 
@@ -429,7 +454,7 @@ wxString RunScript::getEnvironmentPath( TEnvironmentVar envVar, wxString command
     case TEnvironmentVar::PARAVER_HOME:
     case TEnvironmentVar::DIMEMAS_HOME:
 
-      if ( wxGetEnv( environmentVariable[ envVar ], &tmpEnv ) )
+      if( wxGetEnv( environmentVariable[ envVar ], &tmpEnv ) )
       {
         pathToBin = tmpEnv + wxFileName::GetPathSeparator() + wxString( wxT( "bin" ) ) + wxFileName::GetPathSeparator();
       }
@@ -447,8 +472,9 @@ wxString RunScript::getEnvironmentPath( TEnvironmentVar envVar, wxString command
 /*!
  * Control creation for RunScript
  */
-void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
-{    
+void RunScript::CreateControls( std::vector< bool > whichAcceptableApps )
+{
+  // clang-format off
 ////@begin RunScript content construction
   RunScript* itemDialog1 = this;
 
@@ -980,6 +1006,44 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   checkMessAdditionalPlots->SetValue(false);
   itemBoxSizer6->Add(checkMessAdditionalPlots, 12, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+  carmSection = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(carmSection, 0, wxGROW|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
+  carmSection->Add(itemBoxSizer10, 0, wxGROW|wxALL, 0);
+
+  wxStaticText* itemStaticText11 = new wxStaticText( itemDialog1, wxID_STATIC, _("Min.Burst Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(itemStaticText11, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  textCtrlCarmMinBurstDuration = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CARM_MIN_BURST_DURATION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(textCtrlCarmMinBurstDuration, 5, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxStaticText* itemStaticText1 = new wxStaticText( itemDialog1, wxID_STATIC, _("us"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(itemStaticText1, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  itemBoxSizer10->Add(5, 5, 6, wxGROW|wxALL, 0);
+
+  wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
+  carmSection->Add(itemBoxSizer11, 1, wxGROW|wxALL, 0);
+
+  itemBoxSizer11->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer11->Add(itemBoxSizer13, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  checkCarmUseWindowColors = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_WINDOW_COLORS, _("Use window colors"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCarmUseWindowColors->SetValue(true);
+  itemBoxSizer13->Add(checkCarmUseWindowColors, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 3);
+
+  checkCarmUseSemanticWindow = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW, _("Use semantic window"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCarmUseSemanticWindow->SetValue(true);
+  itemBoxSizer13->Add(checkCarmUseSemanticWindow, 0, wxALIGN_CENTER_VERTICAL|wxALL, 3);
+
+  checkCarmAccumulateValues = new wxCheckBox( itemDialog1, ID_CHECKBOX_CARM_ACCUMULATE_VALUES, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCarmAccumulateValues->SetValue(false);
+  checkCarmAccumulateValues->Enable(false);
+  itemBoxSizer13->Add(checkCarmAccumulateValues, 0, wxALIGN_CENTER_VERTICAL|wxALL, 3);
+
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
 
@@ -997,7 +1061,9 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   itemBoxSizer128->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer131 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer131, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer2->Add(itemBoxSizer131, 0, wxGROW|wxLEFT|wxRIGHT, 5);
+
+  itemBoxSizer131->Add(5, 5, 4, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
@@ -1018,6 +1084,14 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
   itemBoxSizer131->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
+  itemBoxSizer131->Add(5, 5, 4, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  buttonCarmSync = new wxButton( itemDialog1, ID_BUTTON_CARM_SYNC, _("Time Sync"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    buttonCarmSync->SetToolTip(_("Writes file paraver_sync.csv containing window time unit and window begin/end times. This file is written in the carm subdir that is placed under source trace path."));
+  buttonCarmSync->Show(false);
+  itemBoxSizer131->Add(buttonCarmSync, 0, wxGROW|wxALL, 5);
+
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
@@ -1035,25 +1109,35 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   itemBoxSizer138->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
+  // clang-format on
+
   listboxRunLog->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
 
-  auto addChoiceApps = [&]( std::function< bool( long int ) > appFunc )
+  auto addChoiceApps = [ & ]( std::function< bool( long int ) > appFunc )
   {
-    for ( long int i = static_cast<long int>( TExternalAppID::DIMEMAS ); i < static_cast<long int>( TExternalAppID::USER_COMMAND ); ++i )
+    for( long int i = static_cast< long int >( TExternalAppID::DIMEMAS ); i < static_cast< long int >( TExternalAppID::USER_COMMAND ); ++i )
     {
-      if ( appIsFound[ i ] = appFunc( i ) )
+      if( appIsFound[ i ] = appFunc( i ) )
       {
-        choiceApplication->Append( ExternalApps::getApplicationLabel( TExternalAppID( i ) ), (void *)i );
+        choiceApplication->Append( ExternalApps::getApplicationLabel( TExternalAppID( i ) ), (void*)i );
       }
     }
-    choiceApplication->Append( ExternalApps::getApplicationLabel( TExternalAppID::USER_COMMAND ), (void *)TExternalAppID::USER_COMMAND );
-    appIsFound[ static_cast<int>( TExternalAppID::USER_COMMAND ) ] = true;
+    choiceApplication->Append( ExternalApps::getApplicationLabel( TExternalAppID::USER_COMMAND ), (void*)TExternalAppID::USER_COMMAND );
+    appIsFound[ static_cast< int >( TExternalAppID::USER_COMMAND ) ] = true;
   };
 
   if( whichAcceptableApps.empty() )
-    addChoiceApps( [&]( long int i ) { return ExternalApps::existCommand( TExternalAppID( i ) ); } );
+    addChoiceApps(
+      [ & ]( long int i )
+      {
+        return ExternalApps::existCommand( TExternalAppID( i ) );
+      } );
   else
-    addChoiceApps( [&]( long int i ) { return whichAcceptableApps[ i ]; } );
+    addChoiceApps(
+      [ & ]( long int i )
+      {
+        return whichAcceptableApps[ i ];
+      } );
 
   // Trace browser
   fileBrowserButtonTrace->SetTextBox( textCtrlTrace );
@@ -1062,11 +1146,11 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   fileBrowserButtonTrace->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonTrace->Enable();
 
-  fileBrowserButtonDimemasCFG->SetTextBox( textCtrlDimemasCFG ); 
+  fileBrowserButtonDimemasCFG->SetTextBox( textCtrlDimemasCFG );
   fileBrowserButtonDimemasCFG->SetDialogMessage( _( "Load Dimemas Configuration" ) );
   tmpWildCard = wxT( "Dimemas configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" );
   fileBrowserButtonDimemasCFG->SetFileDialogWildcard( tmpWildCard );
-  fileBrowserButtonDimemasCFG->Enable(); 
+  fileBrowserButtonDimemasCFG->Enable();
 
   fileBrowserButtonClusteringXML->SetTextBox( textCtrlClusteringXML );
   fileBrowserButtonClusteringXML->SetDialogMessage( _( "Load Clustering Configuration" ) );
@@ -1080,6 +1164,13 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   fileBrowserButtonMessCFG->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonMessCFG->Enable();
 
+  if ( whichAcceptableApps.empty() )
+  {
+    checkCarmUseWindowColors->Disable();
+    checkCarmUseSemanticWindow->Disable();
+    checkCarmAccumulateValues->Disable();
+  }
+
   // Filter forbidden chars
   wxArrayString forbidden;
   forbidden.Add( _( "-" ) );
@@ -1091,12 +1182,13 @@ void RunScript::CreateControls( std::vector<bool> whichAcceptableApps )
   clusteringTextBoxRefinementEpsilonMin->SetValidator( validator );
   clusteringTextBoxRefinementEpsilonMax->SetValidator( validator );
   clusteringTextBoxNumberOfSamples->SetValidator( validator );
+  textCtrlCarmMinBurstDuration->SetValidator( validator );
 
   choiceApplication->Select( 0 );
 
   adaptWindowToApplicationSelection();
 
-  if ( !clusteringXML.IsEmpty() )
+  if( !clusteringXML.IsEmpty() )
   {
     fileBrowserButtonClusteringXML->SetPath( clusteringXML );
   }
@@ -1119,6 +1211,7 @@ bool RunScript::ShowToolTips()
  */
 wxBitmap RunScript::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin RunScript bitmap retrieval
   wxUnusedVar(name);
@@ -1129,6 +1222,7 @@ wxBitmap RunScript::GetBitmapResource( const wxString& name )
   }
   return wxNullBitmap;
 ////@end RunScript bitmap retrieval
+  // clang-format on
 }
 
 
@@ -1137,15 +1231,17 @@ wxBitmap RunScript::GetBitmapResource( const wxString& name )
  */
 wxIcon RunScript::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin RunScript icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end RunScript icon retrieval
+  // clang-format on
 }
 
 
-wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExternalAppID selectedApp )
+wxString RunScript::GetCommand( wxString& command, wxString& parameters, TExternalAppID selectedApp )
 {
   wxFileName tmpFilename;
   wxString tmpPath;
@@ -1158,15 +1254,15 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
   command.Clear();
   parameters.Clear();
 
-  switch ( selectedApp )
+  switch( selectedApp )
   {
     case TExternalAppID::DIMEMAS:
       command = ExternalApps::getApplicationBin( TExternalAppID::DIMEMAS );
 
-      parameters = doubleQuote( fileBrowserButtonTrace->GetPath() ); // Source trace
+      parameters = doubleQuote( fileBrowserButtonTrace->GetPath() );                                // Source trace
       parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonDimemasCFG->GetPath() ); // Dimemas cfg
-      parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlOutputTrace->GetValue() ); // Final trace
-      if ( checkBoxReuseDimemasTrace->IsChecked() )
+      parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlOutputTrace->GetValue() );        // Final trace
+      if( checkBoxReuseDimemasTrace->IsChecked() )
       {
         parameters += wxString( wxT( " 1" ) );
       }
@@ -1175,19 +1271,19 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         parameters += wxString( wxT( " 0" ) );
       }
 
-      if ( !checkBoxDimemasVerbose->IsChecked() )
+      if( !checkBoxDimemasVerbose->IsChecked() )
       {
         parameters += wxString( wxT( " -t" ) );
       }
 
-      if ( checkBoxDontTranslateIdleStates->IsChecked() )
+      if( checkBoxDontTranslateIdleStates->IsChecked() )
       {
         parameters += wxString( wxT( " -n" ) );
       }
 
       tmpValue.Clear();
       tmpValue = textCtrlDimemasBandwidth->GetValue();
-      if ( !tmpValue.IsEmpty() )
+      if( !tmpValue.IsEmpty() )
       {
         parameters += wxString( wxT( " --bw" ) );
         parameters += wxString( wxT( " " ) ) + tmpValue;
@@ -1195,22 +1291,22 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       tmpValue.Clear();
       tmpValue = textCtrlDimemasLatency->GetValue();
-      if ( !tmpValue.IsEmpty() )
+      if( !tmpValue.IsEmpty() )
       {
         parameters += wxString( wxT( " --lat" ) );
         parameters += wxString( wxT( " " ) ) + tmpValue;
       }
 
-      if ( !radioButtonDimemasDefaultTasksMapping->GetValue() ) // default and common
+      if( !radioButtonDimemasDefaultTasksMapping->GetValue() ) // default and common
       {
-        if ( radioButtonDimemasTasksPerNode->GetValue() )
+        if( radioButtonDimemasTasksPerNode->GetValue() )
         {
           parameters += wxString( wxT( " --ppn" ) );
           tmpValue.Clear();
           tmpValue << spinCtrlDimemasTasksPerNode->GetValue();
           parameters += wxString( wxT( " " ) ) + tmpValue;
         }
-        else if ( radioButtonDimemasFillNodes->GetValue() )
+        else if( radioButtonDimemasFillNodes->GetValue() )
         {
           parameters += wxString( wxT( " --fill" ) );
         }
@@ -1222,7 +1318,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       parameters += wxString( wxT( " " ) ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
 
-      if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
+      if( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ) )
       {
         helpOption = true;
       }
@@ -1231,44 +1327,43 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
     case TExternalAppID::DIMEMAS_GUI:
       command = ExternalApps::getApplicationBin( TExternalAppID::DIMEMAS_GUI );
-      if ( !fileBrowserButtonDimemasCFG->GetPath().IsEmpty() )
+      if( !fileBrowserButtonDimemasCFG->GetPath().IsEmpty() )
         parameters = doubleQuote( fileBrowserButtonDimemasCFG->GetPath() );
 
       break;
 
     case TExternalAppID::PRVSTATS:
 
-      if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
+      if( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ) )
       {
-        command  = ExternalApps::getApplicationBin( TExternalAppID::PRVSTATS );
+        command    = ExternalApps::getApplicationBin( TExternalAppID::PRVSTATS );
         parameters = textCtrlDefaultParameters->GetValue();
         helpOption = true;
       }
       else
       {
         // TODO: DEFAULT VALUES?
-        command  = ExternalApps::getApplicationBin( TExternalAppID::PRVSTATS );
+        command = ExternalApps::getApplicationBin( TExternalAppID::PRVSTATS );
 
-        parameters = doubleQuote( fileBrowserButtonTrace->GetPath() ); // Source trace
+        parameters = doubleQuote( fileBrowserButtonTrace->GetPath() );                                // Source trace
         parameters += wxString( wxT( " -o " ) ) + doubleQuote( statsTextCtrlOutputName->GetValue() ); // Final name
-        if ( statsCheckBoxShowBurstsHistogram->IsChecked() )
+        if( statsCheckBoxShowBurstsHistogram->IsChecked() )
         {
           parameters += wxString( wxT( " -bursts_histo" ) );
         }
-        if ( statsCheckBoxShowCommsHistogram->IsChecked() )
+        if( statsCheckBoxShowCommsHistogram->IsChecked() )
         {
           parameters += wxString( wxT( " -comms_histo" ) );
         }
-        if ( statsCheckBoxOnlyDatFile->IsChecked() )
+        if( statsCheckBoxOnlyDatFile->IsChecked() )
         {
           parameters += wxString( wxT( " -only_dat_file" ) );
         }
-        if ( statsCheckBoxExclusiveTimes->IsChecked() )
+        if( statsCheckBoxExclusiveTimes->IsChecked() )
         {
           parameters += wxString( wxT( " -exclusive_times" ) );
         }
-        parameters += wxString( wxT( " " ) ) +
-                expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
+        parameters += wxString( wxT( " " ) ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
       }
 
       break;
@@ -1277,19 +1372,17 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       command = ExternalApps::getApplicationBin( TExternalAppID::CLUSTERING );
 
       parameters = wxString( wxT( " -p" ) );
-      
-      if ( checkBoxClusteringCSVValueAsDimension->IsEnabled() && 
-           checkBoxClusteringCSVValueAsDimension->IsChecked() )
+
+      if( checkBoxClusteringCSVValueAsDimension->IsEnabled() && checkBoxClusteringCSVValueAsDimension->IsChecked() )
       {
         parameters += wxString( wxT( " -c" ) );
-        if ( checkBoxClusteringNormalize->IsEnabled() &&
-             checkBoxClusteringNormalize->IsChecked() )
+        if( checkBoxClusteringNormalize->IsEnabled() && checkBoxClusteringNormalize->IsChecked() )
         {
           parameters += wxString( wxT( "l" ) );
         }
       }
 
-      if ( checkBoxClusteringGenerateSeq->IsChecked() )
+      if( checkBoxClusteringGenerateSeq->IsChecked() )
       {
         if( clusteringRadioGenerateSeqNumbered->GetValue() )
           parameters += wxString( wxT( " -a" ) );
@@ -1298,7 +1391,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       }
 
       // -n <number_of_samples>
-      if ( checkBoxClusteringNumberOfSamples->IsChecked() )
+      if( checkBoxClusteringNumberOfSamples->IsChecked() )
       {
         parameters += wxString( wxT( " -m " ) );
         tmpValue.Clear();
@@ -1308,7 +1401,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       parameters += wxString( wxT( " -d " ) ) + doubleQuote( fileBrowserButtonClusteringXML->GetPath() );
 
-      if ( clusteringRadioDBScan->GetValue() )
+      if( clusteringRadioDBScan->GetValue() )
       {
         parameters += wxString( wxT( " -dbscan " ) );
         parameters += clusteringTextBoxDBScanEpsilon->GetValue() + wxString( wxT( "," ) );
@@ -1316,17 +1409,17 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         tmpValue << clusteringTextBoxDBScanMinPoints->GetValue();
         parameters += tmpValue;
       }
-      else if ( clusteringRadioRefinement->GetValue() )
+      else if( clusteringRadioRefinement->GetValue() )
       {
         parameters += wxString( wxT( " -ra" ) );
 
-        if ( clusteringCheckBoxRefinementPrintData->GetValue() )
+        if( clusteringCheckBoxRefinementPrintData->GetValue() )
         {
           parameters += wxString( wxT( "p" ) );
         }
         parameters += wxString( wxT( " " ) );
 
-        if  ( clusteringCheckBoxRefinementTune->GetValue() )
+        if( clusteringCheckBoxRefinementTune->GetValue() )
         {
           tmpValue.Clear();
           tmpValue << clusteringTextBoxRefinementMinPoints->GetValue();
@@ -1345,31 +1438,30 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       parameters += wxString( wxT( " -i " ) );
 
       // !clusteringCSV.IsEmpty() ==> checkBoxClusteringUseSemanticWindow->IsEnabled()
-      if ( !clusteringCSV.IsEmpty() && 
-            checkBoxClusteringUseSemanticWindow->IsChecked() )
+      if( !clusteringCSV.IsEmpty() && checkBoxClusteringUseSemanticWindow->IsChecked() )
       {
-        parameters += doubleQuote( clusteringCSV + wxString( wxT( "," ) ) + fileBrowserButtonTrace->GetPath() ) ;
+        parameters += doubleQuote( clusteringCSV + wxString( wxT( "," ) ) + fileBrowserButtonTrace->GetPath() );
       }
       else
       {
         parameters += doubleQuote( fileBrowserButtonTrace->GetPath() );
       }
 
-      parameters += wxString( wxT(" -o ") );
+      parameters += wxString( wxT( " -o " ) );
 
-      if ( !textCtrlClusteringOutputTrace->IsEmpty() )
+      if( !textCtrlClusteringOutputTrace->IsEmpty() )
       {
-        if ( textCtrlClusteringOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
+        if( textCtrlClusteringOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
         {
           // We assume that the presence of PATH_SEP means an absolute path
-          parameters += doubleQuote( textCtrlClusteringOutputTrace->GetValue());
+          parameters += doubleQuote( textCtrlClusteringOutputTrace->GetValue() );
         }
         else
         {
           // and its absence is a relative path to the trace
           tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
-          tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
-          parameters += doubleQuote( tmpPath + textCtrlClusteringOutputTrace->GetValue());
+          tmpPath     = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
+          parameters += doubleQuote( tmpPath + textCtrlClusteringOutputTrace->GetValue() );
         }
       }
 
@@ -1379,18 +1471,18 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       command = ExternalApps::getApplicationBin( TExternalAppID::FOLDING );
 
       // Flags
-      if ( checkboxFoldingOnly->IsChecked() )
+      if( checkboxFoldingOnly->IsChecked() )
       {
         parameters += wxString( wxT( " --folding-only" ) );
       }
-      
-      if ( checkboxFoldingReuseFiles->IsChecked() )
+
+      if( checkboxFoldingReuseFiles->IsChecked() )
       {
         parameters += wxString( wxT( " --no-recompute" ) );
       }
-      
+
       // --folding-args
-      if ( comboboxFoldingModel->GetValue() != wxString( wxT("none") ) )
+      if( comboboxFoldingModel->GetValue() != wxString( wxT( "none" ) ) )
       {
         tmpFoldingArgs += doubleQuote( wxString( wxT( " -model " ) ) + comboboxFoldingModel->GetValue() );
       }
@@ -1400,9 +1492,9 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       // --folding-sep
       parameters += wxString( wxT( " --folding-sep " ) );
 
-      if ( checkboxFoldingUseSemanticValues->IsChecked() )
+      if( checkboxFoldingUseSemanticValues->IsChecked() )
       {
-        if ( !foldingCSV.IsEmpty() )
+        if( !foldingCSV.IsEmpty() )
         {
           parameters += doubleQuote( foldingCSV );
         }
@@ -1412,7 +1504,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         parameters += doubleQuote( expandVariables( textCtrlDefaultParameters->GetValue() ) ); // Event type
       }
 
-      parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
+      parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
 
       break;
 
@@ -1424,7 +1516,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       // -I/--plot-interactive: visualize interactive plot
       parameters = wxString( wxT( " -w --plot-interactive " ) );
 
-      if ( checkMessAdditionalPlots ->GetValue() ) 
+      if( checkMessAdditionalPlots->GetValue() )
       {
         parameters += wxString( wxT( " -e " ) );
       }
@@ -1433,19 +1525,19 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       parameters += doubleQuote( fileBrowserButtonTrace->GetPath() );
 
       // Output trace
-      if ( !textCtrlMessOutputTrace->IsEmpty() )
+      if( !textCtrlMessOutputTrace->IsEmpty() )
       {
-        if ( textCtrlMessOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
+        if( textCtrlMessOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
         {
           // We assume that the presence of PATH_SEP means an absolute path
-          parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlMessOutputTrace->GetValue());
+          parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlMessOutputTrace->GetValue() );
         }
         else
         {
           // and its absence is a relative path to the trace
           tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
-          tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
-          parameters += wxString( wxT( " " ) ) + doubleQuote( tmpPath + textCtrlMessOutputTrace->GetValue());
+          tmpPath     = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
+          parameters += wxString( wxT( " " ) ) + doubleQuote( tmpPath + textCtrlMessOutputTrace->GetValue() );
         }
       }
 
@@ -1454,10 +1546,36 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
+    case TExternalAppID::CARM:
+      command = ExternalApps::getApplicationBin( TExternalAppID::CARM );
+
+      parameters = wxString( wxT("") );
+
+      tmpValue.Clear();
+      tmpValue = textCtrlCarmMinBurstDuration->GetValue(); // us
+      if ( !tmpValue.IsEmpty() )
+        parameters += wxString( wxT( " --min_dur " ) ) + tmpValue;
+
+      if ( checkCarmUseWindowColors->IsChecked() && !carmLabelsCSV.IsEmpty() )
+        parameters += wxString( wxT( " --color_csv " ) );
+
+      if ( checkCarmUseSemanticWindow->IsChecked() && !carmSemanticCSV.IsEmpty() )
+      {
+        parameters += wxString( wxT( " --mask_csv " ) );
+
+        if ( checkCarmAccumulateValues->IsChecked() )
+          parameters += wxString( wxT( " -ac" ) );
+      }
+
+      parameters += wxString( wxT( " --csv " ) ) + doubleQuote( carmSemanticCSV );
+      parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
+
+      break;
+
     case TExternalAppID::USER_COMMAND:
-      
-      tmpParams = expandVariables( textCtrlDefaultParameters->GetValue() );
-      command = tmpParams.BeforeFirst( ' ' );
+
+      tmpParams  = expandVariables( textCtrlDefaultParameters->GetValue() );
+      command    = tmpParams.BeforeFirst( ' ' );
       parameters = tmpParams.AfterFirst( ' ' );
 
       break;
@@ -1470,8 +1588,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
   }
 
   fullCommand = command;
-  if ( !command.IsEmpty() && !parameters.IsEmpty() )
-  { 
+  if( !command.IsEmpty() && !parameters.IsEmpty() )
+  {
     // extend with parameters
     fullCommand += wxString( wxT( " " ) ) + parameters;
   }
@@ -1491,7 +1609,7 @@ void RunScript::ShowWarningUnreachableProgram( wxString program, TEnvironmentVar
 {
   wxString auxMessage;
 
-  if ( envVar == TEnvironmentVar::PATH && alsoPrintPath )
+  if( envVar == TEnvironmentVar::PATH && alsoPrintPath )
   {
     alsoPrintPath = false;
   }
@@ -1499,11 +1617,11 @@ void RunScript::ShowWarningUnreachableProgram( wxString program, TEnvironmentVar
   auxMessage = wxString( wxT( "Unable to find:" ) );
   auxMessage += wxString( wxT( "\n\n\t" ) ) + program + wxString( wxT( "\n\n" ) );
   auxMessage += wxString( wxT( "Please check that the program is reachable through the environment variable" ) );
-  if ( alsoPrintPath )
+  if( alsoPrintPath )
   {
-    auxMessage += wxString( wxT( " $PATH or " ) )  + environmentVariable[ envVar ];
+    auxMessage += wxString( wxT( " $PATH or " ) ) + environmentVariable[ envVar ];
   }
-  auxMessage += wxString( wxT( " $" ) )  + environmentVariable[ envVar ] + wxString( wxT( "." ) );
+  auxMessage += wxString( wxT( " $" ) ) + environmentVariable[ envVar ] + wxString( wxT( "." ) );
 
   ShowWarning( auxMessage );
 }
@@ -1516,17 +1634,17 @@ wxString RunScript::GetReachableCommand( TExternalAppID selectedApp )
   wxString pathToProgram;
 
   wxString candidateCommand = GetCommand( program, parameters, selectedApp );
-  if ( candidateCommand.IsEmpty() )
+  if( candidateCommand.IsEmpty() )
   {
-    ShowWarning( wxString( wxT( "Empty command." )) );
+    ShowWarning( wxString( wxT( "Empty command." ) ) );
   }
   else
   {
-    switch ( selectedApp )
+    switch( selectedApp )
     {
       case TExternalAppID::DIMEMAS_GUI:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::DIMEMAS_HOME );
-        if ( !pathToProgram.IsEmpty() )
+        if( !pathToProgram.IsEmpty() )
         {
           readyCommand = doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
@@ -1539,16 +1657,16 @@ wxString RunScript::GetReachableCommand( TExternalAppID selectedApp )
 
       case TExternalAppID::DIMEMAS:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
-        if ( !pathToProgram.IsEmpty() )
+        if( !pathToProgram.IsEmpty() )
         {
-          readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
+          readyCommand = doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
           pathToProgram = getEnvironmentPath( TEnvironmentVar::PARAVER_HOME );
-          if ( !pathToProgram.IsEmpty() )
+          if( !pathToProgram.IsEmpty() )
           {
-            readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
+            readyCommand = doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
           }
           else
           {
@@ -1560,16 +1678,16 @@ wxString RunScript::GetReachableCommand( TExternalAppID selectedApp )
 
       case TExternalAppID::PRVSTATS:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
-        if ( !pathToProgram.IsEmpty() )
+        if( !pathToProgram.IsEmpty() )
         {
-          readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
+          readyCommand = doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
           pathToProgram = getEnvironmentPath( TEnvironmentVar::PARAVER_HOME );
-          if ( !pathToProgram.IsEmpty() )
+          if( !pathToProgram.IsEmpty() )
           {
-            readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
+            readyCommand = doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
           }
           else
           {
@@ -1579,12 +1697,13 @@ wxString RunScript::GetReachableCommand( TExternalAppID selectedApp )
 
         break;
 
+      case TExternalAppID::CARM:
       case TExternalAppID::CLUSTERING:
       case TExternalAppID::FOLDING:
       case TExternalAppID::USER_COMMAND:
       default:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
-        if ( !pathToProgram.IsEmpty() )
+        if( !pathToProgram.IsEmpty() )
         {
           readyCommand = doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
@@ -1611,22 +1730,22 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   bool ready = true;
 
   wxString readyCommand = GetReachableCommand( getSelectedApp() );
-  if ( !readyCommand.IsEmpty() )
+  if( !readyCommand.IsEmpty() )
   {
-    if ( getSelectedApp() == TExternalAppID::CLUSTERING )
+    if( getSelectedApp() == TExternalAppID::CLUSTERING )
     {
       // Check the output trace path
-      if ( !textCtrlClusteringOutputTrace->IsEmpty() )
+      if( !textCtrlClusteringOutputTrace->IsEmpty() )
       {
-        if ( textCtrlClusteringOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
+        if( textCtrlClusteringOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
         {
           wxString tmpDestinyDir = wxFileName( textCtrlClusteringOutputTrace->GetValue() ).GetPath( wxPATH_GET_SEPARATOR );
-          if ( ! wxFileName::DirExists( tmpDestinyDir ) )
+          if( !wxFileName::DirExists( tmpDestinyDir ) )
           {
             ShowWarning( wxString( wxT( "Output Trace: Directory doesn't exists." ) ) );
             ready = false;
           }
-          else if ( ! wxFileName::IsDirWritable( tmpDestinyDir ) )
+          else if( !wxFileName::IsDirWritable( tmpDestinyDir ) )
           {
             ShowWarning( wxString( wxT( "Output Trace: No write access to directory." ) ) );
             ready = false;
@@ -1634,17 +1753,17 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
         }
       }
 
-      if ( ready )
+      if( ready )
       {
         // PRECOND: not empty
         clusteringXML = fileBrowserButtonClusteringXML->GetPath();
       }
     }
 
-    if ( ready )
+    if( ready )
     {
-      myProcess = new RunningProcess( this, readyCommand );
-      myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, myProcess );
+      myProcess    = new RunningProcess( this, readyCommand );
+      myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER, myProcess );
 
       if( !myProcessPid )
       {
@@ -1672,9 +1791,9 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
   bool active = ( myProcess == nullptr );
 
   TExternalAppID selectedApp = getSelectedApp();
-  active &= appIsFound[ static_cast<int>( selectedApp ) ];
+  active &= appIsFound[ static_cast< int >( selectedApp ) ];
 
-  switch ( selectedApp )
+  switch( selectedApp )
   {
     case TExternalAppID::DIMEMAS:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
@@ -1685,7 +1804,7 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
     case TExternalAppID::PRVSTATS:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       break;
-      
+
     case TExternalAppID::CLUSTERING:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       active &= !fileBrowserButtonClusteringXML->GetPath().IsEmpty();
@@ -1700,6 +1819,10 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       active &= !fileBrowserButtonMessCFG->GetPath().IsEmpty();
       active &= !textCtrlMessOutputTrace->IsEmpty();
+      break;
+
+    case TExternalAppID::CARM:
+      active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       break;
 
     case TExternalAppID::USER_COMMAND:
@@ -1718,7 +1841,7 @@ void RunScript::OnProcessTerminated( int pid )
 {
   myProcessPid = 0;
 
-  if ( pid != 0 && pid == pidDimemasGUI )
+  if( pid != 0 && pid == pidDimemasGUI )
     pidDimemasGUI = 0;
 
   if( progressBar != nullptr )
@@ -1747,22 +1870,22 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
       progressBar = new wxProgressDialog( "Running", ExternalApps::getApplicationLabel( selectedApp ), 100, this );
 
     progressBar->Show();
-    progressBar->Update( (int) newValue );
+    progressBar->Update( (int)newValue );
 
     return;
   }
 
-  if ( !helpOption || formatOutput )
+  if( !helpOption || formatOutput )
   {
     msg.Replace( "<", "&lt;" );
     msg.Replace( ">", "&gt;" );
     msg = insertLog( msg, extensions );
   }
-  
+
   if( formatOutput )
-    listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
+    listboxRunLog->AppendToPage( wxT( "<TT>" ) + msg + wxT( "</TT><BR>" ) );
   else
-    listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT>") );
+    listboxRunLog->AppendToPage( wxT( "<TT>" ) + msg + wxT( "</TT>" ) );
 
   int x, y;
   listboxRunLog->GetVirtualSize( &x, &y );
@@ -1776,7 +1899,7 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
  */
 void RunScript::OnIdle( wxIdleEvent& event )
 {
-  if ( myProcess != nullptr && myProcess->HasInput() )
+  if( myProcess != nullptr && myProcess->HasInput() )
   {
     event.RequestMore();
   }
@@ -1806,20 +1929,22 @@ void RunScript::adaptWindowToApplicationSelection()
   textCtrlDefaultParameters->Clear();
   labelTextCtrlDefaultParameters->SetToolTip( toolTip );
 
-  switch ( currentApp )
+  switch( currentApp )
   {
     case TExternalAppID::DIMEMAS:
       toolTip = wxString( wxT( "Extra parameters passed to the script\n"
                                "%TRACE refers to input trace" ) );
 
-      labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
+      labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) );
       labelTextCtrlDefaultParameters->SetToolTip( toolTip );
-                                                  
-      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ) );
       textCtrlDefaultParameters->SetToolTip( toolTip );
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
 
     case TExternalAppID::PRVSTATS:
@@ -1827,31 +1952,34 @@ void RunScript::adaptWindowToApplicationSelection()
                                "-events_histo[:type1[-type2],...]\n"
                                "-thread_calls[:type1[-type2],...]\n" ) );
 
-      labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
+      labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) );
       labelTextCtrlDefaultParameters->SetToolTip( toolTip );
 
-      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ) );
       textCtrlDefaultParameters->SetToolTip( toolTip );
 
       statsTextCtrlOutputName->SetValue( fileBrowserButtonTrace->GetPath() );
-                                                  
+
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
 
     case TExternalAppID::CLUSTERING:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
+      buttonCarmSync->Hide();
 
-      if ( textCtrlClusteringOutputTrace->IsEmpty() )
+      if( textCtrlClusteringOutputTrace->IsEmpty() )
       {
-        wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
-        wxString tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
+        wxFileName tmpFilename      = wxFileName( fileBrowserButtonTrace->GetPath() );
+        wxString tmpPath            = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
         wxString tmpNameWOExtension = tmpFilename.GetName();
-        textCtrlClusteringOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".clustered.prv" )));
+        textCtrlClusteringOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".clustered.prv" ) ) );
       }
 
-      if ( clusteringCSV.IsEmpty() )
+      if( clusteringCSV.IsEmpty() )
       {
         checkBoxClusteringUseSemanticWindow->Enable( false );
 
@@ -1872,26 +2000,39 @@ void RunScript::adaptWindowToApplicationSelection()
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Event type/name" ) );
       labelTextCtrlDefaultParameters->SetToolTip( toolTip );
 
-      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ) );
       textCtrlDefaultParameters->SetToolTip( toolTip );
       textCtrlDefaultParameters->SetValue( wxString( wxT( "Cluster ID" ) ) );
-      
+
       checkboxFoldingUseSemanticValues->Enable( !foldingCSV.empty() );
-      comboboxFoldingModel->SetStringSelection(_("intel-sandybridge"));
+      comboboxFoldingModel->SetStringSelection( _( "intel-sandybridge" ) );
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
 
     case TExternalAppID::MESS:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
+      buttonCarmSync->Hide();
 
-      if ( textCtrlMessOutputTrace->IsEmpty() && !textCtrlTrace->IsEmpty() )
+      if( textCtrlMessOutputTrace->IsEmpty() && !textCtrlTrace->IsEmpty() )
       {
         wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
-        textCtrlMessOutputTrace->SetValue( tmpFilename.GetName() + wxString( wxT( ".mess.prv" )));
+        textCtrlMessOutputTrace->SetValue( tmpFilename.GetName() + wxString( wxT( ".mess.prv" ) ) );
       }
+      break;
+
+    case TExternalAppID::CARM:
+      labelTextCtrlDefaultParameters->Hide();
+      textCtrlDefaultParameters->Hide();
+      buttonCarmSync->Show();
+
+      checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
+                                         checkCarmUseSemanticWindow->IsChecked() );
+
       break;
 
     case TExternalAppID::USER_COMMAND:
@@ -1902,11 +2043,13 @@ void RunScript::adaptWindowToApplicationSelection()
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Command" ) );
       labelTextCtrlDefaultParameters->SetToolTip( toolTip );
 
-      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ) );
       textCtrlDefaultParameters->SetToolTip( toolTip );
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
+      buttonCarmSync->Hide();
+
       break;
   }
 
@@ -1916,6 +2059,7 @@ void RunScript::adaptWindowToApplicationSelection()
   adaptClusteringAlgorithmParameters();
   foldingSection->Show( currentApp == TExternalAppID::FOLDING );
   messSection->Show( currentApp == TExternalAppID::MESS );
+  carmSection->Show( currentApp == TExternalAppID::CARM );
 
   Layout();
 }
@@ -1940,20 +2084,19 @@ wxString RunScript::expandVariables( wxString command )
 
 struct gthan
 {
-  bool operator()( const std::pair< int, wxString > &a, const std::pair< int, wxString > &b )
-  {
-    return ( a.first > b.first ) ||
-           ( a.first == b.first && a.second.Len() > b.second.Len() );
-  }
+    bool operator()( const std::pair< int, wxString >& a, const std::pair< int, wxString >& b )
+    {
+      return ( a.first > b.first ) || ( a.first == b.first && a.second.Len() > b.second.Len() );
+    }
 } greaterThan;
 
 
 bool RunScript::readFoldingTag( wxString rawLine )
 {
   int initTag = rawLine.Find( tagFoldingOutputDirectory );
-  if ( initTag != wxNOT_FOUND )
+  if( initTag != wxNOT_FOUND )
   {
-    int endLine = rawLine.Len();
+    int endLine  = rawLine.Len();
     int initPath = initTag + tagFoldingOutputDirectory.Len();
 
     foldingOutputDirectory = rawLine.Mid( initPath, endLine - initPath );
@@ -1974,38 +2117,31 @@ wxString RunScript::rawFormat( wxString rawLine )
 
 void RunScript::InitOutputLinks()
 {
-  auto makeLinkComponents = [this]( const wxString& candidateName,
-                                    const wxString& selectedTracePath,
-                                    wxString& linkURL,
-                                    wxString& linkName )
+  auto makeLinkComponents = [ this ]( const wxString& candidateName, const wxString& selectedTracePath, wxString& linkURL, wxString& linkName )
   {
     wxFileName candidateFile = wxFileName( candidateName );
-    bool candidateFound = candidateFile.Normalize() && candidateFile.FileExists();
-    if ( !candidateFound )
+    bool candidateFound      = candidateFile.Normalize() && candidateFile.FileExists();
+    if( !candidateFound )
     {
-      candidateFile = wxFileName( candidateName );
-      candidateFound = candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) &&
-                       candidateFile.FileExists();
+      candidateFile  = wxFileName( candidateName );
+      candidateFound = candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) && candidateFile.FileExists();
     }
 
-    if ( candidateFound && 
-         CFGLoader::isDimemasCFGFile( std::string( candidateFile.GetFullPath() ) ) )
+    if( candidateFound && CFGLoader::isDimemasCFGFile( std::string( candidateFile.GetFullPath() ) ) )
       candidateFound = false;
 
     linkName = candidateName;
-    linkURL = candidateFile.GetFullPath();
+    linkURL  = candidateFile.GetFullPath();
 
     return candidateFound;
   };
 
-  auto makeLinkComponentsClustering = [this]( const wxString& candidateName,
-                                              const wxString& selectedTracePath,
-                                              wxString& linkURL,
-                                              wxString& linkName )
+  auto makeLinkComponentsClustering =
+    [ this ]( const wxString& candidateName, const wxString& selectedTracePath, wxString& linkURL, wxString& linkName )
   {
     wxString tmpSelectedTracePath( selectedTracePath );
 
-    if ( !textCtrlClusteringOutputTrace->IsEmpty() )
+    if( !textCtrlClusteringOutputTrace->IsEmpty() )
     {
       wxFileName clusteringPath( textCtrlClusteringOutputTrace->GetValue() );
 
@@ -2020,21 +2156,18 @@ void RunScript::InitOutputLinks()
 
     if( candidateName.Right( 4 ) == ".prv" )
     {
-      linkURL = linkURL + extensions[ 10 ];
+      linkURL  = linkURL + extensions[ 10 ];
       linkName = linkName + " (analyze ClusterIds)";
     }
-    
+
     return true;
   };
 
-  auto makeLinkComponentsFolding = [this]( const wxString& candidateName,
-                                           const wxString& selectedTracePath,
-                                           wxString& linkURL,
-                                           wxString& linkName )
+  auto makeLinkComponentsFolding = [ this ]( const wxString& candidateName, const wxString& selectedTracePath, wxString& linkURL, wxString& linkName )
   {
     wxFileName candidateFile = wxFileName( candidateName );
 
-    if ( !candidateFile.MakeAbsolute( foldingOutputDirectory ) )
+    if( !candidateFile.MakeAbsolute( foldingOutputDirectory ) )
       return defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
 
     return defaultLinkMaker( candidateFile.GetFullPath(), selectedTracePath, linkURL, linkName );
@@ -2042,43 +2175,33 @@ void RunScript::InitOutputLinks()
 
   defaultLinkMaker = makeLinkComponents;
 
-  applicationLinkMaker[ TExternalAppID::DIMEMAS ]  = makeLinkComponents;
-  applicationLinkMaker[ TExternalAppID::PRVSTATS ] = makeLinkComponents;
-  applicationLinkMaker[ TExternalAppID::CLUSTERING ]       = makeLinkComponentsClustering;
-  applicationLinkMaker[ TExternalAppID::FOLDING ]          = makeLinkComponentsFolding;
-  applicationLinkMaker[ TExternalAppID::MESS ]           = makeLinkComponents;
-  applicationLinkMaker[ TExternalAppID::USER_COMMAND ]     = makeLinkComponents;
-  
+  applicationLinkMaker[ TExternalAppID::DIMEMAS ]      = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::PRVSTATS ]     = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::CLUSTERING ]   = makeLinkComponentsClustering;
+  applicationLinkMaker[ TExternalAppID::FOLDING ]      = makeLinkComponentsFolding;
+  applicationLinkMaker[ TExternalAppID::MESS ]         = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::CARM ]         = makeLinkComponents;
+  applicationLinkMaker[ TExternalAppID::USER_COMMAND ] = makeLinkComponents;
+
   // These applications aren't executed by "Run" button, so will not generate links
   // applicationLinkMaker[ DIMEMAS_GUI ]     = makeLinkComponents;
   // applicationLinkMaker[ STATS ]           = makeLinkComponents;
 
-  auto skipLink = [this]( const wxString& candidateName,
-                          wxString& linkURL,
-                          wxString& linkName )
+  auto skipLink = [ this ]( const wxString& candidateName, wxString& linkURL, wxString& linkName )
   {
     return false;
   };
 
-  auto httpLink = [this]( const wxString& candidateName,
-                          wxString& linkURL,
-                          wxString& linkName )
+  auto httpLink = [ this ]( const wxString& candidateName, wxString& linkURL, wxString& linkName )
   {
     linkURL = linkName = candidateName;
     return true;
   };
 
-  outputLinks =
-  {
-    { "http",     TTagPosition::PREFIX, httpLink },
-    { ".prv",     TTagPosition::SUFFIX, skipLink },
-    { ".prv.gz",  TTagPosition::SUFFIX, skipLink },
-    { ".cfg",     TTagPosition::SUFFIX, skipLink },
-    { ".xml",     TTagPosition::SUFFIX, skipLink },
-    { ".csv",     TTagPosition::SUFFIX, skipLink },
-    { ".dat",     TTagPosition::SUFFIX, skipLink },
-    { ".gnuplot", TTagPosition::SUFFIX, skipLink },
-    { ".pdf",     TTagPosition::SUFFIX, skipLink },
+  outputLinks = {
+    { "http", TTagPosition::PREFIX, httpLink }, { ".prv", TTagPosition::SUFFIX, skipLink },     { ".prv.gz", TTagPosition::SUFFIX, skipLink },
+    { ".cfg", TTagPosition::SUFFIX, skipLink }, { ".xml", TTagPosition::SUFFIX, skipLink },     { ".csv", TTagPosition::SUFFIX, skipLink },
+    { ".dat", TTagPosition::SUFFIX, skipLink }, { ".gnuplot", TTagPosition::SUFFIX, skipLink }, { ".pdf", TTagPosition::SUFFIX, skipLink }
   };
 }
 
@@ -2093,29 +2216,28 @@ wxString RunScript::insertLinks( wxString rawLine )
   {
     candidateLink = rawLineTokens.GetNextToken();
 
-    auto f = [&candidateLink]( const auto& el )
-      {
-        if( el.position == TTagPosition::PREFIX )
-          return candidateLink.Left( el.tag.length() ) == el.tag;
-        else if( el.position == TTagPosition::SUFFIX )
-          return candidateLink.Right( el.tag.length() ) == el.tag;
+    auto f = [ &candidateLink ]( const auto& el )
+    {
+      if( el.position == TTagPosition::PREFIX )
+        return candidateLink.Left( el.tag.length() ) == el.tag;
+      else if( el.position == TTagPosition::SUFFIX )
+        return candidateLink.Right( el.tag.length() ) == el.tag;
 
-        return false;
-      };
+      return false;
+    };
     auto itOutputLink = std::find_if( outputLinks.begin(), outputLinks.end(), f );
 
     wxString linkURL;
     wxString linkLabel;
     wxString selectedTracePath = wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
-    if( itOutputLink == outputLinks.end() ||
-        !( itOutputLink->makeLink( candidateLink, linkURL, linkLabel ) ||
-           applicationLinkMaker[ currentApp ]( candidateLink, selectedTracePath, linkURL, linkLabel ) ) )
+    if( itOutputLink == outputLinks.end() || !( itOutputLink->makeLink( candidateLink, linkURL, linkLabel ) ||
+                                                applicationLinkMaker[ currentApp ]( candidateLink, selectedTracePath, linkURL, linkLabel ) ) )
     {
       resultString.Append( candidateLink + " " );
       continue;
     }
 
-    resultString.Append( "<A HREF=\"" + linkURL + "\">" + linkLabel +  "</A> " );
+    resultString.Append( "<A HREF=\"" + linkURL + "\">" + linkLabel + "</A> " );
   }
 
   return resultString;
@@ -2123,20 +2245,20 @@ wxString RunScript::insertLinks( wxString rawLine )
 
 
 // Check for presence of "Iteration_" && "found @ [" or "Iteration_" && "start @"
-bool RunScript::timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  &tagPosition )
+bool RunScript::timeMarkTagFound( wxString rawLine, std::pair< int, wxString >& tagPosition )
 {
   bool tagFound = false;
 
-  if ( rawLine.Find( iterationTag ) != wxNOT_FOUND )
+  if( rawLine.Find( iterationTag ) != wxNOT_FOUND )
   {
     for( size_t i = 0; i < timeMarkTags.Count(); ++i )
     {
       tagPosition.first = rawLine.Find( timeMarkTags[ i ] );
 
-      if ( tagPosition.first != wxNOT_FOUND )
+      if( tagPosition.first != wxNOT_FOUND )
       {
         tagPosition.second = timeMarkTags[ i ];
-        tagFound = true;
+        tagFound           = true;
         break;
       }
     }
@@ -2146,7 +2268,7 @@ bool RunScript::timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  
 }
 
 
-wxString RunScript::insertTimeMarkLink( wxString rawLine,  std::pair< int, wxString > tagPosition )
+wxString RunScript::insertTimeMarkLink( wxString rawLine, std::pair< int, wxString > tagPosition )
 {
   wxString trashHead;
   wxString trashTail;
@@ -2154,44 +2276,43 @@ wxString RunScript::insertTimeMarkLink( wxString rawLine,  std::pair< int, wxStr
   wxString currentLink;
   int endLine = rawLine.Len();
 
-  if ( tagPosition.second == punctualTimeTag )
+  if( tagPosition.second == punctualTimeTag )
   {
     endLine = rawLine.Len();
 
     int tmpInit = tagPosition.first + punctualTimeTag.Len();
-    subStr = rawLine.Mid( tmpInit, endLine - tmpInit );
+    subStr      = rawLine.Mid( tmpInit, endLine - tmpInit );
 
-    currentLink = wxT("<A HREF=\"") + subStr + extensions[ 8 ] + wxT("\">") + subStr + wxT("</A>");
+    currentLink = wxT( "<A HREF=\"" ) + subStr + extensions[ 8 ] + wxT( "\">" ) + subStr + wxT( "</A>" );
 
     trashHead = rawLine.Mid( 0, tmpInit );
-    rawLine = rawFormat( trashHead ) + currentLink;
+    rawLine   = rawFormat( trashHead ) + currentLink;
   }
-  else if ( tagPosition.second == rangeTimeTag )
+  else if( tagPosition.second == rangeTimeTag )
   {
     endLine = rawLine.Len();
-    
-    int tmpBeginRangePos = rawLine.Find( wxString( wxT("[") ) );
-    if ( tmpBeginRangePos == wxNOT_FOUND )
+
+    int tmpBeginRangePos = rawLine.Find( wxString( wxT( "[" ) ) );
+    if( tmpBeginRangePos == wxNOT_FOUND )
     {
-      tmpBeginRangePos = rawLine.Find( wxString( wxT("(") ) );
-    }
-    
-    int tmpEndRangePos = rawLine.Find( wxString( wxT("]") ) );
-    if ( tmpEndRangePos == wxNOT_FOUND )
-    {
-      tmpEndRangePos = rawLine.Find( wxString( wxT(")") ) );
+      tmpBeginRangePos = rawLine.Find( wxString( wxT( "(" ) ) );
     }
 
-    if ( tmpBeginRangePos != wxNOT_FOUND && tmpEndRangePos != wxNOT_FOUND )
+    int tmpEndRangePos = rawLine.Find( wxString( wxT( "]" ) ) );
+    if( tmpEndRangePos == wxNOT_FOUND )
     {
+      tmpEndRangePos = rawLine.Find( wxString( wxT( ")" ) ) );
+    }
 
+    if( tmpBeginRangePos != wxNOT_FOUND && tmpEndRangePos != wxNOT_FOUND )
+    {
       int tmpInit = tmpBeginRangePos + 1;
-      subStr = rawLine.Mid( tmpInit, endLine - tmpInit - 1  );
-      currentLink = wxT("<A HREF=\"") + subStr + extensions[ 9 ] + wxT("\">") + subStr + wxT("</A>");
+      subStr      = rawLine.Mid( tmpInit, endLine - tmpInit - 1 );
+      currentLink = wxT( "<A HREF=\"" ) + subStr + extensions[ 9 ] + wxT( "\">" ) + subStr + wxT( "</A>" );
 
       trashHead = rawLine.Mid( 0, tmpInit );
       trashTail = rawLine.Mid( tmpEndRangePos, endLine - tmpEndRangePos );
-      rawLine = rawFormat( trashHead ) + currentLink + rawFormat( trashTail ) ;
+      rawLine   = rawFormat( trashHead ) + currentLink + rawFormat( trashTail );
     }
     else
       rawLine = rawFormat( rawLine );
@@ -2208,13 +2329,13 @@ wxString RunScript::insertTimeMarkLink( wxString rawLine,  std::pair< int, wxStr
 wxString RunScript::insertLog( wxString rawLine, wxArrayString extensions )
 {
   wxString formattedLine;
-  std::pair< int, wxString >  tagPosition;
+  std::pair< int, wxString > tagPosition;
 
-  if ( timeMarkTagFound( rawLine, tagPosition ) )
+  if( timeMarkTagFound( rawLine, tagPosition ) )
   {
     formattedLine = insertTimeMarkLink( rawLine, tagPosition );
   }
-  else if ( ( getSelectedApp() == TExternalAppID::FOLDING ) && readFoldingTag( rawLine ) )
+  else if( ( getSelectedApp() == TExternalAppID::FOLDING ) && readFoldingTag( rawLine ) )
   {
     formattedLine = rawFormat( rawLine );
   }
@@ -2228,17 +2349,16 @@ wxString RunScript::insertLog( wxString rawLine, wxArrayString extensions )
 
 
 // If present, whichSuffixToErased is deleted from right part of href
-std::string RunScript::getHrefFullPath( wxHtmlLinkEvent &event, wxString whichSuffixToErase )
+std::string RunScript::getHrefFullPath( wxHtmlLinkEvent& event, wxString whichSuffixToErase )
 {
   std::string hrefFullPath = std::string( event.GetLinkInfo().GetHref().mb_str() );
 
-  if ( !whichSuffixToErase.IsEmpty() )
+  if( !whichSuffixToErase.IsEmpty() )
   {
-    size_t lengthHref = hrefFullPath.size();
+    size_t lengthHref   = hrefFullPath.size();
     size_t lengthSuffix = whichSuffixToErase.Len();
     std::string suffixToErase( whichSuffixToErase.mb_str() );
-    if ( ( lengthHref > lengthSuffix + 1 ) &&
-         ( suffixToErase.compare( hrefFullPath.substr( lengthHref - lengthSuffix, lengthSuffix ) ) ) == 0 )
+    if( ( lengthHref > lengthSuffix + 1 ) && ( suffixToErase.compare( hrefFullPath.substr( lengthHref - lengthSuffix, lengthSuffix ) ) ) == 0 )
     {
       hrefFullPath = hrefFullPath.substr( 0, lengthHref - lengthSuffix );
     }
@@ -2248,13 +2368,13 @@ std::string RunScript::getHrefFullPath( wxHtmlLinkEvent &event, wxString whichSu
 }
 
 
-bool RunScript::matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension ) const
+bool RunScript::matchHrefExtension( wxHtmlLinkEvent& event, const wxString extension ) const
 {
   return ( event.GetLinkInfo().GetHref().Right( extension.Len() ).Cmp( extension ) == 0 );
 }
 
 
-bool RunScript::matchHrefPrefix( wxHtmlLinkEvent &event, const wxString extension ) const
+bool RunScript::matchHrefPrefix( wxHtmlLinkEvent& event, const wxString extension ) const
 {
   return ( event.GetLinkInfo().GetHref().Left( extension.Len() ).Cmp( extension ) == 0 );
 }
@@ -2266,42 +2386,42 @@ bool RunScript::matchHrefPrefix( wxHtmlLinkEvent &event, const wxString extensio
 void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 {
   wxString auxCommand;
-  
-  if ( currentApp == TExternalAppID::CLUSTERING && matchHrefExtension( event, extensions[ 10 ] ) ) // _link_to_clustered_trace
+
+  if( currentApp == TExternalAppID::CLUSTERING && matchHrefExtension( event, extensions[ 10 ] ) ) // _link_to_clustered_trace
   {
     // Trick used to distinguish "analyse ClusterId" link inserted to log if TExternalAppID::CLUSTERING
     wxString tmpSuffixToErase = extensions[ 10 ]; // _link_to_clustered_trace
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event, tmpSuffixToErase ) );
 
-    std::vector< Trace * > loadedTraces = paraverMain::myParaverMain->GetLoadedTraces();
-    Trace *clusteredTrace = loadedTraces.back();
+    std::vector< Trace* > loadedTraces = paraverMain::myParaverMain->GetLoadedTraces();
+    Trace* clusteredTrace              = loadedTraces.back();
 
     // Create cluster id window: get sourceWindow
-    Timeline *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
+    Timeline* sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
 
     // Create cluster id window: avoid sourceWindow destruction
     bool dummyfound;
-    gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
-    if( currentWindow != nullptr ) currentWindow->setEnableDestroyButton( false );
+    gTimeline* currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
+    if( currentWindow != nullptr )
+      currentWindow->setEnableDestroyButton( false );
 
     // Create cluster id window: create and fill newWindow with tuned sourceWindow properties
-    Timeline *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
+    Timeline* newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
 
     TTime beginZoomTime = (TTime)0;
-    TTime endZoomTime = clusteredTrace->getEndTime();
+    TTime endZoomTime   = clusteredTrace->getEndTime();
     if( sourceWindow != nullptr &&
-        ( sourceWindow->getWindowBeginTime() != (TTime)0 ||
-          sourceWindow->getWindowEndTime() != sourceWindow->getTrace()->getEndTime() ) )
+        ( sourceWindow->getWindowBeginTime() != (TTime)0 || sourceWindow->getWindowEndTime() != sourceWindow->getTrace()->getEndTime() ) )
     {
       beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterLastOffset();
       endZoomTime   = beginZoomTime + ( sourceWindow->getWindowEndTime() - sourceWindow->getWindowBeginTime() );
     }
-    
+
     newWindow->setWindowBeginTime( beginZoomTime );
     newWindow->setWindowEndTime( endZoomTime );
     newWindow->addZoom( beginZoomTime, endZoomTime, 0, newWindow->getWindowLevelObjects() - 1 );
 
-    Filter *filter = newWindow->getFilter();
+    Filter* filter = newWindow->getFilter();
     filter->insertEventType( (TEventType)90000001 );
     filter->setEventTypeFunction( std::string( "=" ) ); // how to get name?
 
@@ -2315,31 +2435,30 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
     if( sourceWindow != nullptr )
     {
-      newWindow->setWidth( sourceWindow->getWidth() ); 
+      newWindow->setWidth( sourceWindow->getWidth() );
       newWindow->setHeight( sourceWindow->getHeight() );
       newWindow->setPosX( sourceWindow->getPosX() );
-      newWindow->setPosY( sourceWindow->getPosY() +
-                          sourceWindow->getHeight() +
-                          paraverMain::myParaverMain->GetDefaultTitleBarHeight() );
+      newWindow->setPosY( sourceWindow->getPosY() + sourceWindow->getHeight() + paraverMain::myParaverMain->GetDefaultTitleBarHeight() );
     }
 
     newWindow->setComputeYMaxOnInit( true );
 
     paraverMain::myParaverMain->insertInTree( newWindow );
 
-    if( currentWindow != nullptr ) currentWindow->setEnableDestroyButton( true );
+    if( currentWindow != nullptr )
+      currentWindow->setEnableDestroyButton( true );
   }
-  else if ( matchHrefExtension( event, wxT(".prv") ) || matchHrefExtension( event, wxT(".prv.gz")))
+  else if( matchHrefExtension( event, wxT( ".prv" ) ) || matchHrefExtension( event, wxT( ".prv.gz" ) ) ||
+           ( currentApp == TExternalAppID::CARM && matchHrefExtension( event, wxT( ".csv" ) ) ) )
   {
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
-  else if ( matchHrefExtension( event, wxT(".dat" )))
+  else if( matchHrefExtension( event, wxT( ".dat" ) ) )
   {
-    wxString command = wxString( wxT( "libreoffice --calc " ) ) +
-                       doubleQuote( wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 ) );
+    wxString command = wxString( wxT( "libreoffice --calc " ) ) + doubleQuote( wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 ) );
     runDetachedProcess( command );
   }
-  else if ( matchHrefExtension( event, wxT(".gnuplot" )))
+  else if( matchHrefExtension( event, wxT( ".gnuplot" ) ) )
   {
     // gnuplot needs to be executed in the same dir where .csv is
 
@@ -2352,20 +2471,19 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     tmpDir.SetCwd();
 
     // prepare command
-    wxString command = wxString( wxT( "gnuplot -persist " ) ) +
-                       doubleQuote( tmpFile );
+    wxString command = wxString( wxT( "gnuplot -persist " ) ) + doubleQuote( tmpFile );
 
     runDetachedProcess( command );
 
     wxFileName::SetCwd( currentWorkingDir ); // restore the old
   }
-  else if ( matchHrefExtension( event, _(".cfg")))
+  else if( matchHrefExtension( event, _( ".cfg" ) ) )
   {
-    if ( CFGLoader::isCFGFile( getHrefFullPath( event ) ) )
+    if( CFGLoader::isCFGFile( getHrefFullPath( event ) ) )
     {
-      if ( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
+      if( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
       {
-        paraverMain::myParaverMain->DoLoadCFG( getHrefFullPath( event )  );
+        paraverMain::myParaverMain->DoLoadCFG( getHrefFullPath( event ) );
       }
       else
       {
@@ -2373,34 +2491,34 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
       }
     }
   }
-  else if ( matchHrefExtension( event, _(".xml")))
+  else if( matchHrefExtension( event, _( ".xml" ) ) )
   {
     std::string traceName = std::string( wxFileName( fileBrowserButtonTrace->GetPath() ).GetFullPath().mb_str() );
 
-    bool loadTrace = true;
+    bool loadTrace         = true;
     std::string strXmlFile = getHrefFullPath( event );
 
     paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
   }
-  else if ( matchHrefExtension( event, _(".pdf")))
+  else if( matchHrefExtension( event, _( ".pdf" ) ) )
   {
     wxArrayString pdfReaders = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalPDFReaders(), "pdf" );
-    wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+    wxString tmpFile         = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
     wxString command;
 
     size_t i;
-    for ( i = 0; i < pdfReaders.size(); ++i )
+    for( i = 0; i < pdfReaders.size(); ++i )
     {
-      if ( ExternalApps::existCommand( pdfReaders[ i ] ) )
+      if( ExternalApps::existCommand( pdfReaders[ i ] ) )
       {
         runCommandAsync( pdfReaders[ i ], tmpFile );
         break;
       }
     }
 
-    if ( i >= pdfReaders.size() )
+    if( i >= pdfReaders.size() )
     {
-      wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
+      wxFileType* filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
       if( filetype != nullptr )
       {
         command.Clear();
@@ -2409,57 +2527,57 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
       }
     }
   }
-  else if ( matchHrefExtension( event, extensions[8] )) // "_time_mark"
+  else if( matchHrefExtension( event, extensions[ 8 ] ) ) // "_time_mark"
   {
     bool found;
-    gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), paraverMain::myParaverMain->GetCurrentTimeline(), found );
-    if ( found )
+    gTimeline* currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), paraverMain::myParaverMain->GetCurrentTimeline(), found );
+    if( found )
     {
       currentWindow->setEnableDestroyButton( false );
 
       // Get time from href
       wxString tmpTime = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
-      string time = std::string( tmpTime.Mid( 0, tmpTime.Len() - extensions[8].Len() ).Trim(true).Trim(false).mb_str() );
+      string time      = std::string( tmpTime.Mid( 0, tmpTime.Len() - extensions[ 8 ].Len() ).Trim( true ).Trim( false ).mb_str() );
       stringstream aux( time );
       double auxt1;
       aux >> auxt1;
 
-        // Draw time marks
+      // Draw time marks
       vector< TRecordTime > tmpTimes;
-      tmpTimes.push_back( TRecordTime(auxt1) );
+      tmpTimes.push_back( TRecordTime( auxt1 ) );
       vector< TObjectOrder > dummySelectedObjects;
       currentWindow->drawTimeMarks( tmpTimes, dummySelectedObjects );
 
       currentWindow->setEnableDestroyButton( true );
     }
   }
-  else if ( matchHrefExtension( event, extensions[9] ))  // "_time_range_mark"
+  else if( matchHrefExtension( event, extensions[ 9 ] ) ) // "_time_range_mark"
   {
     bool found;
-    gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), paraverMain::myParaverMain->GetCurrentTimeline(), found );
-    if ( found )
+    gTimeline* currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), paraverMain::myParaverMain->GetCurrentTimeline(), found );
+    if( found )
     {
       currentWindow->setEnableDestroyButton( false );
 
-      wxString hrefData = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
-      int tmpTimesSeparator = hrefData.Find( wxString( wxT(",") ) );
-      if ( tmpTimesSeparator != wxNOT_FOUND )
+      wxString hrefData     = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+      int tmpTimesSeparator = hrefData.Find( wxString( wxT( "," ) ) );
+      if( tmpTimesSeparator != wxNOT_FOUND )
       {
-
         // Get begin time from href
-        string time = std::string( hrefData.Mid( 0, tmpTimesSeparator ).Trim(true).Trim(false).mb_str() );
+        string time = std::string( hrefData.Mid( 0, tmpTimesSeparator ).Trim( true ).Trim( false ).mb_str() );
         stringstream aux( time );
         double beginTime;
         aux >> beginTime;
 
         // Get end time from href
-        time = std::string( hrefData.Mid( tmpTimesSeparator + 1, hrefData.Len() - tmpTimesSeparator - extensions[9].Len() - 1 ).Trim(true).Trim(false).mb_str() );
+        time = std::string(
+          hrefData.Mid( tmpTimesSeparator + 1, hrefData.Len() - tmpTimesSeparator - extensions[ 9 ].Len() - 1 ).Trim( true ).Trim( false ).mb_str() );
         stringstream aux2( time );
         double endTime;
         aux2 >> endTime;
 
         // Draw time marks
-        vector< TRecordTime> tmpTimes;
+        vector< TRecordTime > tmpTimes;
         tmpTimes.push_back( TRecordTime( beginTime ) );
         tmpTimes.push_back( TRecordTime( endTime ) );
         vector< TObjectOrder > dummySelectedObjects;
@@ -2469,13 +2587,14 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
     currentWindow->setEnableDestroyButton( true );
   }
-  else if ( matchHrefPrefix( event, _("http") ) )
+  else if( matchHrefPrefix( event, _( "http" ) ) )
   {
-    if ( !launchBrowser( event.GetLinkInfo().GetHref() ) )
-      wxMessageBox( "Unable to find/open default browser.", "Warning", wxOK|wxICON_ERROR );
-  }  
+    if( !launchBrowser( event.GetLinkInfo().GetHref() ) )
+      wxMessageBox( "Unable to find/open default browser.", "Warning", wxOK | wxICON_ERROR );
+  }
   else
   {
+    // Load as text
     event.Skip();
   }
 }
@@ -2483,7 +2602,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
 void RunScript::runDetachedProcess( wxString command, bool checkPidDimemasGUI )
 {
-  RunningProcess *localProcess = new RunningProcess( this, command );
+  RunningProcess* localProcess = new RunningProcess( this, command );
 
   int myProcessPid = wxExecute( command, wxEXEC_ASYNC, localProcess );
   if( !myProcessPid )
@@ -2495,9 +2614,9 @@ void RunScript::runDetachedProcess( wxString command, bool checkPidDimemasGUI )
   }
   else
   {
-    if ( checkPidDimemasGUI )
+    if( checkPidDimemasGUI )
       pidDimemasGUI = myProcessPid;
-    
+
     localProcess->HasInput();
     localProcess->Detach();
 
@@ -2513,7 +2632,7 @@ void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
 {
   wxString command = GetReachableCommand( TExternalAppID::DIMEMAS_GUI );
   if( !command.IsEmpty() && pidDimemasGUI == 0 )
-  {  
+  {
     bool checkPidDimemasGUI = true;
     runDetachedProcess( command, checkPidDimemasGUI );
   }
@@ -2526,12 +2645,12 @@ void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
 void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
 {
   bool active = ( pidDimemasGUI == 0 );
-  
-  if ( active && !buttonDimemasGUI->IsEnabled() )
-    buttonDimemasGUI->SetToolTip( _("Edit Dimemas Configuration File using DimemasGUI.") );
-    
-  if ( !active && buttonDimemasGUI->IsEnabled() )
-    buttonDimemasGUI->SetToolTip( _("DimemasGUI instance running...") );
+
+  if( active && !buttonDimemasGUI->IsEnabled() )
+    buttonDimemasGUI->SetToolTip( _( "Edit Dimemas Configuration File using DimemasGUI." ) );
+
+  if( !active && buttonDimemasGUI->IsEnabled() )
+    buttonDimemasGUI->SetToolTip( _( "DimemasGUI instance running..." ) );
 
   buttonDimemasGUI->Enable( active );
 }
@@ -2552,9 +2671,8 @@ void RunScript::OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event )
  */
 void RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEvent& event )
 {
-  checkBoxClusteringCSVValueAsDimension->Enable(
-          checkBoxClusteringUseSemanticWindow->IsEnabled() &&
-          checkBoxClusteringUseSemanticWindow->IsChecked() );
+  checkBoxClusteringCSVValueAsDimension->Enable( checkBoxClusteringUseSemanticWindow->IsEnabled() &&
+                                                 checkBoxClusteringUseSemanticWindow->IsChecked() );
 }
 
 
@@ -2563,25 +2681,23 @@ void RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEven
  */
 void RunScript::OnCheckboxClusteringNormalizeUpdate( wxUpdateUIEvent& event )
 {
-  checkBoxClusteringNormalize->Enable(
-          checkBoxClusteringCSVValueAsDimension->IsEnabled() &&
-          checkBoxClusteringCSVValueAsDimension->IsChecked() );
+  checkBoxClusteringNormalize->Enable( checkBoxClusteringCSVValueAsDimension->IsEnabled() && checkBoxClusteringCSVValueAsDimension->IsChecked() );
 }
 
 
 void RunScript::setTrace( wxString whichTrace )
 {
-  if ( !whichTrace.IsEmpty() )
+  if( !whichTrace.IsEmpty() )
   {
-     fileBrowserButtonTrace->SetPath( whichTrace );
+    fileBrowserButtonTrace->SetPath( whichTrace );
   }
 }
 
 
 void RunScript::setApp( TExternalAppID whichApp )
 {
-  int tmpSelection = 0;
-  for( int i = 0; i < choiceApplication->GetCount(); ++i )
+  unsigned int tmpSelection = 0;
+  for( unsigned int i = 0; i < choiceApplication->GetCount(); ++i )
   {
     if( (long int)choiceApplication->GetClientData( i ) == static_cast< long int >( whichApp ) )
     {
@@ -2624,6 +2740,14 @@ void RunScript::setFolding( wxString whichFoldingCSV )
 void RunScript::setMess()
 {
   setApp( TExternalAppID::MESS );
+}
+
+
+void RunScript::setCarm( const wxString& whichCarmSemanticCSV, const wxString& whichCarmLabelsCSV )
+{
+  carmSemanticCSV = whichCarmSemanticCSV;
+  carmLabelsCSV = whichCarmLabelsCSV;
+  setApp( TExternalAppID::CARM );
 }
 
 
@@ -2694,7 +2818,7 @@ void RunScript::OnButtonKillUpdate( wxUpdateUIEvent& event )
 }
 
 
-void RunScript::killRunningProcess( std::function<void(const wxString&)> messageLog )
+void RunScript::killRunningProcess( std::function< void( const wxString& ) > messageLog )
 {
   if( myProcessPid != 0 )
   {
@@ -2711,7 +2835,11 @@ void RunScript::killRunningProcess( std::function<void(const wxString&)> message
  */
 void RunScript::OnButtonKillClick( wxCommandEvent& event )
 {
-  killRunningProcess( [this]( const wxString& m ){ AppendToLog( m ); } );
+  killRunningProcess(
+    [ this ]( const wxString& m )
+    {
+      AppendToLog( m );
+    } );
 }
 
 
@@ -2720,37 +2848,35 @@ void RunScript::OnButtonKillClick( wxCommandEvent& event )
  */
 void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
 {
-  if ( getSelectedApp() == TExternalAppID::PRVSTATS )
+  if( getSelectedApp() == TExternalAppID::PRVSTATS )
   {
     statsTextCtrlOutputName->SetValue( fileBrowserButtonTrace->GetPath() );
   }
-  else if ( getSelectedApp() == TExternalAppID::DIMEMAS )
+  else if( getSelectedApp() == TExternalAppID::DIMEMAS )
   {
-    textCtrlOutputTrace->SetValue( wxString( (
-            LocalKernel::composeName( std::string( event.GetString().mb_str() ),
-                                      std::string( "sim" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
+    textCtrlOutputTrace->SetValue(
+      wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), std::string( "sim" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
   }
-  else if ( getSelectedApp() == TExternalAppID::CLUSTERING )
+  else if( getSelectedApp() == TExternalAppID::CLUSTERING )
   {
-    if ( textCtrlClusteringOutputTrace->IsEmpty() )
+    if( textCtrlClusteringOutputTrace->IsEmpty() )
     {
-      textCtrlClusteringOutputTrace->SetValue( wxString( (
-          LocalKernel::composeName( std::string( event.GetString().mb_str() ),
-                                    std::string( "clustered" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
+      textCtrlClusteringOutputTrace->SetValue(
+        wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), std::string( "clustered" ) ) + PRV_SUFFIX ).c_str(),
+                  wxConvUTF8 ) );
     }
   }
-  else if ( getSelectedApp() == TExternalAppID::MESS )
+  else if( getSelectedApp() == TExternalAppID::MESS )
   {
     textCtrlMessOutputTrace->SetValue(
-            wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), "mess" ) +
-                        PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
+      wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), "mess" ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
   }
 }
 
 
 void RunScript::runCommandAsync( const wxString& program, const wxString& parameter )
 {
-  wxString command = program + _(" ") + parameter;
+  wxString command = program + _( " " ) + parameter;
   wxExecute( command );
 }
 
@@ -2764,23 +2890,24 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
 
 
   wxArrayString editor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalTextEditors(), "txt" );
-  
+
   size_t i;
-  for ( i = 0; i < editor.size(); ++i )
+  for( i = 0; i < editor.size(); ++i )
   {
-    if ( ExternalApps::existCommand( editor[ i ] ) )
+    if( ExternalApps::existCommand( editor[ i ] ) )
     {
       runCommandAsync( editor[ i ], fileToEdit );
       break;
     }
   }
-  if ( i >= editor.size() )
+  if( i >= editor.size() )
   {
 #ifdef _WIN32
     command = _( "C:\\Windows\\system32\\NOTEPAD.EXE " ) + fileToEdit;
     wxExecute( command );
 #else
-    wxMessageBox( _( "Unable to find an external app. Please check the external application's text editors list at Preferences." ), _( "No external app found" ) );
+    wxMessageBox( _( "Unable to find an external app. Please check the external application's text editors list at Preferences." ),
+                  _( "No external app found" ) );
 #endif
   }
 }
@@ -2835,8 +2962,12 @@ void RunScript::OnTextctrlClusteringNumberOfSamplesUpdate( wxUpdateUIEvent& even
 
 void RunScript::closeWindow()
 {
-  killRunningProcess( [this]( const wxString& m ) { ::wxMessageBox( m, "Kill Running Process\t", wxICON_WARNING ); } );
-  paraverMain::myParaverMain->SetRunApplication( nullptr );  
+  killRunningProcess(
+    [ this ]( const wxString& m )
+    {
+      ::wxMessageBox( m, "Kill Running Process\t", wxICON_WARNING );
+    } );
+  paraverMain::myParaverMain->SetRunApplication( nullptr );
   Destroy();
 }
 
@@ -2881,7 +3012,7 @@ void RunScript::OnMessAdditionalPlotsUpdate( wxUpdateUIEvent& event )
       if( pcfFile.getEventValues( currentEvent ).empty() )
       {
         std::string eventLabel = pcfFile.getEventLabel( currentEvent );
-        size_t startPos = eventLabel.find( ":cpu=" );
+        size_t startPos        = eventLabel.find( ":cpu=" );
         if( startPos == eventLabel.npos )
           continue;
 
@@ -2892,7 +3023,7 @@ void RunScript::OnMessAdditionalPlotsUpdate( wxUpdateUIEvent& event )
 
     wxString newCheckText;
     newCheckText << "Generate additional plots per socket (estimation: " << cpuLabels.size();
-    if( cpuLabels.size() == 1 ) 
+    if( cpuLabels.size() == 1 )
       newCheckText << " plot)";
     else
       newCheckText << " plots)";
@@ -2903,5 +3034,85 @@ void RunScript::OnMessAdditionalPlotsUpdate( wxUpdateUIEvent& event )
 
 TExternalAppID RunScript::getSelectedApp() const
 {
-  return static_cast<TExternalAppID>( (long int)choiceApplication->GetClientData( choiceApplication->GetSelection() ) );
+  return static_cast< TExternalAppID >( (long int)choiceApplication->GetClientData( choiceApplication->GetSelection() ) );
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_SEMANTIC_WINDOW
+ */
+
+void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
+{
+  checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
+                                     checkCarmUseSemanticWindow->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CARM_USE_WINDOW_COLORS
+ */
+
+void RunScript::OnCheckboxCarmUseWindowColorsUpdate( wxUpdateUIEvent& event )
+{
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CARM_SYNC
+ */
+
+void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
+{
+  // Get window
+  Timeline *sourceWindow = GetCarmWindow();
+  bool dummyfound;
+  gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
+
+  // Publish data
+  wxFileName tmpTraceName( fileBrowserButtonTrace->GetPath() );  // contains carm subdir due to chop in sequenceCarm.
+  tmpTraceName.ClearExt();
+  std::string auxName = sourceWindow->getName() + "_";
+  std::replace( auxName.begin(), auxName.end(), ',', '-' );
+  std::replace( auxName.begin(), auxName.end(), ' ', '_' );
+  std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ).mb_str() ) +
+                                auxName.c_str() +
+                                std::string( tmpTraceName.GetFullName().mb_str() );
+  std::string syncFilename = tmpFileBaseName + ".paraver_sync.csv";
+
+  ofstream syncFile( syncFilename, ios::trunc );
+  if ( syncFile.good() )
+  {
+    CFGLoader::dumpTimeUnits( currentWindow->GetMyWindow()->getTimeUnit(), syncFile );
+    syncFile << std::endl;
+
+    // Set precision.
+    std::stringstream tmpTime( "" );
+    bool useLocale = false;
+    TTimeUnit traceOrigUnit  = currentWindow->GetMyWindow()->getTrace()->getTimeUnit();
+    TTimeUnit windowDestUnit = currentWindow->GetMyWindow()->getTimeUnit();
+    LabelConstructor::presetBaseFormat( tmpTime, LabelConstructor::timePrecisionsConversionTable[ traceOrigUnit ][ windowDestUnit ], useLocale );
+
+    // Write window times.
+    tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
+    tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() )   << std::endl;
+    syncFile << tmpTime.str();
+  }
+  else
+  {
+    ShowWarning( wxString( wxT( "Unable to write CARM synchronization file:\n" ) ) + 
+                 wxString( syncFilename.c_str(), wxConvUTF8 ) );
+  }
+  syncFile.close();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_CARM_SYNC
+ */
+
+void RunScript::OnButtonCarmSyncUpdate( wxUpdateUIEvent& event )
+{
+  buttonCarmSync->Enable( GetCarmWindow() != nullptr );
+}
+

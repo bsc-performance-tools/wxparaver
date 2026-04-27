@@ -38,7 +38,8 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
   wxString( "prvstats" ),     //PRVSTATS
   wxString( "Clustering" ),   //CLUSTERING
   wxString( "Folding" ),      //FOLDING
-  wxString( "Mess" ),         //MESS
+  wxString( "Mess" ),         //PROFET
+  wxString( "CARM" ),         //CARM
   wxString( "User command" ), //USER_COMMAND
 
   // Following only for warning dialogs
@@ -55,7 +56,8 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
 #endif
   wxString( "BurstClustering"),     // CLUSTERING
   wxString( "rri-auto"),            // FOLDING
-  wxString( "mess-prv"),          // MESS
+  wxString( "mess-prv"),            // PROFET
+  wxString( "Paraver_CARM.py" ),    // CARM
   wxString( "" ),                   // USER_COMMAND
   wxString( "DimemasGUI")           // DIMEMAS_GUI
 };
@@ -66,7 +68,8 @@ const std::array< wxString, (int)TExternalAppID::NUMBER_APPS > ExternalApps::app
   wxString( "prvstats" ),        // PRVSTATS
   wxString( "BurstClustering" ), // CLUSTERING
   wxString( "rri-auto" ),        // FOLDING
-  wxString( "mess-prv" ),        // MESS
+  wxString( "mess-prv" ),        // PROFET
+  wxString( "Paraver_CARM.py" ), // CARM
   wxString( "" ),                // USER_COMMAND
   wxString( "DimemasGUI")        // DIMEMAS_GUI
 };
@@ -152,12 +155,26 @@ bool verifyMess( const Trace& whichTrace )
 }
 
 
+bool verifyCARM( const Trace& whichTrace )
+{
+  const auto& traceEvents = whichTrace.getLoadedEvents();
+
+  constexpr size_t CARM_LABELS_SIZE = 6;
+  const std::array< std::string, CARM_LABELS_SIZE > carmLabels { "floating-point", "FP_",
+                                                                 "load", "Load",
+                                                                 "store", "Store" };
+
+  return verifyEventLabels( whichTrace, traceEvents, carmLabels );
+}
+
+
 const std::array< std::function< bool( const Trace& ) >, (int)TExternalAppID::NUMBER_APPS > ExternalApps::applicationVerifyFunctions = { {
   { verifyDimemas },    // DIMEMAS
   {},                   // PRVSTATS
   { verifyClustering }, // CLUSTERING
   { verifyFolding },    // FOLDING
-  { verifyMess },     // MESS
+  { verifyMess },       // MESS
+  { verifyCARM },       // CARM
   {},                   // USER_COMMAND
   {},                   // DIMEMAS_GUI
 } };

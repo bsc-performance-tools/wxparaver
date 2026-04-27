@@ -92,21 +92,21 @@ class SaveImageDialog : public wxDialog
     DECLARE_DYNAMIC_CLASS( SaveImageDialog )
     DECLARE_EVENT_TABLE()
 
-public:
-  /// Constructors
-  SaveImageDialog();
-  SaveImageDialog( wxWindow* parent,
-                   wxString& directoryStartingPath,
-                   wxString defaultFileName,
-                   WindowImageGenerator* imageGeneration,
-                   bool isHistogram             = false,
-                   wxString legendSuffix        = _( "_legend" ),
-                   wxString legendControlSuffix = _( "_legendControl" ),
-                   wxWindowID id                = SYMBOL_SAVEIMAGEDIALOG_IDNAME,
-                   const wxString& caption      = SYMBOL_SAVEIMAGEDIALOG_TITLE,
-                   const wxPoint& pos           = SYMBOL_SAVEIMAGEDIALOG_POSITION,
-                   const wxSize& size           = SYMBOL_SAVEIMAGEDIALOG_SIZE,
-                   long style                   = SYMBOL_SAVEIMAGEDIALOG_STYLE );
+  public:
+    /// Constructors
+    SaveImageDialog();
+    SaveImageDialog( wxWindow* parent,
+                     wxString& directoryStartingPath,
+                     wxString defaultFileName,
+                     WindowImageGenerator* imageGeneration,
+                     bool isHistogram             = false,
+                     wxString legendSuffix        = _( "_legend" ),
+                     wxString legendControlSuffix = _( "_legendControl" ),
+                     wxWindowID id                = SYMBOL_SAVEIMAGEDIALOG_IDNAME,
+                     const wxString& caption      = SYMBOL_SAVEIMAGEDIALOG_TITLE,
+                     const wxPoint& pos           = SYMBOL_SAVEIMAGEDIALOG_POSITION,
+                     const wxSize& size           = SYMBOL_SAVEIMAGEDIALOG_SIZE,
+                     long style                   = SYMBOL_SAVEIMAGEDIALOG_STYLE );
 
     /// Creation
     bool Create( wxWindow* parent,
@@ -126,17 +126,17 @@ public:
     void CreateControls();
 
 
-  wxString GetImageFilePath();
-  wxString GetImageScaleFilePath();
-  wxString GetLegendFilePath();
-  wxString GetLegendControlFilePath();
+    wxString GetImageFilePath();
+    wxString GetImageScaleFilePath();
+    wxString GetLegendFilePath();
+    wxString GetLegendControlFilePath();
 
-  bool DialogSavesImage();
-  bool DialogSavesLegend();
-  bool DialogSavesControlLegend();
-  bool DialogSavesImageScale();
+    bool DialogSavesImage();
+    bool DialogSavesLegend();
+    bool DialogSavesControlLegend();
+    bool DialogSavesImageScale();
 
-  int GetFilterIndex(); // Should it be TImageFormat ???
+    int GetFilterIndex(); // Should it be TImageFormat ???
 
     // clang-format off
   ////@begin SaveImageDialog event handler declarations
@@ -194,19 +194,22 @@ public:
 
   ////@end SaveImageDialog event handler declarations
 
+    // clang-format on
+
     void OnFileNavigatorChanged( wxFileCtrlEvent& event );
 
-  void updateFileNamesAndPaths();
-  void setImageFileName();
-  void calculateScaledSize( int originalWidth,
-                            int originalHeight,
-                            int scrollContainerWidth,
-                            int scrollContainerHeight,
-                            int& newWidth,
-                            int& newHeight );
+    void updateFileNamesAndPaths();
+    void setImageFileName();
+    void calculateScaledSize( int originalWidth,
+                              int originalHeight,
+                              int scrollContainerWidth,
+                              int scrollContainerHeight,
+                              int& newWidth,
+                              int& newHeight );
 
-  void adjustPanelSize(bool resizePanel );
+    void adjustPanelSize( bool resizePanel );
 
+    // clang-format off
   ////@begin SaveImageDialog member function declarations
 
   /// Retrieves bitmap resources

@@ -25,22 +25,26 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
+// clang-format off
 ////@begin includes
 ////@end includes
+// clang-format on
 
 #include "sessionselectiondialog.h"
 
 using namespace std;
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 
 /*!
@@ -56,6 +60,7 @@ IMPLEMENT_DYNAMIC_CLASS( SessionSelectionDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( SessionSelectionDialog, wxDialog )
 
+// clang-format off
 ////@begin SessionSelectionDialog event table entries
   EVT_LISTBOX( ID_SESSIONBOX, SessionSelectionDialog::OnSessionboxSelected )
   EVT_LISTBOX_DCLICK( ID_SESSIONBOX, SessionSelectionDialog::OnSessionboxDoubleClicked )
@@ -63,6 +68,7 @@ BEGIN_EVENT_TABLE( SessionSelectionDialog, wxDialog )
   EVT_BUTTON( wxID_OK, SessionSelectionDialog::OnOkClick )
   EVT_UPDATE_UI( wxID_OK, SessionSelectionDialog::OnOkUpdate )
 ////@end SessionSelectionDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
@@ -78,19 +84,26 @@ SessionSelectionDialog::SessionSelectionDialog()
 }
 
 
-// Version that gets 
+// Version that gets
 SessionSelectionDialog::SessionSelectionDialog( wxString folderPath, bool isInitialized )
 {
   Init();
-  this->folderPath = folderPath;
+  this->folderPath    = folderPath;
   this->isInitialized = isInitialized;
   OnCreateNoDialog();
 }
 
-SessionSelectionDialog::SessionSelectionDialog( wxWindow* parent, wxString folderPath, bool isInitialized, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+SessionSelectionDialog::SessionSelectionDialog( wxWindow* parent,
+                                                wxString folderPath,
+                                                bool isInitialized,
+                                                wxWindowID id,
+                                                const wxString& caption,
+                                                const wxPoint& pos,
+                                                const wxSize& size,
+                                                long style )
 {
   Init();
-  Create(parent, folderPath, isInitialized, id, caption, pos, size, style);
+  Create( parent, folderPath, isInitialized, id, caption, pos, size, style );
   OnCreate();
 }
 
@@ -99,8 +112,16 @@ SessionSelectionDialog::SessionSelectionDialog( wxWindow* parent, wxString folde
  * SessionSelectionDialog creator
  */
 
-bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, bool isInitialized, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+bool SessionSelectionDialog::Create( wxWindow* parent,
+                                     wxString folderPath,
+                                     bool isInitialized,
+                                     wxWindowID id,
+                                     const wxString& caption,
+                                     const wxPoint& pos,
+                                     const wxSize& size,
+                                     long style )
 {
+  // clang-format off
 ////@begin SessionSelectionDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -112,7 +133,8 @@ bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, bool
   }
   Centre();
 ////@end SessionSelectionDialog creation
-  this->folderPath = folderPath;
+  // clang-format on
+  this->folderPath    = folderPath;
   this->isInitialized = isInitialized;
   return true;
 }
@@ -124,8 +146,10 @@ bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, bool
 
 SessionSelectionDialog::~SessionSelectionDialog()
 {
+  // clang-format off
 ////@begin SessionSelectionDialog destruction
 ////@end SessionSelectionDialog destruction
+  // clang-format on
 }
 
 
@@ -135,12 +159,14 @@ SessionSelectionDialog::~SessionSelectionDialog()
 
 void SessionSelectionDialog::Init()
 {
+  // clang-format off
 ////@begin SessionSelectionDialog member initialisation
   textDialogDescription = nullptr;
   listSessions = nullptr;
   buttonCancel = nullptr;
   buttonLoad = nullptr;
 ////@end SessionSelectionDialog member initialisation
+  // clang-format on
 }
 
 
@@ -149,7 +175,8 @@ void SessionSelectionDialog::Init()
  */
 
 void SessionSelectionDialog::CreateControls()
-{    
+{
+  // clang-format off
 ////@begin SessionSelectionDialog content construction
   SessionSelectionDialog* itemDialog1 = this;
 
@@ -179,14 +206,14 @@ void SessionSelectionDialog::CreateControls()
   itemStdDialogButtonSizer2->Realize();
 
 ////@end SessionSelectionDialog content construction
-
+  // clang-format on
 
   textDialogDescription->Show( !isInitialized );
   textDialogDescription->GetFont().SetWeight( wxFONTWEIGHT_BOLD );
-  if ( isInitialized )
+  if( isInitialized )
   {
-    textDialogDescription->SetLabel( _("Select one of your last auto-saved Paraver sessions") );
-    itemStaticBoxSizer1Static->SetLabel( _("List of auto-saved sessions") );
+    textDialogDescription->SetLabel( _( "Select one of your last auto-saved Paraver sessions" ) );
+    itemStaticBoxSizer1Static->SetLabel( _( "List of auto-saved sessions" ) );
   }
 }
 
@@ -197,7 +224,7 @@ void SessionSelectionDialog::CreateControls()
 
 void SessionSelectionDialog::OnSessionboxSelected( wxCommandEvent& event )
 {
-  if ( listSessions->GetSelection() != wxNOT_FOUND )
+  if( listSessions->GetSelection() != wxNOT_FOUND )
     myPath = linksPerFileName[ listSessions->GetString( listSessions->GetSelection() ) ];
 }
 
@@ -237,11 +264,13 @@ bool SessionSelectionDialog::ShowToolTips()
 
 wxBitmap SessionSelectionDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin SessionSelectionDialog bitmap retrieval
   wxUnusedVar(name);
   return wxNullBitmap;
 ////@end SessionSelectionDialog bitmap retrieval
+  // clang-format on
 }
 
 /*!
@@ -250,52 +279,54 @@ wxBitmap SessionSelectionDialog::GetBitmapResource( const wxString& name )
 
 wxIcon SessionSelectionDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin SessionSelectionDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end SessionSelectionDialog icon retrieval
+  // clang-format on
 }
 
 
 bool SessionSelectionDialog::OnCreate()
 {
-  if ( wxDirExists( folderPath ) ) 
+  if( wxDirExists( folderPath ) )
   {
     wxArrayString filesInDir;
-    if ( isInitialized )
+    if( isInitialized )
       wxDir::GetAllFiles( folderPath, &filesInDir, wxT( "*.session" ), wxDIR_FILES );
     else
       wxDir::GetAllFiles( folderPath, &filesInDir, wxT( "*0.session" ), wxDIR_FILES );
-    
-    if ( filesInDir.size() == 0 )
+
+    if( filesInDir.size() == 0 )
       return false;
-    
+
     listSessions->Clear();
     linksPerFileName.clear();
-    
+
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > > dtToFile;
-    for ( size_t i = 0 ; i < filesInDir.size() ; ++i )
+    for( size_t i = 0; i < filesInDir.size(); ++i )
     {
-      #ifdef _WIN32
+#ifdef _WIN32
       wxString datetime = filesInDir[ i ].AfterLast( '\\' ).AfterFirst( '_' ).Left( 15 );
-      #else
+#else
       wxString datetime = filesInDir[ i ].AfterLast( '/' ).AfterFirst( '_' ).Left( 15 );
-      #endif
+#endif
       datetime[ 8 ] = 'T';
 
       boost::posix_time::ptime dt;
       dt = boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) );
-      
-      dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
+
+      dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt, filesInDir[ i ] ) );
     }
 
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it;
-    for ( it = dtToFile.begin(); it != dtToFile.end(); ++it )
+    for( it = dtToFile.begin(); it != dtToFile.end(); ++it )
     {
-      wxString fileName = FormatFileName( (* it ).second.AfterLast( '/' ) );
+      wxString fileName = FormatFileName( ( *it ).second.AfterLast( '/' ) );
       listSessions->Append( fileName );
-      linksPerFileName[ fileName ] = (* it ).second;
+      linksPerFileName[ fileName ] = ( *it ).second;
     }
   }
   return true;
@@ -304,90 +335,79 @@ bool SessionSelectionDialog::OnCreate()
 
 bool SessionSelectionDialog::OnCreateNoDialog()
 {
-  if ( wxDirExists( folderPath ) ) 
+  if( wxDirExists( folderPath ) )
   {
     wxArrayString filesInDir;
-    if ( isInitialized )
+    if( isInitialized )
       wxDir::GetAllFiles( folderPath, &filesInDir, wxT( "*.session" ), wxDIR_FILES );
     else
       wxDir::GetAllFiles( folderPath, &filesInDir, wxT( "*0.session" ), wxDIR_FILES );
-    
-    if ( filesInDir.size() == 0 )
+
+    if( filesInDir.size() == 0 )
       return false;
-    
+
     linksPerFileName.clear();
-    
+
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > > dtToFile;
-    for ( size_t i = 0 ; i < filesInDir.size() ; ++i )
+    for( size_t i = 0; i < filesInDir.size(); ++i )
     {
-      #ifdef _WIN32
+#ifdef _WIN32
       wxString datetime = filesInDir[ i ].AfterLast( '\\' ).AfterFirst( '_' ).Left( 15 );
-      #else
+#else
       wxString datetime = filesInDir[ i ].AfterLast( '/' ).AfterFirst( '_' ).Left( 15 );
-      #endif
+#endif
       datetime[ 8 ] = 'T';
 
       boost::posix_time::ptime dt;
       dt = boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) );
 
-      dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
+      dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt, filesInDir[ i ] ) );
     }
 
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it;
-    for ( it = dtToFile.begin(); it != dtToFile.end(); ++it )
+    for( it = dtToFile.begin(); it != dtToFile.end(); ++it )
     {
-      allFilesInDir.push_back( (* it ).second );
+      allFilesInDir.push_back( ( *it ).second );
     }
   }
   return true;
 }
 
 
-
 wxString SessionSelectionDialog::FormatFileName( wxString fileName )
 {
-  //wxArrayString parts = wxSplit( fileName, '_' );
-  std::string fileStringStd = std::string( fileName.mb_str() ) ;
-  wxArrayString parts;  
+  // wxArrayString parts = wxSplit( fileName, '_' );
+  std::string fileStringStd = std::string( fileName.mb_str() );
+  wxArrayString parts;
 
   std::size_t end, begin = 0;
   char delim = '_';
-  end = fileStringStd.find( delim );
+  end        = fileStringStd.find( delim );
 
 
   wxString subPart;
-  while ( end != std::string::npos ) 
+  while( end != std::string::npos )
   {
     subPart = wxString( fileStringStd.substr( begin, end - begin ).c_str(), wxConvUTF8 );
     parts.push_back( subPart );
     begin = end + 1;
-    end = fileStringStd.find( delim, begin );
+    end   = fileStringStd.find( delim, begin );
   }
   subPart = wxString( fileStringStd.substr( begin, end - begin ).c_str(), wxConvUTF8 );
   parts.push_back( subPart );
 
   wxString dmy = parts[ 1 ];
-  wxString hms = parts[ 2 ]; 
+  wxString hms = parts[ 2 ];
 
-  dmy = dmy.Mid( 6, 2 ) +  // YYYYMMDD (iso compliant)
-        wxT( "/" ) +
-        dmy.Mid( 4, 2 ) +
-        wxT( "/" ) +
-        dmy.Mid( 0, 4 );
+  dmy = dmy.Mid( 6, 2 ) + // YYYYMMDD (iso compliant)
+        wxT( "/" ) + dmy.Mid( 4, 2 ) + wxT( "/" ) + dmy.Mid( 0, 4 );
 
 
-  hms = hms.Mid( 0, 2 ) +
-        wxT( ":" ) +
-        hms.Mid( 2, 2 ) +
-        wxT( ":" ) +
-        hms.Mid( 4, 2 );
-  
-  wxString crash = ( parts[3] == wxT( "0.session" ) ? wxT( " [Crashed]" ) : _( "" ) );
+  hms = hms.Mid( 0, 2 ) + wxT( ":" ) + hms.Mid( 2, 2 ) + wxT( ":" ) + hms.Mid( 4, 2 );
 
-  return dmy +
-         wxT( " " ) +
-         hms + 
-         crash;
+  wxString crash = ( parts[ 3 ] == wxT( "0.session" ) ? wxT( " [Crashed]" ) : _( "" ) );
+
+  return dmy + wxT( " " ) + hms + crash;
 }
 
 /*!
@@ -396,10 +416,12 @@ wxString SessionSelectionDialog::FormatFileName( wxString fileName )
 
 void SessionSelectionDialog::OnOkClick( wxCommandEvent& event )
 {
+  // clang-format off
 ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK in SessionSelectionDialog.
   // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK in SessionSelectionDialog. 
+////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK in SessionSelectionDialog.
+  // clang-format on
 }
 
 
@@ -409,12 +431,13 @@ void SessionSelectionDialog::OnOkClick( wxCommandEvent& event )
 
 void SessionSelectionDialog::OnCancelClick( wxCommandEvent& event )
 {
+  // clang-format off
 ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SessionSelectionDialog.
   // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SessionSelectionDialog. 
+////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in SessionSelectionDialog.
+  // clang-format on
 }
-
 
 
 wxString SessionSelectionDialog::GetSessionPath()
@@ -423,9 +446,7 @@ wxString SessionSelectionDialog::GetSessionPath()
 }
 
 
-
 wxArrayString SessionSelectionDialog::GetSessionPaths()
 {
   return allFilesInDir;
 }
-

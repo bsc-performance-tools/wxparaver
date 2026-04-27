@@ -25,27 +25,30 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#  pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#  include "wx/wx.h"
 #endif
 
 #include <iostream>
 
+// clang-format off
 ////@begin includes
 ////@end includes
-
-#include "filter.h"
+// clang-format on
 
 #include "eventsselectiondialog.h"
+#include "filter.h"
 #include "labelconstructor.h"
 
 using namespace std;
 
+// clang-format off
 ////@begin XPM images
 ////@end XPM images
+// clang-format on
 
 
 /*!
@@ -61,6 +64,7 @@ IMPLEMENT_DYNAMIC_CLASS( EventsSelectionDialog, wxDialog )
 
 BEGIN_EVENT_TABLE( EventsSelectionDialog, wxDialog )
 
+// clang-format off
 ////@begin EventsSelectionDialog event table entries
   EVT_IDLE( EventsSelectionDialog::OnIdle )
   EVT_CHOICE( ID_CHOICE_OPERATOR_FUNCTION_TYPES, EventsSelectionDialog::OnChoiceOperatorFunctionTypesSelected )
@@ -81,26 +85,27 @@ BEGIN_EVENT_TABLE( EventsSelectionDialog, wxDialog )
   EVT_BUTTON( wxID_APPLY, EventsSelectionDialog::OnApplyClick )
   EVT_UPDATE_UI( wxID_APPLY, EventsSelectionDialog::OnApplyUpdate )
 ////@end EventsSelectionDialog event table entries
+// clang-format on
 
 END_EVENT_TABLE()
 
 
-static int wxCMPFUNC_CONV compare_int(int *a, int *b)
+static int wxCMPFUNC_CONV compare_int( int* a, int* b )
 {
-  if ( *a > *b )
+  if( *a > *b )
     return 1;
-  else if ( *a < *b )
+  else if( *a < *b )
     return -1;
   else
     return 0;
 }
 
 
-static int wxCMPFUNC_CONV compare_double(double *a, double *b)
+static int wxCMPFUNC_CONV compare_double( double* a, double* b )
 {
-  if ( *a > *b )
+  if( *a > *b )
     return 1;
-  else if ( *a < *b )
+  else if( *a < *b )
     return -1;
   else
     return 0;
@@ -121,6 +126,7 @@ EventsSelectionDialog::EventsSelectionDialog()
  */
 void EventsSelectionDialog::Init()
 {
+  // clang-format off
 ////@begin EventsSelectionDialog member initialisation
   boxSizerFunctionTypes = NULL;
   staticTextFunctionTypes = NULL;
@@ -139,33 +145,33 @@ void EventsSelectionDialog::Init()
   buttonAddValues = NULL;
   applyButton = NULL;
 ////@end EventsSelectionDialog member initialisation
+  // clang-format on
 
   hideOperatorsList = false;
 
   currentWindow = nullptr;
   currentFilter = nullptr;
 
-  changedEventTypesFunction = false;
+  changedEventTypesFunction  = false;
   previousEventTypesFunction = 0;
 
   changedEventTypesSelection = false;
-  currentType = TEventType( 0 );
+  currentType                = TEventType( 0 );
 
-  changedOperatorTypeValue = false;
+  changedOperatorTypeValue  = false;
   previousOperatorTypeValue = 0;
 
-  changedEventValuesFunction = false;
+  changedEventValuesFunction  = false;
   previousEventValuesFunction = 0;
 
   changedEventValues = false;
 }
 
 
-void EventsSelectionDialog::TransferDataToWindowPreCreateControls( Timeline *whichWindow,
-                                                                   bool whichHideOperatorsList )
+void EventsSelectionDialog::TransferDataToWindowPreCreateControls( Timeline* whichWindow, bool whichHideOperatorsList )
 {
-  currentWindow = whichWindow;
-  currentFilter = currentWindow->getFilter();
+  currentWindow     = whichWindow;
+  currentFilter     = currentWindow->getFilter();
   hideOperatorsList = whichHideOperatorsList;
 
   // First time all types are shown, also related values
@@ -181,7 +187,7 @@ void EventsSelectionDialog::TransferDataToWindowPreCreateControls( Timeline *whi
 
 void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
 {
-  if ( hideOperatorsList )
+  if( hideOperatorsList )
   {
     bool recursive = true;
     staticTextFunctionTypes->Hide();
@@ -193,21 +199,21 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
     boxSizerFunctionValues->Hide( recursive );
   }
 
-  vector<string> filterFunctions;
+  vector< string > filterFunctions;
   currentFilter->getAllFilterFunctions( filterFunctions );
 
-  for( vector<string>::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
+  for( vector< string >::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
   {
     // Fill wxChoice and select the current
-    int i = choiceOperatorFunctionTypes->Append( wxString::FromUTF8( (*it).c_str() ) );
-    if( (*it) == currentFilter->getEventTypeFunction() )
+    int i = choiceOperatorFunctionTypes->Append( wxString::FromUTF8( ( *it ).c_str() ) );
+    if( ( *it ) == currentFilter->getEventTypeFunction() )
     {
       choiceOperatorFunctionTypes->SetSelection( i );
       previousEventTypesFunction = i;
     }
   }
 
-  // fill and/or 
+  // fill and/or
   choiceOperatorTypeValue->Append( _( "And" ) );
   choiceOperatorTypeValue->Append( _( "Or" ) );
   if( currentFilter->getOpTypeValue() == Filter::AND )
@@ -221,10 +227,10 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
     previousOperatorTypeValue = 1;
   }
 
-  for( vector<string>::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
+  for( vector< string >::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
   {
-    int i = choiceOperatorFunctionValues->Append( wxString::FromUTF8( (*it).c_str() ) );
-    if( (*it) == currentFilter->getEventValueFunction() )
+    int i = choiceOperatorFunctionValues->Append( wxString::FromUTF8( ( *it ).c_str() ) );
+    if( ( *it ) == currentFilter->getEventValueFunction() )
     {
       choiceOperatorFunctionValues->SetSelection( i );
       previousEventValuesFunction = i;
@@ -235,7 +241,7 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
   UpdateWidgetChecklistboxTypes();
   if( typesHandler->countVisible() > 0 )
   {
-    currentType = typesHandler->getCurrent();
+    currentType       = typesHandler->getCurrent();
     bool keepSelected = false; // Initially, read also from window filter
     UpdateChecklistboxValues( currentType, keepSelected );
   }
@@ -244,31 +250,27 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
 }
 
 
-EventsSelectionDialog::EventsSelectionDialog(  wxWindow* parent,
-                                               Timeline *whichWindow,
-                                               bool whichHideOperatorsList,
-                                               const wxString& caption,
-                                               wxWindowID id,
-                                               const wxPoint& pos,
-                                               const wxSize& size,
-                                               long style)
+EventsSelectionDialog::EventsSelectionDialog( wxWindow* parent,
+                                              Timeline* whichWindow,
+                                              bool whichHideOperatorsList,
+                                              const wxString& caption,
+                                              wxWindowID id,
+                                              const wxPoint& pos,
+                                              const wxSize& size,
+                                              long style )
 {
   Init();
   TransferDataToWindowPreCreateControls( whichWindow, whichHideOperatorsList );
-  Create(parent, id, caption, pos, size, style );
+  Create( parent, id, caption, pos, size, style );
 }
 
 
 /*!
  * EventsSelectionDialog creator
  */
-bool EventsSelectionDialog::Create( wxWindow* parent,
-                                    wxWindowID id,
-                                    const wxString& caption,
-                                    const wxPoint& pos,
-                                    const wxSize& size,
-                                    long style )
+bool EventsSelectionDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  // clang-format off
 ////@begin EventsSelectionDialog creation
   SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
   wxDialog::Create( parent, id, caption, pos, size, style );
@@ -280,6 +282,7 @@ bool EventsSelectionDialog::Create( wxWindow* parent,
   }
   Centre();
 ////@end EventsSelectionDialog creation
+  // clang-format on
   return true;
 }
 
@@ -299,6 +302,7 @@ EventsSelectionDialog::~EventsSelectionDialog()
  */
 void EventsSelectionDialog::CreateControls()
 {
+  // clang-format off
 ////@begin EventsSelectionDialog content construction
   EventsSelectionDialog* itemDialog1 = this;
 
@@ -430,8 +434,9 @@ void EventsSelectionDialog::CreateControls()
   // Connect events and objects
   textCtrlAddValues->Connect(ID_TEXTCTRL_ADD_VALUES, wxEVT_KEY_DOWN, wxKeyEventHandler(EventsSelectionDialog::OnTextCtrlKeyDown), NULL, this);
 ////@end EventsSelectionDialog content construction
+  // clang-format on
 
-  textCtrlAddValues->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+  textCtrlAddValues->SetValidator( wxTextValidator( wxFILTER_NUMERIC ) );
 
   TransferDataToWindowPostCreateControls();
 }
@@ -451,11 +456,13 @@ bool EventsSelectionDialog::ShowToolTips()
  */
 wxBitmap EventsSelectionDialog::GetBitmapResource( const wxString& name )
 {
+  // clang-format off
   // Bitmap retrieval
 ////@begin EventsSelectionDialog bitmap retrieval
   wxUnusedVar(name);
   return wxNullBitmap;
 ////@end EventsSelectionDialog bitmap retrieval
+  // clang-format on
 }
 
 
@@ -464,11 +471,13 @@ wxBitmap EventsSelectionDialog::GetBitmapResource( const wxString& name )
  */
 wxIcon EventsSelectionDialog::GetIconResource( const wxString& name )
 {
+  // clang-format off
   // Icon retrieval
 ////@begin EventsSelectionDialog icon retrieval
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end EventsSelectionDialog icon retrieval
+  // clang-format on
 }
 
 
@@ -559,9 +568,9 @@ void EventsSelectionDialog::OnIdle( wxIdleEvent& event )
 }
 
 
-void EventsSelectionDialog::checkAll( wxCheckListBox *boxlist, bool value )
+void EventsSelectionDialog::checkAll( wxCheckListBox* boxlist, bool value )
 {
-  for ( unsigned int i = 0; i < boxlist->GetCount(); ++i )
+  for( unsigned int i = 0; i < boxlist->GetCount(); ++i )
   {
     boxlist->Check( i, value );
   }
@@ -578,18 +587,18 @@ void EventsSelectionDialog::OnApplyClick( wxCommandEvent& event )
 }
 
 
-bool EventsSelectionDialog::HasChanged( wxChoice *choice, int selectedFunction ) const
+bool EventsSelectionDialog::HasChanged( wxChoice* choice, int selectedFunction ) const
 {
   return ( choice->GetCurrentSelection() != selectedFunction );
 }
 
 
-unsigned int EventsSelectionDialog::GetSelections( wxCheckListBox *checkList, wxArrayInt &index ) const
+unsigned int EventsSelectionDialog::GetSelections( wxCheckListBox* checkList, wxArrayInt& index ) const
 {
   unsigned int numSelections = 0;
   for( unsigned int i = 0; i < checkList->GetCount(); ++i )
   {
-    if ( checkList->IsChecked( i ) )
+    if( checkList->IsChecked( i ) )
     {
       numSelections++;
       index.Add( i );
@@ -600,18 +609,18 @@ unsigned int EventsSelectionDialog::GetSelections( wxCheckListBox *checkList, wx
 }
 
 
-bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayInt &index ) const
+bool EventsSelectionDialog::HasChanged( wxCheckListBox* checkList, wxArrayInt& index ) const
 {
   bool changed = false;
 
   wxArrayInt tmpIndex;
-  unsigned int numSelections = GetSelections( checkList, tmpIndex ); 
+  unsigned int numSelections = GetSelections( checkList, tmpIndex );
 
-  if ( index.Count() == numSelections )
+  if( index.Count() == numSelections )
   {
     for( unsigned int i = 0; i < numSelections; ++i )
     {
-      if ( tmpIndex[ i ] != index[ i ] )
+      if( tmpIndex[ i ] != index[ i ] )
       {
         changed = true;
         break;
@@ -625,7 +634,7 @@ bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayInt &i
 }
 
 
-bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, EventInfoManager *manager ) const
+bool EventsSelectionDialog::HasChanged( wxCheckListBox* checkList, EventInfoManager* manager ) const
 {
   bool changed = false;
 
@@ -638,13 +647,13 @@ bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, EventInfoMana
   manager->getSelectedFromVisible( dummyVisible, dummyPosVisible, dummyGlobalSelected, tmpGUISelected, dummyFirstPosSelectedVisible );
 
   wxArrayInt tmpIndex;
-  unsigned int numSelections = GetSelections( checkList, tmpIndex ); 
+  unsigned int numSelections = GetSelections( checkList, tmpIndex );
 
-  if ( tmpGUISelected.Count() == numSelections )
+  if( tmpGUISelected.Count() == numSelections )
   {
     for( unsigned int i = 0; i < numSelections; ++i )
     {
-      if ( tmpIndex[ i ] != tmpGUISelected[ i ] )
+      if( tmpIndex[ i ] != tmpGUISelected[ i ] )
       {
         changed = true;
         break;
@@ -658,33 +667,30 @@ bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, EventInfoMana
 }
 
 
-bool EventsSelectionDialog::CopyChanges( wxChoice *choice, int &selectedFunction )
+bool EventsSelectionDialog::CopyChanges( wxChoice* choice, int& selectedFunction )
 {
-  bool changed = HasChanged( choice, selectedFunction );
+  bool changed     = HasChanged( choice, selectedFunction );
   selectedFunction = choice->GetCurrentSelection();
 
   return changed;
 }
 
 
-bool EventsSelectionDialog::CopyChanges( wxCheckListBox *checkList,
-                                         wxArrayInt &index,
-                                         wxArrayString &selected,
-                                         bool copyStrings )
+bool EventsSelectionDialog::CopyChanges( wxCheckListBox* checkList, wxArrayInt& index, wxArrayString& selected, bool copyStrings )
 {
   bool changed = HasChanged( checkList, index );
 
   index.Clear();
 
-  unsigned int numSelections = GetSelections( checkList, index ); 
+  unsigned int numSelections = GetSelections( checkList, index );
 
-  if ( copyStrings )
+  if( copyStrings )
   {
     selected.Clear();
 
     for( unsigned int i = 0; i < numSelections; ++i )
     {
-       selected.Add( checkList->GetString( i ) );
+      selected.Add( checkList->GetString( i ) );
     }
   }
 
@@ -694,11 +700,11 @@ bool EventsSelectionDialog::CopyChanges( wxCheckListBox *checkList,
 
 void EventsSelectionDialog::TransferWindowToData()
 {
-  changedEventTypesFunction = CopyChanges( choiceOperatorFunctionTypes, previousEventTypesFunction );
+  changedEventTypesFunction  = CopyChanges( choiceOperatorFunctionTypes, previousEventTypesFunction );
   changedEventTypesSelection = typesHandler->getChangedSelected();
-  changedOperatorTypeValue = CopyChanges( choiceOperatorTypeValue, previousOperatorTypeValue );
+  changedOperatorTypeValue   = CopyChanges( choiceOperatorTypeValue, previousOperatorTypeValue );
   changedEventValuesFunction = CopyChanges( choiceOperatorFunctionValues, previousEventValuesFunction );
-  changedEventValues = valuesHandler->getChangedSelected();
+  changedEventValues         = valuesHandler->getChangedSelected();
 }
 
 
@@ -711,7 +717,7 @@ void EventsSelectionDialog::OnChecklistboxTypesToggled( wxCommandEvent& event )
 
   typesHandler->setSelected( pos, checkListSelectTypes->IsChecked( pos ) );
   TEventType tmpNewCurrentType = typesHandler->getVisible( pos );
-  if ( currentType != tmpNewCurrentType )
+  if( currentType != tmpNewCurrentType )
   {
     currentType = tmpNewCurrentType;
     typesHandler->setCurrent( currentType );
@@ -764,14 +770,14 @@ void EventsSelectionDialog::OnChoiceOperatorTypeValueSelected( wxCommandEvent& e
 void EventsSelectionDialog::OnChecklistboxTypesDoubleClicked( wxCommandEvent& event )
 {
   int pos = event.GetInt();
-  if ( pos >= 0 )
+  if( pos >= 0 )
   {
     checkListSelectTypes->Check( pos, !checkListSelectTypes->IsChecked( pos ) );
     TEventType tmpNewCurrentType = typesHandler->getVisible( pos );
     typesHandler->setSelected( tmpNewCurrentType, checkListSelectTypes->IsChecked( pos ) );
 
     // Because after checkListSelectTypes->Clear() the "Selected" event triggers this function with pos < 0
-    if ( currentType != tmpNewCurrentType )
+    if( currentType != tmpNewCurrentType )
     {
       currentType = tmpNewCurrentType;
       typesHandler->setCurrent( currentType );
@@ -799,7 +805,7 @@ void EventsSelectionDialog::UpdateWidgetChecklistboxValues()
     checkListSelectValues->InsertItems( tmpVisible, 0 );
 
     // Check them
-    for ( unsigned int i = 0; i < tmpGUISelected.GetCount(); ++i )
+    for( unsigned int i = 0; i < tmpGUISelected.GetCount(); ++i )
     {
       checkListSelectValues->Check( tmpGUISelected[ i ] );
     }
@@ -816,7 +822,7 @@ void EventsSelectionDialog::UpdateWidgetChecklistboxTypes()
   wxArrayInt dummyPosVisible;
   wxArrayInt dummyGlobalSelected;
   wxArrayInt tmpGUISelected;
-  int firstPos = 0;
+  int firstPos           = 0;
   bool tmpUpdateFirstPos = true;
 
   typesHandler->getSelectedFromVisible( tmpVisible, dummyPosVisible, dummyGlobalSelected, tmpGUISelected, firstPos, tmpUpdateFirstPos );
@@ -825,7 +831,7 @@ void EventsSelectionDialog::UpdateWidgetChecklistboxTypes()
   // Following backup of currentType is needed because Clear emits Selected event
   // and OnChecklistboxTypesSelected changes it
   TEventType tmpCurrent = typesHandler->getCurrent();
-  currentType = tmpCurrent;
+  currentType           = tmpCurrent;
   checkListSelectTypes->Clear(); // ---> throws Selected event with pos -1
 
   typesHandler->setCurrent( tmpCurrent );
@@ -835,7 +841,7 @@ void EventsSelectionDialog::UpdateWidgetChecklistboxTypes()
     checkListSelectTypes->InsertItems( tmpVisible, 0 );
 
     // Check them
-    for ( unsigned int i = 0; i < tmpGUISelected.GetCount(); ++i )
+    for( unsigned int i = 0; i < tmpGUISelected.GetCount(); ++i )
     {
       checkListSelectTypes->Check( tmpGUISelected[ i ] );
     }
@@ -861,11 +867,11 @@ void EventsSelectionDialog::UpdateChecklistboxValues( TEventType whichType, bool
 void EventsSelectionDialog::OnChecklistboxTypesSelected( wxCommandEvent& event )
 {
   int pos = event.GetInt();
-  if ( pos >= 0 )
+  if( pos >= 0 )
   {
     // Because after checkListSelectTypes->Clear() the "Selected" event triggers this function with pos < 0
     TEventType tmpNewCurrentType = typesHandler->getVisible( pos );
-    if ( currentType != tmpNewCurrentType )
+    if( currentType != tmpNewCurrentType )
     {
       currentType = tmpNewCurrentType;
       typesHandler->setCurrent( currentType );
@@ -894,10 +900,10 @@ void EventsSelectionDialog::InsertValueFromTextCtrl()
   double tmpDouble;
   textCtrlAddValues->GetValue().ToDouble( &tmpDouble );
 
-  changedEventValues = valuesHandler->insert( tmpDouble, _("") );
+  changedEventValues = valuesHandler->insert( tmpDouble, _( "" ) );
 
   // Update changed?
-  if ( changedEventValues )
+  if( changedEventValues )
   {
     UpdateChecklistboxValues( currentType );
   }
@@ -921,7 +927,7 @@ void EventsSelectionDialog::OnButtonAddValuesClick( wxCommandEvent& event )
  */
 void EventsSelectionDialog::OnTextCtrlKeyDown( wxKeyEvent& event )
 {
-  if ( event.GetKeyCode() == WXK_RETURN )
+  if( event.GetKeyCode() == WXK_RETURN )
     InsertValueFromTextCtrl();
   else
     event.Skip();
@@ -933,17 +939,17 @@ void EventsSelectionDialog::EnableApplyButton()
   // Save current Filter state
   string tmpCurrentTypeFunc  = currentFilter->getEventTypeFunction();
   string tmpCurrentValueFunc = currentFilter->getEventValueFunction();
-  
+
   currentFilter->setEventTypeFunction( GetNameEventTypesFunction() );
   currentFilter->setEventValueFunction( GetNameEventValuesFunction() );
-  
+
   // Some functions like '<' only admit 1 parameter
   wxArrayInt dummyIndex;
   unsigned int numTypesSelected  = typesHandler->getSelected().Count();
   unsigned int numValuesSelected = valuesHandler->getSelected().Count();
-  bool enabledByFunctionTypes  = currentFilter->allowedEventTypeFunctionNumParams( numTypesSelected );
-  bool enabledByFunctionValues = currentFilter->allowedEventValueFunctionNumParams( numValuesSelected );
-  
+  bool enabledByFunctionTypes    = currentFilter->allowedEventTypeFunctionNumParams( numTypesSelected );
+  bool enabledByFunctionValues   = currentFilter->allowedEventValueFunctionNumParams( numValuesSelected );
+
   // Restore Filter state
   currentFilter->setEventTypeFunction( tmpCurrentTypeFunc );
   currentFilter->setEventValueFunction( tmpCurrentValueFunc );
@@ -953,7 +959,7 @@ void EventsSelectionDialog::EnableApplyButton()
 
   // Be consistent with and/or operation
   bool on;
-  if ( choiceOperatorTypeValue->GetSelection() == 0 ) // ==> AND
+  if( choiceOperatorTypeValue->GetSelection() == 0 ) // ==> AND
     on = ( enabledByFunctionTypes && enabledByFunctionValues ) && someChange;
   else
     on = ( enabledByFunctionTypes || enabledByFunctionValues ) && someChange;
@@ -971,13 +977,13 @@ void EventsSelectionDialog::OnApplyUpdate( wxUpdateUIEvent& event )
 }
 
 
-EventInfoManager::EventInfoManager( Timeline *whichWindow, Filter *whichFilter )
+EventInfoManager::EventInfoManager( Timeline* whichWindow, Filter* whichFilter )
 {
-  currentWindow = whichWindow;
-  currentFilter = whichFilter;
+  currentWindow           = whichWindow;
+  currentFilter           = whichFilter;
   firstPosSelectedVisible = 0;
-  filterRegEx = vector< wxRegEx * >();
-  changedSelection = false;
+  filterRegEx             = vector< wxRegEx* >();
+  changedSelection        = false;
 }
 
 
@@ -992,22 +998,22 @@ EventInfoManager::~EventInfoManager()
 bool EventInfoManager::add( wxString whichRegEx )
 {
   bool regExAdded = false;
-  
-  wxRegEx *labelRegEx = new wxRegEx();
 
-  if ( labelRegEx->Compile( whichRegEx ) )
+  wxRegEx* labelRegEx = new wxRegEx();
+
+  if( labelRegEx->Compile( whichRegEx ) )
   {
     filterRegEx.push_back( labelRegEx );
     regExAdded = true;
   }
-  
+
   return regExAdded;
 }
 
 
 void EventInfoManager::clearAllRegEx()
 {
-  for( vector< wxRegEx * >::iterator it = filterRegEx.begin(); it != filterRegEx.end(); ++it )
+  for( vector< wxRegEx* >::iterator it = filterRegEx.begin(); it != filterRegEx.end(); ++it )
   {
     delete *it;
   }
@@ -1020,10 +1026,9 @@ bool EventInfoManager::matchesAllRegex( string whichName, string whichValue )
 {
   bool matchesAll = true;
 
-  for( vector< wxRegEx * >::iterator it = filterRegEx.begin(); it != filterRegEx.end(); ++it )
+  for( vector< wxRegEx* >::iterator it = filterRegEx.begin(); it != filterRegEx.end(); ++it )
   {
-    if ( !(*it)->Matches( wxString::FromUTF8( whichName.c_str() ) ) &&
-         !(*it)->Matches( wxString::FromUTF8( whichValue.c_str() ) ) )
+    if( !( *it )->Matches( wxString::FromUTF8( whichName.c_str() ) ) && !( *it )->Matches( wxString::FromUTF8( whichValue.c_str() ) ) )
     {
       matchesAll = false;
       break;
@@ -1034,8 +1039,7 @@ bool EventInfoManager::matchesAllRegex( string whichName, string whichValue )
 }
 
 
-EventTypesInfoManager::EventTypesInfoManager( Timeline *whichWindow, Filter *whichFilter )
-  : EventInfoManager( whichWindow, whichFilter )
+EventTypesInfoManager::EventTypesInfoManager( Timeline* whichWindow, Filter* whichFilter ) : EventInfoManager( whichWindow, whichFilter )
 {
   init();
 }
@@ -1057,14 +1061,14 @@ void EventTypesInfoManager::setSelected( int vPos, bool isChecked )
   firstPosSelectedVisible = visible[ vPos ];
 
   int elemPos = selected.Index( visible[ vPos ] );
-  if ( isChecked )
+  if( isChecked )
   {
-    if ( elemPos == wxNOT_FOUND )
+    if( elemPos == wxNOT_FOUND )
       selected.Add( visible[ vPos ] );
   }
   else
   {
-    if ( elemPos != wxNOT_FOUND )
+    if( elemPos != wxNOT_FOUND )
       selected.RemoveAt( elemPos );
   }
 
@@ -1079,23 +1083,23 @@ void EventTypesInfoManager::setSelected( TEventType whichSelected, bool isChecke
   int elemPos = wxNOT_FOUND;
 
   vector< TEventType >::iterator itType = find( fullList.begin(), fullList.end(), whichSelected );
-  if ( itType != fullList.end() )
+  if( itType != fullList.end() )
   {
     elemPos = int( itType - fullList.begin() );
   }
 
   int posInSelected = selected.Index( elemPos );
-  if ( isChecked )
+  if( isChecked )
   {
-    if ( posInSelected == wxNOT_FOUND )
+    if( posInSelected == wxNOT_FOUND )
       selected.Add( elemPos );
   }
   else
   {
-    if ( posInSelected != wxNOT_FOUND )
+    if( posInSelected != wxNOT_FOUND )
       selected.RemoveAt( posInSelected );
   }
-  
+
   selected.Sort( compare_int );
 
   setChangedSelection();
@@ -1106,7 +1110,7 @@ void EventTypesInfoManager::setAllSelected()
 {
   for( size_t i = 0; i < visible.GetCount(); ++i )
   {
-    if ( selected.Index( visible[ i ] ) == wxNOT_FOUND )
+    if( selected.Index( visible[ i ] ) == wxNOT_FOUND )
       selected.Add( visible[ i ] );
   }
 
@@ -1121,7 +1125,7 @@ void EventTypesInfoManager::setAllUnselected()
   for( size_t i = 0; i < visible.GetCount(); ++i )
   {
     int tmpPos = selected.Index( visible[ i ] );
-    if ( tmpPos != wxNOT_FOUND )
+    if( tmpPos != wxNOT_FOUND )
       selected.RemoveAt( tmpPos );
   }
 
@@ -1149,7 +1153,7 @@ void EventTypesInfoManager::init()
 
   fullList.clear();
   fullList.assign( tmpEventTypes.begin(), tmpEventTypes.end() ); // set to vector
-  
+
   vector< TEventType > tmpSelectedTypes;
   currentFilter->getEventType( tmpSelectedTypes );
 
@@ -1158,13 +1162,13 @@ void EventTypesInfoManager::init()
   {
     // build labeled name
     string tmpstr;
-    currentWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
+    currentWindow->getTrace()->getEventLabels().getEventTypeLabel( ( *it ), tmpstr );
 
     labels.Add( wxString() << ( *it ) << _( " " ) << wxString::FromUTF8( tmpstr.c_str() ) );
 
     // Check if event type i in current filter
     vector< TEventType >::iterator itType = find( tmpSelectedTypes.begin(), tmpSelectedTypes.end(), ( *it ) );
-    if ( itType != tmpSelectedTypes.end() )
+    if( itType != tmpSelectedTypes.end() )
     {
       int tmpPos = int( it - fullList.begin() );
       selected.Add( tmpPos );
@@ -1175,10 +1179,10 @@ void EventTypesInfoManager::init()
   }
 
   // 5) Set class attributes
-  if ( selected.GetCount() > 0 )
+  if( selected.GetCount() > 0 )
   {
     firstPosSelectedVisible = selected[ 0 ];
-    currentType = firstPosSelectedVisible;
+    currentType             = firstPosSelectedVisible;
   }
 
   changedSelection = false;
@@ -1191,7 +1195,7 @@ wxArrayInt EventTypesInfoManager::getSelected()
 
   for( size_t i = 0; i < selected.GetCount(); ++i )
   {
-    tmpTypesSelected.Add( fullList[ selected[ i ]] );
+    tmpTypesSelected.Add( fullList[ selected[ i ] ] );
   }
 
   return tmpTypesSelected;
@@ -1199,10 +1203,10 @@ wxArrayInt EventTypesInfoManager::getSelected()
 
 
 void EventTypesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible,
-                                                    wxArrayInt &whichPosVisible,
-                                                    wxArrayInt &whichGlobalSelection,
-                                                    wxArrayInt &whichGUISelection,
-                                                    int &whichFirstPosSelectedVisible,
+                                                    wxArrayInt& whichPosVisible,
+                                                    wxArrayInt& whichGlobalSelection,
+                                                    wxArrayInt& whichGUISelection,
+                                                    int& whichFirstPosSelectedVisible,
                                                     bool updateFirstPosSelectedVisible )
 {
   wxArrayString tmpVisible;
@@ -1215,7 +1219,7 @@ void EventTypesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible,
 
   unsigned int selectedPositionInGUI = 0;
 
-  for ( unsigned int i = 0; i < visible.GetCount(); ++i )
+  for( unsigned int i = 0; i < visible.GetCount(); ++i )
   {
     // Pick type and label
     stringstream tmpValue;
@@ -1223,34 +1227,34 @@ void EventTypesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible,
 
     string tmpLabel( labels[ visible[ i ] ].mb_str() );
 
-    if ( matchesAllRegex( tmpLabel, tmpValue.str() ) )
+    if( matchesAllRegex( tmpLabel, tmpValue.str() ) )
     {
       tmpVisible.Add( labels[ visible[ i ] ] );
       tmpPosVisible.Add( visible[ i ] );
-      if ( selected.Index( visible[ i ] ) != wxNOT_FOUND )
+      if( selected.Index( visible[ i ] ) != wxNOT_FOUND )
       {
         tmpGUISelection.Add( selectedPositionInGUI );
         tmpGlobalSelection.Add( visible[ i ] );
       }
-      
-      
-      if (( !foundFirst ) && ( fullList[ visible[ i ] ] == currentType ))
+
+
+      if( ( !foundFirst ) && ( fullList[ visible[ i ] ] == currentType ) )
       {
         tmpFirstPosSelectedVisible = selectedPositionInGUI;
-        foundFirst = true;
+        foundFirst                 = true;
       }
 
       ++selectedPositionInGUI;
     }
   }
-  
-  whichVisible = tmpVisible;
-  whichPosVisible = tmpPosVisible;
-  whichGlobalSelection = tmpGlobalSelection;
-  whichGUISelection = tmpGUISelection;
+
+  whichVisible                 = tmpVisible;
+  whichPosVisible              = tmpPosVisible;
+  whichGlobalSelection         = tmpGlobalSelection;
+  whichGUISelection            = tmpGUISelection;
   whichFirstPosSelectedVisible = tmpFirstPosSelectedVisible;
 
-  if ( updateFirstPosSelectedVisible )
+  if( updateFirstPosSelectedVisible )
   {
     firstPosSelectedVisible = tmpFirstPosSelectedVisible;
   }
@@ -1274,8 +1278,8 @@ void EventTypesInfoManager::updateVisible()
 void EventTypesInfoManager::setChangedSelection()
 {
   bool changed = false;
-  
-  if ( selected.GetCount() != initialSelected.GetCount() )
+
+  if( selected.GetCount() != initialSelected.GetCount() )
   {
     changed = true;
   }
@@ -1283,7 +1287,7 @@ void EventTypesInfoManager::setChangedSelection()
   {
     for( size_t i = 0; i < selected.GetCount(); ++i )
     {
-      if ( selected[ i ] != initialSelected[ i ] )
+      if( selected[ i ] != initialSelected[ i ] )
       {
         changed = true;
         break;
@@ -1295,7 +1299,7 @@ void EventTypesInfoManager::setChangedSelection()
 }
 
 
-EventValuesInfoManager::EventValuesInfoManager( Timeline *whichWindow, Filter *whichFilter, TEventType whichType )
+EventValuesInfoManager::EventValuesInfoManager( Timeline* whichWindow, Filter* whichFilter, TEventType whichType )
   : EventInfoManager( whichWindow, whichFilter )
 {
   currentType = whichType;
@@ -1307,7 +1311,7 @@ void EventValuesInfoManager::setAllVisible()
   visible.Clear();
   for( size_t i = 0; i < fullList.size(); ++i )
   {
-    visible.Add( fullList[i] );
+    visible.Add( fullList[ i ] );
   }
 }
 
@@ -1319,7 +1323,7 @@ void EventValuesInfoManager::init( TEventType whichType, bool typeValueOp, bool 
   fullList.Clear();
   labels.Clear();
   visible.Clear();
-  if ( ! keepSelected )
+  if( !keepSelected )
     selected.Clear();
 
   // 1) Read values for this event type from the trace of the window
@@ -1327,24 +1331,24 @@ void EventValuesInfoManager::init( TEventType whichType, bool typeValueOp, bool 
   currentWindow->getTrace()->getEventLabels().getValues( whichType, auxValues );
   for( map< TEventValue, string >::iterator it = auxValues.begin(); it != auxValues.end(); ++it )
   {
-    fullList.Add( (*it).first );
+    fullList.Add( ( *it ).first );
   }
 
   // 2) Append the ones in the filter as selected
-  if ( ! keepSelected )
+  if( !keepSelected )
   {
     vector< TSemanticValue > tmpValues;
     currentFilter->getEventValue( tmpValues );
-    for( vector<TSemanticValue>::iterator it = tmpValues.begin(); it != tmpValues.end(); ++it )
+    for( vector< TSemanticValue >::iterator it = tmpValues.begin(); it != tmpValues.end(); ++it )
     {
-      selected.Add( (*it) );
+      selected.Add( ( *it ) );
     }
   }
 
   // 3) Are values in filter in fullList? Add them if missing
   for( unsigned int i = 0; i < selected.GetCount(); ++i )
   {
-    if ( fullList.Index( selected[ i ] ) == wxNOT_FOUND && typeValueOp != Filter::AND )
+    if( fullList.Index( selected[ i ] ) == wxNOT_FOUND && typeValueOp != Filter::AND )
     {
       fullList.Add( selected[ i ] );
     }
@@ -1352,7 +1356,7 @@ void EventValuesInfoManager::init( TEventType whichType, bool typeValueOp, bool 
 
   for( unsigned int i = 0; i < addedFullList.GetCount(); ++i )
   {
-    if ( fullList.Index( addedFullList[ i ] ) == wxNOT_FOUND )
+    if( fullList.Index( addedFullList[ i ] ) == wxNOT_FOUND )
     {
       fullList.Add( addedFullList[ i ] );
     }
@@ -1369,7 +1373,7 @@ void EventValuesInfoManager::init( TEventType whichType, bool typeValueOp, bool 
     tmpValue << fullList[ i ];
 
     string tmpLabel = LabelConstructor::eventValueLabel( currentWindow, whichType, fullList[ i ], true );
-    if ( tmpLabel == "" )
+    if( tmpLabel == "" )
     {
       tmpLabel = tmpValue.str();
     }
@@ -1377,7 +1381,7 @@ void EventValuesInfoManager::init( TEventType whichType, bool typeValueOp, bool 
     tmpEventValues.Add( wxString::FromUTF8( tmpLabel.c_str() ) );
 
     // and also 6) Filter values using given parameter regular expr.
-    if ( matchesAllRegex( tmpLabel, tmpValue.str() ) )
+    if( matchesAllRegex( tmpLabel, tmpValue.str() ) )
     {
       visible.Add( fullList[ i ] );
     }
@@ -1397,7 +1401,7 @@ void EventValuesInfoManager::setAllSelected()
 {
   for( size_t i = 0; i < visible.GetCount(); ++i )
   {
-    if ( selected.Index( visible[ i ] ) == wxNOT_FOUND )
+    if( selected.Index( visible[ i ] ) == wxNOT_FOUND )
       selected.Add( visible[ i ] );
   }
 
@@ -1412,7 +1416,7 @@ void EventValuesInfoManager::setAllUnselected()
   for( size_t i = 0; i < visible.GetCount(); ++i )
   {
     int tmpPos = selected.Index( visible[ i ] );
-    if ( tmpPos != wxNOT_FOUND )
+    if( tmpPos != wxNOT_FOUND )
       selected.RemoveAt( tmpPos );
   }
 
@@ -1423,10 +1427,10 @@ void EventValuesInfoManager::setAllUnselected()
 
 
 void EventValuesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible,
-                                                     wxArrayInt &whichPosVisible,
-                                                     wxArrayInt &whichGlobalSelection,
-                                                     wxArrayInt &whichGUISelection,
-                                                     int &whichFirstPosSelectedVisible,
+                                                     wxArrayInt& whichPosVisible,
+                                                     wxArrayInt& whichGlobalSelection,
+                                                     wxArrayInt& whichGUISelection,
+                                                     int& whichFirstPosSelectedVisible,
                                                      bool updateFirstPosSelectedVisible )
 {
   wxArrayString tmpVisible;
@@ -1434,34 +1438,34 @@ void EventValuesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible
   wxArrayInt tmpGlobalSelection;
   wxArrayInt tmpGUISelection;
 
-  firstPosSelectedVisible = 0;
+  firstPosSelectedVisible        = 0;
   int tmpFirstPosSelectedVisible = 0;
 
   bool foundFirst = false;
 
   unsigned int selectedPositionInGUI = 0;
 
-  for ( unsigned int i = 0; i < visible.GetCount(); ++i )
+  for( unsigned int i = 0; i < visible.GetCount(); ++i )
   {
     int fullListPos = fullList.Index( visible[ i ] );
     string tmpLabel( labels[ fullListPos ].mb_str() );
 
     stringstream tmpValue;
     tmpValue << fullList[ fullListPos ];
-    if ( matchesAllRegex( tmpLabel, tmpValue.str() ) )
+    if( matchesAllRegex( tmpLabel, tmpValue.str() ) )
     {
       tmpVisible.Add( labels[ fullListPos ] );
       tmpPosVisible.Add( fullListPos );
 
-      if ( selected.Index( visible[ i ] ) != wxNOT_FOUND )
+      if( selected.Index( visible[ i ] ) != wxNOT_FOUND )
       {
         tmpGUISelection.Add( selectedPositionInGUI );
         tmpGlobalSelection.Add( visible[ i ] );
 
-        if ( !foundFirst )
+        if( !foundFirst )
         {
           tmpFirstPosSelectedVisible = selectedPositionInGUI;
-          foundFirst = true;
+          foundFirst                 = true;
         }
       }
 
@@ -1469,13 +1473,13 @@ void EventValuesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible
     }
   }
 
-  whichVisible = tmpVisible;
-  whichPosVisible = tmpPosVisible;
-  whichGlobalSelection = tmpGlobalSelection;
-  whichGUISelection = tmpGUISelection;
+  whichVisible                 = tmpVisible;
+  whichPosVisible              = tmpPosVisible;
+  whichGlobalSelection         = tmpGlobalSelection;
+  whichGUISelection            = tmpGUISelection;
   whichFirstPosSelectedVisible = tmpFirstPosSelectedVisible;
 
-  if ( updateFirstPosSelectedVisible )
+  if( updateFirstPosSelectedVisible )
   {
     firstPosSelectedVisible = tmpFirstPosSelectedVisible;
   }
@@ -1491,10 +1495,10 @@ bool EventValuesInfoManager::insert( double whichValue, wxString whichLabel )
     // Insert in eventValues
     fullList.Add( whichValue );
     fullList.Sort( compare_double );
-    
+
     // Insert in labeledEventValues
     int insertPos = fullList.Index( whichValue );
-    int maxPos = fullList.GetCount() - 1;
+    int maxPos    = fullList.GetCount() - 1;
     wxArrayString tmpLabeledEventValues;
     for( int i = 0; i < insertPos; ++i )
     {
@@ -1520,11 +1524,11 @@ bool EventValuesInfoManager::insert( double whichValue, wxString whichLabel )
     changed = true;
   }
 
-  if ( visible.Index( whichValue ) == wxNOT_FOUND )
+  if( visible.Index( whichValue ) == wxNOT_FOUND )
   {
     stringstream tmpValue;
     tmpValue << whichValue;
-    if ( matchesAllRegex( string( whichLabel.mb_str() ), tmpValue.str() ) )
+    if( matchesAllRegex( string( whichLabel.mb_str() ), tmpValue.str() ) )
     {
       visible.Add( whichValue );
       visible.Sort( compare_double );
@@ -1539,15 +1543,15 @@ bool EventValuesInfoManager::insert( double whichValue, wxString whichLabel )
 }
 
 
-void EventValuesInfoManager::transferFrom( wxCheckListBox *whichList )
+void EventValuesInfoManager::transferFrom( wxCheckListBox* whichList )
 {
   for( unsigned int i = 0; i < visible.GetCount(); ++i )
   {
-    if ( whichList->IsChecked( i ) )
+    if( whichList->IsChecked( i ) )
     {
-      if( selected.Index( visible[i] ) == wxNOT_FOUND )
+      if( selected.Index( visible[ i ] ) == wxNOT_FOUND )
       {
-        selected.Add( visible[i] );
+        selected.Add( visible[ i ] );
       }
     }
     else
@@ -1570,7 +1574,7 @@ void EventValuesInfoManager::setChangedSelection()
 {
   bool changed = false;
 
-  if ( selected.GetCount() != initialSelected.GetCount() )
+  if( selected.GetCount() != initialSelected.GetCount() )
   {
     changed = true;
   }
@@ -1578,7 +1582,7 @@ void EventValuesInfoManager::setChangedSelection()
   {
     for( size_t i = 0; i < selected.GetCount(); ++i )
     {
-      if ( selected[ i ] != initialSelected[ i ] )
+      if( selected[ i ] != initialSelected[ i ] )
       {
         changed = true;
         break;
@@ -1593,7 +1597,7 @@ void EventValuesInfoManager::setChangedSelection()
 void EventValuesInfoManager::setVisible( wxArrayInt whichVisible )
 {
   visible.Clear();
-  for ( size_t i = 0; i < whichVisible.Count(); ++i )
+  for( size_t i = 0; i < whichVisible.Count(); ++i )
   {
     visible.Add( fullList[ whichVisible[ i ] ] );
   }
@@ -1623,9 +1627,9 @@ void EventsSelectionDialog::OnTextctrlTypesRegexSearchTextUpdated( wxCommandEven
   typesHandler->setAllVisible();
   checkboxSetAllTypes->SetValue( false );
 
-  if ( typesRegexSearch->GetValue().Len() > 0 )
+  if( typesRegexSearch->GetValue().Len() > 0 )
   {
-    if ( typesHandler->add( typesRegexSearch->GetValue() ) )
+    if( typesHandler->add( typesRegexSearch->GetValue() ) )
     {
       typesHandler->updateVisible();
       UpdateWidgetChecklistboxTypes();
@@ -1649,7 +1653,7 @@ void EventsSelectionDialog::OnCheckboxSetAllTypesClick( wxCommandEvent& event )
   bool checked = checkboxSetAllTypes->GetValue();
 
   checkAll( checkListSelectTypes, checked );
-  if ( checked )
+  if( checked )
   {
     typesHandler->setAllSelected();
   }
@@ -1669,7 +1673,7 @@ void EventsSelectionDialog::OnCheckboxSetAllValuesClick( wxCommandEvent& event )
 
   checkAll( checkListSelectValues, checked );
   changedEventValues = HasChanged( checkListSelectValues, valuesHandler );
-  if ( checked )
+  if( checked )
   {
     valuesHandler->setAllSelected();
   }
@@ -1689,9 +1693,9 @@ void EventsSelectionDialog::OnTextctrlValuesRegexSearchTextUpdated( wxCommandEve
   valuesHandler->setAllVisible();
   checkboxSetAllValues->SetValue( false );
 
-  if ( valuesRegexSearch->GetValue().Len() > 0 )
+  if( valuesRegexSearch->GetValue().Len() > 0 )
   {
-    if ( valuesHandler->add( valuesRegexSearch->GetValue() ) )
+    if( valuesHandler->add( valuesRegexSearch->GetValue() ) )
     {
       valuesHandler->updateVisible();
       UpdateChecklistboxValues( currentType );
@@ -1721,4 +1725,3 @@ void EventsSelectionDialog::OnCheckboxSetAllValuesUpdate( wxUpdateUIEvent& event
 {
   checkboxSetAllValues->Enable( checkListSelectValues->GetCount() > 0 );
 }
-
