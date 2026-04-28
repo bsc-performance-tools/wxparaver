@@ -8,8 +8,10 @@
 
 #define SIZE_MARK_LABEL 4
 
-void imageFormatTypeToBitmapType( const TImageFormat& wichFilterIndex, wxBitmapType& imageType )
+wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& wichFilterIndex )
 {
+  wxBitmapType imageType;
+
   switch( wichFilterIndex )
   {
     case TImageFormat::BMP:
@@ -28,6 +30,8 @@ void imageFormatTypeToBitmapType( const TImageFormat& wichFilterIndex, wxBitmapT
       imageType = wxBITMAP_TYPE_PNG;
       break;
   }
+
+  return imageType;
 }
 
 WindowImageGenerator::WindowImageGenerator( wxBitmap* wichBitmapTimeline,
@@ -575,29 +579,20 @@ void WindowImageGenerator::generateScaleWindowsImage()
 
 void WindowImageGenerator::saveImageWindows( wxString whichFileName )
 {
-  wxBitmapType imageType;
-  imageFormatTypeToBitmapType( filterIndex, imageType );
-
-  wxImage timelineImage( bitmapImageTimeline->ConvertToImage() );
-
   // Save timeline image without scale
-  timelineImage.SaveFile( whichFileName, imageType );
+  wxImage timelineImage( bitmapImageTimeline->ConvertToImage() );
+  timelineImage.SaveFile( whichFileName, imageFormatTypeToBitmapType( filterIndex ) );
 }
 
 
 void WindowImageGenerator::saveImageWindowScale( wxString whichFileName )
 {
+  // Save timeline image without scale
   wxImage timelineImageScale( bitmapImageTimelineScale->ConvertToImage() );
-
-
   wxString currentFormat = wxString::FromUTF8( LabelConstructor::getImageFileSuffix( TImageFormat( filterIndex ) ).c_str() );
   wxString tmpScaledTimelinePath = wxFileName( whichFileName ).GetPathWithSep() + wxFileName( whichFileName ).GetName() + currentFormat;
 
-  wxBitmapType imageType;
-  imageFormatTypeToBitmapType( filterIndex, imageType );
-
-  // Save timeline image without scale
-  timelineImageScale.SaveFile( tmpScaledTimelinePath, imageType );
+  timelineImageScale.SaveFile( tmpScaledTimelinePath, imageFormatTypeToBitmapType( filterIndex ) );
 }
 
 
@@ -1217,11 +1212,7 @@ wxImage ScaleImageGenerator::bitmapToImage()
 
 void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSuffix )
 {
-  wxBitmapType imageType;
   wxString tmpSuffix;
-
-  imageFormatTypeToBitmapType( filterIndex, imageType );
-
   if( appendLegendSuffix )
   {
     tmpSuffix = legendSuffix + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
@@ -1234,7 +1225,7 @@ void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSuffix
   wxString imagePath = imageName + tmpSuffix;
 
   wxImage baseLayer = bitmapToImage();
-  baseLayer.SaveFile( imagePath, imageType );
+  baseLayer.SaveFile( imagePath, imageFormatTypeToBitmapType( filterIndex ) );
 }
 
 void ScaleImageGenerator::processImage( std::optional< int > wantedWidth )

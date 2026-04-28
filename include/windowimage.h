@@ -280,4 +280,4 @@ class WindowImageGenerator
 };
 
 
-void imageFormatTypeToBitmapType( const TImageFormat& whichFilterIndex, wxBitmapType& imageType );
+wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& whichFilterIndex );
