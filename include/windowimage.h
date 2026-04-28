@@ -268,23 +268,24 @@ class WindowImageGenerator
     void generateScaleWindowsImage( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram = nullptr );
     void generateScaleWindowsImage();
 
+    bool copyImageToClipboard();
+
     void saveImageWindows( wxString whichFileName );
     void saveImageWindowScale( wxString whichFileName );
     void saveImageScale( wxString whichFileName, bool appendLegendSuffix );
     void saveImageControlScale( wxString imageName, bool appendLegendSuffix );
 
   private:
-    wxBitmap* bitmapTimeline;
+    wxBitmap* bitmapTimeline = nullptr;
 
-    wxBitmap* bitmapImageTimeline;
-    wxMemoryDC* memoryImageTimeline;
+    wxBitmap* bitmapImageTimeline   = nullptr;
+    wxMemoryDC* memoryImageTimeline = nullptr;
 
-    wxBitmap* bitmapImageTimelineScale;
-    wxMemoryDC* memoryImageTimelineScale;
+    wxBitmap* bitmapImageTimelineScale   = nullptr;
+    wxMemoryDC* memoryImageTimelineScale = nullptr;
 
-    ScaleImageGenerator* scaleImage     = nullptr;
-    ScaleImageGenerator* scaleImageData = nullptr;
-
+    ScaleImageGenerator* scaleImage        = nullptr;
+    ScaleImageGenerator* scaleImageData    = nullptr;
     ScaleImageGenerator* scaleWindowsImage = nullptr;
 
     TScaleImageOrientation orientation = TScaleImageOrientation::TScaleImageOrientationHorizontal;

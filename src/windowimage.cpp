@@ -28,9 +28,11 @@
 
 #include <iterator>
 #include <vector>
+#include <wx/clipbrd.h>
 #include <wx/filename.h>
 
 #define SIZE_MARK_LABEL 4
+
 
 wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& whichFilterIndex )
 {
@@ -58,6 +60,7 @@ wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& whichFilterIndex )
   return imageType;
 }
 
+
 WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
                                             // WindowGenericItem whichGenericItem,
                                             wxColour whichBackground,
@@ -75,13 +78,13 @@ WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
   filterIndex     = whichFilterIndex;
 }
 
+
 WindowImageGenerator::~WindowImageGenerator()
 {
   if( scaleImage != scaleImageData )
     delete scaleImage;
 
   delete scaleImageData;
-
 
   delete bitmapImageTimeline;
   delete memoryImageTimeline;
@@ -90,26 +93,35 @@ WindowImageGenerator::~WindowImageGenerator()
   delete memoryImageTimelineScale;
 }
 
+
 wxBitmap* WindowImageGenerator::getWindowsImageBitmap()
 {
   return bitmapImageTimeline;
 }
+
+
 wxBitmap* WindowImageGenerator::getTimelineScaleImage()
 {
   return bitmapImageTimelineScale;
 }
+
+
 wxBitmap* WindowImageGenerator::getScaleImageBitmap()
 {
   if( scaleImage == nullptr )
     return nullptr;
   return scaleImage->getBitmap();
 }
+
+
 ScaleImageGenerator* WindowImageGenerator::getScaleImage()
 {
   if( scaleImage == nullptr )
     return nullptr;
   return scaleImage;
 }
+
+
 ScaleImageGenerator* WindowImageGenerator::getScaleWindowsImage()
 {
   if( scaleWindowsImage == nullptr )
@@ -117,12 +129,15 @@ ScaleImageGenerator* WindowImageGenerator::getScaleWindowsImage()
   return scaleWindowsImage;
 }
 
+
 wxBitmap* WindowImageGenerator::getScaleDataImageBitmap()
 {
   if( scaleImageData == nullptr )
     return nullptr;
   return scaleImageData->getBitmap();
 }
+
+
 ScaleImageGenerator* WindowImageGenerator::getScaleDataImage()
 {
   if( scaleImageData == nullptr )
@@ -130,19 +145,24 @@ ScaleImageGenerator* WindowImageGenerator::getScaleDataImage()
   return scaleImageData;
 }
 
+
 wxString WindowImageGenerator::getLegendSuffix()
 {
   return scaleImage->getLegendSuffix();
 }
 
+
 TImageFormat WindowImageGenerator::getImageFormat()
 {
   return filterIndex;
 }
+
+
 void WindowImageGenerator::setImageFormat( TImageFormat whichFilterIndex )
 {
   filterIndex = whichFilterIndex;
 }
+
 
 void WindowImageGenerator::setImageOrientation( TScaleImageOrientation a_orientation )
 {
@@ -150,22 +170,24 @@ void WindowImageGenerator::setImageOrientation( TScaleImageOrientation a_orienta
   {
     orientation = a_orientation;
 
-
     if( scaleImageData )
     {
       scaleImageData->setImageOrientation( a_orientation );
       scaleImageData->initializeConfiguration();
       scaleImageData->processImage();
     }
+
     if( scaleImage )
     {
       scaleImage->setImageOrientation( a_orientation );
       scaleImage->initializeConfiguration();
       scaleImage->processImage();
     }
+
     generateScaleWindowsImage();
   }
 }
+
 
 void WindowImageGenerator::transformToShort( bool isShort )
 {
@@ -213,7 +235,6 @@ void WindowImageGenerator::generatescaleImageDataWindows( std::map< TSemanticVal
 
   orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
 
-
   scaleImageData = new ScaleImageGenerator( myHistogram,
                                             myWindow,
                                             scaleValues,
@@ -229,6 +250,7 @@ void WindowImageGenerator::generatescaleImageDataWindows( std::map< TSemanticVal
   scaleImageData->computeSemanticLabels();
   scaleImageData->processImage();
 }
+
 
 void WindowImageGenerator::generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor,
                                                           Timeline* myWindow,
@@ -357,6 +379,7 @@ void WindowImageGenerator::generateWindowsImage( const std::string& windowsName,
 #endif
   memoryImageTimeline->Blit( 0, titleHeigth, bitmapTimeline->GetWidth(), bitmapTimeline->GetHeight(), &timelineDC, 0, 0 );
 }
+
 
 void WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName )
 {
@@ -528,6 +551,7 @@ void WindowImageGenerator::generateScaleWindowsImage( std::map< TSemanticValue, 
   }
 }
 
+
 void WindowImageGenerator::generateScaleWindowsImage()
 {
   scaleWindowsImage->setImageOrientation( orientation );
@@ -601,6 +625,21 @@ void WindowImageGenerator::generateScaleWindowsImage()
 }
 
 
+bool WindowImageGenerator::copyImageToClipboard()
+{
+  bool copyDone = false;
+  if( wxTheClipboard->Open() )
+  {
+    wxImage timelineImage( bitmapImageTimeline->ConvertToImage() );
+    copyDone = wxTheClipboard->SetData( new wxBitmapDataObject( *bitmapImageTimeline ) );
+
+    wxTheClipboard->Close();
+  }
+
+  return copyDone;
+}
+
+
 void WindowImageGenerator::saveImageWindows( wxString whichFileName )
 {
   // Save timeline image without scale
@@ -661,6 +700,7 @@ ScaleImageGenerator::ScaleImageGenerator( Histogram* whichMyWindow,
   computeSemanticLabels();
 }
 
+
 ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
                                           const std::map< TSemanticValue, rgb >& whichSemanticValues,
                                           wxColour whichBackground,
@@ -688,6 +728,7 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
   computeSemanticLabels();
 }
 
+
 ScaleImageGenerator::~ScaleImageGenerator()
 {
   delete bitmapImageContent;
@@ -696,6 +737,7 @@ ScaleImageGenerator::~ScaleImageGenerator()
   delete bitmapImageMask;
   delete memoryImageMask;
 }
+
 
 void ScaleImageGenerator::initializeConfiguration()
 {
@@ -755,12 +797,13 @@ void ScaleImageGenerator::initializeConfiguration()
   // }
 }
 
+
 void ScaleImageGenerator::setImageOrientation( TScaleImageOrientation a_orientation )
 {
   orientation = a_orientation;
 }
-//
-//
+
+
 void ScaleImageGenerator::computeSemanticLabels()
 {
   // Dimensions: loop for every value to build labels and measure the maximum
@@ -801,6 +844,7 @@ void ScaleImageGenerator::computeSemanticLabels()
     semanticValuesSelectedPositions.push_back( i );
   }
 }
+
 
 void ScaleImageGenerator::computeMaxSemanticLabelsSize()
 {
@@ -857,7 +901,8 @@ void ScaleImageGenerator::computeMaxSemanticLabelsSize()
   maxLabelDC.SetFont( dataImage.textFont );
   maxLabelSize = maxLabelDC.GetTextExtent( semanticValuesLabels[ semanticValueMaxLengthLabel ] );
 }
-//
+
+
 void ScaleImageGenerator::sortSemanticValuesGradientColors()
 {
   semanticValuesColors.clear();
@@ -882,8 +927,8 @@ void ScaleImageGenerator::sortSemanticValuesGradientColors()
                                                   myWindow );
   }
 }
-//
-//
+
+
 void ScaleImageGenerator::computeGeneratedImageSize( int whichWantedWidth )
 {
   if( orientation == TScaleImageOrientation::TScaleImageOrientationVertical )
@@ -948,7 +993,8 @@ void ScaleImageGenerator::computeGeneratedImageSize( int whichWantedWidth )
     }
   }
 }
-//
+
+
 void ScaleImageGenerator::createImageDC()
 {
   bitmapImageContent = new wxBitmap( dataImage.imageWidth, dataImage.imageHeight );
@@ -981,7 +1027,8 @@ void ScaleImageGenerator::createImageDC()
   memoryImageMask->SetFont( dataImage.textFont );
   memoryImageMask->Clear();
 }
-//
+
+
 void ScaleImageGenerator::drawImage()
 {
   if( scaleType == TScaleImageType::TScaleImageGradientColor || scaleType == TScaleImageType::TScaleImageGradientColorNotNull ||
@@ -990,7 +1037,8 @@ void ScaleImageGenerator::drawImage()
   else
     drawImageCodeColor();
 }
-//
+
+
 void ScaleImageGenerator::drawImageCodeColor()
 {
   int posX = dataImage.rectMargin + dataImage.titleMargin;
@@ -1022,8 +1070,8 @@ void ScaleImageGenerator::drawImageCodeColor()
     }
   }
 }
-//
-//
+
+
 void ScaleImageGenerator::drawImageGradientColor()
 {
   // *** 1. Draw color scale ****************************************************************
@@ -1131,8 +1179,8 @@ void ScaleImageGenerator::drawImageGradientColor()
                                posY + dataImage.heightRect + SIZE_MARK_LABEL );
   }
 }
-//
-//
+
+
 void ScaleImageGenerator::drawRectangle( rgb semanticColour, int posX, int posY )
 {
   memoryImageContent->SetBrush( wxColour( semanticColour.red, semanticColour.green, semanticColour.blue ) );
@@ -1140,7 +1188,8 @@ void ScaleImageGenerator::drawRectangle( rgb semanticColour, int posX, int posY 
   //
   memoryImageMask->DrawRectangle( posX, posY, dataImage.widthRect, dataImage.heightRect );
 }
-//
+
+
 void ScaleImageGenerator::drawLabelGradient( wxString semanticValueLabel, TPosition alignmentLabel, int posX, int posY )
 {
   wxSize labelSize = memoryImageContent->GetTextExtent( semanticValueLabel );
@@ -1192,7 +1241,8 @@ void ScaleImageGenerator::drawLabelGradient( wxString semanticValueLabel, TPosit
     memoryImageMask->DrawText( semanticValueLabel, posX + dataImage.widthRect + SIZE_MARK_LABEL + 1, posY );
   }
 }
-//
+
+
 wxImage ScaleImageGenerator::bitmapToImage()
 {
   memoryImageContent->SelectObject( wxNullBitmap );
@@ -1212,6 +1262,7 @@ wxImage ScaleImageGenerator::bitmapToImage()
   return scaleImage;
 }
 
+
 void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSuffix )
 {
   wxString tmpSuffix;
@@ -1229,6 +1280,7 @@ void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSuffix
   wxImage baseLayer = bitmapToImage();
   baseLayer.SaveFile( imagePath, imageFormatTypeToBitmapType( filterIndex ) );
 }
+
 
 void ScaleImageGenerator::processImage( std::optional< int > wantedWidth )
 {
@@ -1253,12 +1305,14 @@ void ScaleImageGenerator::processImage( std::optional< int > wantedWidth )
 
   this->drawImage();
 }
-//
+
+
 wxString ScaleImageGenerator::getLegendSuffix()
 {
   return legendSuffix;
 }
-//
+
+
 void ScaleImageGenerator::updateLegendSuffix()
 {
   if( scaleType == TScaleImageType::TScaleImageGradientColor )
