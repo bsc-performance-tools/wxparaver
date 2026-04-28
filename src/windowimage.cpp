@@ -583,6 +583,8 @@ void WindowImageGenerator::saveImageWindows( wxString whichFileName )
   // Save timeline image without scale
   timelineImage.SaveFile( whichFileName, imageType );
 }
+
+
 void WindowImageGenerator::saveImageWindowScale( wxString whichFileName )
 {
   wxImage timelineImageScale( bitmapImageTimelineScale->ConvertToImage() );
@@ -598,14 +600,16 @@ void WindowImageGenerator::saveImageWindowScale( wxString whichFileName )
   timelineImageScale.SaveFile( tmpScaledTimelinePath, imageType );
 }
 
-void WindowImageGenerator::saveImageControlScale( wxString imageName, bool appendLegendSufix )
+
+void WindowImageGenerator::saveImageControlScale( wxString imageName, bool appendLegendSuffix )
 {
-  scaleImageData->saveImage( imageName, appendLegendSufix );
+  scaleImageData->saveImage( imageName, appendLegendSuffix );
 }
 
-void WindowImageGenerator::saveImageScale( wxString imageName, bool appendLegendSufix )
+
+void WindowImageGenerator::saveImageScale( wxString imageName, bool appendLegendSuffix )
 {
-  scaleImage->saveImage( imageName, appendLegendSufix );
+  scaleImage->saveImage( imageName, appendLegendSuffix );
 }
 
 
@@ -1211,14 +1215,14 @@ wxImage ScaleImageGenerator::bitmapToImage()
   return scaleImage;
 }
 
-void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSufix )
+void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSuffix )
 {
   wxBitmapType imageType;
   wxString tmpSuffix;
 
   imageFormatTypeToBitmapType( filterIndex, imageType );
 
-  if( appendLegendSufix )
+  if( appendLegendSuffix )
   {
     tmpSuffix = legendSuffix + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
   }

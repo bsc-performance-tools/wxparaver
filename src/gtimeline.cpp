@@ -2091,7 +2091,7 @@ void gTimeline::OnPopUpCopy( wxCommandEvent& event )
   gPasteWindowProperties::getInstance()->copy( this );
 
   bool copyToClipboard   = true;
-  auto copiedToClipboard = saveImageWindows( _( "" ), {}, copyToClipboard );
+  auto copiedToClipboard = saveImageWindows( _( "" ), copyToClipboard );
   if( !copiedToClipboard.value() )
     wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
                   _( "Copy Timeline Properties" ),
@@ -4307,14 +4307,13 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
 }
 
 
-std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, TImageFormat filterIndex, bool copyToClipboard )
+std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, bool copyToClipboard )
 {
   wxString imagePath;
-  /* TImageFormat filterIndex;*/
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
 
   setEnableDestroyButton( false );
 
-  // TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
@@ -4330,26 +4329,6 @@ std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, TImag
     defaultDir = _( "./" );
 #endif
     imagePath = imageName + tmpSuffix;
-  }
-  wxBitmapType imageType;
-
-  switch( filterIndex )
-  {
-    case TImageFormat::BMP:
-      imageType = wxBITMAP_TYPE_BMP;
-      break;
-    case TImageFormat::JPG:
-      imageType = wxBITMAP_TYPE_JPEG;
-      break;
-    case TImageFormat::PNG:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
-    case TImageFormat::XPM:
-      imageType = wxBITMAP_TYPE_XPM;
-      break;
-    default:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
   }
 
   WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
@@ -4371,10 +4350,10 @@ std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, TImag
 }
 
 
-void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterIndex, bool appendLegendSuffix )
+void gTimeline::saveImageLegend( wxString whichFileName )
 {
   wxString imagePath;
-  /* TImageFormat filterIndex;*/
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
 
   setEnableDestroyButton( false );
 
@@ -4384,8 +4363,6 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
   }
   else
   {
-    filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
-
     wxString imageName = buildFormattedFileName();
     wxString tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     wxString defaultDir;
@@ -4395,26 +4372,6 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
     defaultDir = _( "./" );
 #endif
     imagePath = imageName + tmpSuffix;
-  }
-  wxBitmapType imageType;
-
-  switch( filterIndex )
-  {
-    case TImageFormat::BMP:
-      imageType = wxBITMAP_TYPE_BMP;
-      break;
-    case TImageFormat::JPG:
-      imageType = wxBITMAP_TYPE_JPEG;
-      break;
-    case TImageFormat::PNG:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
-    case TImageFormat::XPM:
-      imageType = wxBITMAP_TYPE_XPM;
-      break;
-    default:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
   }
 
   WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );

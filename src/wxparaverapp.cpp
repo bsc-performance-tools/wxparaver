@@ -676,7 +676,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser &paraverCommandLineParser )
             histo->setRecalc( false );
             tmpGHisto->execute();
 
-            tmpGHisto->saveImage( wxT( "" ) );
+            tmpGHisto->saveImage();
 
             delete tmpGHisto;
             newHistograms.pop_back();
@@ -696,7 +696,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser &paraverCommandLineParser )
 
             tmpTimeline->redraw();
 
-            tmpTimeline->saveImageWindows( wxT( "" ) );
+            tmpTimeline->saveImageWindows();
             tmpTimeline->saveImageLegend();
 
             delete tmpTimeline;

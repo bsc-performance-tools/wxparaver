@@ -1426,7 +1426,7 @@ void gHistogram::OnPopUpCopy( wxCommandEvent& event )
   gPasteWindowProperties::getInstance()->copy( this );
 
   bool copyToClipboard   = true;
-  auto copiedToClipboard = saveImage( _( "" ), {}, copyToClipboard );
+  auto copiedToClipboard = saveImage( _( "" ), copyToClipboard );
   if( !copiedToClipboard.value() )
     wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
                   _( "Copy Histogram Properties" ),
@@ -3448,131 +3448,117 @@ void gHistogram::saveText( bool onlySelectedPlane )
 }
 
 
-void gHistogram::saveImageDialog( wxString whichFileName )
+void gHistogram::saveImageDialog()
 {
   wxString imagePath;
-  TImageFormat filterIndex;
-
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
+  
   setEnableDestroyButton( false );
 
-  if( !whichFileName.IsEmpty() )
+  wxString imageName = buildFormattedFileName();
+
+  wxFileName startingDir( wxString::FromUTF8( myHistogram->getTrace()->getFileName().c_str() ) );
+  wxString defaultDir = startingDir.GetPath();
+
+  wxFont semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
+
+  WindowImageGenerator* newWindowImage;
+
+  if( GetHistogram()->getZoom() )
   {
-    imagePath   = whichFileName;
-    filterIndex = TImageFormat::PNG;
+    wxColour foregroundColour = *wxWHITE;
+    wxColour backgroundColour = *wxBLACK;
+
+    newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+
+    newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+    newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+    newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+
+    if( myHistogram->getFirstRowColored() )
+    {
+      newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
+    }
   }
   else
   {
-    wxString imageName;
-    wxString tmpSuffix;
-    wxString defaultDir;
+    wxColour foregroundColour = *wxBLACK;
+    wxColour backgroundColour = *wxWHITE;
 
-    imageName = buildFormattedFileName();
+    newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
-    wxFileName startingDir( wxString::FromUTF8( myHistogram->getTrace()->getFileName().c_str() ) );
-    defaultDir = startingDir.GetPath();
+    newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
 
-    // filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
-    wxFont semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
-
-    WindowImageGenerator* newWindowImage;
-
-    if( GetHistogram()->getZoom() )
+    if( myHistogram->getShowColor() == true )
     {
-      wxColour foregroundColour = *wxWHITE;
-      wxColour backgroundColour = *wxBLACK;
-
-      newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
-
-      newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
       newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
       newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+    }
+    if( myHistogram->getFirstRowColored() == true )
+    {
+      newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
+    }
+  }
 
+
+  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, true );
+
+  // TODO
+  // saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
+
+  if( saveDialog.ShowModal() != wxID_OK )
+  {
+    setEnableDestroyButton( true );
+    return;
+  }
+
+  filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
+  ParaverConfig::getInstance()->setTimelineSaveImageFormat( filterIndex );
+
+  imagePath = saveDialog.GetImageFilePath();
+
+  if( saveDialog.DialogSavesImage() )
+  {
+    imageName = saveDialog.GetImageFilePath();
+    newWindowImage->saveImageWindows( imageName );
+  }
+
+  if( saveDialog.DialogSavesImageScale() )
+  {
+    imageName = saveDialog.GetImageScaleFilePath();
+    newWindowImage->saveImageWindowScale( imageName );
+  }
+
+  if( GetHistogram()->getZoom() )
+  {
+    if( saveDialog.DialogSavesLegend() )
+    {
+      imageName = saveDialog.GetLegendControlFilePath(); // .GetPath();
+      newWindowImage->saveImageControlScale( imageName, false );
+    }
+
+    if( saveDialog.DialogSavesControlLegend() )
+    {
       if( myHistogram->getFirstRowColored() )
       {
-        newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
-      }
-    }
-    else
-    {
-      wxColour foregroundColour = *wxBLACK;
-      wxColour backgroundColour = *wxWHITE;
-
-      newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
-
-      newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
-
-      if( myHistogram->getShowColor() == true )
-      {
-        newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
-        newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
-      }
-      if( myHistogram->getFirstRowColored() == true )
-      {
-        newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
-      }
-    }
-
-
-    SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, true );
-
-    // TODO
-    // saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
-
-    if( saveDialog.ShowModal() != wxID_OK )
-    {
-      setEnableDestroyButton( true );
-      return;
-    }
-
-    filterIndex = TImageFormat( saveDialog.GetFilterIndex() ); // TImageFormat::PNG; //TImageFormat( saveDialog.GetFilterIndex() );
-    ParaverConfig::getInstance()->setTimelineSaveImageFormat( filterIndex );
-
-    imagePath = saveDialog.GetImageFilePath();
-
-    if( saveDialog.DialogSavesImage() )
-    {
-      imageName = saveDialog.GetImageFilePath();
-      newWindowImage->saveImageWindows( imageName );
-    }
-
-    if( saveDialog.DialogSavesImageScale() )
-    {
-      imageName = saveDialog.GetImageScaleFilePath();
-      newWindowImage->saveImageWindowScale( imageName );
-    }
-
-    if( GetHistogram()->getZoom() )
-    {
-      if( saveDialog.DialogSavesLegend() )
-      {
-        imageName = saveDialog.GetLegendControlFilePath(); // .GetPath();
-        newWindowImage->saveImageControlScale( imageName, false );
-      }
-
-      if( saveDialog.DialogSavesControlLegend() )
-      {
-        if( myHistogram->getFirstRowColored() )
-        {
-          imageName = saveDialog.GetLegendFilePath(); // .GetPath();
-          newWindowImage->saveImageScale( imageName, false );
-        }
+        imageName = saveDialog.GetLegendFilePath(); // .GetPath();
+        newWindowImage->saveImageScale( imageName, false );
       }
     }
   }
 }
 
 
-std::optional< bool > gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex, bool copyToClipboard )
+std::optional< bool > gHistogram::saveImage( wxString whichFileName, bool copyToClipboard )
 {
   wxString imagePath;
-  // TImageFormat filterIndex;
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    // filterIndex =  TImageFormat::PNG;
   }
   else
   {
@@ -3587,32 +3573,10 @@ std::optional< bool > gHistogram::saveImage( wxString whichFileName, TImageForma
 #else
     defaultDir = _( "./" );
 #endif
-    filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
 
     tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     imagePath = imageName + tmpSuffix;
   }
-  // Get extension and save
-  wxBitmapType imageType;
-  switch( filterIndex )
-  {
-    case TImageFormat::BMP:
-      imageType = wxBITMAP_TYPE_BMP;
-      break;
-    case TImageFormat::JPG:
-      imageType = wxBITMAP_TYPE_JPEG;
-      break;
-    case TImageFormat::PNG:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
-    case TImageFormat::XPM:
-      imageType = wxBITMAP_TYPE_XPM;
-      break;
-    default:
-      imageType = wxBITMAP_TYPE_PNG;
-      break;
-  }
-
 
   wxFont semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
 

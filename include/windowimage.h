@@ -156,7 +156,7 @@ class ScaleImageGenerator
     void drawImageGradientColor();
 
 
-    void saveImage( wxString whichFileName, bool appendLegendSufix );
+    void saveImage( wxString whichFileName, bool appendLegendSuffix );
     void processImage( std::optional< int > wantedWidth = std::nullopt );
 
 
@@ -249,8 +249,8 @@ class WindowImageGenerator
 
     void saveImageWindows( wxString whichFileName );
     void saveImageWindowScale( wxString whichFileName );
-    void saveImageScale( wxString whichFileName, bool appendLegendSufix );
-    void saveImageControlScale( wxString imageName, bool appendLegendSufix );
+    void saveImageScale( wxString whichFileName, bool appendLegendSuffix );
+    void saveImageControlScale( wxString imageName, bool appendLegendSuffix );
 
   private:
     wxBitmap* bitmapTimeline;
