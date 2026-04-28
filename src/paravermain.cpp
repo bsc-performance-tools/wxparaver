@@ -2325,11 +2325,6 @@ void paraverMain::OnTreeSelChanging( wxTreeEvent &event )
   {
     return;
   }
-  TreeBrowserItemData *itemSelected = dynamic_cast< TreeBrowserItemData * >( tmpTree->GetItemData( event.GetItem() ) );
-  if( itemSelected == nullptr )
-  {
-    return;
-  }
   selectionChanging = true;
 
   if( !wxGetKeyState( WXK_CONTROL ) && !wxGetKeyState( WXK_SHIFT ) )

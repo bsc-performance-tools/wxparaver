@@ -4314,7 +4314,7 @@ std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, TImag
 
   setEnableDestroyButton( false );
 
-  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  // TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
