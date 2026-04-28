@@ -613,7 +613,7 @@ void WindowImageGenerator::saveImageWindowScale( wxString whichFileName )
 {
   // Save timeline image without scale
   wxImage timelineImageScale( bitmapImageTimelineScale->ConvertToImage() );
-  wxString currentFormat = wxString::FromUTF8( LabelConstructor::getImageFileSuffix( TImageFormat( filterIndex ) ).c_str() );
+  wxString currentFormat         = wxString::FromUTF8( LabelConstructor::getImageFileSuffix( TImageFormat( filterIndex ) ).c_str() );
   wxString tmpScaledTimelinePath = wxFileName( whichFileName ).GetPathWithSep() + wxFileName( whichFileName ).GetName() + currentFormat;
 
   timelineImageScale.SaveFile( tmpScaledTimelinePath, imageFormatTypeToBitmapType( filterIndex ) );
@@ -653,7 +653,7 @@ ScaleImageGenerator::ScaleImageGenerator( Histogram* whichMyWindow,
   , mergedImages( whichMergedImages )
 {
   dataImage.backgroundMode = backgroundColor;
-  dataImage.precision = 2;
+  dataImage.precision      = 2;
 
   dataImage.textFont = whichTextFont;
 
@@ -680,7 +680,7 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
   , mergedImages( whichMergedImages )
 {
   dataImage.backgroundMode = backgroundColor;
-  dataImage.precision = 2;
+  dataImage.precision      = 2;
 
   dataImage.textFont = whichTextFont;
 
@@ -785,7 +785,7 @@ void ScaleImageGenerator::computeSemanticLabels()
           wxString::FromUTF8( LabelConstructor::objectLabel( it->first, ( *timeline )->getLevel(), ( *timeline )->getTrace() ).c_str() );
       }
     }
-      // Convert wxString → std::string (UTF-8)
+    // Convert wxString → std::string (UTF-8)
     std::string narrow = std::string( semanticValuesLabelsLong[ it->first ].mb_str() );
 
     // Call your transform function

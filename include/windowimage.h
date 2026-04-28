@@ -203,10 +203,10 @@ class ScaleImageGenerator
 
     std::vector< int > semanticValuesSelectedPositions;
 
-    wxBitmap* bitmapImageContent = nullptr;
+    wxBitmap* bitmapImageContent   = nullptr;
     wxMemoryDC* memoryImageContent = nullptr;
 
-    wxBitmap* bitmapImageMask = nullptr;
+    wxBitmap* bitmapImageMask   = nullptr;
     wxMemoryDC* memoryImageMask = nullptr;
 
     TSemanticValue currentMin;
@@ -220,7 +220,7 @@ class ScaleImageGenerator
     wxSize maxLabelSize = wxSize( 0, 0 );
 
     bool mergedImages;
-    bool shortLabel = false;
+    bool shortLabel               = false;
     int totalSquaresGradientColor = 21;
 
     wxString legendSuffix;
