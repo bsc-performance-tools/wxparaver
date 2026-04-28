@@ -1,3 +1,27 @@
+/*****************************************************************************\
+ *                        ANALYSIS PERFORMANCE TOOLS                         *
+ *                                  wxparaver                                *
+ *              Paraver Trace Visualization and Analysis Tool                *
+ *****************************************************************************
+ *     ___     This library is free software; you can redistribute it and/or *
+ *    /  __         modify it under the terms of the GNU LGPL as published   *
+ *   /  /  _____    by the Free Software Foundation; either version 2.1      *
+ *  /  /  /     \   of the License, or (at your option) any later version.   *
+ * (  (  ( B S C )                                                           *
+ *  \  \  \_____/   This library is distributed in hope that it will be      *
+ *   \  \__         useful but WITHOUT ANY WARRANTY; without even the        *
+ *    \___          implied warranty of MERCHANTABILITY or FITNESS FOR A     *
+ *                  PARTICULAR PURPOSE. See the GNU LGPL for more details.   *
+ *                                                                           *
+ * You should have received a copy of the GNU Lesser General Public License  *
+ * along with this library; if not, write to the Free Software Foundation,   *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA          *
+ * The GNU LEsser General Public License is contained in the file COPYING.   *
+ *                                 ---------                                 *
+ *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
+\*****************************************************************************/
+
+
 #include "windowimage.h"
 
 #include "labelconstructor.h"
@@ -8,11 +32,11 @@
 
 #define SIZE_MARK_LABEL 4
 
-wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& wichFilterIndex )
+wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& whichFilterIndex )
 {
   wxBitmapType imageType;
 
-  switch( wichFilterIndex )
+  switch( whichFilterIndex )
   {
     case TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
@@ -34,21 +58,21 @@ wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& wichFilterIndex )
   return imageType;
 }
 
-WindowImageGenerator::WindowImageGenerator( wxBitmap* wichBitmapTimeline,
-                                            // WindowGenericItem wichGenericItem,
+WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
+                                            // WindowGenericItem whichGenericItem,
                                             wxColour whichBackground,
                                             wxColour whichForeground,
                                             wxFont whichTextFont,
-                                            TImageFormat wichFilterIndex,
+                                            TImageFormat whichFilterIndex,
                                             bool whichMergedImages )
 
 {
-  // genericItem     = wichGenericItem;
-  bitmapTimeline  = wichBitmapTimeline;
+  // genericItem     = whichGenericItem;
+  bitmapTimeline  = whichBitmapTimeline;
   imageBackground = whichBackground;
   imageForeground = whichForeground;
   imageTextFont   = whichTextFont;
-  filterIndex     = wichFilterIndex;
+  filterIndex     = whichFilterIndex;
 }
 
 WindowImageGenerator::~WindowImageGenerator()
@@ -115,9 +139,9 @@ TImageFormat WindowImageGenerator::getImageFormat()
 {
   return filterIndex;
 }
-void WindowImageGenerator::setImageFormat( TImageFormat wichFilterIndex )
+void WindowImageGenerator::setImageFormat( TImageFormat whichFilterIndex )
 {
-  filterIndex = wichFilterIndex;
+  filterIndex = whichFilterIndex;
 }
 
 void WindowImageGenerator::setImageOrientation( TScaleImageOrientation a_orientation )
@@ -615,8 +639,8 @@ ScaleImageGenerator::ScaleImageGenerator( Histogram* whichMyWindow,
                                           wxColour whichForeground,
                                           wxFont whichTextFont,
                                           TImageFormat& whichImageType,
-                                          TScaleImageType wichScaleType,
-                                          TScaleImageOrientation wichOrientation,
+                                          TScaleImageType whichScaleType,
+                                          TScaleImageOrientation whichOrientation,
                                           TBackgroundMode backgroundColor,
                                           bool whichMergedImages )
   : myWindow( whichMyWindow )
@@ -624,8 +648,8 @@ ScaleImageGenerator::ScaleImageGenerator( Histogram* whichMyWindow,
   , myDataWindow( whichmyDataWindow )
   , filterIndex( whichImageType )
   , dataImage()
-  , scaleType( wichScaleType )
-  , orientation( wichOrientation )
+  , scaleType( whichScaleType )
+  , orientation( whichOrientation )
   , maxLabelSize( 0, 0 )
   , totalSquaresGradientColor( 21 )
   , mergedImages( whichMergedImages )
@@ -654,8 +678,8 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
                                           wxColour whichForeground,
                                           wxFont whichTextFont,
                                           TImageFormat& whichImageType,
-                                          TScaleImageType wichScaleType,
-                                          TScaleImageOrientation wichOrientation,
+                                          TScaleImageType whichScaleType,
+                                          TScaleImageOrientation whichOrientation,
                                           TBackgroundMode backgroundColor,
                                           bool whichMergedImages )
   : myWindow( whichmyWindow )
@@ -663,8 +687,8 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
   , semanticValuesColors( whichSemanticValues )
   , filterIndex( whichImageType )
   , dataImage()
-  , scaleType( wichScaleType )
-  , orientation( wichOrientation )
+  , scaleType( whichScaleType )
+  , orientation( whichOrientation )
   , maxLabelSize( 0, 0 )
   , totalSquaresGradientColor( 21 )
   , mergedImages( whichMergedImages )
