@@ -193,7 +193,7 @@ class ScaleImageGenerator
   private:
     WindowGenericItem myWindow;
 
-    Timeline* myDataWindow;
+    Timeline* myDataWindow = nullptr;
     TImageFormat filterIndex;
 
     std::map< TSemanticValue, rgb > semanticValuesColors;
@@ -201,15 +201,13 @@ class ScaleImageGenerator
     std::map< TSemanticValue, wxString > semanticValuesLabelsShort;
     std::map< TSemanticValue, wxString > semanticValuesLabelsLong;
 
-
     std::vector< int > semanticValuesSelectedPositions;
 
-
     wxBitmap* bitmapImageContent = nullptr;
-    wxMemoryDC* memoryImageContent;
+    wxMemoryDC* memoryImageContent = nullptr;
 
-    wxBitmap* bitmapImageMask;
-    wxMemoryDC* memoryImageMask;
+    wxBitmap* bitmapImageMask = nullptr;
+    wxMemoryDC* memoryImageMask = nullptr;
 
     TSemanticValue currentMin;
     TSemanticValue currentMax;
@@ -219,11 +217,11 @@ class ScaleImageGenerator
     TScaleImageType scaleType;
     TScaleImageOrientation orientation;
 
-    wxSize maxLabelSize;
+    wxSize maxLabelSize = wxSize( 0, 0 );
 
     bool mergedImages;
     bool shortLabel = false;
-    int totalSquaresGradientColor;
+    int totalSquaresGradientColor = 21;
 
     wxString legendSuffix;
 };

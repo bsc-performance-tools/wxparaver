@@ -365,7 +365,7 @@ void WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const st
 
   auto sumSize = []( const auto& sizes, auto numElems, auto& totalSize )
   {
-    for( unsigned int c = 0; c < numElems; ++c )
+    for( auto c = 0; c < numElems; ++c )
       totalSize += sizes.GetSize( c );
   };
 
@@ -644,30 +644,19 @@ ScaleImageGenerator::ScaleImageGenerator( Histogram* whichMyWindow,
                                           TBackgroundMode backgroundColor,
                                           bool whichMergedImages )
   : myWindow( whichMyWindow )
-  , semanticValuesColors( whichSemanticValues )
   , myDataWindow( whichmyDataWindow )
   , filterIndex( whichImageType )
+  , semanticValuesColors( whichSemanticValues )
   , dataImage()
   , scaleType( whichScaleType )
   , orientation( whichOrientation )
-  , maxLabelSize( 0, 0 )
-  , totalSquaresGradientColor( 21 )
   , mergedImages( whichMergedImages )
 {
   dataImage.backgroundMode = backgroundColor;
-  // Inicializar dataImage con algunos valores lógicos o por defecto
   dataImage.precision = 2;
-
-  // Inicializar punteros a nullptr
-  bitmapImageContent = nullptr;
-  memoryImageContent = nullptr;
-
-  bitmapImageMask = nullptr;
-  memoryImageMask = nullptr;
 
   dataImage.textFont = whichTextFont;
 
-  semanticValuesLabels.clear();
   updateLegendSuffix();
   computeSemanticLabels();
 }
@@ -683,29 +672,18 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
                                           TBackgroundMode backgroundColor,
                                           bool whichMergedImages )
   : myWindow( whichmyWindow )
-  , myDataWindow( whichmyWindow )
-  , semanticValuesColors( whichSemanticValues )
   , filterIndex( whichImageType )
+  , semanticValuesColors( whichSemanticValues )
   , dataImage()
   , scaleType( whichScaleType )
   , orientation( whichOrientation )
-  , maxLabelSize( 0, 0 )
-  , totalSquaresGradientColor( 21 )
   , mergedImages( whichMergedImages )
 {
-  // Inicializar dataImage con algunos valores lógicos o por defecto
-  dataImage.precision = 2;
   dataImage.backgroundMode = backgroundColor;
-  // Inicializar punteros a nullptr
-  bitmapImageContent = nullptr;
-  memoryImageContent = nullptr;
-
-  bitmapImageMask = nullptr;
-  memoryImageMask = nullptr;
+  dataImage.precision = 2;
 
   dataImage.textFont = whichTextFont;
 
-  // Inicializa los mapas de etiquetas semánticas( vacíos por ahora ) semanticValuesLabels.clear();
   updateLegendSuffix();
   computeSemanticLabels();
 }
@@ -818,7 +796,7 @@ void ScaleImageGenerator::computeSemanticLabels()
   }
   //
 
-  for( int i = 0; i < semanticValuesLabelsLong.size(); i++ )
+  for( auto i = 0; i < (int)semanticValuesLabelsLong.size(); ++i )
   {
     semanticValuesSelectedPositions.push_back( i );
   }
@@ -850,7 +828,7 @@ void ScaleImageGenerator::computeMaxSemanticLabelsSize()
           semanticValueMaxLengthLabel = it->first;
         }
       }
-      i++;
+      ++i;
     }
   }
   else
@@ -869,7 +847,7 @@ void ScaleImageGenerator::computeMaxSemanticLabelsSize()
           semanticValueMaxLengthLabel = it->first;
         }
       }
-      i++;
+      ++i;
     }
   }
 
