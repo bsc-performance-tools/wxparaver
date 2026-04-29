@@ -4334,19 +4334,15 @@ std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, bool 
   WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
   newWindowImage.generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
 
-  bool doneCopyToClipboard = false;
-  if( !copyToClipboard )
-  {
-    newWindowImage.saveImageWindows( imagePath );
-  }
+  bool copyDone = false;
+  if( copyToClipboard )
+    copyDone = newWindowImage.copyImageToClipboard();
   else
-  {
-    doneCopyToClipboard = newWindowImage.copyImageToClipboard();
-  }
+    newWindowImage.saveImageWindows( imagePath );
 
   setEnableDestroyButton( true );
 
-  return ( copyToClipboard ? std::optional{ doneCopyToClipboard } : std::nullopt );
+  return ( copyToClipboard ? std::optional{ copyDone } : std::nullopt );
 }
 
 
