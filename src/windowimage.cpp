@@ -712,6 +712,7 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
                                           TBackgroundMode backgroundColor,
                                           bool whichMergedImages )
   : myWindow( whichmyWindow )
+  , myDataWindow( whichmyWindow )
   , filterIndex( whichImageType )
   , semanticValuesColors( whichSemanticValues )
   , dataImage()
@@ -721,8 +722,7 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichmyWindow,
 {
   dataImage.backgroundMode = backgroundColor;
   dataImage.precision      = 2;
-
-  dataImage.textFont = whichTextFont;
+  dataImage.textFont       = whichTextFont;
 
   updateLegendSuffix();
   computeSemanticLabels();
