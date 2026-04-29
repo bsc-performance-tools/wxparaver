@@ -253,21 +253,22 @@ class SaveImageDialog : public wxDialog
   wxButton* buttonSave;
   wxButton* buttonCancel;
   ////@end SaveImageDialog member variables
+    // clang-format on
 
-  WindowImageGenerator* imageGeneration;
+    WindowImageGenerator* imageGeneration;
 
-  static wxString directoryStartingPath;
-  wxString defaultFileName;
-  wxString selectedImageFilePath;
-  wxString selectedLegendFilePath;
-  wxString selectedLegendControlFilePath;
-  wxString selectedImageScaleFilePath;
+    static wxString directoryStartingPath;
+    wxString defaultFileName;
+    wxString selectedImageFilePath;
+    wxString selectedLegendFilePath;
+    wxString selectedLegendControlFilePath;
+    wxString selectedImageScaleFilePath;
 
-  wxString fileTypeText;
-  bool isHistogram;
-  wxString legendSuffix;
-  wxString legendControlSuffix;
-  bool resize_window = true;
-  bool resize_scale  = true;
-  bool resize_scale_control = true;
+    wxString fileTypeText;
+    bool isHistogram;
+    wxString legendSuffix;
+    wxString legendControlSuffix;
+    bool resize_window        = true;
+    bool resize_scale         = true;
+    bool resize_scale_control = true;
 };
