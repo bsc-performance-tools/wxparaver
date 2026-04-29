@@ -47,6 +47,7 @@
 ////@end XPM images
 // clang-format on
 
+constexpr char SCALE_IMAGE_TAG[] = "scale_image";
 
 /*!
  * SaveImageDialog type definition
@@ -506,7 +507,7 @@ void SaveImageDialog::setImageFileName()
   else if( !legendControlCheckbox->IsChecked() && !legendControlFileName->IsEmpty() )
     legendControlFileName->Clear();
 
-  selectedImageScaleFilePath = fileName + ".scale_image." + fileTypeText;
+  selectedImageScaleFilePath = fileName + "." + wxString( SCALE_IMAGE_TAG ) + fileTypeText;
   if( imageAndScaleCheckbox->IsChecked() && imageScaleFileName->GetValue() != selectedImageScaleFilePath )
     imageScaleFileName->ChangeValue( selectedImageScaleFilePath );
   else if( !imageAndScaleCheckbox->IsChecked() && !imageScaleFileName->IsEmpty() )
@@ -1140,8 +1141,8 @@ void SaveImageDialog::OnUseOriginalSizeCheckboxClick( wxCommandEvent& event )
 
 void SaveImageDialog::OnOrientationLegendControlSelected( wxCommandEvent& event )
 {
-  int selectionIndex     = event.GetSelection(); // index of selected item
-  wxString selectionText = event.GetString();    // text of selected item
+  // int selectionIndex     = event.GetSelection(); // index of selected item
+  wxString selectionText = event.GetString(); // text of selected item
 
   if( selectionText == "Horizontal" )
   {
