@@ -1425,9 +1425,9 @@ void gHistogram::OnPopUpCopy( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->copy( this );
 
-  bool copyToClipboard   = true;
-  auto copiedToClipboard = saveImage( _( "" ), copyToClipboard );
-  if( !copiedToClipboard.value() )
+  bool copyToClipboard = true;
+  auto copyDone = saveImage( _( "" ), copyToClipboard );
+  if( !copyDone.value() )
     wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
                   _( "Copy Histogram Properties" ),
                   wxOK | wxICON_WARNING,
@@ -3589,20 +3589,15 @@ std::optional< bool > gHistogram::saveImage( wxString whichFileName, bool copyTo
   else
     newWindowImage.generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
 
-
-  bool copiedToClipboard = false;
-  if( !copyToClipboard )
-  {
-    newWindowImage.saveImageWindows( imagePath );
-  }
+  bool copyDone = false;
+  if( copyToClipboard )
+    copyDone = newWindowImage.copyImageToClipboard();
   else
-  {
-    // Copy image to clipboard.
-  }
+    newWindowImage.saveImageWindows( imagePath );
 
   setEnableDestroyButton( true );
 
-  return ( copyToClipboard ? std::optional{ copiedToClipboard } : std::nullopt );
+  return ( copyToClipboard ? std::optional{ copyDone } : std::nullopt );
 }
 
 
