@@ -639,48 +639,12 @@ bool WindowImageGenerator::copyImageToClipboard()
   return copyDone;
 }
 
-// TEST SVG ***************************************************
-// #include <wx/wx.h>
-// #include <wx/mstream.h>
-// #include <wx/image.h>
-// #include <fstream>
-// #include <wx/base64.h>
-// TEST SVG ***************************************************
 
 void WindowImageGenerator::saveImageWindows( wxString whichFileName )
 {
   // Save timeline image without scale
   wxImage timelineImage( bitmapImageTimeline->ConvertToImage() );
   timelineImage.SaveFile( whichFileName, imageFormatTypeToBitmapType( filterIndex ) );
-
-// TEST SVG ***************************************************
-//   // Save bitmap into memory as PNG
-//     wxMemoryOutputStream memStream;
-//     timelineImage.SaveFile(memStream, wxBITMAP_TYPE_PNG);
-
-//     size_t size = memStream.GetSize();
-//     std::vector<unsigned char> buffer(size);
-//     memStream.CopyTo(buffer.data(), size);
-
-//     // Encode PNG as base64 (simplified — you’d need a real base64 encoder)
-//     wxString base64Data = wxBase64Encode(buffer.data(), buffer.size());
-
-//     // Write SVG file
-//     whichFileName += wxString( ".svg");
-//     std::ofstream file(whichFileName.ToStdString());
-//     if (file.is_open())
-//     {
-//     file << "<svg xmlns=\"http://www.w3.org/2000/svg\" "
-//          << "width=\"" << timelineImage.GetWidth() << "\" "
-//          << "height=\"" << timelineImage.GetHeight() << "\">\n";
-
-//     file << "<image href=\"data:image/png;base64," 
-//          << base64Data.ToStdString() 
-//          << "\" width=\"100%\" height=\"100%\"/>\n";
-
-//     file << "</svg>\n";
-//     }
-// TEST SVG *************************************************
 }
 
 
