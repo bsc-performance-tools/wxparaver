@@ -1426,7 +1426,7 @@ void gHistogram::OnPopUpCopy( wxCommandEvent& event )
   gPasteWindowProperties::getInstance()->copy( this );
 
   bool copyToClipboard = true;
-  auto copyDone = saveImage( _( "" ), copyToClipboard );
+  auto copyDone        = saveImage( _( "" ), copyToClipboard );
   if( !copyDone.value() )
     wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
                   _( "Copy Histogram Properties" ),
@@ -3452,7 +3452,7 @@ void gHistogram::saveImageDialog()
 {
   wxString imagePath;
   TImageFormat filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
-  
+
   setEnableDestroyButton( false );
 
   wxString imageName = buildFormattedFileName();
@@ -3464,6 +3464,18 @@ void gHistogram::saveImageDialog()
 
   WindowImageGenerator* newWindowImage;
 
+
+  // bool found;
+  // gTimeline* tmpControlWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myHistogram->getControlWindow(), found );
+  // if( !found )
+  // {
+  //   throw std::exception();
+  // }
+  // wxColour foregroundColour = tmpControlWindow->GetForegroundColour();
+  // wxColour backgroundColour = tmpControlWindow->GetBackgroundColour();
+
+  // newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+
   if( GetHistogram()->getZoom() )
   {
     wxColour foregroundColour = *wxWHITE;
@@ -3474,11 +3486,6 @@ void gHistogram::saveImageDialog()
     newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
     newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
     newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
-
-    if( myHistogram->getFirstRowColored() )
-    {
-      newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
-    }
   }
   else
   {
@@ -3489,16 +3496,15 @@ void gHistogram::saveImageDialog()
 
     newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
 
-    if( myHistogram->getShowColor() == true )
+    if( myHistogram->getShowColor() )
     {
       newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
       newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
     }
-    if( myHistogram->getFirstRowColored() == true )
-    {
-      newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
-    }
   }
+
+  if( myHistogram->getFirstRowColored() )
+    newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
 
 
   SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, true );
