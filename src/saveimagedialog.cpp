@@ -1442,25 +1442,22 @@ void SaveImageDialog::OnSaveimageCopyClipboardButtonClick( wxCommandEvent& event
 {
   bool tmpCopyToClipboard = true;
 
+  // Common to timeline and histograms
   if( drawWindowSingle->IsShown() )
     imageGeneration->saveImageWindows( _( "" ), tmpCopyToClipboard );
   else if( drawWindowAndScale->IsShown() )
     imageGeneration->saveImageWindowScale( _( "" ), tmpCopyToClipboard );
-  else if( myHistogram == nullptr )
+  else if( myHistogram == nullptr && drawScaleSingle->IsShown() )
   {
-    if( drawScaleSingle->IsShown() )
-    {
-      imageGeneration->saveImageScale( _( "" ), false, tmpCopyToClipboard );
-    }
+    // Only for timelines
+    imageGeneration->saveImageScale( _( "" ), false, tmpCopyToClipboard );
   }
   else
   {
+    // Only for histograms
     if( drawScaleSingle->IsShown() )
       imageGeneration->saveImageControlScale( _( "" ), false, tmpCopyToClipboard );
-    else if( drawScaleControlSingle->IsShown() )
-    {
-      if( myHistogram->getFirstRowColored() )
-        imageGeneration->saveImageScale( _( "" ), false, tmpCopyToClipboard );
-    }
+    else if( drawScaleControlSingle->IsShown() && myHistogram->getFirstRowColored() )
+      imageGeneration->saveImageScale( _( "" ), false, tmpCopyToClipboard );
   }
 }

@@ -624,7 +624,7 @@ void WindowImageGenerator::generateScaleWindowsImage()
   }
 }
 
-
+// TODO: refactor using CRPT
 bool WindowImageGenerator::copyImageToClipboard( wxBitmap* whichBitmapImage )
 {
   bool copyDone = false;
@@ -754,30 +754,30 @@ ScaleImageGenerator::~ScaleImageGenerator()
 
 void ScaleImageGenerator::initializeConfiguration()
 {
-  auto visitorMaxiumY = overloads{ []( Timeline* myWindow )
-                                   {
-                                     return myWindow->getMaximumY();
-                                   },
-                                   []( Histogram* myWindow )
-                                   {
-                                     return myWindow->getMaxGradient();
-                                   } };
-  auto visitorMiniumY = overloads{ []( Timeline* myWindow )
-                                   {
-                                     return myWindow->getMinimumY();
-                                   },
-                                   []( Histogram* myWindow )
-                                   {
-                                     return myWindow->getMinGradient();
-                                   } };
-  //
-  currentMin = std::visit( visitorMiniumY, myWindow );
-  currentMax = std::visit( visitorMaxiumY, myWindow );
-  //
+  auto visitorMaximumY = overloads{ []( Timeline* myWindow )
+                                    {
+                                      return myWindow->getMaximumY();
+                                    },
+                                    []( Histogram* myWindow )
+                                    {
+                                      return myWindow->getMaxGradient();
+                                    } };
+  auto visitorMinimumY = overloads{ []( Timeline* myWindow )
+                                    {
+                                      return myWindow->getMinimumY();
+                                    },
+                                    []( Histogram* myWindow )
+                                    {
+                                      return myWindow->getMinGradient();
+                                    } };
+
+  currentMin = std::visit( visitorMinimumY, myWindow );
+  currentMax = std::visit( visitorMaximumY, myWindow );
+
   dataImage.symbolicDesc = false;
   dataImage.titleMargin  = 5;
   dataImage.rectMargin   = 2 * dataImage.titleMargin;
-  //
+
   if( scaleType == TScaleImageType::TScaleImageGradientColor || scaleType == TScaleImageType::TScaleImageGradientColorNotNull ||
       scaleType == TScaleImageType::TScaleImageAlternativeGradientColor )
   {
@@ -1275,6 +1275,7 @@ wxImage ScaleImageGenerator::bitmapToImage()
   return scaleImage;
 }
 
+// TODO: refactor using CRPT
 bool ScaleImageGenerator::copyImageToClipboard( wxBitmap* whichBitmapImage )
 {
   bool copyDone = false;
