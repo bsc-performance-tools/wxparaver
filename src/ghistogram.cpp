@@ -3507,7 +3507,7 @@ void gHistogram::saveImageDialog()
     newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
 
 
-  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, true );
+  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, GetHistogram() );
 
   // TODO
   // saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );

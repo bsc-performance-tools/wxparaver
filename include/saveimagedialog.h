@@ -71,6 +71,7 @@ class wxFileCtrl;
 #define ID_SCROLLEDWINDOW_SCALE_CONTROL 10010
 #define ID_SCROLLEDWINDOWANDCALE 10008
 #define ID_USE_ORIGINAL_SIZE_CHECKBOX 10014
+#define ID_SAVEIMAGE_COPY_CLIPBOARD_BUTTON 10001
 #define ID_ORIENTATION_LEGEND_CONTROL 10002
 #define ID_CHECKBOX_SHRINK_LABEL 10016
 #define ID_SELECT_LEGEND 10017
@@ -99,7 +100,7 @@ class SaveImageDialog : public wxDialog
                      wxString& directoryStartingPath,
                      wxString defaultFileName,
                      WindowImageGenerator* imageGeneration,
-                     bool isHistogram             = false,
+                     Histogram* whichHistogram    = nullptr,
                      wxString legendSuffix        = _( "_legend" ),
                      wxString legendControlSuffix = _( "_legendControl" ),
                      wxWindowID id                = SYMBOL_SAVEIMAGEDIALOG_IDNAME,
@@ -174,6 +175,9 @@ class SaveImageDialog : public wxDialog
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_USE_ORIGINAL_SIZE_CHECKBOX
   void OnUseOriginalSizeCheckboxClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SAVEIMAGE_COPY_CLIPBOARD_BUTTON
+  void OnSaveimageCopyClipboardButtonClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_ORIENTATION_LEGEND_CONTROL
   void OnOrientationLegendControlSelected( wxCommandEvent& event );
 
@@ -247,6 +251,7 @@ class SaveImageDialog : public wxDialog
   wxScrolledWindow* drawScaleControlSingle;
   wxScrolledWindow* drawWindowAndScale;
   wxCheckBox* useOriginalSizeCheckBox;
+  wxButton* copyToClipboardButton;
   wxChoice* widgetTopCompose1;
   wxCheckBox* shrinkLabelCheckBox;
   wxButton* buttonSelectLegendValues;
@@ -265,7 +270,7 @@ class SaveImageDialog : public wxDialog
     wxString selectedImageScaleFilePath;
 
     wxString fileTypeText;
-    bool isHistogram;
+    Histogram* myHistogram;
     wxString legendSuffix;
     wxString legendControlSuffix;
     bool resize_window        = true;

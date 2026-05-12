@@ -625,13 +625,16 @@ void WindowImageGenerator::generateScaleWindowsImage()
 }
 
 
-bool WindowImageGenerator::copyImageToClipboard()
+bool WindowImageGenerator::copyImageToClipboard( wxBitmap* whichBitmapImage )
 {
   bool copyDone = false;
+  if( whichBitmapImage == nullptr )
+    whichBitmapImage = bitmapImageTimeline;
+
   if( wxTheClipboard->Open() )
   {
-    wxImage timelineImage( bitmapImageTimeline->ConvertToImage() );
-    copyDone = wxTheClipboard->SetData( new wxBitmapDataObject( *bitmapImageTimeline ) );
+    wxImage timelineImage( whichBitmapImage->ConvertToImage() );
+    copyDone = wxTheClipboard->SetData( new wxBitmapDataObject( *whichBitmapImage ) );
 
     wxTheClipboard->Close();
   }
@@ -640,34 +643,44 @@ bool WindowImageGenerator::copyImageToClipboard()
 }
 
 
-void WindowImageGenerator::saveImageWindows( wxString whichFileName )
+void WindowImageGenerator::saveImageWindows( wxString whichFileName, bool whichCopyToClipboard )
 {
   // Save timeline image without scale
-  wxImage timelineImage( bitmapImageTimeline->ConvertToImage() );
-  timelineImage.SaveFile( whichFileName, imageFormatTypeToBitmapType( filterIndex ) );
+  if( whichCopyToClipboard )
+    copyImageToClipboard();
+  else
+  {
+    wxImage timelineImage( bitmapImageTimeline->ConvertToImage() );
+    timelineImage.SaveFile( whichFileName, imageFormatTypeToBitmapType( filterIndex ) );
+  }
 }
 
 
-void WindowImageGenerator::saveImageWindowScale( wxString whichFileName )
+void WindowImageGenerator::saveImageWindowScale( wxString whichFileName, bool whichCopyToClipboard )
 {
   // Save timeline image without scale
-  wxImage timelineImageScale( bitmapImageTimelineScale->ConvertToImage() );
-  wxString currentFormat         = wxString::FromUTF8( LabelConstructor::getImageFileSuffix( TImageFormat( filterIndex ) ).c_str() );
-  wxString tmpScaledTimelinePath = wxFileName( whichFileName ).GetPathWithSep() + wxFileName( whichFileName ).GetName() + currentFormat;
+  if( whichCopyToClipboard )
+    copyImageToClipboard( bitmapImageTimelineScale );
+  else
+  {
+    wxString currentFormat         = wxString::FromUTF8( LabelConstructor::getImageFileSuffix( TImageFormat( filterIndex ) ).c_str() );
+    wxString tmpScaledTimelinePath = wxFileName( whichFileName ).GetPathWithSep() + wxFileName( whichFileName ).GetName() + currentFormat;
 
-  timelineImageScale.SaveFile( tmpScaledTimelinePath, imageFormatTypeToBitmapType( filterIndex ) );
+    wxImage timelineImageScale( bitmapImageTimelineScale->ConvertToImage() );
+    timelineImageScale.SaveFile( tmpScaledTimelinePath, imageFormatTypeToBitmapType( filterIndex ) );
+  }
 }
 
 
-void WindowImageGenerator::saveImageControlScale( wxString imageName, bool appendLegendSuffix )
+void WindowImageGenerator::saveImageControlScale( wxString imageName, bool appendLegendSuffix, bool whichCopyToClipboard )
 {
-  scaleImageData->saveImage( imageName, appendLegendSuffix );
+  scaleImageData->saveImage( imageName, appendLegendSuffix, whichCopyToClipboard );
 }
 
 
-void WindowImageGenerator::saveImageScale( wxString imageName, bool appendLegendSuffix )
+void WindowImageGenerator::saveImageScale( wxString imageName, bool appendLegendSuffix, bool whichCopyToClipboard )
 {
-  scaleImage->saveImage( imageName, appendLegendSuffix );
+  scaleImage->saveImage( imageName, appendLegendSuffix, whichCopyToClipboard );
 }
 
 
@@ -1262,23 +1275,43 @@ wxImage ScaleImageGenerator::bitmapToImage()
   return scaleImage;
 }
 
-
-void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSuffix )
+bool ScaleImageGenerator::copyImageToClipboard( wxBitmap* whichBitmapImage )
 {
-  wxString tmpSuffix;
-  if( appendLegendSuffix )
+  bool copyDone = false;
+  if( whichBitmapImage == nullptr )
+    whichBitmapImage = bitmapImageContent;
+
+  if( wxTheClipboard->Open() )
   {
-    tmpSuffix = legendSuffix + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    wxImage timelineImage( whichBitmapImage->ConvertToImage() );
+    copyDone = wxTheClipboard->SetData( new wxBitmapDataObject( *whichBitmapImage ) );
+
+    wxTheClipboard->Close();
   }
+
+  return copyDone;
+}
+
+void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSuffix, bool whichCopyToClipboard )
+{
+  wxImage baseLayer = bitmapToImage();
+
+  if( whichCopyToClipboard )
+    copyImageToClipboard();
   else
   {
-    tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    wxString tmpSuffix;
+    if( appendLegendSuffix )
+    {
+      tmpSuffix = legendSuffix + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    }
+    else
+    {
+      tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    }
+    wxString imagePath = imageName + tmpSuffix;
+    baseLayer.SaveFile( imagePath, imageFormatTypeToBitmapType( filterIndex ) );
   }
-
-  wxString imagePath = imageName + tmpSuffix;
-
-  wxImage baseLayer = bitmapToImage();
-  baseLayer.SaveFile( imagePath, imageFormatTypeToBitmapType( filterIndex ) );
 }
 
 

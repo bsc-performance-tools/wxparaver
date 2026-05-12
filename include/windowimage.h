@@ -178,8 +178,9 @@ class ScaleImageGenerator
     void drawImageCodeColor();
     void drawImageGradientColor();
 
+    bool copyImageToClipboard( wxBitmap* whichBitmapImage = nullptr );
 
-    void saveImage( wxString whichFileName, bool appendLegendSuffix );
+    void saveImage( wxString whichFileName, bool appendLegendSuffix, bool whichCopyToClipboard = false );
     void processImage( std::optional< int > wantedWidth = std::nullopt );
 
 
@@ -268,12 +269,12 @@ class WindowImageGenerator
     void generateScaleWindowsImage( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram = nullptr );
     void generateScaleWindowsImage();
 
-    bool copyImageToClipboard();
+    bool copyImageToClipboard( wxBitmap* whichBitmapImage = nullptr );
 
-    void saveImageWindows( wxString whichFileName );
-    void saveImageWindowScale( wxString whichFileName );
-    void saveImageScale( wxString whichFileName, bool appendLegendSuffix );
-    void saveImageControlScale( wxString imageName, bool appendLegendSuffix );
+    void saveImageWindows( wxString whichFileName, bool whichCopyToClipboard = false );
+    void saveImageWindowScale( wxString whichFileName, bool whichCopyToClipboard = false );
+    void saveImageScale( wxString whichFileName, bool appendLegendSuffix, bool whichCopyToClipboard = false );
+    void saveImageControlScale( wxString imageName, bool appendLegendSuffix, bool whichCopyToClipboard = false );
 
   private:
     wxBitmap* bitmapTimeline = nullptr;

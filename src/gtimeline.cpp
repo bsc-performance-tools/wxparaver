@@ -4273,7 +4273,7 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
     newWindowImage->generateScaleWindowsImage( semanticValuesToColor, myWindow );
   }
 
-  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, false, newWindowImage->getLegendSuffix() );
+  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, nullptr, newWindowImage->getLegendSuffix() );
 
   if( saveDialog.ShowModal() != wxID_OK )
   {
