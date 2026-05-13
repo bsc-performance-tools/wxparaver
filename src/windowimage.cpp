@@ -848,7 +848,7 @@ void ScaleImageGenerator::computeSemanticLabels()
     LabelConstructor::transformToShort( narrow );
 
     // Convert back to wxString and assign
-    semanticValuesLabelsShort[ it->first ] = wxString::FromUTF8( narrow );
+    semanticValuesLabelsShort[ it->first ] = wxString::FromUTF8( narrow.c_str() );
   }
   //
 
