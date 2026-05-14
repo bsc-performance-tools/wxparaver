@@ -231,6 +231,17 @@ class ScaleImageGenerator
 class WindowImageGenerator
 {
   public:
+#ifdef __WXMAC__
+    WindowImageGenerator( wxBitmap* wichBitmapTimeline,
+                          wxBitmap* wichBitmapEvents,
+                          wxBitmap* wichBitmapCommunications,
+                          // WindowGenericItem genericItem,
+                          wxColour whichBackground,
+                          wxColour whichForeground,
+                          wxFont whichTextFont,
+                          TImageFormat wichFilterIndex,
+                          bool whichMergedImages = false );
+#else
     WindowImageGenerator( wxBitmap* wichBitmapTimeline,
                           // WindowGenericItem genericItem,
                           wxColour whichBackground,
@@ -238,6 +249,8 @@ class WindowImageGenerator
                           wxFont whichTextFont,
                           TImageFormat wichFilterIndex,
                           bool whichMergedImages = false );
+#endif
+
     ~WindowImageGenerator();
 
   public:
@@ -277,7 +290,9 @@ class WindowImageGenerator
     void saveImageControlScale( wxString imageName, bool appendLegendSuffix, bool whichCopyToClipboard = false );
 
   private:
-    wxBitmap* bitmapTimeline = nullptr;
+    wxBitmap* bitmapTimeline       = nullptr;
+    wxBitmap* bitmapEvents         = nullptr;
+    wxBitmap* bitmapCommunications = nullptr;
 
     wxBitmap* bitmapImageTimeline   = nullptr;
     wxMemoryDC* memoryImageTimeline = nullptr;
@@ -300,6 +315,10 @@ class WindowImageGenerator
 
     TScaleImageType typeScale;
     TScaleImageOrientation orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
+
+#ifdef __WXMAC__
+    void drawStackedImages( wxDC& dc );
+#endif
 };
 
 

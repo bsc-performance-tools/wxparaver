@@ -60,6 +60,29 @@ wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& whichFilterIndex )
   return imageType;
 }
 
+#ifdef __WXMAC__
+
+WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
+                                            wxBitmap* whichBitmapEvents,
+                                            wxBitmap* whichBitmapCommunications,
+                                            // WindowGenericItem genericItem,
+                                            wxColour whichBackground,
+                                            wxColour whichForeground,
+                                            wxFont whichTextFont,
+                                            TImageFormat whichFilterIndex,
+                                            bool whichMergedImages = false )
+{
+  // genericItem     = whichGenericItem;
+  bitmapTimeline       = whichBitmapTimeline;
+  bitmapEvents         = whichBitmapEvents;
+  bitmapCommunications = whichBitmapCommunications;
+  imageBackground      = whichBackground;
+  imageForeground      = whichForeground;
+  imageTextFont        = whichTextFont;
+  filterIndex          = whichFilterIndex;
+}
+
+#else
 
 WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
                                             // WindowGenericItem whichGenericItem,
@@ -77,7 +100,7 @@ WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
   imageTextFont   = whichTextFont;
   filterIndex     = whichFilterIndex;
 }
-
+#endif
 
 WindowImageGenerator::~WindowImageGenerator()
 {
@@ -380,6 +403,29 @@ void WindowImageGenerator::generateWindowsImage( const std::string& windowsName,
   memoryImageTimeline->Blit( 0, titleHeigth, bitmapTimeline->GetWidth(), bitmapTimeline->GetHeight(), &timelineDC, 0, 0 );
 }
 
+
+#ifdef __WXMAC__
+void WindowImageGenerator::drawStackedImages( wxDC& dc )
+{
+  if( bitmapTimeline != nullptr && bitmapTimeline.IsOk() )
+    dc.DrawBitmap( bufferImage, 0, 0, false );
+
+  // doDrawCaution( dc );
+
+  // if( myWindow->getDrawFlags() && bitmapEvents.IsOk() )
+  if( bitmapEvents != nullptr && bitmapEvents.IsOk() )
+    dc.DrawBitmap( bitmapEvents, 0, 0, true );
+
+  // if( myWindow->getDrawCommLines() && bitmapCommunications.IsOk() )
+  if( bitmapCommunications != nullptr && bitmapCommunications.IsOk() )
+    dc.DrawBitmap( bitmapCommunications, 0, 0, true );
+
+  // if( zooming && zoomBMP.IsOk() && !motionEvent.ShiftDown() )
+  // {
+  //   dc.DrawBitmap( zoomBMP, 0, 0, true );
+  // }
+}
+#endif
 
 void WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName )
 {

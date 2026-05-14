@@ -4245,8 +4245,13 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
   {
     redraw();
   }
-  WindowImageGenerator* newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
+#ifdef __WXMAC__
+  WindowImageGenerator* newWindowImage =
+    new WindowImageGenerator( &drawImage, &eventImage, &commImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#else
+  WindowImageGenerator* newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#endif
   newWindowImage->generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
 
   if( myWindow->isFusedLinesColorSet() )
@@ -4331,7 +4336,11 @@ std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, bool 
     imagePath = imageName + tmpSuffix;
   }
 
+#ifdef __WXMAC__
+  WindowImageGenerator newWindowImage( &drawImage, &eventImage, &commImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#else
   WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#endif
   newWindowImage.generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
 
   bool copyDone = false;
@@ -4370,7 +4379,11 @@ void gTimeline::saveImageLegend( wxString whichFileName )
     imagePath = imageName + tmpSuffix;
   }
 
+#ifdef __WXMAC__
+  WindowImageGenerator newWindowImage( &drawImage, &eventImage, &commImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#else
   WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#endif
 
   if( myWindow->isFusedLinesColorSet() )
   {
