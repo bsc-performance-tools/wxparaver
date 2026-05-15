@@ -231,6 +231,7 @@ class ScaleImageGenerator
 class WindowImageGenerator
 {
   public:
+    // TODO: unify signature using vector
 #ifdef __WXMAC__
     WindowImageGenerator( wxBitmap* wichBitmapTimeline,
                           wxBitmap* wichBitmapEvents,

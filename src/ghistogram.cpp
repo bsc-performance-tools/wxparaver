@@ -3481,8 +3481,11 @@ void gHistogram::saveImageDialog()
     wxColour foregroundColour = *wxWHITE;
     wxColour backgroundColour = *wxBLACK;
 
+#ifdef __WXMAC__
+    newWindowImage = new WindowImageGenerator( &drawImage, nullptr, nullptr, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#else
     newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
-
+#endif
     newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
     newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
     newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
@@ -3492,7 +3495,11 @@ void gHistogram::saveImageDialog()
     wxColour foregroundColour = *wxBLACK;
     wxColour backgroundColour = *wxWHITE;
 
+#ifdef __WXMAC__
+    newWindowImage = new WindowImageGenerator( &drawImage, nullptr, nullptr, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#else
     newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#endif
 
     newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
 
@@ -3589,7 +3596,12 @@ std::optional< bool > gHistogram::saveImage( wxString whichFileName, bool copyTo
   wxColour foregroundColour = *wxWHITE;
   wxColour backgroundColour = *wxBLACK;
 
+#ifdef __WXMAC__
+  WindowImageGenerator newWindowImage( &drawImage, nullptr, nullptr, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#else
   WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+#endif
+
   if( GetHistogram()->getZoom() )
     newWindowImage.generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
   else
