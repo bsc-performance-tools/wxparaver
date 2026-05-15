@@ -31,6 +31,11 @@
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
 
+#ifdef __WXMAC__
+#  include <wx/dc.h>
+#  include <wx/dcgraph.h>
+#endif
+
 #define SIZE_MARK_LABEL 4
 
 
@@ -70,7 +75,7 @@ WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
                                             wxColour whichForeground,
                                             wxFont whichTextFont,
                                             TImageFormat whichFilterIndex,
-                                            bool whichMergedImages = false )
+                                            bool whichMergedImages )
 {
   // genericItem     = whichGenericItem;
   bitmapTimeline       = whichBitmapTimeline;
@@ -407,17 +412,17 @@ void WindowImageGenerator::generateWindowsImage( const std::string& windowsName,
 #ifdef __WXMAC__
 void WindowImageGenerator::drawStackedImages( wxDC& dc )
 {
-  if( bitmapTimeline != nullptr && bitmapTimeline.IsOk() )
+  if( bitmapTimeline != nullptr && bitmapTimeline->IsOk() )
     dc.DrawBitmap( bufferImage, 0, 0, false );
 
   // doDrawCaution( dc );
 
   // if( myWindow->getDrawFlags() && bitmapEvents.IsOk() )
-  if( bitmapEvents != nullptr && bitmapEvents.IsOk() )
+  if( bitmapEvents != nullptr && bitmapEvents->IsOk() )
     dc.DrawBitmap( bitmapEvents, 0, 0, true );
 
   // if( myWindow->getDrawCommLines() && bitmapCommunications.IsOk() )
-  if( bitmapCommunications != nullptr && bitmapCommunications.IsOk() )
+  if( bitmapCommunications != nullptr && bitmapCommunications->IsOk() )
     dc.DrawBitmap( bitmapCommunications, 0, 0, true );
 
   // if( zooming && zoomBMP.IsOk() && !motionEvent.ShiftDown() )
