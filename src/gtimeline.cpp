@@ -643,23 +643,32 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 
 
 #ifdef __WXMAC__
-void gTimeline::drawStackedImages( wxDC& dc )
+std::vector< wxBitmap* > gTimeline::getActiveStackedImages()
 {
-  if( bufferImage.IsOk() )
-    dc.DrawBitmap( bufferImage, 0, 0, false );
+  std::vector< wxBitmap* > layers;
 
-  doDrawCaution( dc );
+  if( bufferImage.IsOk() )
+    layers.push_back( bufferImage );
 
   if( myWindow->getDrawFlags() && eventImage.IsOk() )
-    dc.DrawBitmap( eventImage, 0, 0, true );
+    layers.push_back( eventImage );
 
   if( myWindow->getDrawCommLines() && commImage.IsOk() )
-    dc.DrawBitmap( commImage, 0, 0, true );
+    layers.push_back( commImage );
+
+  return layers;
+}
+
+void gTimeline::drawStackedImages( wxDC& dc )
+{
+  std::vector< wxBitmap* > layers = getActiveStackedImages();
 
   if( zooming && zoomBMP.IsOk() && !motionEvent.ShiftDown() )
-  {
-    dc.DrawBitmap( zoomBMP, 0, 0, true );
-  }
+    layers.push_back( zoomBMP );
+
+  WindowImageGenerator::drawStackedLayers( dc, layers );
+
+  doDrawCaution( dc );
 }
 #endif
 
@@ -4246,12 +4255,13 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
     redraw();
   }
 
+  std::vector< wxBitmap* > layers;
 #ifdef __WXMAC__
-  WindowImageGenerator* newWindowImage =
-    new WindowImageGenerator( &drawImage, &eventImage, &commImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  layers.swap( getActiveStackedImages() );
 #else
-  WindowImageGenerator* newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  layers.push_back( &drawImage );
 #endif
+  WindowImageGenerator* newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
   newWindowImage->generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
 
   if( myWindow->isFusedLinesColorSet() )
@@ -4336,11 +4346,13 @@ std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, bool 
     imagePath = imageName + tmpSuffix;
   }
 
+  std::vector< wxBitmap* > layers;
 #ifdef __WXMAC__
-  WindowImageGenerator newWindowImage( &drawImage, &eventImage, &commImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  layers.swap( getActiveStackedImages() );
 #else
-  WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  layers.push_back( &drawImage );
 #endif
+  WindowImageGenerator newWindowImage( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
   newWindowImage.generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
 
   bool copyDone = false;
@@ -4379,11 +4391,13 @@ void gTimeline::saveImageLegend( wxString whichFileName )
     imagePath = imageName + tmpSuffix;
   }
 
+  std::vector< wxBitmap* > layers;
 #ifdef __WXMAC__
-  WindowImageGenerator newWindowImage( &drawImage, &eventImage, &commImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  layers.swap( getActiveStackedImages() );
 #else
-  WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  layers.push_back( &drawImage );
 #endif
+  WindowImageGenerator newWindowImage( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
   if( myWindow->isFusedLinesColorSet() )
   {

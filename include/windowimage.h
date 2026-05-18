@@ -231,26 +231,13 @@ class ScaleImageGenerator
 class WindowImageGenerator
 {
   public:
-    // TODO: unify signature using vector
-#ifdef __WXMAC__
-    WindowImageGenerator( wxBitmap* wichBitmapTimeline,
-                          wxBitmap* wichBitmapEvents,
-                          wxBitmap* wichBitmapCommunications,
+    WindowImageGenerator( const std::vector< wxBitmap* >& whichBitmap,
                           // WindowGenericItem genericItem,
                           wxColour whichBackground,
                           wxColour whichForeground,
                           wxFont whichTextFont,
-                          TImageFormat wichFilterIndex,
+                          TImageFormat whichFilterIndex,
                           bool whichMergedImages = false );
-#else
-    WindowImageGenerator( wxBitmap* wichBitmapTimeline,
-                          // WindowGenericItem genericItem,
-                          wxColour whichBackground,
-                          wxColour whichForeground,
-                          wxFont whichTextFont,
-                          TImageFormat wichFilterIndex,
-                          bool whichMergedImages = false );
-#endif
 
     ~WindowImageGenerator();
 
@@ -291,9 +278,8 @@ class WindowImageGenerator
     void saveImageControlScale( wxString imageName, bool appendLegendSuffix, bool whichCopyToClipboard = false );
 
   private:
-    wxBitmap* bitmapTimeline       = nullptr;
-    wxBitmap* bitmapEvents         = nullptr;
-    wxBitmap* bitmapCommunications = nullptr;
+    std::vector< wxBitmap* > bitmaps;
+    wxBitmap* bitmapTimeline = nullptr;
 
     wxBitmap* bitmapImageTimeline   = nullptr;
     wxMemoryDC* memoryImageTimeline = nullptr;
@@ -318,7 +304,7 @@ class WindowImageGenerator
     TScaleImageOrientation orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
 
 #ifdef __WXMAC__
-    void drawStackedImages( wxDC& dc );
+    static void drawStackedBitmaps( wxDC& dc, const std::vector< wxBitmap* >& whichBitmaps );
 #endif
 };
 

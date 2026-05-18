@@ -880,6 +880,7 @@ class gTimeline : public wxFrame, public gWindow
     static bool ShowToolTips();
 
 #ifdef __WXMAC__
+    std::vector< wxBitmap* > getActiveStackedImages();
     void drawStackedImages( wxDC& dc );
 #endif
     void redraw();

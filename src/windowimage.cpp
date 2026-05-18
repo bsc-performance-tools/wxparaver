@@ -65,31 +65,8 @@ wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& whichFilterIndex )
   return imageType;
 }
 
-#ifdef __WXMAC__
 
-WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
-                                            wxBitmap* whichBitmapEvents,
-                                            wxBitmap* whichBitmapCommunications,
-                                            // WindowGenericItem genericItem,
-                                            wxColour whichBackground,
-                                            wxColour whichForeground,
-                                            wxFont whichTextFont,
-                                            TImageFormat whichFilterIndex,
-                                            bool whichMergedImages )
-{
-  // genericItem     = whichGenericItem;
-  bitmapTimeline       = whichBitmapTimeline;
-  bitmapEvents         = whichBitmapEvents;
-  bitmapCommunications = whichBitmapCommunications;
-  imageBackground      = whichBackground;
-  imageForeground      = whichForeground;
-  imageTextFont        = whichTextFont;
-  filterIndex          = whichFilterIndex;
-}
-
-#else
-
-WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
+WindowImageGenerator::WindowImageGenerator( const std::vector< wxBitmap* >& whichBitmaps,
                                             // WindowGenericItem whichGenericItem,
                                             wxColour whichBackground,
                                             wxColour whichForeground,
@@ -99,13 +76,14 @@ WindowImageGenerator::WindowImageGenerator( wxBitmap* whichBitmapTimeline,
 
 {
   // genericItem     = whichGenericItem;
-  bitmapTimeline  = whichBitmapTimeline;
+  bitmaps         = whichBitmaps;
+  bitmapTimeline  = whichBitmaps.front();
   imageBackground = whichBackground;
   imageForeground = whichForeground;
   imageTextFont   = whichTextFont;
   filterIndex     = whichFilterIndex;
 }
-#endif
+
 
 WindowImageGenerator::~WindowImageGenerator()
 {
@@ -401,7 +379,7 @@ void WindowImageGenerator::generateWindowsImage( const std::string& windowsName,
 #ifdef __WXMAC__
   wxBitmap tmpDrawImage( bitmapTimeline->GetWidth(), bitmapTimeline->GetHeight() );
   wxMemoryDC timelineDC( tmpDrawImage );
-  drawStackedImages( timelineDC );
+  WindowImageGenerator::drawStackedBitmaps( timelineDC, bitmaps );
 #else
   wxMemoryDC timelineDC( *bitmapTimeline );
 #endif
@@ -410,25 +388,15 @@ void WindowImageGenerator::generateWindowsImage( const std::string& windowsName,
 
 
 #ifdef __WXMAC__
-void WindowImageGenerator::drawStackedImages( wxDC& dc )
+void WindowImageGenerator::drawStackedBitmaps( wxDC& dc, const std::vector< wxBitmap* >& whichBitmaps )
 {
-  if( bitmapTimeline != nullptr && bitmapTimeline->IsOk() )
-    dc.DrawBitmap( bufferImage, 0, 0, false );
-
-  // doDrawCaution( dc );
-
-  // if( myWindow->getDrawFlags() && bitmapEvents.IsOk() )
-  if( bitmapEvents != nullptr && bitmapEvents->IsOk() )
-    dc.DrawBitmap( bitmapEvents, 0, 0, true );
-
-  // if( myWindow->getDrawCommLines() && bitmapCommunications.IsOk() )
-  if( bitmapCommunications != nullptr && bitmapCommunications->IsOk() )
-    dc.DrawBitmap( bitmapCommunications, 0, 0, true );
-
-  // if( zooming && zoomBMP.IsOk() && !motionEvent.ShiftDown() )
-  // {
-  //   dc.DrawBitmap( zoomBMP, 0, 0, true );
-  // }
+  bool alpha = false; // Forbid only first one
+  for( auto b : whichBitmaps )
+  {
+    dc.DrawBitmap( b, 0, 0, alpha );
+    if( !alpha )
+      alpha = true;
+  }
 }
 #endif
 
