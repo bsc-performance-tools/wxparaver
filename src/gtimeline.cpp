@@ -648,13 +648,13 @@ std::vector< wxBitmap* > gTimeline::getActiveStackedImages()
   std::vector< wxBitmap* > layers;
 
   if( bufferImage.IsOk() )
-    layers.push_back( bufferImage );
+    layers.push_back( &bufferImage );
 
   if( myWindow->getDrawFlags() && eventImage.IsOk() )
-    layers.push_back( eventImage );
+    layers.push_back( &eventImage );
 
   if( myWindow->getDrawCommLines() && commImage.IsOk() )
-    layers.push_back( commImage );
+    layers.push_back( &commImage );
 
   return layers;
 }
@@ -666,7 +666,7 @@ void gTimeline::drawStackedImages( wxDC& dc )
   if( zooming && zoomBMP.IsOk() && !motionEvent.ShiftDown() )
     layers.push_back( zoomBMP );
 
-  WindowImageGenerator::drawStackedLayers( dc, layers );
+  WindowImageGenerator::drawStackedBitmaps( dc, layers );
 
   doDrawCaution( dc );
 }
@@ -4257,7 +4257,7 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
 
   std::vector< wxBitmap* > layers;
 #ifdef __WXMAC__
-  layers.swap( getActiveStackedImages() );
+  layers = getActiveStackedImages();
 #else
   layers.push_back( &drawImage );
 #endif
@@ -4393,7 +4393,7 @@ void gTimeline::saveImageLegend( wxString whichFileName )
 
   std::vector< wxBitmap* > layers;
 #ifdef __WXMAC__
-  layers.swap( getActiveStackedImages() );
+  layers = getActiveStackedImages();
 #else
   layers.push_back( &drawImage );
 #endif

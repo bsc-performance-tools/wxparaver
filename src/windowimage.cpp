@@ -390,12 +390,12 @@ void WindowImageGenerator::generateWindowsImage( const std::string& windowsName,
 #ifdef __WXMAC__
 void WindowImageGenerator::drawStackedBitmaps( wxDC& dc, const std::vector< wxBitmap* >& whichBitmaps )
 {
-  bool alpha = false; // Forbid only first one
+  bool alpha = false;
   for( auto b : whichBitmaps )
   {
     dc.DrawBitmap( b, 0, 0, alpha );
     if( !alpha )
-      alpha = true;
+      alpha = true; // Apply alpha to others than first
   }
 }
 #endif
