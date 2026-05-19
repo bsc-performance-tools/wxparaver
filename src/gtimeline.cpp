@@ -664,7 +664,7 @@ void gTimeline::drawStackedImages( wxDC& dc )
   std::vector< wxBitmap* > layers = getActiveStackedImages();
 
   if( zooming && zoomBMP.IsOk() && !motionEvent.ShiftDown() )
-    layers.push_back( zoomBMP );
+    layers.push_back( &zoomBMP );
 
   WindowImageGenerator::drawStackedBitmaps( dc, layers );
 
@@ -4348,7 +4348,7 @@ std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, bool 
 
   std::vector< wxBitmap* > layers;
 #ifdef __WXMAC__
-  layers.swap( getActiveStackedImages() );
+  layers = getActiveStackedImages();
 #else
   layers.push_back( &drawImage );
 #endif
