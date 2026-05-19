@@ -242,6 +242,10 @@ class WindowImageGenerator
     ~WindowImageGenerator();
 
   public:
+#ifdef __WXMAC__
+    static void drawStackedBitmaps( wxDC& dc, const std::vector< wxBitmap* >& whichBitmaps );
+#endif
+
     wxBitmap* getWindowsImageBitmap();
     wxBitmap* getTimelineScaleImage();
     wxBitmap* getScaleImageBitmap();
@@ -302,10 +306,6 @@ class WindowImageGenerator
 
     TScaleImageType typeScale;
     TScaleImageOrientation orientationScale = TScaleImageOrientation::TScaleImageOrientationHorizontal;
-
-#ifdef __WXMAC__
-    static void drawStackedBitmaps( wxDC& dc, const std::vector< wxBitmap* >& whichBitmaps );
-#endif
 };
 
 
