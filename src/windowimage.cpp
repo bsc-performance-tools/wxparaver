@@ -393,7 +393,7 @@ void WindowImageGenerator::drawStackedBitmaps( wxDC& dc, const std::vector< wxBi
   bool alpha = false;
   for( auto b : whichBitmaps )
   {
-    dc.DrawBitmap( b, 0, 0, alpha );
+    dc.DrawBitmap( *b, 0, 0, alpha );
     if( !alpha )
       alpha = true; // Apply alpha to others than first
   }
