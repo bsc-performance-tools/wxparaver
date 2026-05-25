@@ -182,6 +182,65 @@ int HistoTableBase::getIndexTotal( int kernelRow, int kernelCol ) const
 void HistoTableBase::getControlScaleInfo( std::map< THistogramColumn, rgb > &controlScaleInfo )
 {
   controlScaleInfo.clear();
+
+  bool useCols = myHisto->GetHistogram()->getHorizontal() && myHisto->GetHistogram()->getFirstRowColored() &&
+                 !myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() );
+  bool useRows =
+    !myHisto->GetHistogram()->getHorizontal() && myHisto->GetHistogram()->getFirstRowColored() && !myHisto->GetHistogram()->getOnlyTotals();
+
+  THistogramColumn beginCol, tmpNumCols = 0;
+
+  if( useCols )
+  {
+    tmpNumCols = GetNumberCols();
+    beginCol   = 0;
+  }
+  else if( useRows )
+  {
+    tmpNumCols = GetNumberRows() - NUMTOTALS;
+    beginCol   = 1;
+  }
+  for( auto tmpcol = 0; tmpcol < tmpNumCols; ++tmpcol )
+  {
+    wxGridCellAttr *currentAttr;
+    if( useCols )
+      currentAttr = GetAttr( 0, tmpcol, wxGridCellAttr::Cell );
+    else
+      currentAttr = GetAttr( tmpcol, 0, wxGridCellAttr::Cell );
+
+    if( currentAttr->HasBackgroundColour() )
+    {
+      TSemanticValue tmpValue = 0;
+      THistogramColumn col    = 0;
+
+      // Column
+      if( useCols )
+      {
+        col      = myHisto->GetHistogram()->getSemanticRealColumn( tmpcol, *noVoidSemRanges );
+        tmpValue = ( myHisto->GetHistogram()->getSemanticSortedColumn( col ) * myHisto->GetHistogram()->getControlDelta() ) +
+                   myHisto->GetHistogram()->getControlMin();
+      }
+      else if( useRows )
+      {
+        if( tmpcol < GetNumberCols() )
+        {
+          col      = myHisto->GetHistogram()->getSemanticRealColumn( tmpcol, *noVoidSemRanges );
+          tmpValue = ( myHisto->GetHistogram()->getSemanticSortedColumn( col ) * myHisto->GetHistogram()->getControlDelta() ) +
+                     myHisto->GetHistogram()->getControlMin();
+        }
+      }
+
+      // Color
+      wxColour currentColour = currentAttr->GetBackgroundColour();
+      rgb currentRGB;
+
+      currentRGB.red   = currentColour.Red();
+      currentRGB.green = currentColour.Green();
+      currentRGB.blue  = currentColour.Blue();
+
+      controlScaleInfo[ tmpValue ] = currentRGB;
+    }
+  }
 }
 
 wxString HistoTableBase::GetValue( int row, int col )
