@@ -625,9 +625,10 @@ void gHistogram::execute()
   columnSelection.getSelected( noVoidSemRanges );
 
   // Fill zoom always becouse for the histogram image generation, we need to fill to generate the semanticValuesToColorData for the legends
-  fillZoom();
-
+  // fillZoom();
   if( !myHistogram->getZoom() )
+    fillZoom();
+  else
     fillGrid();
 
   ready = true;
@@ -742,7 +743,24 @@ void gHistogram::fillGrid()
   gridHisto->AutoSizeRows();
   gridHisto->EndBatch();
   gridHisto->ForceRefresh();
+
+  // Get semanticValuesToColorControl
+  semanticValuesToColorControl.clear();
+  // TODO: create method to recove data from fillgrid
+  std::map< THistogramColumn, rgb > infoControlScale;
+  tableBase->getControlScaleInfo( infoControlScale );
+  auto i = 0;
+  for( const auto& [ col, color ] : infoControlScale )
+  {
+    // semanticValuesToColorControl[ myHistogram->getSemanticRealColumn( col, noVoidSemRanges ) ] = color;
+    semanticValuesToColorControl[ col ] = color;
+    std::cout << ++i << " fillGrid : col = " << col << " : color = " << (int)color.red << ", " << (int)color.green << ", " << (int)color.blue
+              << std::endl;
+  }
+  // for( auto col = 0; col < tableBase->GetNumberCols(); ++col )
+  //   std::cout << "fillGrid : foundCol:   " << tableBase->GetColLabelValue( col ) << std::endl;
 }
+
 
 THistogramColumn gHistogram::getSemanticSortedRealColumn( THistogramColumn whichCol, const vector< THistogramColumn >& noVoidSemRanges ) const
 {
@@ -3476,12 +3494,12 @@ void gHistogram::saveImageDialog()
 
   // newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
+  std::vector< wxBitmap* > layers{ &drawImage };
   if( GetHistogram()->getZoom() )
   {
     wxColour foregroundColour = *wxWHITE;
     wxColour backgroundColour = *wxBLACK;
 
-    std::vector< wxBitmap* > layers{ &drawImage };
     newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
     newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
     newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
@@ -3492,20 +3510,22 @@ void gHistogram::saveImageDialog()
     wxColour foregroundColour = *wxBLACK;
     wxColour backgroundColour = *wxWHITE;
 
-    std::vector< wxBitmap* > layers{ &drawImage };
     newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
     newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
 
-    if( myHistogram->getShowColor() )
-    {
-      newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
-      newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
-    }
+    // if( myHistogram->getShowColor() )
+    // {
+    newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+    newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+    // }
   }
 
   if( myHistogram->getFirstRowColored() )
+  {
+    std::cout << "gHistogram::saveImageDialog : semanticValuesToColorControl.size = " << semanticValuesToColorControl.size() << std::endl;
     newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
+  }
 
 
   SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, GetHistogram() );
@@ -3520,7 +3540,8 @@ void gHistogram::saveImageDialog()
   }
 
   filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
-  ParaverConfig::getInstance()->setTimelineSaveImageFormat( filterIndex );
+  // ParaverConfig::getInstance()->setTimelineSaveImageFormat( filterIndex );
+  newWindowImage->setImageFormat( filterIndex );
 
   imagePath = saveDialog.GetImageFilePath();
 
@@ -3536,23 +3557,23 @@ void gHistogram::saveImageDialog()
     newWindowImage->saveImageWindowScale( imageName );
   }
 
-  if( GetHistogram()->getZoom() )
+  // if( GetHistogram()->getZoom() )
+  // {
+  if( saveDialog.DialogSavesLegend() )
   {
-    if( saveDialog.DialogSavesLegend() )
+    imageName = saveDialog.GetLegendFilePath(); // .GetPath();
+    newWindowImage->saveImageScale( imageName, false );
+  }
+
+  if( saveDialog.DialogSavesControlLegend() )
+  {
+    if( myHistogram->getFirstRowColored() )
     {
       imageName = saveDialog.GetLegendControlFilePath(); // .GetPath();
       newWindowImage->saveImageControlScale( imageName, false );
     }
-
-    if( saveDialog.DialogSavesControlLegend() )
-    {
-      if( myHistogram->getFirstRowColored() )
-      {
-        imageName = saveDialog.GetLegendFilePath(); // .GetPath();
-        newWindowImage->saveImageScale( imageName, false );
-      }
-    }
   }
+  // }
 }
 
 
@@ -3569,20 +3590,18 @@ std::optional< bool > gHistogram::saveImage( wxString whichFileName, bool copyTo
   }
   else
   {
-    wxString imageName;
-    wxString tmpSuffix;
+    filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
+
+    wxString imageName = buildFormattedFileName();
     wxString defaultDir;
-
-    imageName = buildFormattedFileName();
-
 #ifdef _WIN32
     defaultDir = _( ".\\" );
 #else
     defaultDir = _( "./" );
 #endif
 
-    tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-    imagePath = imageName + tmpSuffix;
+    wxString tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    imagePath          = imageName + tmpSuffix;
   }
 
   wxFont semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );

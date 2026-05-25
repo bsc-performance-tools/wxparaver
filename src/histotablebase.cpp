@@ -179,6 +179,10 @@ int HistoTableBase::getIndexTotal( int kernelRow, int kernelCol ) const
   return iTotal;
 }
 
+void HistoTableBase::getControlScaleInfo( std::map< THistogramColumn, rgb > &controlScaleInfo )
+{
+  controlScaleInfo.clear();
+}
 
 wxString HistoTableBase::GetValue( int row, int col )
 {

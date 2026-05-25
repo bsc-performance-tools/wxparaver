@@ -139,6 +139,15 @@ class ScaleImageGenerator
       return scaleType;
     }
 
+    TImageFormat getImageFormat()
+    {
+      return filterIndex;
+    }
+
+    void setImageFormat( TImageFormat whichFilterIndex )
+    {
+      filterIndex = whichFilterIndex;
+    }
 
     wxString getLegendSuffix();
 
@@ -257,10 +266,15 @@ class WindowImageGenerator
     ScaleImageGenerator* getScaleDataImage();
 
     wxString getLegendSuffix();
+    TImageFormat getImageFormat()
+    {
+      return filterIndex;
+    }
 
-    TImageFormat getImageFormat();
-
-    void setImageFormat( TImageFormat filterIndex );
+    void setImageFormat( TImageFormat whichFilterIndex )
+    {
+      filterIndex = whichFilterIndex;
+    }
     void setImageOrientation( TScaleImageOrientation orientation );
 
 

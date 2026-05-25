@@ -158,18 +158,6 @@ wxString WindowImageGenerator::getLegendSuffix()
 }
 
 
-TImageFormat WindowImageGenerator::getImageFormat()
-{
-  return filterIndex;
-}
-
-
-void WindowImageGenerator::setImageFormat( TImageFormat whichFilterIndex )
-{
-  filterIndex = whichFilterIndex;
-}
-
-
 void WindowImageGenerator::setImageOrientation( TScaleImageOrientation a_orientation )
 {
   if( orientation != a_orientation )
@@ -682,23 +670,22 @@ void WindowImageGenerator::saveImageWindowScale( wxString whichFileName, bool wh
     copyImageToClipboard( bitmapImageTimelineScale );
   else
   {
-    wxString currentFormat         = wxString::FromUTF8( LabelConstructor::getImageFileSuffix( TImageFormat( filterIndex ) ).c_str() );
-    wxString tmpScaledTimelinePath = wxFileName( whichFileName ).GetPathWithSep() + wxFileName( whichFileName ).GetName() + currentFormat;
-
     wxImage timelineImageScale( bitmapImageTimelineScale->ConvertToImage() );
-    timelineImageScale.SaveFile( tmpScaledTimelinePath, imageFormatTypeToBitmapType( filterIndex ) );
+    timelineImageScale.SaveFile( whichFileName, imageFormatTypeToBitmapType( filterIndex ) );
   }
 }
 
 
 void WindowImageGenerator::saveImageControlScale( wxString imageName, bool appendLegendSuffix, bool whichCopyToClipboard )
 {
+  scaleImageData->setImageFormat( filterIndex );
   scaleImageData->saveImage( imageName, appendLegendSuffix, whichCopyToClipboard );
 }
 
 
 void WindowImageGenerator::saveImageScale( wxString imageName, bool appendLegendSuffix, bool whichCopyToClipboard )
 {
+  scaleImage->setImageFormat( filterIndex );
   scaleImage->saveImage( imageName, appendLegendSuffix, whichCopyToClipboard );
 }
 
@@ -1323,13 +1310,13 @@ void ScaleImageGenerator::saveImage( wxString imageName, bool appendLegendSuffix
     wxString tmpSuffix;
     if( appendLegendSuffix )
     {
-      tmpSuffix = legendSuffix + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+      tmpSuffix = _( "." ) + legendSuffix + _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     }
     else
     {
       tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     }
-    wxString imagePath = imageName + tmpSuffix;
+    wxString imagePath = imageName;
     baseLayer.SaveFile( imagePath, imageFormatTypeToBitmapType( filterIndex ) );
   }
 }
@@ -1369,11 +1356,11 @@ wxString ScaleImageGenerator::getLegendSuffix()
 void ScaleImageGenerator::updateLegendSuffix()
 {
   if( scaleType == TScaleImageType::TScaleImageGradientColor )
-    legendSuffix = _( ".gradient_legend" );
+    legendSuffix = _( "gradient_legend" );
   else if( scaleType == TScaleImageType::TScaleImageGradientColorNotNull )
-    legendSuffix = _( ".nn_gradient_legend" );
+    legendSuffix = _( "nn_gradient_legend" );
   else if( scaleType == TScaleImageType::TScaleImageAlternativeGradientColor )
-    legendSuffix = _( ".alt_gradient_legend" );
+    legendSuffix = _( "alt_gradient_legend" );
   else
-    legendSuffix += _( ".code_legend" );
+    legendSuffix += _( "code_legend" );
 }

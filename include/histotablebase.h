@@ -21,23 +21,26 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#include "wx/grid.h"
-#include <vector>
-#include <string>
 #include "paraverkerneltypes.h"
 #include "paravertypes.h"
+#include "wx/grid.h"
+
+#include <map>
+#include <string>
+#include <vector>
 
 class gHistogram;
 
-using std::vector;
+using std::map;
 using std::string;
+using std::vector;
 
 
 class HistoTableBase : public wxGridTableBase
 {
   public:
     HistoTableBase();
-    HistoTableBase( gHistogram* whichHisto );
+    HistoTableBase( gHistogram *whichHisto );
     virtual ~HistoTableBase();
 
     virtual int GetNumberRows();
@@ -54,7 +57,9 @@ class HistoTableBase : public wxGridTableBase
 
     void setSelectedRows( vector< TObjectOrder > *whichRows );
     void setNoVoidSemRanges( vector< THistogramColumn > *whichCols );
-    void setDefaultFontBold( wxFont& whichFont );
+    void setDefaultFontBold( wxFont &whichFont );
+
+    void getControlScaleInfo( std::map< THistogramColumn, rgb > &controlScaleInfo );
 
   private:
     gHistogram *myHisto;

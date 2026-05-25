@@ -4296,9 +4296,8 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
     return;
   }
 
-  filterIndex = TImageFormat( saveDialog.GetFilterIndex() ); // TImageFormat::PNG; //TImageFormat( saveDialog.GetFilterIndex() );
-  ParaverConfig::getInstance()->setTimelineSaveImageFormat( filterIndex );
-
+  filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
+  newWindowImage->setImageFormat( filterIndex );
   if( saveDialog.DialogSavesImage() )
   {
     imageName = saveDialog.GetImageFilePath();
@@ -4370,7 +4369,7 @@ std::optional< bool > gTimeline::saveImageTimeline( wxString whichFileName, bool
 void gTimeline::saveImageLegend( wxString whichFileName )
 {
   wxString imagePath;
-  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  TImageFormat filterIndex;
 
   setEnableDestroyButton( false );
 
@@ -4380,6 +4379,7 @@ void gTimeline::saveImageLegend( wxString whichFileName )
   }
   else
   {
+    filterIndex        = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
     wxString imageName = buildFormattedFileName();
     wxString tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     wxString defaultDir;

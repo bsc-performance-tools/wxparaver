@@ -490,13 +490,13 @@ void SaveImageDialog::setImageFileName()
   else if( !imageCheckbox->IsChecked() && !imageFileName->IsEmpty() )
     imageFileName->Clear();
 
-  selectedLegendFilePath = fileName + legendSuffix + fileTypeText;
+  selectedLegendFilePath = fileName + "." + legendSuffix + fileTypeText;
   if( legendCheckbox->IsChecked() && legendFileName->GetValue() != selectedLegendFilePath )
     legendFileName->ChangeValue( selectedLegendFilePath );
   else if( !legendCheckbox->IsChecked() && !legendFileName->IsEmpty() )
     legendFileName->Clear();
 
-  selectedLegendControlFilePath = fileName + legendControlSuffix + fileTypeText;
+  selectedLegendControlFilePath = fileName + "." + legendControlSuffix + fileTypeText;
   if( legendControlCheckbox->IsChecked() && legendControlFileName->GetValue() != selectedLegendControlFilePath )
     legendControlFileName->ChangeValue( selectedLegendControlFilePath );
   else if( !legendControlCheckbox->IsChecked() && !legendControlFileName->IsEmpty() )
