@@ -2100,7 +2100,7 @@ void gTimeline::OnPopUpCopy( wxCommandEvent& event )
   gPasteWindowProperties::getInstance()->copy( this );
 
   bool copyToClipboard   = true;
-  auto copiedToClipboard = saveImageWindows( _( "" ), copyToClipboard );
+  auto copiedToClipboard = saveImageTimeline( _( "" ), copyToClipboard );
   if( !copiedToClipboard.value() )
     wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
                   _( "Copy Timeline Properties" ),
@@ -4322,7 +4322,7 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
 }
 
 
-std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, bool copyToClipboard )
+std::optional< bool > gTimeline::saveImageTimeline( wxString whichFileName, bool copyToClipboard )
 {
   wxString imagePath;
   TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
