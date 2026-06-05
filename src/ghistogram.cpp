@@ -754,11 +754,7 @@ void gHistogram::fillGrid()
   {
     // semanticValuesToColorControl[ myHistogram->getSemanticRealColumn( col, noVoidSemRanges ) ] = color;
     semanticValuesToColorControl[ col ] = color;
-    std::cout << ++i << " fillGrid : col = " << col << " : color = " << (int)color.red << ", " << (int)color.green << ", " << (int)color.blue
-              << std::endl;
   }
-  // for( auto col = 0; col < tableBase->GetNumberCols(); ++col )
-  //   std::cout << "fillGrid : foundCol:   " << tableBase->GetColLabelValue( col ) << std::endl;
 }
 
 
@@ -3523,7 +3519,6 @@ void gHistogram::saveImageDialog()
 
   if( myHistogram->getFirstRowColored() )
   {
-    std::cout << "gHistogram::saveImageDialog : semanticValuesToColorControl.size = " << semanticValuesToColorControl.size() << std::endl;
     newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
   }
 
