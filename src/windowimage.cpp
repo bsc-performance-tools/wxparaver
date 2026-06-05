@@ -826,11 +826,12 @@ void ScaleImageGenerator::setImageOrientation( TScaleImageOrientation a_orientat
 void ScaleImageGenerator::computeSemanticLabels()
 {
   // Dimensions: loop for every value to build labels and measure the maximum
-  wxString curLabel;
-  wxString maxLabel;
+  // wxString curLabel;
+  // wxString maxLabel;
   //
+  semanticValuesLabelsLong.clear();
+  semanticValuesLabelsShort.clear();
 
-  //
   for( auto it = semanticValuesColors.begin(); it != semanticValuesColors.end(); ++it )
   {
     // Get Labels
@@ -922,6 +923,8 @@ void ScaleImageGenerator::computeMaxSemanticLabelsSize()
 }
 
 
+// Recomputes semanticValuesColors for Gradients.
+// Labels needs to be generated again after this method.
 void ScaleImageGenerator::sortSemanticValuesGradientColors()
 {
   semanticValuesColors.clear();
@@ -1134,17 +1137,17 @@ void ScaleImageGenerator::drawImageGradientColor()
     if( it == semanticValuesColors.begin() )
     {
       drawRectangle( it->second, posX, posY );
-      drawLabelGradient( semanticValuesLabels[ it->first ], TPosition::FIRST, posX, posY );
+      drawLabelGradient( semanticValuesLabelsShort[ it->first ], TPosition::FIRST, posX, posY );
     }
     else if( std::next( it ) == semanticValuesColors.end() )
     {
       drawRectangle( it->second, posX, posY );
-      drawLabelGradient( semanticValuesLabels[ it->first ], TPosition::LAST, posX, posY );
+      drawLabelGradient( semanticValuesLabelsShort[ it->first ], TPosition::LAST, posX, posY );
     }
     else if( currentElement == middleElement )
     {
       drawRectangle( it->second, posX, posY );
-      drawLabelGradient( semanticValuesLabels[ it->first ], TPosition::MIDDLE, posX, posY );
+      drawLabelGradient( semanticValuesLabelsShort[ it->first ], TPosition::MIDDLE, posX, posY );
     }
     else
     {
@@ -1332,7 +1335,8 @@ void ScaleImageGenerator::processImage( std::optional< int > wantedWidth )
     {
       totalSquaresGradientColor = wantedWidth.value() / dataImage.heightRect;
     }
-    this->sortSemanticValuesGradientColors();
+    sortSemanticValuesGradientColors();
+    computeSemanticLabels();
   }
   //
   if( wantedWidth == std::nullopt )

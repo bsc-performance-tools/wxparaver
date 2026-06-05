@@ -280,11 +280,12 @@ class WindowImageGenerator
 
     void transformToShort( bool isShort );
 
+    void generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName );
+    void generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName );
+
     void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, bool derivedFromHisto = false );
     void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram );
 
-    void generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName );
-    void generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName );
     void generateScaleWindowsImage( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram = nullptr );
     void generateScaleWindowsImage();
 
