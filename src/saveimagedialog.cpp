@@ -1420,11 +1420,10 @@ void SaveImageDialog::OnShowLegend( wxCommandEvent& event )
 
     imageGeneration->getScaleWindowsImage()->setSelectedSemanticValues( selectedIndices );
 
+    imageGeneration->generateScaleWindowsImage();
 
     drawWindowAndScale->Refresh();
     drawWindowAndScale->Update();
-
-    imageGeneration->generateScaleWindowsImage();
 
 
     adjustPanelSize( useOriginalSizeCheckBox->IsChecked() );
