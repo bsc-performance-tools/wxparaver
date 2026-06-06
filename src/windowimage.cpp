@@ -1096,12 +1096,9 @@ void ScaleImageGenerator::drawImageCodeColor()
 
 void ScaleImageGenerator::drawImageGradientColor()
 {
-  // *** 1. Draw color scale ****************************************************************
-  int currentElement      = 0;
-  int posX                = dataImage.rectMargin + dataImage.titleMargin;
-  int posY                = dataImage.titleMargin;
-  const int middleElement = ( totalSquaresGradientColor / 2 ) + 1;
-  //
+  int posX = dataImage.rectMargin + dataImage.titleMargin;
+  int posY = dataImage.titleMargin;
+
   auto visitorBelowOutlier = overloads{ []( auto* myWindow )
                                         {
                                           return myWindow->getSemanticColor().getBelowOutlierColor();
@@ -1110,11 +1107,13 @@ void ScaleImageGenerator::drawImageGradientColor()
                                         {
                                           return myWindow->getSemanticColor().getAboveOutlierColor();
                                         } };
-  //
+
+
+  // *** Draw first "<" symbol and square of the scale ************************
   wxString tmpSemanticValueLabel = wxT( "<" );
-  //
+
   drawRectangle( std::visit( visitorBelowOutlier, myWindow ), posX, posY );
-  //
+
   if( orientation == TScaleImageOrientation::TScaleImageOrientationVertical )
   {
     memoryImageContent->DrawText( tmpSemanticValueLabel, posX + dataImage.heightRect + SIZE_MARK_LABEL, posY );
@@ -1127,45 +1126,90 @@ void ScaleImageGenerator::drawImageGradientColor()
     memoryImageMask->DrawText( tmpSemanticValueLabel, posX, posY + dataImage.heightRect + SIZE_MARK_LABEL );
     posX = posX + dataImage.widthRect + dataImage.rectMargin;
   }
-  //
 
-  //
+
+  // *** Draw middle of the scale *********************************************
+  const int middleElement = ( totalSquaresGradientColor / 2 ) + 1;
+
+  TLabelDimensions labelDimensions;
+  int currentElement      = 0;
+  int middleLabelFinalPos = 0;
+  int lastLabelInitialPos = 0;
+  // if( orientation == TScaleImageOrientation::TScaleImageOrientationHorizontal )
+  // {
+  // Decide if all 3 labels (first, middle, last) fit in the horizontal scale
+  TPosition currentAlignment = TPosition::OTHER;
+  int tmpSquarePos           = posX;
   for( auto it = semanticValuesColors.begin(); it != semanticValuesColors.end(); ++it )
   {
     ++currentElement;
-    //
+
     if( it == semanticValuesColors.begin() )
-    {
-      drawRectangle( it->second, posX, posY );
-      drawLabelGradient( semanticValuesLabelsShort[ it->first ], TPosition::FIRST, posX, posY );
-    }
+      currentAlignment = TPosition::FIRST;
     else if( std::next( it ) == semanticValuesColors.end() )
-    {
-      drawRectangle( it->second, posX, posY );
-      drawLabelGradient( semanticValuesLabelsShort[ it->first ], TPosition::LAST, posX, posY );
-    }
+      currentAlignment = TPosition::LAST;
     else if( currentElement == middleElement )
-    {
-      drawRectangle( it->second, posX, posY );
-      drawLabelGradient( semanticValuesLabelsShort[ it->first ], TPosition::MIDDLE, posX, posY );
-    }
+      currentAlignment = TPosition::MIDDLE;
     else
-    {
-      drawRectangle( it->second, posX, posY );
-    }
-    //
+      currentAlignment = TPosition::OTHER;
+
+    if( currentAlignment != TPosition::OTHER )
+      computeLabelDimensions( semanticValuesLabelsShort[ it->first ], currentAlignment, tmpSquarePos, labelDimensions );
+
+    // Advance coordinates
     if( orientation == TScaleImageOrientation::TScaleImageOrientationVertical )
     {
-      posX = dataImage.rectMargin + dataImage.titleMargin;
-      posY += dataImage.heightRect;
+      tmpSquarePos = dataImage.rectMargin + dataImage.titleMargin;
     }
     else if( orientation == TScaleImageOrientation::TScaleImageOrientationHorizontal )
     {
-      posX += dataImage.widthRect;
+      tmpSquarePos += dataImage.rectMargin;
+    }
+  }
+
+  middleLabelFinalPos =
+    std::get< INIT_POS >( labelDimensions.at( TPosition::MIDDLE ) ) - std::get< LEFT_SHIFT >( labelDimensions.at( TPosition::MIDDLE ) );
+  lastLabelInitialPos =
+    std::get< INIT_POS >( labelDimensions.at( TPosition::LAST ) ) + std::get< LEFT_SHIFT >( labelDimensions.at( TPosition::LAST ) );
+
+  bool writeMiddleLabel =
+    ( orientation == TScaleImageOrientation::TScaleImageOrientationVertical ) || ( middleLabelFinalPos < ( lastLabelInitialPos - 5 ) );
+
+  // Draw scale rectangles with labels
+  currentElement = 0;
+  for( auto it = semanticValuesColors.begin(); it != semanticValuesColors.end(); ++it )
+  {
+    // Draw elements
+    drawRectangle( it->second, posX, posY );
+
+    ++currentElement;
+    if( it == semanticValuesColors.begin() )
+    {
+      drawLabelGradient( semanticValuesLabelsShort[ it->first ], TPosition::FIRST, labelDimensions, posX, posY );
+    }
+    else if( std::next( it ) == semanticValuesColors.end() )
+    {
+      drawLabelGradient( semanticValuesLabelsShort[ it->first ], TPosition::LAST, labelDimensions, posX, posY );
+    }
+    else if( currentElement == middleElement && writeMiddleLabel )
+    {
+      drawLabelGradient( semanticValuesLabelsShort[ it->first ], TPosition::MIDDLE, labelDimensions, posX, posY );
+    }
+
+    // Advance coordinates
+    if( orientation == TScaleImageOrientation::TScaleImageOrientationVertical )
+    {
+      posX = dataImage.rectMargin + dataImage.titleMargin;
+      posY += dataImage.rectMargin;
+    }
+    else if( orientation == TScaleImageOrientation::TScaleImageOrientationHorizontal )
+    {
+      posX += dataImage.rectMargin;
     }
   }
 
 
+  // *** Draw last "<" symbol and square of the scale *************************
   if( orientation == TScaleImageOrientation::TScaleImageOrientationVertical )
   {
     posX = dataImage.rectMargin + dataImage.titleMargin;
@@ -1212,12 +1256,15 @@ void ScaleImageGenerator::drawRectangle( rgb semanticColour, int posX, int posY 
 }
 
 
-void ScaleImageGenerator::drawLabelGradient( wxString semanticValueLabel, TPosition alignmentLabel, int posX, int posY )
+void ScaleImageGenerator::computeLabelDimensions( wxString semanticValueLabel,
+                                                  TPosition alignmentLabel,
+                                                  int currentSquarePos,
+                                                  TLabelDimensions& labelDimensions )
 {
   wxSize labelSize = memoryImageContent->GetTextExtent( semanticValueLabel );
-  //
+
   int shiftLeftLabel = 0, shiftLeftLine = 0;
-  //
+
   switch( alignmentLabel )
   {
     case TPosition::FIRST:
@@ -1229,13 +1276,26 @@ void ScaleImageGenerator::drawLabelGradient( wxString semanticValueLabel, TPosit
       shiftLeftLabel = ceil( (double)dataImage.widthRect / 2 - (double)labelSize.GetWidth() / 2 );
       break;
     case TPosition::LAST:
-      shiftLeftLabel = dataImage.widthRect - labelSize.GetWidth();
       shiftLeftLine  = dataImage.widthRect - 1;
+      shiftLeftLabel = dataImage.widthRect - labelSize.GetWidth();
       break;
     default:
       break;
   }
-  //
+
+  labelDimensions[ alignmentLabel ] = std::make_tuple( currentSquarePos, shiftLeftLine, shiftLeftLabel, labelSize.GetWidth() );
+}
+
+
+void ScaleImageGenerator::drawLabelGradient( wxString semanticValueLabel,
+                                             const TPosition alignmentLabel,
+                                             const TLabelDimensions& labelDimensions,
+                                             const int posX,
+                                             const int posY )
+{
+  int shiftLeftLine  = std::get< LEFT_LINE >( labelDimensions.at( alignmentLabel ) );
+  int shiftLeftLabel = std::get< LEFT_SHIFT >( labelDimensions.at( alignmentLabel ) );
+
   if( orientation == TScaleImageOrientation::TScaleImageOrientationHorizontal )
   {
     memoryImageContent->DrawLine( posX + shiftLeftLine,

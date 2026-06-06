@@ -35,10 +35,11 @@
 
 enum class TPosition
 {
+  OTHER = -1,
   FIRST = 0,
   MIDDLE,
   LAST,
-  ANY
+  ANY // used?
 };
 
 enum class TBackgroundMode
@@ -89,6 +90,19 @@ enum class TScaleImageOrientation
   TScaleImageOrientationVertical,
   TScaleImageOrientationHorizontal
 };
+
+
+using TCurrentSquarePos = int;
+using TLabelLeftLine    = int;
+using TLabelLeftShift   = int;
+using TLabelLength      = int;
+
+constexpr int INIT_POS     = 0;
+constexpr int LEFT_LINE    = 1;
+constexpr int LEFT_SHIFT   = 2;
+constexpr int LABEL_LENGTH = 3;
+
+using TLabelDimensions = std::map< TPosition, std::tuple< TCurrentSquarePos, TLabelLeftLine, TLabelLeftShift, TLabelLength > >;
 
 
 class ScaleImageGenerator
@@ -194,7 +208,12 @@ class ScaleImageGenerator
 
 
   private:
-    void drawLabelGradient( wxString semanticValueLabel, TPosition alignmentLabel, int posX, int posY );
+    void computeLabelDimensions( wxString semanticValueLabel, TPosition alignmentLabel, int currentSquarePos, TLabelDimensions& labelDimensions );
+    void drawLabelGradient( wxString semanticValueLabel,
+                            const TPosition alignmentLabel,
+                            const TLabelDimensions& labelDimensions,
+                            const int posX,
+                            const int posY );
     void drawRectangle( rgb semanticColour, int posX, int posY );
 
     wxImage bitmapToImage();
