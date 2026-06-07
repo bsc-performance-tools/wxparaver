@@ -696,7 +696,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser &paraverCommandLineParser )
 
             tmpTimeline->redraw();
 
-            tmpTimeline->saveImageWindows();
+            tmpTimeline->saveImageTimeline();
             tmpTimeline->saveImageLegend();
 
             delete tmpTimeline;

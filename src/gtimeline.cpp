@@ -643,23 +643,32 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 
 
 #ifdef __WXMAC__
-void gTimeline::drawStackedImages( wxDC& dc )
+std::vector< wxBitmap* > gTimeline::getActiveStackedImages()
 {
-  if( bufferImage.IsOk() )
-    dc.DrawBitmap( bufferImage, 0, 0, false );
+  std::vector< wxBitmap* > layers;
 
-  doDrawCaution( dc );
+  if( bufferImage.IsOk() )
+    layers.push_back( &bufferImage );
 
   if( myWindow->getDrawFlags() && eventImage.IsOk() )
-    dc.DrawBitmap( eventImage, 0, 0, true );
+    layers.push_back( &eventImage );
 
   if( myWindow->getDrawCommLines() && commImage.IsOk() )
-    dc.DrawBitmap( commImage, 0, 0, true );
+    layers.push_back( &commImage );
+
+  return layers;
+}
+
+void gTimeline::drawStackedImages( wxDC& dc )
+{
+  std::vector< wxBitmap* > layers = getActiveStackedImages();
 
   if( zooming && zoomBMP.IsOk() && !motionEvent.ShiftDown() )
-  {
-    dc.DrawBitmap( zoomBMP, 0, 0, true );
-  }
+    layers.push_back( &zoomBMP );
+
+  WindowImageGenerator::drawStackedBitmaps( dc, layers );
+
+  doDrawCaution( dc );
 }
 #endif
 
@@ -2091,7 +2100,7 @@ void gTimeline::OnPopUpCopy( wxCommandEvent& event )
   gPasteWindowProperties::getInstance()->copy( this );
 
   bool copyToClipboard   = true;
-  auto copiedToClipboard = saveImageWindows( _( "" ), copyToClipboard );
+  auto copiedToClipboard = saveImageTimeline( _( "" ), copyToClipboard );
   if( !copiedToClipboard.value() )
     wxMessageBox( _( "Unable to copy image to clipboard.\n\nAll other copiable properties can be pasted to another timeline or histogram window." ),
                   _( "Copy Timeline Properties" ),
@@ -4245,8 +4254,14 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
   {
     redraw();
   }
-  WindowImageGenerator* newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
+  std::vector< wxBitmap* > layers;
+#ifdef __WXMAC__
+  layers = getActiveStackedImages();
+#else
+  layers.push_back( &drawImage );
+#endif
+  WindowImageGenerator* newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
   newWindowImage->generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
 
   if( myWindow->isFusedLinesColorSet() )
@@ -4281,9 +4296,8 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
     return;
   }
 
-  filterIndex = TImageFormat( saveDialog.GetFilterIndex() ); // TImageFormat::PNG; //TImageFormat( saveDialog.GetFilterIndex() );
-  ParaverConfig::getInstance()->setTimelineSaveImageFormat( filterIndex );
-
+  filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
+  newWindowImage->setImageFormat( filterIndex );
   if( saveDialog.DialogSavesImage() )
   {
     imageName = saveDialog.GetImageFilePath();
@@ -4307,7 +4321,7 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
 }
 
 
-std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, bool copyToClipboard )
+std::optional< bool > gTimeline::saveImageTimeline( wxString whichFileName, bool copyToClipboard )
 {
   wxString imagePath;
   TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
@@ -4331,7 +4345,13 @@ std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, bool 
     imagePath = imageName + tmpSuffix;
   }
 
-  WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  std::vector< wxBitmap* > layers;
+#ifdef __WXMAC__
+  layers = getActiveStackedImages();
+#else
+  layers.push_back( &drawImage );
+#endif
+  WindowImageGenerator newWindowImage( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
   newWindowImage.generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
 
   bool copyDone = false;
@@ -4349,7 +4369,7 @@ std::optional< bool > gTimeline::saveImageWindows( wxString whichFileName, bool 
 void gTimeline::saveImageLegend( wxString whichFileName )
 {
   wxString imagePath;
-  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  TImageFormat filterIndex;
 
   setEnableDestroyButton( false );
 
@@ -4359,6 +4379,7 @@ void gTimeline::saveImageLegend( wxString whichFileName )
   }
   else
   {
+    filterIndex        = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
     wxString imageName = buildFormattedFileName();
     wxString tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     wxString defaultDir;
@@ -4370,7 +4391,13 @@ void gTimeline::saveImageLegend( wxString whichFileName )
     imagePath = imageName + tmpSuffix;
   }
 
-  WindowImageGenerator newWindowImage( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  std::vector< wxBitmap* > layers;
+#ifdef __WXMAC__
+  layers = getActiveStackedImages();
+#else
+  layers.push_back( &drawImage );
+#endif
+  WindowImageGenerator newWindowImage( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
   if( myWindow->isFusedLinesColorSet() )
   {

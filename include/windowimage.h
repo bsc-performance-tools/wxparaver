@@ -35,10 +35,11 @@
 
 enum class TPosition
 {
+  OTHER = -1,
   FIRST = 0,
   MIDDLE,
   LAST,
-  ANY
+  ANY // used?
 };
 
 enum class TBackgroundMode
@@ -91,6 +92,19 @@ enum class TScaleImageOrientation
 };
 
 
+using TCurrentSquarePos = int;
+using TLabelLeftLine    = int;
+using TLabelLeftShift   = int;
+using TLabelLength      = int;
+
+constexpr int INIT_POS     = 0;
+constexpr int LEFT_LINE    = 1;
+constexpr int LEFT_SHIFT   = 2;
+constexpr int LABEL_LENGTH = 3;
+
+using TLabelDimensions = std::map< TPosition, std::tuple< TCurrentSquarePos, TLabelLeftLine, TLabelLeftShift, TLabelLength > >;
+
+
 class ScaleImageGenerator
 {
   public:
@@ -139,6 +153,15 @@ class ScaleImageGenerator
       return scaleType;
     }
 
+    TImageFormat getImageFormat()
+    {
+      return filterIndex;
+    }
+
+    void setImageFormat( TImageFormat whichFilterIndex )
+    {
+      filterIndex = whichFilterIndex;
+    }
 
     wxString getLegendSuffix();
 
@@ -185,7 +208,12 @@ class ScaleImageGenerator
 
 
   private:
-    void drawLabelGradient( wxString semanticValueLabel, TPosition alignmentLabel, int posX, int posY );
+    void computeLabelDimensions( wxString semanticValueLabel, TPosition alignmentLabel, int currentSquarePos, TLabelDimensions& labelDimensions );
+    void drawLabelGradient( wxString semanticValueLabel,
+                            const TPosition alignmentLabel,
+                            const TLabelDimensions& labelDimensions,
+                            const int posX,
+                            const int posY );
     void drawRectangle( rgb semanticColour, int posX, int posY );
 
     wxImage bitmapToImage();
@@ -231,16 +259,21 @@ class ScaleImageGenerator
 class WindowImageGenerator
 {
   public:
-    WindowImageGenerator( wxBitmap* wichBitmapTimeline,
+    WindowImageGenerator( const std::vector< wxBitmap* >& whichBitmap,
                           // WindowGenericItem genericItem,
                           wxColour whichBackground,
                           wxColour whichForeground,
                           wxFont whichTextFont,
-                          TImageFormat wichFilterIndex,
+                          TImageFormat whichFilterIndex,
                           bool whichMergedImages = false );
+
     ~WindowImageGenerator();
 
   public:
+#ifdef __WXMAC__
+    static void drawStackedBitmaps( wxDC& dc, const std::vector< wxBitmap* >& whichBitmaps );
+#endif
+
     wxBitmap* getWindowsImageBitmap();
     wxBitmap* getTimelineScaleImage();
     wxBitmap* getScaleImageBitmap();
@@ -252,20 +285,26 @@ class WindowImageGenerator
     ScaleImageGenerator* getScaleDataImage();
 
     wxString getLegendSuffix();
+    TImageFormat getImageFormat()
+    {
+      return filterIndex;
+    }
 
-    TImageFormat getImageFormat();
-
-    void setImageFormat( TImageFormat filterIndex );
+    void setImageFormat( TImageFormat whichFilterIndex )
+    {
+      filterIndex = whichFilterIndex;
+    }
     void setImageOrientation( TScaleImageOrientation orientation );
 
 
     void transformToShort( bool isShort );
 
+    void generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName );
+    void generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName );
+
     void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, bool derivedFromHisto = false );
     void generatescaleImageDataWindows( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram );
 
-    void generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName );
-    void generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName );
     void generateScaleWindowsImage( std::map< TSemanticValue, rgb > semanticValuesToColor, Timeline* myWindow, Histogram* myHistogram = nullptr );
     void generateScaleWindowsImage();
 
@@ -277,6 +316,7 @@ class WindowImageGenerator
     void saveImageControlScale( wxString imageName, bool appendLegendSuffix, bool whichCopyToClipboard = false );
 
   private:
+    std::vector< wxBitmap* > bitmaps;
     wxBitmap* bitmapTimeline = nullptr;
 
     wxBitmap* bitmapImageTimeline   = nullptr;
