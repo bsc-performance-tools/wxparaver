@@ -70,7 +70,7 @@ BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
   EVT_CHECKBOX( ID_SAVELEGENDCHECKBOX, SaveImageDialog::OnSavelegendcheckboxClick )
   EVT_CHECKBOX( ID_SAVELEGENDCONTROLCHECKBOX, SaveImageDialog::OnSavelegendcontrolcheckboxClick )
   EVT_CHECKBOX( ID_IMAGE_PLUS_LEGEND_CHECKBOX, SaveImageDialog::OnImagePlusLegendCheckboxClick )
-  EVT_CHECKBOX( ID_USE_ORIGINAL_SIZE_CHECKBOX, SaveImageDialog::OnUseOriginalSizeCheckboxClick )
+  EVT_CHECKBOX( ID_PREVIEW_REAL_SIZE_CHECKBOX, SaveImageDialog::OnPreviewRealSizeCheckboxClick )
   EVT_BUTTON( ID_SAVEIMAGE_COPY_CLIPBOARD_BUTTON, SaveImageDialog::OnSaveimageCopyClipboardButtonClick )
   EVT_CHOICE( ID_ORIENTATION_LEGEND_CONTROL, SaveImageDialog::OnOrientationLegendControlSelected )
   EVT_CHECKBOX( ID_CHECKBOX_SHRINK_LABEL, SaveImageDialog::OnCheckboxShrinkLabelClick )
@@ -191,7 +191,7 @@ void SaveImageDialog::Init()
   drawScaleSingle = NULL;
   drawScaleControlSingle = NULL;
   drawWindowAndScale = NULL;
-  useOriginalSizeCheckBox = NULL;
+  previewRealSizeCheckBox = NULL;
   copyToClipboardButton = NULL;
   widgetTopCompose1 = NULL;
   shrinkLabelCheckBox = NULL;
@@ -307,9 +307,9 @@ void SaveImageDialog::CreateControls()
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer35->Add(itemBoxSizer7, 0, wxGROW, 2);
 
-  useOriginalSizeCheckBox = new wxCheckBox( itemDialog1, ID_USE_ORIGINAL_SIZE_CHECKBOX, _("Use original size"), wxDefaultPosition, wxDefaultSize, 0 );
-  useOriginalSizeCheckBox->SetValue(false);
-  itemBoxSizer7->Add(useOriginalSizeCheckBox, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 2);
+  previewRealSizeCheckBox = new wxCheckBox( itemDialog1, ID_PREVIEW_REAL_SIZE_CHECKBOX, _("Preview 1:1"), wxDefaultPosition, wxDefaultSize, 0 );
+  previewRealSizeCheckBox->SetValue(false);
+  itemBoxSizer7->Add(previewRealSizeCheckBox, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
   itemBoxSizer7->Add(5, 5, 1, wxGROW|wxLEFT|wxRIGHT, 2);
 
@@ -1117,7 +1117,7 @@ void SaveImageDialog::OnSavelegendcontrolcheckboxClick( wxCommandEvent& event )
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
  */
 
-void SaveImageDialog::OnUseOriginalSizeCheckboxClick( wxCommandEvent& event )
+void SaveImageDialog::OnPreviewRealSizeCheckboxClick( wxCommandEvent& event )
 {
   // wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX ), wxCheckBox );
   // if( !checkbox )
@@ -1169,7 +1169,7 @@ void SaveImageDialog::OnOrientationLegendControlSelected( wxCommandEvent& event 
     // wxScrolledWindow* drawScaleControlSingle;
   }
 
-  adjustPanelSize( useOriginalSizeCheckBox->IsChecked() );
+  adjustPanelSize( previewRealSizeCheckBox->IsChecked() );
 }
 
 
@@ -1278,7 +1278,7 @@ void SaveImageDialog::OnCheckboxShrinkLabelClick( wxCommandEvent& event )
   drawWindowAndScale->Refresh();
   drawWindowAndScale->Update();
 
-  adjustPanelSize( useOriginalSizeCheckBox->IsChecked() );
+  adjustPanelSize( previewRealSizeCheckBox->IsChecked() );
 }
 
 
@@ -1426,7 +1426,7 @@ void SaveImageDialog::OnShowLegend( wxCommandEvent& event )
     drawWindowAndScale->Update();
 
 
-    adjustPanelSize( useOriginalSizeCheckBox->IsChecked() );
+    adjustPanelSize( previewRealSizeCheckBox->IsChecked() );
   }
 
   delete dialog;
