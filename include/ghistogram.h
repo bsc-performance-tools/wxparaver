@@ -41,6 +41,7 @@
 #include "wx/timer.h"
 
 #include <wx/choice.h>
+#include <wx/dcmemory.h>
 #include <wx/display.h>
 #include <wx/statbmp.h>
 
