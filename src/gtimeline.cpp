@@ -4262,7 +4262,11 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
   layers.push_back( &drawImage );
 #endif
   WindowImageGenerator* newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
-  newWindowImage->generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
+  bool imageGenerated                  = newWindowImage->generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
+  if( !imageGenerated )
+  {
+    wxMessageBox( _( "Unable to save Timeline image.\n\nTry to reduce size." ), _( "Save Image" ), wxOK | wxICON_WARNING, this );
+  }
 
   if( myWindow->isFusedLinesColorSet() )
   {
@@ -4345,6 +4349,7 @@ std::optional< bool > gTimeline::saveImageTimeline( wxString whichFileName, bool
     imagePath = imageName + tmpSuffix;
   }
 
+  bool copyDone = false;
   std::vector< wxBitmap* > layers;
 #ifdef __WXMAC__
   layers = getActiveStackedImages();
@@ -4352,13 +4357,18 @@ std::optional< bool > gTimeline::saveImageTimeline( wxString whichFileName, bool
   layers.push_back( &drawImage );
 #endif
   WindowImageGenerator newWindowImage( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
-  newWindowImage.generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
-
-  bool copyDone = false;
-  if( copyToClipboard )
-    copyDone = newWindowImage.copyImageToClipboard();
+  bool imageGenerated = newWindowImage.generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
+  if( !imageGenerated )
+  {
+    wxMessageBox( _( "Unable to save Timeline image.\n\nTry to reduce size." ), _( "Save Image" ), wxOK | wxICON_WARNING, this );
+  }
   else
-    newWindowImage.saveImageWindows( imagePath );
+  {
+    if( copyToClipboard )
+      copyDone = newWindowImage.copyImageToClipboard();
+    else
+      newWindowImage.saveImageWindows( imagePath );
+  }
 
   setEnableDestroyButton( true );
 

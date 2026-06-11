@@ -38,6 +38,10 @@
 
 #define SIZE_MARK_LABEL 4
 
+// This limit happens to be related with contiguous block of memory for the bitmap buffer.
+// If exceeded, aborts after CAIRO assert
+constexpr unsigned long MAX_CAIRO_SIZE = 2147483648 * 2; // 1024 * 1024 * 1024 * 2;
+constexpr int IMG_DEPTH                = 4 * 8;          // ( RGB + alpha ) * 8 bytes/color
 
 wxBitmapType imageFormatTypeToBitmapType( const TImageFormat& whichFilterIndex )
 {
@@ -315,8 +319,11 @@ void WindowImageGenerator::generatescaleImageDataWindows( std::map< TSemanticVal
 }
 
 
-void WindowImageGenerator::generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName )
+bool WindowImageGenerator::generateWindowsImage( const std::string& windowsName, const std::string& windowTraceName )
 {
+  if( bitmapImageTimeline != nullptr && !bitmapImageTimeline->IsOk() )
+    return false;
+
   int marginSpace = 5;
   // Get title
   wxString longTitle    = wxString::FromUTF8( ( windowsName + " @ " + windowTraceName ).c_str() );
@@ -332,6 +339,9 @@ void WindowImageGenerator::generateWindowsImage( const std::string& windowsName,
   int imageMargin         = 5;
   int imageTimelineHeigth = bitmapTimeline->GetHeight() + imageTextFont.GetPointSize() + ( 2 * imageMargin ); // up + down margins + text + image
   int imageTimelineWidth  = bitmapTimeline->GetWidth();
+
+  if( ( titleWidth * titleHeigth * IMG_DEPTH ) > MAX_CAIRO_SIZE )
+    return false;
 
   // Build DC for title
   wxBitmap titleBitmap( titleWidth, titleHeigth );
@@ -372,6 +382,8 @@ void WindowImageGenerator::generateWindowsImage( const std::string& windowsName,
   wxMemoryDC timelineDC( *bitmapTimeline );
 #endif
   memoryImageTimeline->Blit( 0, titleHeigth, bitmapTimeline->GetWidth(), bitmapTimeline->GetHeight(), &timelineDC, 0, 0 );
+
+  return true;
 }
 
 
@@ -388,7 +400,7 @@ void WindowImageGenerator::drawStackedBitmaps( wxDC& dc, const std::vector< wxBi
 }
 #endif
 
-void WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName )
+bool WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const std::string& windowsName, const std::string& windowTraceName )
 {
   int imageWidth  = 0;
   int imageHeight = 0;
@@ -414,6 +426,9 @@ void WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const st
 
   int titleHeigth = imageTextFont.GetPointSize() + ( 2 * marginSpace ); // up + down margins + text
   int titleWidth  = imageWidth;
+
+  if( ( imageWidth * imageHeight * IMG_DEPTH ) > MAX_CAIRO_SIZE )
+    return false;
 
   int titleWritableWidth = titleWidth - ( 2 * marginSpace );
 
@@ -459,6 +474,8 @@ void WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const st
   memoryImageTimeline->Blit( 0, 0, titleWidth, titleHeigth, &titleDC, 0, 0 );
 
   gridImage->Render( *memoryImageTimeline, wxPoint( 0, titleHeigth ) );
+
+  return true;
 }
 
 

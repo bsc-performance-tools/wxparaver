@@ -3491,15 +3491,19 @@ void gHistogram::saveImageDialog()
   // newWindowImage = new WindowImageGenerator( &drawImage, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
   std::vector< wxBitmap* > layers{ &drawImage };
+  bool imageGenerated;
   if( GetHistogram()->getZoom() )
   {
     wxColour foregroundColour = *wxWHITE;
     wxColour backgroundColour = *wxBLACK;
 
     newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
-    newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
-    newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
-    newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+    imageGenerated = newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+    if( imageGenerated )
+    {
+      newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+      newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+    }
   }
   else
   {
@@ -3508,20 +3512,34 @@ void gHistogram::saveImageDialog()
 
     newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
-    newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+    imageGenerated = newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
 
     // if( myHistogram->getShowColor() )
     // {
-    newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
-    newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+    if( imageGenerated )
+    {
+      newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+      newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+    }
     // }
   }
 
-  if( myHistogram->getFirstRowColored() )
+  if( myHistogram->getFirstRowColored() && imageGenerated )
   {
     newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
   }
 
+  if( !imageGenerated )
+  {
+    wxMessageBox(
+      _( "Unable to save Histogram image.\n\nTry to reduce objects or columns, hide columns or change between horizontal/vertical view." ),
+      _( "Save Image" ),
+      wxOK | wxICON_WARNING,
+      this );
+    setEnableDestroyButton( true );
+
+    return;
+  }
 
   SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, GetHistogram() );
 
@@ -3604,19 +3622,42 @@ std::optional< bool > gHistogram::saveImage( wxString whichFileName, bool copyTo
   wxColour foregroundColour = *wxWHITE;
   wxColour backgroundColour = *wxBLACK;
 
+  // if( drawImage.IsOk() )
+  // {
+  //   wxMessageBox( _( "Unable to save Histogram image.\n\nBitmap corrupted. Try to reduce columns or threads." ),
+  //                 _( "Save Image" ),
+  //                 wxOK | wxICON_WARNING,
+  //                 this );
+  //   setEnableDestroyButton( true );
+  //   return std::nullopt;
+  // }
+
   std::vector< wxBitmap* > layers{ &drawImage };
   WindowImageGenerator newWindowImage( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
+  bool imageGenerated;
   if( GetHistogram()->getZoom() )
-    newWindowImage.generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+    imageGenerated = newWindowImage.generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
   else
-    newWindowImage.generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
+    imageGenerated = newWindowImage.generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
 
   bool copyDone = false;
-  if( copyToClipboard )
-    copyDone = newWindowImage.copyImageToClipboard();
+
+  if( imageGenerated )
+  {
+    if( copyToClipboard )
+      copyDone = newWindowImage.copyImageToClipboard();
+    else
+      newWindowImage.saveImageWindows( imagePath );
+  }
   else
-    newWindowImage.saveImageWindows( imagePath );
+  {
+    wxMessageBox(
+      _( "Unable to save Histogram image.\n\nTry to reduce objects or columns, hide columns or change between horizontal/vertical view." ),
+      _( "Save Image" ),
+      wxOK | wxICON_WARNING,
+      this );
+  }
 
   setEnableDestroyButton( true );
 
