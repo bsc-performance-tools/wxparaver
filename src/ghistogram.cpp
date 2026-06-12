@@ -3532,7 +3532,7 @@ void gHistogram::saveImageDialog()
   if( !imageGenerated )
   {
     wxMessageBox(
-      _( "Unable to save Histogram image.\n\nTry to reduce objects or columns, hide columns or change between horizontal/vertical view." ),
+      _( "Unable to save Histogram image.\n\nHistogram size is too big. Try to reduce objects or columns." ),
       _( "Save Image" ),
       wxOK | wxICON_WARNING,
       this );
@@ -3622,16 +3622,6 @@ std::optional< bool > gHistogram::saveImage( wxString whichFileName, bool copyTo
   wxColour foregroundColour = *wxWHITE;
   wxColour backgroundColour = *wxBLACK;
 
-  // if( drawImage.IsOk() )
-  // {
-  //   wxMessageBox( _( "Unable to save Histogram image.\n\nBitmap corrupted. Try to reduce columns or threads." ),
-  //                 _( "Save Image" ),
-  //                 wxOK | wxICON_WARNING,
-  //                 this );
-  //   setEnableDestroyButton( true );
-  //   return std::nullopt;
-  // }
-
   std::vector< wxBitmap* > layers{ &drawImage };
   WindowImageGenerator newWindowImage( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
@@ -3653,7 +3643,7 @@ std::optional< bool > gHistogram::saveImage( wxString whichFileName, bool copyTo
   else
   {
     wxMessageBox(
-      _( "Unable to save Histogram image.\n\nTry to reduce objects or columns, hide columns or change between horizontal/vertical view." ),
+      _( "Unable to save Histogram image.\n\nHistogram size is too big. Try to reduce objects or columns." ),
       _( "Save Image" ),
       wxOK | wxICON_WARNING,
       this );
