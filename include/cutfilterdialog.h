@@ -28,6 +28,7 @@
  */
 // clang-format off
 ////@begin includes
+#include "filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/statline.h"
 #include "wx/spinctrl.h"
@@ -79,14 +80,14 @@ class wxSpinCtrl;
 #define ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT 10117
 #define ID_TEXTCTRL_CUTTER_BEGIN_CUT 10118
 #define ID_TEXTCTRL_CUTTER_END_CUT 10119
-#define ID_TEXTCTRL_CUTTER_TASKS 10157
-#define ID_RADIOBUTTON_CUTTER_SELECT_APPLICATION 10159
-#define ID_RADIOBUTTON_CUTTER_SELECT_TASK 10160
-#define ID_RADIOBUTTON_CUTTER_SELECT_THREAD 10161
-#define ID_BUTTON_CUTTER_SELECT_OBJECTS 10158
 #define ID_BUTTON_CUTTER_SELECT_REGION 10114
 #define ID_BUTTON_CUTTER_ALL_WINDOW 10198
 #define ID_BUTTON_CUTTER_ALL_TRACE 10115
+#define ID_RADIOBUTTON_CUTTER_SELECT_APPLICATION 10007
+#define ID_RADIOBUTTON_CUTTER_SELECT_TASK 10008
+#define ID_RADIOBUTTON_CUTTER_SELECT_THREAD 10009
+#define ID_TEXTCTRL_CUTTER_TASKS 10157
+#define ID_BUTTON_CUTTER_SELECT_OBJECTS 10006
 #define ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME 10120
 #define ID_CHECKBOX_CUTTER_REMOVE_FIRST_STATE 10121
 #define ID_CHECKBOX_CUTTER_BREAK_STATES 10122
@@ -218,9 +219,6 @@ class CutFilterDialog : public wxDialog
   /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT
   void OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_OBJECTS
-  void OnButtonCutterSelectObjectsClick( wxCommandEvent& event );
-
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_REGION
   void OnButtonCutterSelectRegionClick( wxCommandEvent& event );
 
@@ -235,6 +233,9 @@ class CutFilterDialog : public wxDialog
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_ALL_TRACE
   void OnButtonCutterAllTraceClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_OBJECTS
+  void OnButtonCutterSelectObjectsClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME
   void OnCheckboxCheckCutterOriginalTimeUpdate( wxUpdateUIEvent& event );
@@ -415,14 +416,15 @@ class CutFilterDialog : public wxDialog
   wxRadioButton* radioCutterCutByTimePercent;
   wxTextCtrl* textCutterBeginCut;
   wxTextCtrl* textCutterEndCut;
-  wxTextCtrl* textCutterTasks;
-  wxRadioButton* radioCutterCutByApplication;
-  wxRadioButton* radioCutterCutByTask;
-  wxRadioButton* radioCutterCutByThread;
-  wxButton* buttonCutterSelectObjects;
   wxButton* buttonCutterSelectRegion;
   wxButton* buttonCutterAllWindow;
   wxButton* buttonCutterAllTrace;
+  wxBoxSizer* itemBoxSizerHierarchy;
+  wxRadioButton* radioCutterCutByApplication;
+  wxRadioButton* radioCutterCutByTask;
+  wxRadioButton* radioCutterCutByThread;
+  wxTextCtrl* textCutterTasks;
+  wxButton* buttonCutterSelectObjects;
   wxCheckBox* checkCutterUseOriginalTime;
   wxCheckBox* checkCutterRemoveFirstState;
   wxCheckBox* checkCutterDontBreakStates;

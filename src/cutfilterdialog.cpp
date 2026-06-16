@@ -39,9 +39,9 @@
 // clang-format on
 
 #include "cutfilterdialog.h"
-#include "rowsselectiondialog.h"
 #include "kernelconnection.h"
 #include "paraverconfig.h"
+#include "rowsselectiondialog.h"
 
 #include <algorithm>
 #include <cmath>
@@ -80,8 +80,6 @@ IMPLEMENT_DYNAMIC_CLASS( CutFilterDialog, wxDialog )
  */
 
 BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
-EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_OBJECTS, CutFilterDialog::OnButtonCutterSelectObjectsClick )
-
 // clang-format off
 ////@begin CutFilterDialog event table entries
   EVT_INIT_DIALOG( CutFilterDialog::OnInitDialog )
@@ -104,6 +102,7 @@ EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_OBJECTS, CutFilterDialog::OnButtonCutterSele
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_WINDOW, CutFilterDialog::OnButtonCutterAllWindowClick )
   EVT_UPDATE_UI( ID_BUTTON_CUTTER_ALL_WINDOW, CutFilterDialog::OnButtonCutterAllWindowUpdate )
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_TRACE, CutFilterDialog::OnButtonCutterAllTraceClick )
+  EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_OBJECTS, CutFilterDialog::OnButtonCutterSelectObjectsClick )
   EVT_UPDATE_UI( ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, CutFilterDialog::OnCheckboxCheckCutterOriginalTimeUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_CUTTER_KEEP_EVENTS, CutFilterDialog::OnCheckboxCutterKeepEventsUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_FILTER_DISCARD_STATE, CutFilterDialog::OnCheckboxFilterDiscardStateUpdate )
@@ -221,14 +220,15 @@ void CutFilterDialog::Init()
   radioCutterCutByTimePercent = NULL;
   textCutterBeginCut = NULL;
   textCutterEndCut = NULL;
-  textCutterTasks = NULL;
-  radioCutterCutByApplication = NULL;
-  radioCutterCutByTask = NULL;
-  radioCutterCutByThread = NULL;
-  buttonCutterSelectObjects = NULL;
   buttonCutterSelectRegion = NULL;
   buttonCutterAllWindow = NULL;
   buttonCutterAllTrace = NULL;
+  itemBoxSizerHierarchy = NULL;
+  radioCutterCutByApplication = NULL;
+  radioCutterCutByTask = NULL;
+  radioCutterCutByThread = NULL;
+  textCutterTasks = NULL;
+  buttonCutterSelectObjects = NULL;
   checkCutterUseOriginalTime = NULL;
   checkCutterRemoveFirstState = NULL;
   checkCutterDontBreakStates = NULL;
@@ -499,53 +499,53 @@ void CutFilterDialog::CreateControls()
     textCutterEndCut->SetToolTip(_("Final timestamp or percent for the cut."));
   itemBoxSizer49->Add(textCutterEndCut, 3, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
 
-  // Hierarchy Selection Radio Buttons
-  wxBoxSizer* itemBoxSizerHierarchy = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer40->Add(itemBoxSizerHierarchy, 0, wxGROW|wxALL, 2);
-  
-  radioCutterCutByApplication = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_APPLICATION, _("Application"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-  itemBoxSizerHierarchy->Add(radioCutterCutByApplication, 1, wxALIGN_LEFT|wxALL, 2);
-  
-  radioCutterCutByTask = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_TASK, _("Task"), wxDefaultPosition, wxDefaultSize, 0 );
-  radioCutterCutByTask->SetValue(true);
-  itemBoxSizerHierarchy->Add(radioCutterCutByTask, 1, wxALIGN_LEFT|wxALL, 2);
-  
-  radioCutterCutByThread = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_THREAD, _("Thread"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizerHierarchy->Add(radioCutterCutByThread, 1, wxALIGN_LEFT|wxALL, 2);
-
-  wxBoxSizer* itemBoxSizer52 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer40->Add(itemBoxSizer52, 0, wxGROW|wxALL, 2);
-  wxStaticText* itemStaticText53 = new wxStaticText( itemScrolledWindow38, wxID_STATIC, _("Selected Objects"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer52->Add(itemStaticText53, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
-
-  textCutterTasks = new wxTextCtrl( itemScrolledWindow38, ID_TEXTCTRL_CUTTER_TASKS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  if (CutFilterDialog::ShowToolTips())
-    textCutterTasks->SetToolTip(_("Keep only information of selected objects, separated by commas.\nFormats:\n - Application: 1, 2\n - Task: 1.1, 1.2 (Appl.Task)\n - Thread: 1.1.1, 1.1.2 (Appl.Task.Thread)\nLeave it empty to select all."));
-  itemBoxSizer52->Add(textCutterTasks, 1, wxGROW|wxALL, 2);
-
-  buttonCutterSelectObjects = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_SELECT_OBJECTS, _("Select..."), wxDefaultPosition, wxDefaultSize, 0 );
-  if (CutFilterDialog::ShowToolTips())
-    buttonCutterSelectObjects->SetToolTip(_("Select Application, Tasks and Threads from the list."));
-  itemBoxSizer52->Add(buttonCutterSelectObjects, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
-
-  wxStaticLine* itemStaticLine55 = new wxStaticLine( itemScrolledWindow38, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemStaticBoxSizer40->Add(itemStaticLine55, 0, wxGROW|wxALL, 5);
-
-  wxBoxSizer* itemBoxSizer56 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer40->Add(itemBoxSizer56, 0, wxGROW|wxALL, 2);
+  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer40->Add(itemBoxSizer1, 0, wxGROW|wxALL, 2);
   buttonCutterSelectRegion = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_SELECT_REGION, _("Select Region..."), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     buttonCutterSelectRegion->SetToolTip(_("Fill times range directly clicking or dragging from timelines. You can click on different timelines."));
-  itemBoxSizer56->Add(buttonCutterSelectRegion, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer1->Add(buttonCutterSelectRegion, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
   buttonCutterAllWindow = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_WINDOW, _("Whole Window"), wxDefaultPosition, wxDefaultSize, 0 );
   buttonCutterAllWindow->Enable(false);
-  itemBoxSizer56->Add(buttonCutterAllWindow, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer1->Add(buttonCutterAllWindow, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
   buttonCutterAllTrace = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_TRACE, _("Whole Trace"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     buttonCutterAllTrace->SetToolTip(_("Set range [0%, 100%]."));
-  itemBoxSizer56->Add(buttonCutterAllTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer1->Add(buttonCutterAllTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+
+  wxStaticLine* itemStaticLine55 = new wxStaticLine( itemScrolledWindow38, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemStaticBoxSizer40->Add(itemStaticLine55, 0, wxGROW|wxALL, 5);
+
+  itemBoxSizerHierarchy = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer40->Add(itemBoxSizerHierarchy, 0, wxGROW|wxALL, 2);
+  radioCutterCutByApplication = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_APPLICATION, _("Application"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+  radioCutterCutByApplication->SetValue(false);
+  itemBoxSizerHierarchy->Add(radioCutterCutByApplication, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  radioCutterCutByTask = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_TASK, _("Task"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioCutterCutByTask->SetValue(true);
+  itemBoxSizerHierarchy->Add(radioCutterCutByTask, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  radioCutterCutByThread = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_THREAD, _("Thread"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioCutterCutByThread->SetValue(false);
+  itemBoxSizerHierarchy->Add(radioCutterCutByThread, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer40->Add(itemBoxSizer11, 0, wxGROW|wxALL, 2);
+  wxStaticText* itemStaticText12 = new wxStaticText( itemScrolledWindow38, wxID_STATIC, _("Selected Objects"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer11->Add(itemStaticText12, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  textCutterTasks = new wxTextCtrl( itemScrolledWindow38, ID_TEXTCTRL_CUTTER_TASKS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    textCutterTasks->SetToolTip(_("Keep only information of selected objects, separated by commas.\nFormats:\n - Application: 1, 2\n - Task: 1.1, 1.2 (Appl.Task)\n - Thread: 1.1.1, 1.1.2 (Appl.Task.Thread)\nLeave it empty to select all."));
+  itemBoxSizer11->Add(textCutterTasks, 1, wxGROW|wxALL, 2);
+
+  buttonCutterSelectObjects = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_SELECT_OBJECTS, _("Select..."), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    buttonCutterSelectObjects->SetToolTip(_("Select Application, Tasks and Threads from the list."));
+  itemBoxSizer11->Add(buttonCutterSelectObjects, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxStaticBox* itemStaticBoxSizer60Static = new wxStaticBox(itemScrolledWindow38, wxID_STATIC, _(" Trace Options "));
   wxStaticBoxSizer* itemStaticBoxSizer60 = new wxStaticBoxSizer(itemStaticBoxSizer60Static, wxVERTICAL);
@@ -1181,9 +1181,12 @@ bool CutFilterDialog::CheckStringTasks( wxString taskStr )
   wxString taskStrCopy = taskStr;
 
   // Handle prefixes
-  if ( taskStrCopy.StartsWith( "A:" ) ) taskStrCopy = taskStrCopy.Mid( 2 );
-  else if ( taskStrCopy.StartsWith( "T:" ) ) taskStrCopy = taskStrCopy.Mid( 2 );
-  else if ( taskStrCopy.StartsWith( "Th:" ) ) taskStrCopy = taskStrCopy.Mid( 3 );
+  if( taskStrCopy.StartsWith( "A:" ) )
+    taskStrCopy = taskStrCopy.Mid( 2 );
+  else if( taskStrCopy.StartsWith( "T:" ) )
+    taskStrCopy = taskStrCopy.Mid( 2 );
+  else if( taskStrCopy.StartsWith( "Th:" ) )
+    taskStrCopy = taskStrCopy.Mid( 3 );
 
   stringstream sstr( string( taskStrCopy.mb_str() ) );
 
@@ -3104,91 +3107,94 @@ void CutFilterDialog::OnButtonCutterAllWindowClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonCutterSelectObjectsClick( wxCommandEvent& event )
 {
   Trace* tmpTrace = getTrace();
-  if ( tmpTrace == nullptr )
+  if( tmpTrace == nullptr )
   {
-    wxMessageBox( _("Please load a trace/window to select objects."), _("Error"), wxOK | wxICON_ERROR );
+    wxMessageBox( _( "Please load a trace/window to select objects." ), _( "Error" ), wxOK | wxICON_ERROR );
     return;
   }
 
   // Determine level
   TTraceLevel level = TTraceLevel::TASK;
-  int pageIndex = 1;
+  int pageIndex     = 1;
   if( radioCutterCutByApplication->GetValue() )
   {
-     level = TTraceLevel::APPLICATION;
-     pageIndex = 0;
+    level     = TTraceLevel::APPLICATION;
+    pageIndex = 0;
   }
   else if( radioCutterCutByThread->GetValue() )
   {
-     level = TTraceLevel::THREAD;
-     pageIndex = 2;
+    level     = TTraceLevel::THREAD;
+    pageIndex = 2;
   }
 
   // Use a local SelectionManagement object that stays alive while ShowModal blocks.
   // This prevents the dangling reference crash in RowsSelectionDialog.
   SelectionManagement< TObjectOrder, TTraceLevel > selectionMgr;
   selectionMgr.init( tmpTrace );
-  
-  RowsSelectionDialog *myDialog = new RowsSelectionDialog( tmpTrace, true, selectionMgr );
+
+  RowsSelectionDialog* myDialog = new RowsSelectionDialog( tmpTrace, true, selectionMgr );
   myDialog->GetBookCtrl()->SetSelection( pageIndex );
-  
-  if ( myDialog->ShowModal() == wxID_OK )
+
+  if( myDialog->ShowModal() == wxID_OK )
   {
-      // Check which tab is actually selected
-      int selectedPage = myDialog->GetBookCtrl()->GetSelection();
-      
-      if ( selectedPage == 0 )
-      {
-         level = TTraceLevel::APPLICATION;
-         radioCutterCutByApplication->SetValue( true );
-      }
-      else if ( selectedPage == 2 )
-      {
-         level = TTraceLevel::THREAD;
-         radioCutterCutByThread->SetValue( true );
-      }
-      else
-      {
-         level = TTraceLevel::TASK;
-         radioCutterCutByTask->SetValue( true );
-      }
+    // Check which tab is actually selected
+    int selectedPage = myDialog->GetBookCtrl()->GetSelection();
 
-      wxArrayInt selections;
-      myDialog->GetSelections( level, selections );
+    if( selectedPage == 0 )
+    {
+      level = TTraceLevel::APPLICATION;
+      radioCutterCutByApplication->SetValue( true );
+    }
+    else if( selectedPage == 2 )
+    {
+      level = TTraceLevel::THREAD;
+      radioCutterCutByThread->SetValue( true );
+    }
+    else
+    {
+      level = TTraceLevel::TASK;
+      radioCutterCutByTask->SetValue( true );
+    }
 
-      wxString result = "";
-      
-      if ( selections.GetCount() > 0 ) {
-         for(size_t i=0; i<selections.GetCount(); i++) {
-             if(i>0) result += ",";
-             
-             TObjectOrder globalID = selections[i] + 1;
-             
-             if ( level == TTraceLevel::APPLICATION )
-             {
-                result += wxString::Format("%d", globalID);
-             }
-             else if ( level == TTraceLevel::TASK )
-             {
-                TApplOrder appl;
-                TTaskOrder task;
-                tmpTrace->getTaskLocation( selections[i], appl, task );
-                result += wxString::Format("%d.%d", appl + 1, task + 1);
-             }
-             else if ( level == TTraceLevel::THREAD )
-             {
-                TApplOrder appl;
-                TTaskOrder task;
-                TThreadOrder thread;
-                tmpTrace->getThreadLocation( selections[i], appl, task, thread );
-                result += wxString::Format("%d.%d.%d", appl + 1, task + 1, thread + 1);
-             }
-         }
+    wxArrayInt selections;
+    myDialog->GetSelections( level, selections );
+
+    wxString result = "";
+
+    if( selections.GetCount() > 0 )
+    {
+      for( size_t i = 0; i < selections.GetCount(); i++ )
+      {
+        if( i > 0 )
+          result += ",";
+
+        TObjectOrder globalID = selections[ i ] + 1;
+
+        if( level == TTraceLevel::APPLICATION )
+        {
+          result += wxString::Format( "%d", globalID );
+        }
+        else if( level == TTraceLevel::TASK )
+        {
+          TApplOrder appl;
+          TTaskOrder task;
+          tmpTrace->getTaskLocation( selections[ i ], appl, task );
+          result += wxString::Format( "%d.%d", appl + 1, task + 1 );
+        }
+        else if( level == TTraceLevel::THREAD )
+        {
+          TApplOrder appl;
+          TTaskOrder task;
+          TThreadOrder thread;
+          tmpTrace->getThreadLocation( selections[ i ], appl, task, thread );
+          result += wxString::Format( "%d.%d.%d", appl + 1, task + 1, thread + 1 );
+        }
       }
-      
-      textCutterTasks->SetValue( result );
+    }
+
+    textCutterTasks->SetValue( result );
   }
-  
+
   myDialog->Destroy();
 }
 

@@ -5086,11 +5086,15 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
       paraverMain::dialogProgress->Fit();
       paraverMain::dialogProgress->Show();
 
+      bool copyROWFile = true;
+
       if( filterToolIDs[ i ] == TraceCutter::getID() )
       {
         TraceCutter *traceCutter = TraceCutter::create( localKernel, tmpNameIn, tmpNameOut, traceOptions, progress );
         traceCutter->execute( tmpNameIn, tmpNameOut, progress );
         localKernel->copyPCF( tmpNameIn, tmpNameOut );
+        copyROWFile = false;
+
         delete traceCutter;
       }
       else if( filterToolIDs[ i ] == TraceFilter::getID() )
@@ -5110,7 +5114,9 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
         delete traceSoftwareCounters;
       }
 
-      localKernel->copyROW( tmpNameIn, tmpNameOut );
+      if( copyROWFile )
+        localKernel->copyROW( tmpNameIn, tmpNameOut );
+
       tmpFiles.push_back( tmpNameOut );
     }
   }
