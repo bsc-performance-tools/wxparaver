@@ -83,10 +83,10 @@ class wxSpinCtrl;
 #define ID_BUTTON_CUTTER_SELECT_REGION 10114
 #define ID_BUTTON_CUTTER_ALL_WINDOW 10198
 #define ID_BUTTON_CUTTER_ALL_TRACE 10115
-#define ID_CHECKBOX_CUTTERMODIFYTRACEHEADER 10010
 #define ID_RADIOBUTTON_CUTTER_SELECT_APPLICATION 10007
 #define ID_RADIOBUTTON_CUTTER_SELECT_TASK 10008
 #define ID_RADIOBUTTON_CUTTER_SELECT_THREAD 10009
+#define ID_CHECKBOX_CUTTERMODIFYTRACEHEADER 10010
 #define ID_TEXTCTRL_CUTTER_TASKS 10157
 #define ID_BUTTON_CUTTER_SELECT_OBJECTS 10006
 #define ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME 10120
@@ -421,10 +421,10 @@ class CutFilterDialog : public wxDialog
   wxButton* buttonCutterAllWindow;
   wxButton* buttonCutterAllTrace;
   wxBoxSizer* itemBoxSizerHierarchy;
-  wxCheckBox* checkCutterModifyTraceHeader;
   wxRadioButton* radioCutterCutByApplication;
   wxRadioButton* radioCutterCutByTask;
   wxRadioButton* radioCutterCutByThread;
+  wxCheckBox* checkCutterModifyTraceHeader;
   wxTextCtrl* textCutterTasks;
   wxButton* buttonCutterSelectObjects;
   wxCheckBox* checkCutterUseOriginalTime;

@@ -224,10 +224,10 @@ void CutFilterDialog::Init()
   buttonCutterAllWindow = NULL;
   buttonCutterAllTrace = NULL;
   itemBoxSizerHierarchy = NULL;
-  checkCutterModifyTraceHeader = NULL;
   radioCutterCutByApplication = NULL;
   radioCutterCutByTask = NULL;
   radioCutterCutByThread = NULL;
+  checkCutterModifyTraceHeader = NULL;
   textCutterTasks = NULL;
   buttonCutterSelectObjects = NULL;
   checkCutterUseOriginalTime = NULL;
@@ -521,15 +521,6 @@ void CutFilterDialog::CreateControls()
 
   itemBoxSizerHierarchy = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer40->Add(itemBoxSizerHierarchy, 0, wxGROW|wxALL, 2);
-  checkCutterModifyTraceHeader = new wxCheckBox( itemScrolledWindow38, ID_CHECKBOX_CUTTERMODIFYTRACEHEADER, _("Modify trace header"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkCutterModifyTraceHeader->SetValue(false);
-  if (CutFilterDialog::ShowToolTips())
-    checkCutterModifyTraceHeader->SetToolTip(_("Remove not selected objects from trace header instead of keeping them as non activity objects."));
-  itemBoxSizerHierarchy->Add(checkCutterModifyTraceHeader, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
-
-  wxStaticLine* itemStaticLine7 = new wxStaticLine( itemScrolledWindow38, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-  itemBoxSizerHierarchy->Add(itemStaticLine7, 0, wxGROW|wxALL, 2);
-
   radioCutterCutByApplication = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_APPLICATION, _("Application"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioCutterCutByApplication->SetValue(false);
   itemBoxSizerHierarchy->Add(radioCutterCutByApplication, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -541,6 +532,15 @@ void CutFilterDialog::CreateControls()
   radioCutterCutByThread = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_THREAD, _("Thread"), wxDefaultPosition, wxDefaultSize, 0 );
   radioCutterCutByThread->SetValue(false);
   itemBoxSizerHierarchy->Add(radioCutterCutByThread, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxStaticLine* itemStaticLine2 = new wxStaticLine( itemScrolledWindow38, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemBoxSizerHierarchy->Add(itemStaticLine2, 0, wxGROW|wxALL, 2);
+
+  checkCutterModifyTraceHeader = new wxCheckBox( itemScrolledWindow38, ID_CHECKBOX_CUTTERMODIFYTRACEHEADER, _("Modify trace header"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCutterModifyTraceHeader->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkCutterModifyTraceHeader->SetToolTip(_("Remove not selected objects from trace header instead of keeping them as non activity objects."));
+  itemBoxSizerHierarchy->Add(checkCutterModifyTraceHeader, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer40->Add(itemBoxSizer11, 0, wxGROW|wxALL, 2);
