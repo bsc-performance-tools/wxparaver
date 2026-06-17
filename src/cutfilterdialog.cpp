@@ -224,6 +224,7 @@ void CutFilterDialog::Init()
   buttonCutterAllWindow = NULL;
   buttonCutterAllTrace = NULL;
   itemBoxSizerHierarchy = NULL;
+  checkCutterModifyTraceHeader = NULL;
   radioCutterCutByApplication = NULL;
   radioCutterCutByTask = NULL;
   radioCutterCutByThread = NULL;
@@ -520,6 +521,15 @@ void CutFilterDialog::CreateControls()
 
   itemBoxSizerHierarchy = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer40->Add(itemBoxSizerHierarchy, 0, wxGROW|wxALL, 2);
+  checkCutterModifyTraceHeader = new wxCheckBox( itemScrolledWindow38, ID_CHECKBOX_CUTTERMODIFYTRACEHEADER, _("Modify trace header"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCutterModifyTraceHeader->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkCutterModifyTraceHeader->SetToolTip(_("Remove not selected objects from trace header instead of keeping them as non activity objects."));
+  itemBoxSizerHierarchy->Add(checkCutterModifyTraceHeader, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxStaticLine* itemStaticLine7 = new wxStaticLine( itemScrolledWindow38, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemBoxSizerHierarchy->Add(itemStaticLine7, 0, wxGROW|wxALL, 2);
+
   radioCutterCutByApplication = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_SELECT_APPLICATION, _("Application"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioCutterCutByApplication->SetValue(false);
   itemBoxSizerHierarchy->Add(radioCutterCutByApplication, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -1376,6 +1386,7 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions* traceOptions )
   checkCutterRemoveLastState->SetValue( traceOptions->get_remLastStates() );
   checkCutterKeepEvents->SetValue( traceOptions->get_keep_boundary_events() );
   checkCutterKeepEventsWithoutStates->SetValue( traceOptions->get_keep_all_events() );
+  checkCutterModifyTraceHeader->SetValue( traceOptions->get_modify_trace_header() );
 
   TraceOptions::TTasksList auxList;
   traceOptions->get_tasks_list( auxList );
@@ -1472,6 +1483,7 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_remLastStates( checkCutterRemoveLastState->IsChecked() );
     traceOptions->set_keep_boundary_events( checkCutterKeepEvents->IsChecked() );
     traceOptions->set_keep_all_events( checkCutterKeepEventsWithoutStates->IsChecked() );
+    traceOptions->set_modify_trace_header( checkCutterModifyTraceHeader->IsChecked() );
 
 #ifdef UNICODE
     traceOptions->set_tasks_list( (char*)textCutterTasks->GetValue().mb_str().data() );
