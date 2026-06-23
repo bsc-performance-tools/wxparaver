@@ -1471,11 +1471,11 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_maximum_time_percentage( auxEndPercent );
 
     if( radioCutterCutByApplication->GetValue() )
-      traceOptions->set_cutter_mode( TraceOptions::CUT_MODE_APPLICATION );
+      traceOptions->set_cutter_object_level( CutterObjectLevel::CUT_OBJECT_APPLICATION );
     else if( radioCutterCutByThread->GetValue() )
-      traceOptions->set_cutter_mode( TraceOptions::CUT_MODE_THREAD );
+      traceOptions->set_cutter_object_level( CutterObjectLevel::CUT_OBJECT_THREAD );
     else
-      traceOptions->set_cutter_mode( TraceOptions::CUT_MODE_TASK );
+      traceOptions->set_cutter_object_level( CutterObjectLevel::CUT_OBJECT_TASK );
 
     traceOptions->set_original_time( checkCutterUseOriginalTime->IsChecked() );
     traceOptions->set_break_states( !checkCutterDontBreakStates->IsChecked() );
