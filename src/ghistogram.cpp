@@ -2493,7 +2493,7 @@ void gHistogram::OnTimerPosition( wxTimerEvent& event )
       int posXDiff = myHistogram->getPosX() - this->GetPosition().x;
       int posYDiff = myHistogram->getPosY() - this->GetPosition().y;
 
-      if( !this->IsMaximized() && ( posXDiff != 0 || posYDiff != 0 ) && !newPositionApplied )
+      if( !wxGetApp().getControlDown() && !this->IsMaximized() && ( posXDiff != 0 || posYDiff != 0 ) && !newPositionApplied )
         myHistogram->addOffsetPosition( posXDiff, posYDiff );
 
       newPositionApplied = false;
@@ -3531,11 +3531,10 @@ void gHistogram::saveImageDialog()
 
   if( !imageGenerated )
   {
-    wxMessageBox(
-      _( "Unable to save Histogram image.\n\nHistogram size is too big. Try to reduce objects or columns." ),
-      _( "Save Image" ),
-      wxOK | wxICON_WARNING,
-      this );
+    wxMessageBox( _( "Unable to save Histogram image.\n\nHistogram size is too big. Try to reduce objects or columns." ),
+                  _( "Save Image" ),
+                  wxOK | wxICON_WARNING,
+                  this );
     setEnableDestroyButton( true );
 
     return;
@@ -3642,11 +3641,10 @@ std::optional< bool > gHistogram::saveImage( wxString whichFileName, bool copyTo
   }
   else
   {
-    wxMessageBox(
-      _( "Unable to save Histogram image.\n\nHistogram size is too big. Try to reduce objects or columns." ),
-      _( "Save Image" ),
-      wxOK | wxICON_WARNING,
-      this );
+    wxMessageBox( _( "Unable to save Histogram image.\n\nHistogram size is too big. Try to reduce objects or columns." ),
+                  _( "Save Image" ),
+                  wxOK | wxICON_WARNING,
+                  this );
   }
 
   setEnableDestroyButton( true );

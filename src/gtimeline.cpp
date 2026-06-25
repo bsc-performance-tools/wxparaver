@@ -4870,8 +4870,6 @@ void gTimeline::OnTimerPosition( wxTimerEvent& event )
 
       if( !wxGetApp().getControlDown() && !this->IsMaximized() && ( posXDiff != 0 || posYDiff != 0 ) && !newPositionApplied )
         myWindow->addOffsetPosition( posXDiff, posYDiff );
-      // else if( wxGetApp().getControlDown() )
-      //   wxGetApp().setControlDown( false );
 
       newPositionApplied = false;
       myWindow->setPosX( posX );
