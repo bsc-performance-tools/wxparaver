@@ -138,6 +138,16 @@ class wxparaverApp : public wxApp
     static wxCmdLineEntryDesc argumentsParseSyntax[];
     void ValidateSession( bool setValidate );
 
+    bool getControlDown() const
+    {
+      return isControlDown;
+    }
+
+    void setControlDown( bool newValue )
+    {
+      isControlDown = newValue;
+    }
+
     // clang-format off
   ////@begin wxparaverApp member variables
 private:
@@ -156,6 +166,8 @@ private:
     wxSingleInstanceChecker* m_checker;
 
     stServer* m_server;
+
+    bool isControlDown = false;
 
     void PrintVersion();
 };
