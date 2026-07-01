@@ -2031,7 +2031,8 @@ void RunScript::adaptWindowToApplicationSelection()
       buttonCarmSync->Show();
 
       checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
-                                         checkCarmUseSemanticWindow->IsChecked() );
+                                         checkCarmUseSemanticWindow->IsChecked() && 
+                                         carmWindow->isCodeColorSet() );
 
       break;
 
@@ -3045,7 +3046,8 @@ TExternalAppID RunScript::getSelectedApp() const
 void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
 {
   checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
-                                     checkCarmUseSemanticWindow->IsChecked() );
+                                     checkCarmUseSemanticWindow->IsChecked() && 
+                                     carmWindow->isCodeColorSet()  );
 }
 
 
