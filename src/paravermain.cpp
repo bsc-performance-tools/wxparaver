@@ -954,11 +954,21 @@ std::optional< Trace * > paraverMain::DoLoadTrace( const string &path, bool allo
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
-    tr = Trace::create( localKernel, tmpPath, false, progress );
-    tr->setInstanceNumber( traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ]++ );
+    string fileType = tmpPath.substr( tmpPath.find_last_of( '.' ) + 1 );
+    if( fileType == "csv" )
+    {
+      tr = loadedTraces[ currentTrace ];
+      tr->appendCSV( tmpPath, progress );
+    }
+    else
+    {
+      tr = Trace::create( localKernel, tmpPath, false, progress );
+      tr->setInstanceNumber( traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ]++ );
+      currentTrace = loadedTraces.size() - 1;
 
-    loadedTraces.push_back( tr );
-    currentTrace = loadedTraces.size() - 1;
+      loadedTraces.push_back( tr );
+    }
+
     setTraceWorkspaces( tr );
 
     wxTreeCtrl *newTree = createTree( imageList );
