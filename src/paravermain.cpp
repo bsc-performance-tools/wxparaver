@@ -954,8 +954,40 @@ std::optional< Trace * > paraverMain::DoLoadTrace( const string &path, bool allo
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
-    string fileType = tmpPath.substr( tmpPath.find_last_of( '.' ) + 1 );
-    if( fileType == "csv" )
+    bool doAppendCSV = false;
+    string fileType  = tmpPath.substr( tmpPath.find_last_of( '.' ) + 1 );
+    if( fileType == "csv" && !loadedTraces.empty() )
+    {
+      wxMessageDialog csvActionDialog( this,
+                                       "Do you want to append the CSV file to the current trace?",
+                                       "Append CSV to current trace?",
+                                       wxYES_NO | wxCANCEL | wxICON_QUESTION );
+
+      switch( csvActionDialog.ShowModal() )
+      {
+        case wxID_YES:
+          doAppendCSV = true;
+          break;
+
+        case wxID_NO:
+          doAppendCSV = false;
+          break;
+
+        case wxID_CANCEL:
+          paraverMain::dialogProgress->Show( false );
+          delete paraverMain::dialogProgress;
+          paraverMain::dialogProgress = nullptr;
+          delete progress;
+          canServeSignal = true;
+          return returnTrace;
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    if( doAppendCSV )
     {
       tr = loadedTraces[ currentTrace ];
       tr->appendCSV( tmpPath, progress );
