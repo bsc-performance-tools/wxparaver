@@ -1,5 +1,5 @@
 /* XPM */
-static char * new_derived_histogram_xpm[] = {
+static const char * new_derived_histogram_xpm[] = {
 "16 16 144 2",
 "  	c #FFFFFF",
 ". 	c #A3C2EF",
