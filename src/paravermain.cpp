@@ -3523,7 +3523,7 @@ void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent &event )
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_WINDOW
  */
 
-void paraverMain::ShowDerivedDialog()
+void paraverMain::ShowDerivedTimelineDialog()
 {
   DerivedTimelineDialog derivedDialog( this );
   vector< TWindowID > timelines;
@@ -3793,7 +3793,7 @@ void paraverMain::ShowHistogramDialog()
 
 void paraverMain::OnNewDerivedWindowClick( wxCommandEvent &event )
 {
-  ShowDerivedDialog();
+  ShowDerivedTimelineDialog();
 }
 
 
@@ -3896,7 +3896,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
         if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace(), endDragWindow->isLevelProcessModel() ) &&
             Timeline::compatibleLevels( beginDragWindow, endDragWindow ) )
         {
-          ShowDerivedDialog();
+          ShowDerivedTimelineDialog();
         }
         else
           wxMessageBox( wxT( "Incompatible windows used to derive." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );

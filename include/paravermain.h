@@ -764,7 +764,7 @@ private:
                       wxTreeCtrl *root2, wxTreeItemId idRoot2,
                       Timeline *window );
     */
-    void ShowDerivedDialog();
+    void ShowDerivedTimelineDialog();
     void ShowHistogramDialog();
 
     std::string DoLoadFilteredTrace( std::string traceFileName,
