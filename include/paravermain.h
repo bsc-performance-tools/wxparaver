@@ -764,7 +764,13 @@ private:
                       wxTreeCtrl *root2, wxTreeItemId idRoot2,
                       Timeline *window );
     */
+
+    template< typename T, typename TAlternative >
+    bool enableDerivedButton( T* sourceCurrentWindow, TAlternative* unusedCurrentWindow );
+    
     void ShowDerivedTimelineDialog();
+    void ShowDerivedHistogramDialog();
+
     void ShowHistogramDialog();
 
     std::string DoLoadFilteredTrace( std::string traceFileName,

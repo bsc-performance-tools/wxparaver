@@ -3519,6 +3519,32 @@ void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent &event )
 }
 
 
+// Initially seems the enabling of derived button follow the same behaviour, no matter for Timeline or Histogram.
+// Actually this code is coupled with pair of variables (currentTimeline, currentHisto) mechanism.
+// - the window of interest is the first one, sourceCurrenWindow, 
+// - unusedCurrentWindow takes then the other variable -> see calls.
+template< typename T, typename TAlternative >
+bool paraverMain::enableDerivedButton( T* sourceCurrentWindow, TAlternative* unusedCurrentWindow )
+{
+  bool enable = false;
+
+  if( !loadedTraces.empty() && currentTrace > -1 )
+  {
+    vector< T * > tmpWindows;
+    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], tmpWindows );
+
+    wxTreeCtrl *tmpTree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
+
+    wxArrayTreeItemIds selectedItems;
+    tmpTree->GetSelections( selectedItems );
+
+    enable = ( tmpWindows.size() > 0 ) && ( sourceCurrentWindow != nullptr ) && ( selectedItems.GetCount() == 1 );
+  }
+
+  return unusedCurrentWindow == nullptr && enable;
+}
+
+
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_WINDOW
  */
@@ -3667,6 +3693,12 @@ void paraverMain::ShowDerivedTimelineDialog()
 }
 
 
+void paraverMain::ShowDerivedHistogramDialog()
+{
+  wxMessageBox( wxT( "Histogram Dialog under construction." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
+}
+
+
 void paraverMain::ShowHistogramDialog()
 {
   HistogramDialog histogramDialog( this );
@@ -3803,23 +3835,7 @@ void paraverMain::OnNewDerivedWindowClick( wxCommandEvent &event )
 
 void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent &event )
 {
-  if( !loadedTraces.empty() && currentTrace > -1 )
-  {
-    vector< Timeline * > timelines;
-    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
-
-    wxTreeCtrl *tmpTree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
-
-    wxArrayTreeItemIds selectedItems;
-    tmpTree->GetSelections( selectedItems );
-
-    event.Enable( ( timelines.size() > 0 ) && ( currentTimeline != nullptr ) && ( selectedItems.GetCount() == 1 ) );
-  }
-  else
-    event.Enable( false );
-
-  if( currentHisto != nullptr )
-    event.Enable( false );
+  enableDerivedButton( currentTimeline, currentHisto );
 }
 
 
@@ -6212,17 +6228,13 @@ void paraverMain::OnTraceInformationUpdate( wxUpdateUIEvent &event )
 
 
 
-
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_HISTOGRAM
  */
 
 void paraverMain::OnNewDerivedHistogramClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_HISTOGRAM in paraverMain.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_HISTOGRAM in paraverMain. 
+  ShowDerivedHistogramDialog();
 }
 
 
@@ -6232,9 +6244,6 @@ void paraverMain::OnNewDerivedHistogramClick( wxCommandEvent& event )
 
 void paraverMain::OnNewDerivedHistogramUpdate( wxUpdateUIEvent& event )
 {
-////@begin wxEVT_UPDATE_UI event handler for ID_NEW_DERIVED_HISTOGRAM in paraverMain.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_UPDATE_UI event handler for ID_NEW_DERIVED_HISTOGRAM in paraverMain. 
+  event.Enable( enableDerivedButton( currentHisto, currentTimeline ) );
 }
 
