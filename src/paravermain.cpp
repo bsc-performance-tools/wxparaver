@@ -104,6 +104,7 @@
 #include "../icons/new_window.xpm"
 #include "../icons/new_derived_window.xpm"
 #include "../icons/new_histogram.xpm"
+#include "../icons/new_derived_histogram.xpm"
 #include "../icons/delete.xpm"
 #include "../icons/cut_trace.xpm"
 #include "../icons/run_script.xpm"
@@ -189,13 +190,14 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
+  EVT_MENU( ID_NEW_DERIVED_HISTOGRAM, paraverMain::OnNewDerivedHistogramClick )
+  EVT_UPDATE_UI( ID_NEW_DERIVED_HISTOGRAM, paraverMain::OnNewDerivedHistogramUpdate )
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
-  EVT_CHOICEBOOK_PAGE_CHANGING( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanging )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_AUTO_REDRAW, paraverMain::OnCheckboxAutoRedrawUpdate )
@@ -589,6 +591,10 @@ void paraverMain::CreateControls()
   wxBitmap itemtool26BitmapDisabled;
   tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool26Bitmap, itemtool26BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
+  wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_derived_histogram.xpm")));
+  wxBitmap itemtool1BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_DERIVED_HISTOGRAM, _("Create new derived histogram"), itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_NORMAL, _("New derived histogram"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_DERIVED_HISTOGRAM, false);
   tbarMain->AddSeparator();
   wxBitmap itemtool28Bitmap(itemFrame1->GetBitmapResource(wxT("icons/delete.xpm")));
   wxBitmap itemtool28BitmapDisabled;
@@ -1338,6 +1344,11 @@ wxBitmap paraverMain::GetBitmapResource( const wxString &name )
   else if (name == wxT("icons/new_histogram.xpm"))
   {
     wxBitmap bitmap(new_histogram_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("icons/new_derived_histogram.xpm"))
+  {
+    wxBitmap bitmap(new_derived_histogram_xpm);
     return bitmap;
   }
   else if (name == wxT("icons/delete.xpm"))
@@ -6200,14 +6211,30 @@ void paraverMain::OnTraceInformationUpdate( wxUpdateUIEvent &event )
 }
 
 
+
+
 /*!
- * wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_HISTOGRAM
  */
 
-void paraverMain::OnChoicewinbrowserPageChanging( wxChoicebookEvent &event )
+void paraverMain::OnNewDerivedHistogramClick( wxCommandEvent& event )
 {
-  ////@begin wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER in paraverMain.
+////@begin wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_HISTOGRAM in paraverMain.
   // Before editing this code, remove the block markers.
   event.Skip();
-  ////@end wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER in paraverMain.
+////@end wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_HISTOGRAM in paraverMain. 
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_NEW_DERIVED_HISTOGRAM
+ */
+
+void paraverMain::OnNewDerivedHistogramUpdate( wxUpdateUIEvent& event )
+{
+////@begin wxEVT_UPDATE_UI event handler for ID_NEW_DERIVED_HISTOGRAM in paraverMain.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_UPDATE_UI event handler for ID_NEW_DERIVED_HISTOGRAM in paraverMain. 
+}
+

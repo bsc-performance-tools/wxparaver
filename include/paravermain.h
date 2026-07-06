@@ -123,6 +123,7 @@ constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits< PRV_INT16 >::m
 #define ID_NEW_WINDOW 10030
 #define ID_NEW_DERIVED_WINDOW 10031
 #define ID_NEW_HISTOGRAM 10060
+#define ID_NEW_DERIVED_HISTOGRAM 10013
 #define ID_TOOLDELETE 10081
 #define ID_TOOL_CUT_TRACE 10100
 #define ID_TOOL_RUN_APPLICATION 10004
@@ -368,6 +369,12 @@ class paraverMain : public wxFrame
   /// wxEVT_UPDATE_UI event handler for ID_NEW_HISTOGRAM
   void OnNewHistogramUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_HISTOGRAM
+  void OnNewDerivedHistogramClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_NEW_DERIVED_HISTOGRAM
+  void OnNewDerivedHistogramUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLDELETE
   void OnTooldeleteClick( wxCommandEvent& event );
 
@@ -385,9 +392,6 @@ class paraverMain : public wxFrame
 
   /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserPageChanged( wxChoicebookEvent& event );
-
-  /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING event handler for ID_CHOICEWINBROWSER
-  void OnChoicewinbrowserPageChanging( wxChoicebookEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserUpdate( wxUpdateUIEvent& event );
