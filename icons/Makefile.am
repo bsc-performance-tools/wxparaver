@@ -1,5 +1,6 @@
 
 noinst_HEADERS = \
+              add.xpm\
               app_edit.xpm\
               arrow_down.xpm\
               arrow_left.xpm\
@@ -40,6 +41,7 @@ noinst_HEADERS = \
               logoBSC.xpm\
               logout.xpm\
               new_derived_window.xpm\
+              new_derived_histogram.xpm\
               new_histogram.xpm\
               new_window.xpm\
               open3d.xpm\
