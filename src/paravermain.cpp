@@ -43,6 +43,7 @@
 #include "cfgs4d.h"
 #include "config.h"
 #include "cutfilterdialog.h"
+#include "derivedhistogramdialog.h"
 #include "derivedtimelinedialog.h"
 #include "exitdialog.h"
 #include "externalapps.h"
@@ -3695,7 +3696,15 @@ void paraverMain::ShowDerivedTimelineDialog()
 
 void paraverMain::ShowDerivedHistogramDialog()
 {
-  wxMessageBox( wxT( "Histogram Dialog under construction." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
+  DerivedHistogramDialog derivedDialog( this );
+
+  raiseCurrentWindow = false;
+  if( derivedDialog.ShowModal() == wxID_OK )
+  {
+  }
+  raiseCurrentWindow = true;
+  
+  // wxMessageBox( wxT( "Histogram Dialog under construction." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
 }
 
 
