@@ -3,6 +3,7 @@ noinst_HEADERS =    advancedsaveconfiguration.h \
                     connection.h \
                     copypaste.h \
                     cutfilterdialog.h \
+                    derivedhistogramdialog.h \
                     derivedtimelinedialog.h \
                     eventsselectiondialog.h \
                     exitdialog.h \
