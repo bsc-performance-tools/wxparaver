@@ -51,12 +51,11 @@
 #include <wx/validate.h>
 
 // Validators
-#include "runscript.h"
-
 #include "cfg.h"
 #include "filter.h"
 #include "gtimeline.h"
 #include "labelconstructor.h"
+#include "runscript.h"
 #include "utils/traceparser/pcffileparser.h"
 #include "windows_tree.h"
 #include "wxparaverapp.h"
@@ -1164,7 +1163,7 @@ void RunScript::CreateControls( std::vector< bool > whichAcceptableApps )
   fileBrowserButtonMessCFG->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonMessCFG->Enable();
 
-  if ( whichAcceptableApps.empty() )
+  if( whichAcceptableApps.empty() )
   {
     checkCarmUseWindowColors->Disable();
     checkCarmUseSemanticWindow->Disable();
@@ -1549,26 +1548,26 @@ wxString RunScript::GetCommand( wxString& command, wxString& parameters, TExtern
     case TExternalAppID::CARM:
       command = ExternalApps::getApplicationBin( TExternalAppID::CARM );
 
-      parameters = wxString( wxT("") );
+      parameters = wxString( wxT( "" ) );
 
       tmpValue.Clear();
       tmpValue = textCtrlCarmMinBurstDuration->GetValue(); // us
-      if ( !tmpValue.IsEmpty() )
+      if( !tmpValue.IsEmpty() )
         parameters += wxString( wxT( " --min_dur " ) ) + tmpValue;
 
-      if ( checkCarmUseWindowColors->IsChecked() && !carmLabelsCSV.IsEmpty() )
+      if( checkCarmUseWindowColors->IsChecked() && !carmLabelsCSV.IsEmpty() )
         parameters += wxString( wxT( " --color_csv " ) );
 
-      if ( checkCarmUseSemanticWindow->IsChecked() && !carmSemanticCSV.IsEmpty() )
+      if( checkCarmUseSemanticWindow->IsChecked() && !carmSemanticCSV.IsEmpty() )
       {
         parameters += wxString( wxT( " --mask_csv " ) );
 
-        if ( checkCarmAccumulateValues->IsChecked() )
+        if( checkCarmAccumulateValues->IsChecked() )
           parameters += wxString( wxT( " -ac" ) );
       }
 
       parameters += wxString( wxT( " --csv " ) ) + doubleQuote( carmSemanticCSV );
-      parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
+      parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
 
       break;
 
@@ -2030,8 +2029,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Hide();
       buttonCarmSync->Show();
 
-      checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
-                                         checkCarmUseSemanticWindow->IsChecked() && 
+      checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() && checkCarmUseSemanticWindow->IsChecked() &&
                                          carmWindow->isCodeColorSet() );
 
       break;
@@ -2199,11 +2197,11 @@ void RunScript::InitOutputLinks()
     return true;
   };
 
-  outputLinks = {
-    { "http", TTagPosition::PREFIX, httpLink }, { ".prv", TTagPosition::SUFFIX, skipLink },     { ".prv.gz", TTagPosition::SUFFIX, skipLink },
-    { ".cfg", TTagPosition::SUFFIX, skipLink }, { ".xml", TTagPosition::SUFFIX, skipLink },     { ".csv", TTagPosition::SUFFIX, skipLink },
-    { ".dat", TTagPosition::SUFFIX, skipLink }, { ".gnuplot", TTagPosition::SUFFIX, skipLink }, { ".pdf", TTagPosition::SUFFIX, skipLink }
-  };
+  outputLinks = { { "http", TTagPosition::PREFIX, httpLink },    { ".prv", TTagPosition::SUFFIX, skipLink },
+                  { ".prv.gz", TTagPosition::SUFFIX, skipLink }, { ".cfg", TTagPosition::SUFFIX, skipLink },
+                  { ".xml", TTagPosition::SUFFIX, skipLink },    { ".csv", TTagPosition::SUFFIX, skipLink },
+                  { ".dat", TTagPosition::SUFFIX, skipLink },    { ".gnuplot", TTagPosition::SUFFIX, skipLink },
+                  { ".pdf", TTagPosition::SUFFIX, skipLink } };
 }
 
 
@@ -2747,7 +2745,7 @@ void RunScript::setMess()
 void RunScript::setCarm( const wxString& whichCarmSemanticCSV, const wxString& whichCarmLabelsCSV )
 {
   carmSemanticCSV = whichCarmSemanticCSV;
-  carmLabelsCSV = whichCarmLabelsCSV;
+  carmLabelsCSV   = whichCarmLabelsCSV;
   setApp( TExternalAppID::CARM );
 }
 
@@ -3045,9 +3043,11 @@ TExternalAppID RunScript::getSelectedApp() const
 
 void RunScript::OnCheckboxCarmUseSemanticWindowUpdate( wxUpdateUIEvent& event )
 {
-  checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() &&
-                                     checkCarmUseSemanticWindow->IsChecked() && 
-                                     carmWindow->isCodeColorSet()  );
+  if( carmWindow != nullptr )
+  {
+    checkCarmAccumulateValues->Enable( checkCarmUseSemanticWindow->IsEnabled() && checkCarmUseSemanticWindow->IsChecked() &&
+                                       carmWindow->isCodeColorSet() );
+  }
 }
 
 
@@ -3067,43 +3067,41 @@ void RunScript::OnCheckboxCarmUseWindowColorsUpdate( wxUpdateUIEvent& event )
 void RunScript::OnButtonCarmSyncClick( wxCommandEvent& event )
 {
   // Get window
-  Timeline *sourceWindow = GetCarmWindow();
+  Timeline* sourceWindow = GetCarmWindow();
   bool dummyfound;
-  gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
+  gTimeline* currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
 
   // Publish data
-  wxFileName tmpTraceName( fileBrowserButtonTrace->GetPath() );  // contains carm subdir due to chop in sequenceCarm.
+  wxFileName tmpTraceName( fileBrowserButtonTrace->GetPath() ); // contains carm subdir due to chop in sequenceCarm.
   tmpTraceName.ClearExt();
   std::string auxName = sourceWindow->getName() + "_";
   std::replace( auxName.begin(), auxName.end(), ',', '-' );
   std::replace( auxName.begin(), auxName.end(), ' ', '_' );
-  std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ).mb_str() ) +
-                                auxName.c_str() +
+  std::string tmpFileBaseName = std::string( tmpTraceName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() +
                                 std::string( tmpTraceName.GetFullName().mb_str() );
-  std::string syncFilename = tmpFileBaseName + ".paraver_sync.csv";
+  std::string syncFilename    = tmpFileBaseName + ".paraver_sync.csv";
 
   ofstream syncFile( syncFilename, ios::trunc );
-  if ( syncFile.good() )
+  if( syncFile.good() )
   {
     CFGLoader::dumpTimeUnits( currentWindow->GetMyWindow()->getTimeUnit(), syncFile );
     syncFile << std::endl;
 
     // Set precision.
     std::stringstream tmpTime( "" );
-    bool useLocale = false;
+    bool useLocale           = false;
     TTimeUnit traceOrigUnit  = currentWindow->GetMyWindow()->getTrace()->getTimeUnit();
     TTimeUnit windowDestUnit = currentWindow->GetMyWindow()->getTimeUnit();
     LabelConstructor::presetBaseFormat( tmpTime, LabelConstructor::timePrecisionsConversionTable[ traceOrigUnit ][ windowDestUnit ], useLocale );
 
     // Write window times.
     tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowBeginTime() ) << std::endl;
-    tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() )   << std::endl;
+    tmpTime << currentWindow->GetMyWindow()->traceUnitsToWindowUnits( currentWindow->GetMyWindow()->getWindowEndTime() ) << std::endl;
     syncFile << tmpTime.str();
   }
   else
   {
-    ShowWarning( wxString( wxT( "Unable to write CARM synchronization file:\n" ) ) + 
-                 wxString( syncFilename.c_str(), wxConvUTF8 ) );
+    ShowWarning( wxString( wxT( "Unable to write CARM synchronization file:\n" ) ) + wxString( syncFilename.c_str(), wxConvUTF8 ) );
   }
   syncFile.close();
 }
@@ -3117,4 +3115,3 @@ void RunScript::OnButtonCarmSyncUpdate( wxUpdateUIEvent& event )
 {
   buttonCarmSync->Enable( GetCarmWindow() != nullptr );
 }
-
