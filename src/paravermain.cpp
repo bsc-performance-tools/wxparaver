@@ -43,8 +43,8 @@
 #include "cfgs4d.h"
 #include "config.h"
 #include "cutfilterdialog.h"
-#include "derivedwindowdialog.h"
 #include "derivedtimelinedialog.h"
+#include "derivedwindowdialog.h"
 #include "exitdialog.h"
 #include "externalapps.h"
 #include "filedialogext.h"
@@ -3749,6 +3749,24 @@ void paraverMain::ShowDerivedHistogramDialog()
   raiseCurrentWindow = true;
   
   // wxMessageBox( wxT( "Histogram Dialog under construction." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
+}
+
+
+void paraverMain::findCompatibleHistogramsForDerivation( const Histogram *baseHistogram,
+                                                         std::vector< Histogram * >& derivableHistograms,
+                                                         bool searchAllTraces );
+{
+  derivableHistograms.clear();
+
+  vector< Histogram * > histograms;
+
+  if( currentTrace == -1 || searchAllTraces )
+    LoadedWindows::getInstance()->getAll( histograms );
+  else
+    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], histograms );
+
+  std::copy_if( histograms.begin(), histograms.end(), std::back_inserter( derivableHistograms ),
+                     [ &baseHistogram ]( auto h ){ return Histogram::compatibleForDerivation( baseHistogram, h ); } )
 }
 
 

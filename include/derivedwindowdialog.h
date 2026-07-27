@@ -33,6 +33,7 @@
 ////@end includes
 
 #include "histogram.h"
+#include "paravermain.h"
 
 /*!
  * Forward declarations

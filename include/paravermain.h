@@ -770,6 +770,11 @@ private:
                       Timeline *window );
     */
 
+
+    void findCompatibleHistogramsForDerivation( const Histogram *baseHistogram,
+                                                std::vector< Histogram * >& derivableHistograms,
+                                                bool searchAllTraces = false );
+
     template< typename T, typename TAlternative >
     bool enableDerivedButton( T* sourceCurrentWindow, TAlternative* unusedCurrentWindow );
     
