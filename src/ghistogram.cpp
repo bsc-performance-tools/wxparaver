@@ -624,9 +624,7 @@ void gHistogram::execute()
   initColumnSelection();
   columnSelection.getSelected( noVoidSemRanges );
 
-  // Fill zoom always becouse for the histogram image generation, we need to fill to generate the semanticValuesToColorData for the legends
-  // fillZoom();
-  if( !myHistogram->getZoom() )
+  if( myHistogram->getZoom() )
     fillZoom();
   else
     fillGrid();
