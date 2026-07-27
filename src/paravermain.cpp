@@ -3738,13 +3738,16 @@ void paraverMain::ShowDerivedTimelineDialog()
 
 void paraverMain::ShowDerivedHistogramDialog()
 {
-  TWindowType selectedHistograms;
-  selectedHistograms.push_back( GetSelectedHistogram() );
-  DerivedHistogramDialog derivedDialog( this, selectedHistograms );
+  DerivedHistogramDialog derivedDialog( this );
+
+  std::vector< TWindowType > selectedHistograms;
+  selectedHistograms.push_back( GetSelectedHistogram()->GetHistogram() );
+  derivedDialog.SetParentWindows( selectedHistograms );
 
   raiseCurrentWindow = false;
   if( derivedDialog.ShowModal() == wxID_OK )
   {
+    selectedHistograms = derivedDialog.GetParentWindows();
   }
   raiseCurrentWindow = true;
   
@@ -3752,9 +3755,9 @@ void paraverMain::ShowDerivedHistogramDialog()
 }
 
 
-void paraverMain::findCompatibleHistogramsForDerivation( const Histogram *baseHistogram,
+void paraverMain::findCompatibleHistogramsForDerivation( Histogram *baseHistogram,
                                                          std::vector< Histogram * >& derivableHistograms,
-                                                         bool searchAllTraces );
+                                                         bool searchAllTraces )
 {
   derivableHistograms.clear();
 
@@ -3766,7 +3769,10 @@ void paraverMain::findCompatibleHistogramsForDerivation( const Histogram *baseHi
     LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], histograms );
 
   std::copy_if( histograms.begin(), histograms.end(), std::back_inserter( derivableHistograms ),
-                     [ &baseHistogram ]( auto h ){ return Histogram::compatibleForDerivation( baseHistogram, h ); } )
+                [ &baseHistogram ]( auto h )
+                { 
+                  return HistogramProxy::compatibleForDerivation( baseHistogram, h );
+                } );
 }
 
 

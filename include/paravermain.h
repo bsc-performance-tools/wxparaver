@@ -771,7 +771,7 @@ private:
     */
 
 
-    void findCompatibleHistogramsForDerivation( const Histogram *baseHistogram,
+    void findCompatibleHistogramsForDerivation( Histogram *baseHistogram,
                                                 std::vector< Histogram * >& derivableHistograms,
                                                 bool searchAllTraces = false );
 

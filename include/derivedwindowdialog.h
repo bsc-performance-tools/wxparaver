@@ -47,20 +47,23 @@
  */
 
 ////@begin control identifiers
-#define ID_DERIVEDHISTOGRAMDIALOG 10000
+#define ID_DERIVEDWINDOWDIALOG 10000
 #define ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME 10001
 #define ID_SCROLLEDWINDOW_HISTOGRAM_LIST -1
+#define ID_BITMAPBUTTON1 10011
 #define ID_TEXTCTRL1 10004
 #define ID_BITMAPBUTTON 10002
+#define ID_CHECKBOX1 10010
 #define ID_BITMAPBUTTON3 10007
 #define ID_TEXTCTRL2 10005
-#define ID_BITMAPBUTTON2 10006
-#define ID_BITMAPBUTTON_ADD_PARENT_HISTOGRAM 10008
-#define ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM 10009
+#define ID_BITMAP_HISTO_BUTTON2 10006
+#define ID_CHECKBOX 10003
+#define ID_BITMAPBUTTON_ADD_PARENT_WINDOW 10008
+#define ID_BITMAPBUTTON_DELETE_PARENT_WINDOW 10009
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_TITLE _("Derived Histogram Dialog")
-#define SYMBOL_DERIVEDHISTOGRAMDIALOG_IDNAME ID_DERIVEDHISTOGRAMDIALOG
-#define SYMBOL_DERIVEDHISTOGRAMDIALOG_SIZE wxSize(400, 300)
+#define SYMBOL_DERIVEDHISTOGRAMDIALOG_IDNAME ID_DERIVEDWINDOWDIALOG
+#define SYMBOL_DERIVEDHISTOGRAMDIALOG_SIZE wxSize(600, 400)
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -96,14 +99,20 @@ public:
   /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME
   void OnTextctrlDerivedHistogramNameEnter( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_ADD_PARENT_HISTOGRAM
-  void OnBitmapbuttonAddParentHistogramClick( wxCommandEvent& event );
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON
+  void OnBitmapbuttonClick( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM
-  void OnBitmapbuttonDeleteParentHistogramClick( wxCommandEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON
+  void OnBitmapbuttonUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM
-  void OnBitmapbuttonDeleteParentHistogramUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_ADD_PARENT_WINDOW
+  void OnBitmapbuttonAddParentWindowClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_DELETE_PARENT_WINDOW
+  void OnBitmapbuttonDeleteParentWindowClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_DELETE_PARENT_WINDOW
+  void OnBitmapbuttonDeleteParentWindowUpdate( wxUpdateUIEvent& event );
 
 ////@end DerivedHistogramDialog event handler declarations
 
@@ -112,8 +121,8 @@ public:
   wxString GetDerivedWindowName() const { return derivedWindowName ; }
   void SetDerivedWindowName(wxString value) { derivedWindowName = value ; }
 
-  TWindowType GetParentWindows() const { return parentWindows ; }
-  void SetParentWindows(TWindowType value) { parentWindows = value ; }
+  std::vector< TWindowType > GetParentWindows() const { return parentWindows ; }
+  void SetParentWindows(std::vector< TWindowType > value) { parentWindows = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -127,15 +136,15 @@ public:
 
 ////@begin DerivedHistogramDialog member variables
   wxTextCtrl* derivedHistogramName;
-  wxBitmapButton* buttonAddParentHistogram;
-  wxBitmapButton* buttonDeleteParentHistogram;
+  wxBitmapButton* buttonOperation;
+  wxBitmapButton* buttonSelectWindow;
+  wxBitmapButton* buttonAddParentWindow;
+  wxBitmapButton* buttonDeleteParentWindow;
 private:
   wxString derivedWindowName;
-  TWindowType parentWindows;
+  std::vector< TWindowType > parentWindows;
 ////@end DerivedHistogramDialog member variables
 
-  // First version, added directly
-  std::vector< Histogram * > parentHistograms;
   
 
 };
