@@ -35,7 +35,7 @@
 ////@begin includes
 ////@end includes
 
-#include "derivedhistogramdialog.h"
+#include "derivedwindowdialog.h"
 
 ////@begin XPM images
 #include "../icons/three_dots.xpm"
@@ -59,6 +59,10 @@ IMPLEMENT_DYNAMIC_CLASS( DerivedHistogramDialog, wxDialog )
 BEGIN_EVENT_TABLE( DerivedHistogramDialog, wxDialog )
 
 ////@begin DerivedHistogramDialog event table entries
+  EVT_TEXT_ENTER( ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME, DerivedHistogramDialog::OnTextctrlDerivedHistogramNameEnter )
+  EVT_BUTTON( ID_BITMAPBUTTON_ADD_PARENT_HISTOGRAM, DerivedHistogramDialog::OnBitmapbuttonAddParentHistogramClick )
+  EVT_BUTTON( ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM, DerivedHistogramDialog::OnBitmapbuttonDeleteParentHistogramClick )
+  EVT_UPDATE_UI( ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM, DerivedHistogramDialog::OnBitmapbuttonDeleteParentHistogramUpdate )
 ////@end DerivedHistogramDialog event table entries
 
 END_EVENT_TABLE()
@@ -90,10 +94,6 @@ bool DerivedHistogramDialog::Create( wxWindow* parent, wxWindowID id, const wxSt
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if (GetSizer())
-  {
-    GetSizer()->SetSizeHints(this);
-  }
   Centre();
 ////@end DerivedHistogramDialog creation
   return true;
@@ -118,7 +118,10 @@ DerivedHistogramDialog::~DerivedHistogramDialog()
 void DerivedHistogramDialog::Init()
 {
 ////@begin DerivedHistogramDialog member initialisation
+  derivedWindowName = wxT("");
   derivedHistogramName = NULL;
+  buttonAddParentHistogram = NULL;
+  buttonDeleteParentHistogram = NULL;
 ////@end DerivedHistogramDialog member initialisation
 }
 
@@ -136,59 +139,62 @@ void DerivedHistogramDialog::CreateControls()
   itemDialog1->SetSizer(itemBoxSizer2);
 
   wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer1, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer2->Add(itemBoxSizer1, 0, wxGROW|wxALL, 5);
 
   wxStaticText* itemStaticText2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Name"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-  itemBoxSizer1->Add(itemStaticText2, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer1->Add(itemStaticText2, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
-  derivedHistogramName = new wxTextCtrl( itemDialog1, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(200, -1), 0 );
-  itemBoxSizer1->Add(derivedHistogramName, 1, wxGROW|wxALL, 5);
+  derivedHistogramName = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME, wxEmptyString, wxDefaultPosition, wxSize(200, -1), 0 );
+  itemBoxSizer1->Add(derivedHistogramName, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(itemBoxSizer3, 0, wxGROW|wxALL, 5);
+  itemBoxSizer2->Add(itemBoxSizer3, 1, wxGROW|wxTOP|wxBOTTOM, 5);
 
-  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Histograms "));
+  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Histograms "));
   wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxHORIZONTAL);
   itemBoxSizer3->Add(itemStaticBoxSizer1, 1, wxGROW|wxALL, 5);
 
-  wxScrolledWindow* itemScrolledWindow2 = new wxScrolledWindow( itemDialog1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL|wxALWAYS_SHOW_SB );
-  itemStaticBoxSizer1->Add(itemScrolledWindow2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxScrolledWindow* itemScrolledWindow2 = new wxScrolledWindow( itemDialog1, ID_SCROLLEDWINDOW_HISTOGRAM_LIST, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL|wxALWAYS_SHOW_SB );
+  itemStaticBoxSizer1->Add(itemScrolledWindow2, 1, wxGROW|wxALL, 5);
   itemScrolledWindow2->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
   itemScrolledWindow2->SetSizer(itemBoxSizer4);
 
   wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer4->Add(itemBoxSizer5, 1, wxGROW|wxALL, 5);
-  wxTextCtrl* itemTextCtrl6 = new wxTextCtrl( itemScrolledWindow2, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer5->Add(itemTextCtrl6, 0, wxGROW|wxALL, 5);
+  itemBoxSizer4->Add(itemBoxSizer5, 0, wxGROW|wxALL, 5);
+  itemBoxSizer5->Add(0, 0, 2, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxSHAPED, 5);
+
+  wxTextCtrl* itemTextCtrl6 = new wxTextCtrl( itemScrolledWindow2, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxSize(200, -1), 0 );
+  itemBoxSizer5->Add(itemTextCtrl6, 6, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxFIXED_MINSIZE, 5);
 
   wxBitmapButton* itemBitmapButton7 = new wxBitmapButton( itemScrolledWindow2, ID_BITMAPBUTTON, itemDialog1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer5->Add(itemBitmapButton7, 0, wxGROW|wxALL, 5);
-
-  wxBitmapButton* itemBitmapButton8 = new wxBitmapButton( itemScrolledWindow2, ID_BITMAPBUTTON1, itemDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer5->Add(itemBitmapButton8, 0, wxGROW|wxALL, 5);
+  itemBoxSizer5->Add(itemBitmapButton7, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxBoxSizer* itemBoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer4->Add(itemBoxSizer9, 1, wxGROW|wxALL, 5);
-  wxTextCtrl* itemTextCtrl10 = new wxTextCtrl( itemScrolledWindow2, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer9->Add(itemTextCtrl10, 0, wxGROW|wxALL, 5);
+  itemBoxSizer4->Add(itemBoxSizer9, 0, wxGROW|wxALL, 5);
+  wxBitmapButton* itemBitmapButton4 = new wxBitmapButton( itemScrolledWindow2, ID_BITMAPBUTTON3, itemDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer9->Add(itemBitmapButton4, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+
+  itemBoxSizer9->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxTextCtrl* itemTextCtrl10 = new wxTextCtrl( itemScrolledWindow2, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxSize(200, -1), 0 );
+  itemBoxSizer9->Add(itemTextCtrl10, 6, wxALIGN_CENTER_VERTICAL|wxLEFT|wxFIXED_MINSIZE, 5);
 
   wxBitmapButton* itemBitmapButton11 = new wxBitmapButton( itemScrolledWindow2, ID_BITMAPBUTTON2, itemDialog1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer9->Add(itemBitmapButton11, 0, wxGROW|wxALL, 5);
+  itemBoxSizer9->Add(itemBitmapButton11, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
-  wxBitmapButton* itemBitmapButton12 = new wxBitmapButton( itemScrolledWindow2, ID_BITMAPBUTTON3, itemDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer9->Add(itemBitmapButton12, 0, wxGROW|wxALL, 5);
+  itemBoxSizer4->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   itemScrolledWindow2->SetMinSize(wxSize(200, 100));
 
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
   itemStaticBoxSizer1->Add(itemBoxSizer6, 0, wxALIGN_TOP|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-  wxBitmapButton* itemBitmapButton2 = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON4, itemDialog1->GetBitmapResource(wxT("icons/add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer6->Add(itemBitmapButton2, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  buttonAddParentHistogram = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_ADD_PARENT_HISTOGRAM, itemDialog1->GetBitmapResource(wxT("icons/add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer6->Add(buttonAddParentHistogram, 0, wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  wxBitmapButton* itemBitmapButton3 = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON5, itemDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer6->Add(itemBitmapButton3, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  buttonDeleteParentHistogram = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM, itemDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer6->Add(buttonDeleteParentHistogram, 0, wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   wxStdDialogButtonSizer* itemStdDialogButtonSizer1 = new wxStdDialogButtonSizer;
 
@@ -259,3 +265,41 @@ wxIcon DerivedHistogramDialog::GetIconResource( const wxString& name )
   return wxNullIcon;
 ////@end DerivedHistogramDialog icon retrieval
 }
+
+
+/*!
+ * wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTCTRL
+ */
+
+void DerivedHistogramDialog::OnTextctrlDerivedHistogramNameEnter( wxCommandEvent& event )
+{
+  SetDerivedWindowName( event.GetString() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM
+ */
+
+void DerivedHistogramDialog::OnBitmapbuttonDeleteParentHistogramClick( wxCommandEvent& event )
+{
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_ADD_PARENT_HISTOGRAM
+ */
+
+void DerivedHistogramDialog::OnBitmapbuttonAddParentHistogramClick( wxCommandEvent& event )
+{
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM
+ */
+
+void DerivedHistogramDialog::OnBitmapbuttonDeleteParentHistogramUpdate( wxUpdateUIEvent& event )
+{
+}
+

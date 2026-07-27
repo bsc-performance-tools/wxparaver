@@ -32,6 +32,8 @@
 ////@begin includes
 ////@end includes
 
+#include "histogram.h"
+
 /*!
  * Forward declarations
  */
@@ -45,20 +47,19 @@
 
 ////@begin control identifiers
 #define ID_DERIVEDHISTOGRAMDIALOG 10000
-#define ID_TEXTCTRL 10001
-#define ID_SCROLLEDWINDOW -1
+#define ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME 10001
+#define ID_SCROLLEDWINDOW_HISTOGRAM_LIST -1
 #define ID_TEXTCTRL1 10004
 #define ID_BITMAPBUTTON 10002
-#define ID_BITMAPBUTTON1 10003
+#define ID_BITMAPBUTTON3 10007
 #define ID_TEXTCTRL2 10005
 #define ID_BITMAPBUTTON2 10006
-#define ID_BITMAPBUTTON3 10007
-#define ID_BITMAPBUTTON4 10008
-#define ID_BITMAPBUTTON5 10009
+#define ID_BITMAPBUTTON_ADD_PARENT_HISTOGRAM 10008
+#define ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM 10009
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_TITLE _("Derived Histogram Dialog")
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_IDNAME ID_DERIVEDHISTOGRAMDIALOG
-#define SYMBOL_DERIVEDHISTOGRAMDIALOG_SIZE wxDefaultSize
+#define SYMBOL_DERIVEDHISTOGRAMDIALOG_SIZE wxSize(400, 300)
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -91,9 +92,27 @@ public:
 
 ////@begin DerivedHistogramDialog event handler declarations
 
+  /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME
+  void OnTextctrlDerivedHistogramNameEnter( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_ADD_PARENT_HISTOGRAM
+  void OnBitmapbuttonAddParentHistogramClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM
+  void OnBitmapbuttonDeleteParentHistogramClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM
+  void OnBitmapbuttonDeleteParentHistogramUpdate( wxUpdateUIEvent& event );
+
 ////@end DerivedHistogramDialog event handler declarations
 
 ////@begin DerivedHistogramDialog member function declarations
+
+  wxString GetDerivedWindowName() const { return derivedWindowName ; }
+  void SetDerivedWindowName(wxString value) { derivedWindowName = value ; }
+
+  TWindowType GetParentWindows() const { return parentWindows ; }
+  void SetParentWindows(TWindowType value) { parentWindows = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -107,7 +126,17 @@ public:
 
 ////@begin DerivedHistogramDialog member variables
   wxTextCtrl* derivedHistogramName;
+  wxBitmapButton* buttonAddParentHistogram;
+  wxBitmapButton* buttonDeleteParentHistogram;
+private:
+  wxString derivedWindowName;
+  TWindowType parentWindows;
 ////@end DerivedHistogramDialog member variables
+
+  // First version, added directly
+  std::vector< Histogram * > parentHistograms;
+  
+
 };
 
 #endif

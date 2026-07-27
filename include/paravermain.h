@@ -31,6 +31,7 @@
 #include <optional>
 #include <queue>
 #include <string>
+#include <variant>
 #include <vector>
 #include <wx/cmdline.h>
 #include <wx/imaglist.h>
@@ -241,6 +242,10 @@ struct SessionInfo
     StatusID status;
     std::string sessionDate;
 };
+
+
+using TWindowType = std::variant< Timeline *, Histogram * >;
+
 
 /*!
  * paraverMain class declaration

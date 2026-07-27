@@ -5,8 +5,8 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.cpp \
                     connection.cpp \
                     copypaste.cpp \
                     cutfilterdialog.cpp \
-                    derivedhistogramdialog.cpp \
                     derivedtimelinedialog.cpp \
+                    derivedwindowdialog.cpp \
                     eventsselectiondialog.cpp \
                     exitdialog.cpp \
                     externalapps.cpp \

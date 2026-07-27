@@ -43,7 +43,7 @@
 #include "cfgs4d.h"
 #include "config.h"
 #include "cutfilterdialog.h"
-#include "derivedhistogramdialog.h"
+#include "derivedwindowdialog.h"
 #include "derivedtimelinedialog.h"
 #include "exitdialog.h"
 #include "externalapps.h"
@@ -3696,7 +3696,9 @@ void paraverMain::ShowDerivedTimelineDialog()
 
 void paraverMain::ShowDerivedHistogramDialog()
 {
-  DerivedHistogramDialog derivedDialog( this );
+  TWindowType selectedHistograms;
+  selectedHistograms.push_back( GetSelectedHistogram() );
+  DerivedHistogramDialog derivedDialog( this, selectedHistograms );
 
   raiseCurrentWindow = false;
   if( derivedDialog.ShowModal() == wxID_OK )
