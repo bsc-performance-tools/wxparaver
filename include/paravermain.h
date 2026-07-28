@@ -659,7 +659,7 @@ class paraverMain : public wxFrame
 
     static wxString getHintComposed( const std::pair< std::string, std::string >& hint );
     static wxString buildFormattedFileName( std::string windowName, const std::string& traceName );
-
+    
     static wxProgressDialog* dialogProgress;
     static paraverMain* myParaverMain; // for update tree of windows
     static wxSize defaultTitleBarSize; // solves the problem of properly get timeline window height
@@ -675,35 +675,39 @@ class paraverMain : public wxFrame
 
     static std::vector< std::pair< std::string, const char** > > icons;
     static std::map< std::string, size_t > iconPosByName;
-
+    
     static bool IsSessionValid();
     static void ValidateSession( bool setValidate );
-
+    
     static wxArrayString FromVectorStringToWxArray( std::vector< std::string > vec, std::string fileType = "txt" );
     static std::vector< std::string > FromWxArrayToVectorString( wxArrayString arr );
-
+    
     bool cutFilterFinished;
-
+    
     bool OnMenusavesession();
     void helpQuestion();
     void exitManager();
-
+    
+    void findCompatibleHistogramsForDerivation( Histogram *baseHistogram,
+                                                std::vector< Histogram * >& derivableHistograms,
+                                                bool searchAllTraces = false );
+                                                
     // clang-format off
     ////@begin paraverMain member variables
-  wxAuiManager m_auiManager;
-  wxMenu* menuFile;
-  wxMenu* menuHints;
-  wxMenu* menuHelp;
-  wxToolBar* tbarMain;
-  wxChoicebook* choiceWindowBrowser;
-  wxToolbook* toolBookFilesProperties;
-  wxGenericDirCtrl* dirctrlFiles;
-  wxPropertyGrid* windowProperties;
-  wxPanel* panelAutoRedraw;
-  wxCheckBox* checkAutoRedraw;
-  wxButton* buttonForceRedraw;
-  wxTextCtrl* txtActiveWorkspaces;
-  wxBitmapButton* btnActiveWorkspaces;
+    wxAuiManager m_auiManager;
+    wxMenu* menuFile;
+    wxMenu* menuHints;
+    wxMenu* menuHelp;
+    wxToolBar* tbarMain;
+    wxChoicebook* choiceWindowBrowser;
+    wxToolbook* toolBookFilesProperties;
+    wxGenericDirCtrl* dirctrlFiles;
+    wxPropertyGrid* windowProperties;
+    wxPanel* panelAutoRedraw;
+    wxCheckBox* checkAutoRedraw;
+    wxButton* buttonForceRedraw;
+    wxTextCtrl* txtActiveWorkspaces;
+    wxBitmapButton* btnActiveWorkspaces;
   PreviousFiles * previousSessions;
 private:
   bool CFGLoadedBefore;
@@ -771,9 +775,6 @@ private:
     */
 
 
-    void findCompatibleHistogramsForDerivation( Histogram *baseHistogram,
-                                                std::vector< Histogram * >& derivableHistograms,
-                                                bool searchAllTraces = false );
 
     template< typename T, typename TAlternative >
     bool enableDerivedButton( T* sourceCurrentWindow, TAlternative* unusedCurrentWindow );
