@@ -50,10 +50,12 @@
 #define ID_DERIVEDWINDOWDIALOG 10000
 #define ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME 10001
 #define ID_SCROLLEDWINDOW_HISTOGRAM_LIST -1
+#define ID_PANEL_1 10012
 #define ID_BITMAPBUTTON1 10011
 #define ID_TEXTCTRL1 10004
 #define ID_BITMAPBUTTON 10002
 #define ID_CHECKBOX1 10010
+#define ID_PANEL_2 10013
 #define ID_BITMAPBUTTON3 10007
 #define ID_TEXTCTRL2 10005
 #define ID_BITMAP_HISTO_BUTTON2 10006
@@ -136,6 +138,8 @@ public:
 
 ////@begin DerivedHistogramDialog member variables
   wxTextCtrl* derivedHistogramName;
+  wxPanel* panelHistogramLine1;
+  wxPanel* panelHistogramLine2;
   wxBitmapButton* buttonOperation;
   wxBitmapButton* buttonSelectWindow;
   wxBitmapButton* buttonAddParentWindow;
