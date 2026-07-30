@@ -3738,11 +3738,9 @@ void paraverMain::ShowDerivedTimelineDialog()
 
 void paraverMain::ShowDerivedHistogramDialog()
 {
-  DerivedHistogramDialog derivedDialog( this );
-
   std::vector< TWindowType > selectedHistograms;
   selectedHistograms.push_back( GetSelectedHistogram()->GetHistogram() );
-  derivedDialog.SetParentWindows( selectedHistograms );
+  DerivedHistogramDialog derivedDialog( this, selectedHistograms );
 
   raiseCurrentWindow = false;
   if( derivedDialog.ShowModal() == wxID_OK )

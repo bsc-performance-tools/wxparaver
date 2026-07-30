@@ -40,6 +40,7 @@
  */
 
 ////@begin forward declarations
+class wxBoxSizer;
 ////@end forward declarations
 
 /*!
@@ -69,6 +70,10 @@
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
 
+struct TWindowTypeWrapper : public wxObject
+{
+  TWindowType window;
+};
 
 /*!
  * DerivedHistogramDialog class declaration
@@ -82,7 +87,7 @@ class DerivedHistogramDialog: public wxDialog
 public:
   /// Constructors
   DerivedHistogramDialog();
-  DerivedHistogramDialog( wxWindow* parent, wxWindowID id = SYMBOL_DERIVEDHISTOGRAMDIALOG_IDNAME, const wxString& caption = SYMBOL_DERIVEDHISTOGRAMDIALOG_TITLE, const wxPoint& pos = SYMBOL_DERIVEDHISTOGRAMDIALOG_POSITION, const wxSize& size = SYMBOL_DERIVEDHISTOGRAMDIALOG_SIZE, long style = SYMBOL_DERIVEDHISTOGRAMDIALOG_STYLE );
+  DerivedHistogramDialog( wxWindow* parent, const std::vector< TWindowType >& whichParents, wxWindowID id = SYMBOL_DERIVEDHISTOGRAMDIALOG_IDNAME, const wxString& caption = SYMBOL_DERIVEDHISTOGRAMDIALOG_TITLE, const wxPoint& pos = SYMBOL_DERIVEDHISTOGRAMDIALOG_POSITION, const wxSize& size = SYMBOL_DERIVEDHISTOGRAMDIALOG_SIZE, long style = SYMBOL_DERIVEDHISTOGRAMDIALOG_STYLE );
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_DERIVEDHISTOGRAMDIALOG_IDNAME, const wxString& caption = SYMBOL_DERIVEDHISTOGRAMDIALOG_TITLE, const wxPoint& pos = SYMBOL_DERIVEDHISTOGRAMDIALOG_POSITION, const wxSize& size = SYMBOL_DERIVEDHISTOGRAMDIALOG_SIZE, long style = SYMBOL_DERIVEDHISTOGRAMDIALOG_STYLE );
@@ -91,7 +96,7 @@ public:
   ~DerivedHistogramDialog();
 
   /// Initialises member variables
-  void Init();
+  void Init( const std::vector< TWindowType >& whichHistograms = {} );
 
   /// Creates the controls and sizers
   void CreateControls();
@@ -138,6 +143,8 @@ public:
 
 ////@begin DerivedHistogramDialog member variables
   wxTextCtrl* derivedHistogramName;
+  wxScrolledWindow* histogramsScrolledWindow;
+  wxBoxSizer* verticalBoxSizerHistogramLines;
   wxPanel* panelHistogramLine1;
   wxPanel* panelHistogramLine2;
   wxBitmapButton* buttonOperation;
@@ -149,8 +156,12 @@ private:
   std::vector< TWindowType > parentWindows;
 ////@end DerivedHistogramDialog member variables
 
-  
+  wxImageList *imagesList;
 
+  void CreateControlsForParentsList();
+  void CreateControlsForParent( const TWindowType& whichParents,
+                                bool showOperation,
+                                const wxBitmap& derivedOperationIcon );
 };
 
 #endif
