@@ -3581,7 +3581,7 @@ bool paraverMain::enableDerivedButton( T* sourceCurrentWindow, TAlternative* unu
     wxArrayTreeItemIds selectedItems;
     tmpTree->GetSelections( selectedItems );
 
-    enable = ( tmpWindows.size() > 0 ) && ( sourceCurrentWindow != nullptr ) && ( selectedItems.GetCount() == 1 );
+    enable = ( tmpWindows.size() > 0 ) && ( sourceCurrentWindow != nullptr ) && ( selectedItems.GetCount() > 0 );
   }
 
   return unusedCurrentWindow == nullptr && enable;
@@ -3739,7 +3739,25 @@ void paraverMain::ShowDerivedTimelineDialog()
 void paraverMain::ShowDerivedHistogramDialog()
 {
   std::vector< TWindowType > selectedHistograms;
-  selectedHistograms.push_back( GetSelectedHistogram()->GetHistogram() );
+
+  wxTreeCtrl *tmpTree = static_cast< wxTreeCtrl * >( choiceWindowBrowser->GetCurrentPage() );
+
+  wxArrayTreeItemIds selectedItems;
+  tmpTree->GetSelections( selectedItems );
+  for( size_t i = 0; i < selectedItems.GetCount(); ++i )
+  {
+    wxTreeItemId selectedItem     = selectedItems[ i ];
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
+
+    if( gHistogram *histo = itemData->getHistogram() )
+    {
+      selectedHistograms.push_back( histo->GetHistogram() );      
+    }
+  }
+  
+  if( selectedHistograms.empty() )
+    return;
+
   DerivedHistogramDialog derivedDialog( this, selectedHistograms );
 
   raiseCurrentWindow = false;
