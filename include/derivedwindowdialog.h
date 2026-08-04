@@ -40,7 +40,6 @@
  */
 
 ////@begin forward declarations
-class wxBoxSizer;
 ////@end forward declarations
 
 /*!
@@ -51,18 +50,7 @@ class wxBoxSizer;
 #define ID_DERIVEDWINDOWDIALOG 10000
 #define ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME 10001
 #define ID_SCROLLEDWINDOW_HISTOGRAM_LIST -1
-#define ID_PANEL_1 10012
-#define ID_BITMAPBUTTON1 10011
-#define ID_TEXTCTRL1 10004
-#define ID_BITMAPBUTTON 10002
-#define ID_CHECKBOX1 10010
-#define ID_PANEL_2 10013
-#define ID_BITMAPBUTTON3 10007
-#define ID_TEXTCTRL2 10005
-#define ID_BITMAP_HISTO_BUTTON2 10006
-#define ID_CHECKBOX 10003
 #define ID_BITMAPBUTTON_ADD_PARENT_WINDOW 10008
-#define ID_BITMAPBUTTON_DELETE_PARENT_WINDOW 10009
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_TITLE _("Derived Histogram Dialog")
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_IDNAME ID_DERIVEDWINDOWDIALOG
@@ -106,20 +94,8 @@ public:
   /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME
   void OnTextctrlDerivedHistogramNameEnter( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON
-  void OnBitmapbuttonClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON
-  void OnBitmapbuttonUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_ADD_PARENT_WINDOW
-  void OnBitmapbuttonAddParentWindowClick( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_DELETE_PARENT_WINDOW
-  void OnBitmapbuttonDeleteParentWindowClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_DELETE_PARENT_WINDOW
-  void OnBitmapbuttonDeleteParentWindowUpdate( wxUpdateUIEvent& event );
+  void OnButtonAddParentClick( wxCommandEvent& event );
 
 ////@end DerivedHistogramDialog event handler declarations
 
@@ -144,24 +120,43 @@ public:
 ////@begin DerivedHistogramDialog member variables
   wxTextCtrl* derivedHistogramName;
   wxScrolledWindow* histogramsScrolledWindow;
-  wxBoxSizer* verticalBoxSizerHistogramLines;
-  wxPanel* panelHistogramLine1;
-  wxPanel* panelHistogramLine2;
-  wxBitmapButton* buttonOperation;
-  wxBitmapButton* buttonSelectWindow;
   wxBitmapButton* buttonAddParentWindow;
-  wxBitmapButton* buttonDeleteParentWindow;
 private:
   wxString derivedWindowName;
   std::vector< TWindowType > parentWindows;
 ////@end DerivedHistogramDialog member variables
 
   wxImageList *imagesList;
+  // std::vector< std::pair< wxString, std::function< void( wxCommandEvent& ) > > > managedWidgets {}; // saved here after Connect, read in Disconnect
+  // std::vector< std::pair< wxString, std::function< void( wxCommandEvent& ) > > > managedWidgets {}; // saved here after Connect, read in Disconnect
+  // std::vector< std::pair< wxString, wxObjectEventFunction > > managedWidgets {}; // saved here after Connect, read in Disconnect
+  std::vector< std::pair< wxString, int > > managedWidgets {}; // saved here after Connect, read in Disconnect
 
+  wxString BuildName( const TWindowType& whichParent );
   void CreateControlsForParentsList();
-  void CreateControlsForParent( const TWindowType& whichParents,
-                                bool showOperation,
-                                const wxBitmap& derivedOperationIcon );
+  void CreateControlsForParentRow( wxBoxSizer *whichBoxSizer,
+                                   const TWindowType& whichParents,
+                                   bool showOperation,
+                                   const wxBitmap& derivedOperationIcon,
+                                   int pos );
+  void TransferDataFromPanel();
+  void DisconnectWidgets();
+  void CleanParentsList();
+
+  // Button callbacks per line
+  void OnButtonOperationSelectionClick( wxCommandEvent& event );
+  void OnButtonOperationSelectionUpdate( wxUpdateUIEvent& event );
+
+  void OnButtonParentSelectionClick( wxCommandEvent& event );
+  void OnButtonParentSelectionUpdate( wxUpdateUIEvent& event );
+
+  void OnButtonDeleteParentClick( wxCommandEvent& event );
+  void OnButtonDeleteParentUpdate( wxUpdateUIEvent& event );
+
+protected:
+    const static wxString KCheckBoxSuffix;
+    const static wxString KTextCtrlSuffix;
+    const static wxString KButtonSuffix;
 };
 
 #endif

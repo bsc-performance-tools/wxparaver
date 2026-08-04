@@ -38,12 +38,21 @@
 #include "derivedwindowdialog.h"
 
 ////@begin XPM images
-#include "../icons/derived_add.xpm"
-#include "../icons/three_dots.xpm"
 #include "../icons/add.xpm"
-#include "../icons/delete.xpm"
 ////@end XPM images
 
+
+// #include "../icons/derived_add.xpm"
+// #include "../icons/derived_substract.xpm"
+// #include "../icons/derived_product.xpm"
+// #include "../icons/derived_divide.xpm"
+// #include "../icons/derived_minimum.xpm"
+// #include "../icons/derived_maximum.xpm"
+// #include "../icons/derived_different.xpm"
+
+#include "../icons/three_dots.xpm"
+
+#include "../icons/delete.xpm"
 
 /*!
  * DerivedHistogramDialog type definition
@@ -60,14 +69,14 @@ BEGIN_EVENT_TABLE( DerivedHistogramDialog, wxDialog )
 
 ////@begin DerivedHistogramDialog event table entries
   EVT_TEXT_ENTER( ID_TEXTCTRL_DERIVED_HISTOGRAM_NAME, DerivedHistogramDialog::OnTextctrlDerivedHistogramNameEnter )
-  EVT_BUTTON( ID_BITMAPBUTTON, DerivedHistogramDialog::OnBitmapbuttonClick )
-  EVT_UPDATE_UI( ID_BITMAPBUTTON, DerivedHistogramDialog::OnBitmapbuttonUpdate )
-  EVT_BUTTON( ID_BITMAPBUTTON_ADD_PARENT_WINDOW, DerivedHistogramDialog::OnBitmapbuttonAddParentWindowClick )
-  EVT_BUTTON( ID_BITMAPBUTTON_DELETE_PARENT_WINDOW, DerivedHistogramDialog::OnBitmapbuttonDeleteParentWindowClick )
-  EVT_UPDATE_UI( ID_BITMAPBUTTON_DELETE_PARENT_WINDOW, DerivedHistogramDialog::OnBitmapbuttonDeleteParentWindowUpdate )
+  EVT_BUTTON( ID_BITMAPBUTTON_ADD_PARENT_WINDOW, DerivedHistogramDialog::OnButtonAddParentClick )
 ////@end DerivedHistogramDialog event table entries
 
 END_EVENT_TABLE()
+
+const wxString DerivedHistogramDialog::KTextCtrlSuffix  = _( "_TXTCTRL" );
+const wxString DerivedHistogramDialog::KCheckBoxSuffix  = _( "_CHECKBOX" );
+const wxString DerivedHistogramDialog::KButtonSuffix    = _( "_BUTTON" );
 
 
 /*!
@@ -108,8 +117,7 @@ bool DerivedHistogramDialog::Create( wxWindow* parent, wxWindowID id, const wxSt
 
 DerivedHistogramDialog::~DerivedHistogramDialog()
 {
-////@begin DerivedHistogramDialog destruction
-////@end DerivedHistogramDialog destruction
+  DisconnectWidgets();
 }
 
 
@@ -123,13 +131,7 @@ void DerivedHistogramDialog::Init( const std::vector< TWindowType >& whichParent
   derivedWindowName = wxT("");
   derivedHistogramName = NULL;
   histogramsScrolledWindow = NULL;
-  verticalBoxSizerHistogramLines = NULL;
-  panelHistogramLine1 = NULL;
-  panelHistogramLine2 = NULL;
-  buttonOperation = NULL;
-  buttonSelectWindow = NULL;
   buttonAddParentWindow = NULL;
-  buttonDeleteParentWindow = NULL;
 ////@end DerivedHistogramDialog member initialisation
 
   SetParentWindows( whichParents );
@@ -165,66 +167,15 @@ void DerivedHistogramDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxHORIZONTAL);
   itemBoxSizer3->Add(itemStaticBoxSizer1, 1, wxGROW|wxALL, 5);
 
-  histogramsScrolledWindow = new wxScrolledWindow( itemDialog1, ID_SCROLLEDWINDOW_HISTOGRAM_LIST, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL|wxALWAYS_SHOW_SB );
+  histogramsScrolledWindow = new wxScrolledWindow( itemDialog1, ID_SCROLLEDWINDOW_HISTOGRAM_LIST, wxDefaultPosition, wxSize(200, 100), wxSUNKEN_BORDER|wxVSCROLL|wxALWAYS_SHOW_SB );
   itemStaticBoxSizer1->Add(histogramsScrolledWindow, 1, wxGROW|wxALL, 5);
   histogramsScrolledWindow->SetScrollbars(1, 1, 0, 0);
-  verticalBoxSizerHistogramLines = new wxBoxSizer(wxVERTICAL);
-  histogramsScrolledWindow->SetSizer(verticalBoxSizerHistogramLines);
-
-  panelHistogramLine1 = new wxPanel( histogramsScrolledWindow, ID_PANEL_1, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL );
-  panelHistogramLine1->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-  verticalBoxSizerHistogramLines->Add(panelHistogramLine1, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-  panelHistogramLine1->SetSizer(itemBoxSizer5);
-
-  wxBitmapButton* itemBitmapButton6 = new wxBitmapButton( panelHistogramLine1, ID_BITMAPBUTTON1, itemDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBitmapButton6->Show(false);
-  itemBoxSizer5->Add(itemBitmapButton6, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRESERVE_SPACE_EVEN_IF_HIDDEN, 5);
-
-  itemBoxSizer5->Add(0, 0, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  wxTextCtrl* itemTextCtrl8 = new wxTextCtrl( panelHistogramLine1, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxSize(200, -1), 0 );
-  itemBoxSizer5->Add(itemTextCtrl8, 6, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP|wxFIXED_MINSIZE, 5);
-
-  wxBitmapButton* itemBitmapButton9 = new wxBitmapButton( panelHistogramLine1, ID_BITMAPBUTTON, itemDialog1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer5->Add(itemBitmapButton9, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-  wxCheckBox* itemCheckBox10 = new wxCheckBox( panelHistogramLine1, ID_CHECKBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemCheckBox10->SetValue(false);
-  itemBoxSizer5->Add(itemCheckBox10, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-  panelHistogramLine2 = new wxPanel( histogramsScrolledWindow, ID_PANEL_2, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL );
-  panelHistogramLine2->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-  verticalBoxSizerHistogramLines->Add(panelHistogramLine2, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer12 = new wxBoxSizer(wxHORIZONTAL);
-  panelHistogramLine2->SetSizer(itemBoxSizer12);
-
-  buttonOperation = new wxBitmapButton( panelHistogramLine2, ID_BITMAPBUTTON3, itemDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer12->Add(buttonOperation, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-
-  itemBoxSizer12->Add(5, 5, 2, wxALIGN_CENTER_VERTICAL, 5);
-
-  wxTextCtrl* itemTextCtrl15 = new wxTextCtrl( panelHistogramLine2, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxSize(200, -1), 0 );
-  itemBoxSizer12->Add(itemTextCtrl15, 6, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP|wxFIXED_MINSIZE, 5);
-
-  buttonSelectWindow = new wxBitmapButton( panelHistogramLine2, ID_BITMAP_HISTO_BUTTON2, itemDialog1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer12->Add(buttonSelectWindow, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-  wxCheckBox* itemCheckBox17 = new wxCheckBox( panelHistogramLine2, ID_CHECKBOX, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemCheckBox17->SetValue(false);
-  itemBoxSizer12->Add(itemCheckBox17, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-
-
-  histogramsScrolledWindow->SetMinSize(wxSize(200, 100));
 
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
   itemStaticBoxSizer1->Add(itemBoxSizer6, 0, wxALIGN_TOP|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   buttonAddParentWindow = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_ADD_PARENT_WINDOW, itemDialog1->GetBitmapResource(wxT("icons/add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer6->Add(buttonAddParentWindow, 0, wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-
-  buttonDeleteParentWindow = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_DELETE_PARENT_WINDOW, itemDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer6->Add(buttonDeleteParentWindow, 0, wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   wxStdDialogButtonSizer* itemStdDialogButtonSizer1 = new wxStdDialogButtonSizer;
 
@@ -243,54 +194,118 @@ void DerivedHistogramDialog::CreateControls()
 }
 
 
-void DerivedHistogramDialog::CreateControlsForParent( const TWindowType& whichParent,
-                                                      bool showOperation,
-                                                      const wxBitmap& derivedOperationIcon )
+wxString DerivedHistogramDialog::BuildName( const TWindowType& whichParent )
 {
-  wxPanel* panelHistogramLine = new wxPanel( histogramsScrolledWindow, ID_PANEL_1, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL );
-  panelHistogramLine->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+  return std::visit( [](const auto& current)
+                     {
+                       return wxString::FromUTF8( current->getName().c_str() ) + _( "_" ) +
+                              wxString::FromUTF8( current->getTrace()->getTraceNameNumbered().c_str() );
+                     }, whichParent );
+}
 
-  verticalBoxSizerHistogramLines->Add(panelHistogramLine, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* lineBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-  panelHistogramLine->SetSizer(lineBoxSizer);
+void DerivedHistogramDialog::CreateControlsForParentRow( wxBoxSizer *whichBoxSizer,
+                                                         const TWindowType& whichParent,
+                                                         bool showOperation,
+                                                         const wxBitmap& derivedOperationIcon,
+                                                         int pos )
+{
+  // Create panel
+  wxPanel* panelHistogramLine = new wxPanel( histogramsScrolledWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL );
+  panelHistogramLine->SetExtraStyle( wxWS_EX_VALIDATE_RECURSIVELY );
+  whichBoxSizer->Add( panelHistogramLine, 0, wxGROW|wxALL, 5 );
 
+
+  // Create boxsizer
+  wxBoxSizer* lineBoxSizer = new wxBoxSizer( wxHORIZONTAL );
+  panelHistogramLine->SetSizer( lineBoxSizer );
+
+
+  // Create operation button
+  wxString tmpName {};
+  if( showOperation )
+  {
+    managedWidgets.emplace_back( std::make_pair( BuildName( whichParent ) + wxT( "_operation_" ) + KButtonSuffix,
+                                                pos )); //std::mem_fn( &DerivedHistogramDialog::OnButtonOperationSelectionClick ) ) );
+    tmpName = managedWidgets.back().first;
+  }
   wxBitmapButton* bitmapButtonOperation = new wxBitmapButton( panelHistogramLine,
                                                               // ID_BITMAPBUTTON1,
                                                               wxID_ANY,
                                                               derivedOperationIcon,
-                                                              wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+                                                              wxDefaultPosition,
+                                                              wxDefaultSize,
+                                                              wxBU_AUTODRAW,
+                                                              wxDefaultValidator,
+                                                              tmpName );
   bitmapButtonOperation->Show( showOperation );
-  TWindowTypeWrapper *tmpParent = new TWindowTypeWrapper();
-  tmpParent->window = whichParent;
-  bitmapButtonOperation->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
-                                  wxCommandEventHandler( DerivedHistogramDialog::OnBitmapbuttonClick ),
-                                  tmpParent,
-                                  this );
+  if( showOperation )
+  {
+    int *tmpPos = new int( pos );
+    bitmapButtonOperation->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
+                                    // wxCommandEventHandler( managedWidgets.back().second ),
+                                    wxCommandEventHandler( DerivedHistogramDialog::OnButtonOperationSelectionClick ),
+                                    (wxObject *)tmpPos,
+                                    this );
+  }
   lineBoxSizer->Add(bitmapButtonOperation, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRESERVE_SPACE_EVEN_IF_HIDDEN, 5);
 
-  lineBoxSizer->Add(0, 0, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+  // Insert spacer
+  lineBoxSizer->Add(0, 0, 1, wxALIGN_CENTER_VERTICAL, 5);
+
+
+  // Create textctrl for parent name
   std::string name = std::visit( [](const auto& w)
                                  {
                                    return w->getName();
                                  }, whichParent );
-  // wxTextCtrl* textCtrlHistogramName = new wxTextCtrl( panelHistogramLine, ID_TEXTCTRL1, name, wxDefaultPosition, wxSize(200, -1), 0 );
-  wxTextCtrl* textCtrlHistogramName = new wxTextCtrl( panelHistogramLine, wxID_ANY, name, wxDefaultPosition, wxSize(200, -1), 0 );
-  lineBoxSizer->Add(textCtrlHistogramName, 6, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP|wxFIXED_MINSIZE, 5);
+  wxTextCtrl* textCtrlHistogramName = new wxTextCtrl( panelHistogramLine, wxID_ANY, name, wxDefaultPosition, wxSize(150, -1), 0 );
+  lineBoxSizer->Add(textCtrlHistogramName, 6, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxFIXED_MINSIZE, 5);
 
-  // wxBitmapButton* bitmapButtonHistogramSelection = new wxBitmapButton( panelHistogramLine, ID_BITMAPBUTTON, GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  wxBitmapButton* bitmapButtonHistogramSelection = new wxBitmapButton( panelHistogramLine, wxID_ANY, GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+
+  // Create button for parent selection
+  managedWidgets.emplace_back( std::make_pair( BuildName( whichParent ) + wxT( "_select_" ) + KButtonSuffix,
+                                               pos)); //std::bind( &DerivedHistogramDialog::OnButtonParentSelectionClick, this, std::placeholders::_1 ) ) );
+  wxBitmapButton* bitmapButtonHistogramSelection = new wxBitmapButton( panelHistogramLine,
+                                                                       wxID_ANY,
+                                                                       GetBitmapResource(wxT("icons/three_dots.xpm")),
+                                                                       wxDefaultPosition,
+                                                                       wxDefaultSize,
+                                                                       wxBU_AUTODRAW,
+                                                                       wxDefaultValidator,
+                                                                       managedWidgets.back().first );
+  TWindowTypeWrapper *tmpParent = new TWindowTypeWrapper();
+  tmpParent->window = whichParent;
+  int *tmpPos12 = new int( pos );
   bitmapButtonHistogramSelection->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
-                                           wxCommandEventHandler( DerivedHistogramDialog::OnBitmapbuttonClick ),
-                                           nullptr, //whichParent, // maybe unused here
+                                          //  wxCommandEventHandler( managedWidgets.back().second ),
+                                           wxCommandEventHandler( DerivedHistogramDialog::OnButtonParentSelectionClick ),
+                                           //(wxObject *)tmpParent,
+                                           (wxObject *)tmpPos12,
                                            this );
-  lineBoxSizer->Add(bitmapButtonHistogramSelection, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  lineBoxSizer->Add(bitmapButtonHistogramSelection, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
-  // wxCheckBox* checkBoxLine = new wxCheckBox( panelHistogramLine, ID_CHECKBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  wxCheckBox* checkBoxLine = new wxCheckBox( panelHistogramLine, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  checkBoxLine->SetValue(false);
-  lineBoxSizer->Add(checkBoxLine, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  // Create button for delete
+  managedWidgets.emplace_back( std::make_pair( BuildName( whichParent ) + wxT( "_delete_" ) + KButtonSuffix,
+                                               pos )); //std::bind( &DerivedHistogramDialog::OnButtonDeleteParentClick, this, std::placeholders::_1  ) ) );
+  wxBitmapButton* deleteLine = new wxBitmapButton( panelHistogramLine,
+                                                   wxID_ANY,
+                                                   GetBitmapResource(wxT("icons/delete.xpm")),
+                                                   wxDefaultPosition,
+                                                   wxDefaultSize,
+                                                   wxBU_AUTODRAW,
+                                                   wxDefaultValidator,
+                                                   managedWidgets.back().first );
+  lineBoxSizer->Add( deleteLine, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
+  int *tmpPos2 = new int( pos );
+  deleteLine->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
+                       wxCommandEventHandler( DerivedHistogramDialog::OnButtonDeleteParentClick ),
+                      //  wxCommandEventHandler(  managedWidgets.back().second ),
+                       (wxObject *)tmpPos2, // nullptr, //whichParent, // maybe unused here
+                       this );
+
+  panelHistogramLine->FitInside();
 }
 
 
@@ -299,16 +314,82 @@ void DerivedHistogramDialog::CreateControlsForParentsList()
   if( parentWindows.empty() )
     return;
 
+  wxBoxSizer *boxSizerHistogramsList = new wxBoxSizer( wxVERTICAL );
+
   if( std::holds_alternative< Histogram * >( parentWindows.front() ) )
   {
+    int i = 0;
     for( auto pw: parentWindows )
     {
       // Histogram *tmpParent = std::get< Histogram * >( pw );
       wxBitmap derivedOperationIcon = imagesList->GetBitmap( paraverMain::iconPosByName[ "add" ] ); 
-      CreateControlsForParent( pw, pw != parentWindows.front(), derivedOperationIcon );
+      CreateControlsForParentRow( boxSizerHistogramsList, pw, pw != parentWindows.front(), derivedOperationIcon, i );
+      ++i;
+      // TODO: remove this line
+      //CreateControlsForParentRow( boxSizerHistogramsList, pw, true, derivedOperationIcon );
     }
   }
+
+  histogramsScrolledWindow->SetSizer( boxSizerHistogramsList );
+  histogramsScrolledWindow->FitInside();
 }
+
+
+void DerivedHistogramDialog::TransferDataFromPanel()
+{
+
+}
+
+
+void DerivedHistogramDialog::DisconnectWidgets()
+{
+  // for( auto& parent: parentWindows )
+  for( auto w: managedWidgets )
+  {
+    std::cout << "name of widget to DISCONNECT -> " << w.first << std::endl;
+
+    // wxWindow *tmpWidget = histogramsScrolledWindow->FindWindowByName( w.first );
+    // if( tmpWidget != nullptr )
+    // {
+    //   wxBitmapButton *tmpButton = static_cast< wxBitmapButton * >( tmpWidget );
+
+    //   // TODO: dangerous: the histogram can be named _operation_trac.prv_operation....
+    //   if( w.first.find( wxT( "_operation_" ) ) != wxString::npos )
+    //   {
+    //     std::cout << "DISCONNECT -> " << w.first << std::endl;
+    //     tmpButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED,
+    //                            wxCommandEventHandler( DerivedHistogramDialog::OnButtonOperationSelectionClick ),
+    //                            nullptr,
+    //                            this );
+    //   }
+    //   else if( w.first.find( wxT( "_select_" ) ) != wxString::npos )
+    //   {
+    //     std::cout << "DISCONNECT -> " << w.first << std::endl;
+    //     tmpButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED,
+    //                            wxCommandEventHandler( DerivedHistogramDialog::OnButtonParentSelectionClick ),
+    //                            nullptr,
+    //                            this );
+    //   }
+    //   else if( w.first.find( wxT( "_delete_" ) ) != wxString::npos )
+    //   {    
+    //     std::cout << "DISCONNECT -> " << w.first << std::endl;
+    //     tmpButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED,
+    //                            wxCommandEventHandler(DerivedHistogramDialog::OnButtonDeleteParentClick  ),
+    //                            nullptr,
+    //                            this );
+    //  }
+    //}
+  }
+}
+
+void DerivedHistogramDialog::CleanParentsList()
+{
+  TransferDataFromPanel();
+  DisconnectWidgets();
+  managedWidgets.clear();
+  histogramsScrolledWindow->DestroyChildren();
+}
+
 
 /*!
  * Should we show tooltips?
@@ -326,11 +407,12 @@ bool DerivedHistogramDialog::ShowToolTips()
 wxBitmap DerivedHistogramDialog::GetBitmapResource( const wxString& name )
 {
   // Bitmap retrieval
-////@begin DerivedHistogramDialog bitmap retrieval
-  wxUnusedVar(name);
-  if (name == wxT("icons/derived_add.xpm"))
+
+  // Added extra bitmaps here due to final return wxNullBitmap
+  wxUnusedVar( name );
+  if ( name == wxT( "icons/delete.xpm" ) )
   {
-    wxBitmap bitmap(derived_add_xpm);
+    wxBitmap bitmap( delete_xpm );
     return bitmap;
   }
   else if (name == wxT("icons/three_dots.xpm"))
@@ -338,14 +420,20 @@ wxBitmap DerivedHistogramDialog::GetBitmapResource( const wxString& name )
     wxBitmap bitmap(three_dots_xpm);
     return bitmap;
   }
-  else if (name == wxT("icons/add.xpm"))
+
+  // wxUnusedVar(name);
+  // else if (name == wxT("icons/add.xpm"))
+  // {
+  //   wxBitmap bitmap(add);
+  //   return bitmap;
+  // }
+  // return wxNullBitmap;
+
+////@begin DerivedHistogramDialog bitmap retrieval
+  wxUnusedVar(name);
+  if (name == wxT("icons/add.xpm"))
   {
     wxBitmap bitmap(add);
-    return bitmap;
-  }
-  else if (name == wxT("icons/delete.xpm"))
-  {
-    wxBitmap bitmap(delete_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -376,71 +464,87 @@ void DerivedHistogramDialog::OnTextctrlDerivedHistogramNameEnter( wxCommandEvent
 }
 
 
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM
- */
-
-void DerivedHistogramDialog::OnBitmapbuttonDeleteParentWindowClick( wxCommandEvent& event )
-{
-}
-
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_ADD_PARENT_HISTOGRAM
- */
-
-void DerivedHistogramDialog::OnBitmapbuttonAddParentWindowClick( wxCommandEvent& event )
+void DerivedHistogramDialog::OnButtonAddParentClick( wxCommandEvent& event )
 {
   if( std::holds_alternative< Histogram * >( parentWindows.front() ) )
   {
     std::vector< Histogram * > derivableHistograms;
     
     paraverMain::myParaverMain->findCompatibleHistogramsForDerivation( std::get< Histogram * >( parentWindows.front() ), derivableHistograms );
+    
+    // TODO: add menu selection
     for( auto& h: derivableHistograms )
     {
-      std::cout << h->getName() << std::endl;
+    
+      std::cout << "add parent: "  << h->getName() << std::endl;
+    }  
+
+    Histogram *parentToAdd = nullptr;
+    if( !derivableHistograms.empty() )
+      parentToAdd = derivableHistograms.front();
+
+    if( parentToAdd )
+    {
+      // Add selected to parents
+      parentWindows.emplace_back( parentToAdd );
+
+      // Rebuild list
+      CleanParentsList();
+      CreateControlsForParentsList();
     }
-  }
+  }  
+}  
+
+
+void DerivedHistogramDialog::OnButtonOperationSelectionClick( wxCommandEvent& event )
+{
+  wxBitmapButton *tmpDeleteButton = static_cast< wxBitmapButton * >( event.GetEventObject() );
+  // TODO: check if first line
+  std::cout << "Button operation selection #" <<  *(int *)event.GetEventUserData() << std::endl;
+  tmpDeleteButton->Enable( *(int *)event.GetEventUserData() != 0 );
 }
 
 
-/*!
- * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_DELETE_PARENT_HISTOGRAM
- */
+void DerivedHistogramDialog::OnButtonOperationSelectionUpdate( wxUpdateUIEvent& event )
+{
+}  
 
-void DerivedHistogramDialog::OnBitmapbuttonDeleteParentWindowUpdate( wxUpdateUIEvent& event )
+
+void DerivedHistogramDialog::OnButtonParentSelectionClick( wxCommandEvent& event )
+{
+  // wxObject *tmpRawData = event.GetEventUserData();
+  // TWindowTypeWrapper *tmpWrapper = static_cast< TWindowTypeWrapper * >( tmpRawData );
+
+  // std::string name = std::visit( [](const auto& w)
+  //                                {
+  //                                  return w->getName();
+  //                                }, tmpWrapper->window );
+  // std::cout << "Test callback for window: " << name << std::endl;
+
+  wxBitmapButton *tmpSelectionButton = static_cast< wxBitmapButton * >( event.GetEventObject() );
+  // TODO: check if first line
+  std::cout << "Button selection #" <<  *(int *)event.GetEventUserData() << std::endl;
+}
+
+void DerivedHistogramDialog::OnButtonParentSelectionUpdate( wxUpdateUIEvent& event )
 {
 }
 
 
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON
- */
-
-void DerivedHistogramDialog::OnBitmapbuttonClick( wxCommandEvent& event )
+void DerivedHistogramDialog::OnButtonDeleteParentClick( wxCommandEvent& event )
 {
-  // TWindowType *tmpData = (TWindowType *)event.m_callbackUserData;
-  wxObject *tmpRawData = event.GetEventUserData();
-  // Histogram *tmpData = (Histogram *)event.GetEventUserData();
-  TWindowTypeWrapper *tmpWrapper = static_cast< TWindowTypeWrapper * >( tmpRawData );
-
-  std::string name = std::visit( [](const auto& w)
-                                 {
-                                   return w->getName();
-                                 }, tmpWrapper->window );
-  std::cout << "Test callback" << std::endl;
+  wxBitmapButton *tmpDeleteButton = static_cast< wxBitmapButton * >( event.GetEventObject() );
+  // TODO: check if first line
+  std::cout << "Button delete #" <<  *(int *)event.GetEventUserData() << std::endl;
 }
 
 
-/*!
- * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON
- */
-
-void DerivedHistogramDialog::OnBitmapbuttonUpdate( wxUpdateUIEvent& event )
+void DerivedHistogramDialog::OnButtonDeleteParentUpdate( wxUpdateUIEvent& event )
 {
-////@begin wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON in DerivedHistogramDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON in DerivedHistogramDialog. 
+  wxBitmapButton *tmpDeleteButton = static_cast< wxBitmapButton * >( event.GetEventObject() );
+  // TODO: check if first line
+  // std::cout << "Button delete update #" <<  *(int *)event.GetEventUserData() << std::endl;
+  tmpDeleteButton->Enable( *(int *)event.GetEventUserData() != 0 );
 }
+
 
