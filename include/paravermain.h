@@ -244,7 +244,7 @@ struct SessionInfo
 };
 
 
-using TWindowType = std::variant< Timeline *, Histogram * >;
+using TWindowType = std::variant< std::monostate, Timeline *, Histogram * >;
 
 
 /*!

@@ -3758,7 +3758,8 @@ void paraverMain::ShowDerivedHistogramDialog()
   if( selectedHistograms.empty() )
     return;
 
-  DerivedHistogramDialog derivedDialog( this, selectedHistograms );
+  std::vector< std::string > operations( selectedHistograms.size() - 1, "add" );
+  DerivedHistogramDialog derivedDialog( this, selectedHistograms, operations );
 
   raiseCurrentWindow = false;
   if( derivedDialog.ShowModal() == wxID_OK )
