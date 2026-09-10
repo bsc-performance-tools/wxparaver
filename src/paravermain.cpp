@@ -999,18 +999,18 @@ std::optional< Trace * > paraverMain::DoLoadTrace( const string &path, bool allo
 
       loadedTraces.push_back( tr );
       currentTrace = loadedTraces.size() - 1;
+
+      setTraceWorkspaces( tr );
+
+      wxTreeCtrl *newTree = createTree( imageList );
+      newTree->Connect( wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler( paraverMain::OnTreeKeyPress ), nullptr, this );
+
+      if( paraverConfig->getGlobalFullTracePath() )
+        choiceWindowBrowser->AddPage( newTree, wxString::FromUTF8( tr->getFileNameNumbered().c_str() ) );
+      else
+        choiceWindowBrowser->AddPage( newTree, wxFileName( wxString::FromUTF8( tr->getFileNameNumbered().c_str() ) ).GetFullName() );
+      choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
     }
-
-    setTraceWorkspaces( tr );
-
-    wxTreeCtrl *newTree = createTree( imageList );
-    newTree->Connect( wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler( paraverMain::OnTreeKeyPress ), nullptr, this );
-
-    if( paraverConfig->getGlobalFullTracePath() )
-      choiceWindowBrowser->AddPage( newTree, wxString::FromUTF8( tr->getFileNameNumbered().c_str() ) );
-    else
-      choiceWindowBrowser->AddPage( newTree, wxFileName( wxString::FromUTF8( tr->getFileNameNumbered().c_str() ) ).GetFullName() );
-    choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
     previousTraces->add( tmpPath );
 
