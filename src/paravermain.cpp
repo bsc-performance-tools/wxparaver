@@ -996,9 +996,9 @@ std::optional< Trace * > paraverMain::DoLoadTrace( const string &path, bool allo
     {
       tr = Trace::create( localKernel, tmpPath, false, progress );
       tr->setInstanceNumber( traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ]++ );
-      currentTrace = loadedTraces.size() - 1;
 
       loadedTraces.push_back( tr );
+      currentTrace = loadedTraces.size() - 1;
     }
 
     setTraceWorkspaces( tr );
