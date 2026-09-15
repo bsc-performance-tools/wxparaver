@@ -2574,56 +2574,75 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
 
   if( whichHisto->isDerivedHistogram() )
   {
-    wxPGId derivedHistogramCat = ( wxPGId ) nullptr;
-    if( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
-    {
-      derivedHistogramCat = windowProperties->Append( new wxPropertyCategory( wxT( "Derived" ), wxT( "Derived" ) ) );
-      if( derivedHistogramCatCollapsed )
-        derivedHistogramCat->SetFlagsFromString( _( "COLLAPSED" ) );
-    }
-
+    // Get derived operation labels
     tmpV.clear();
     PRV_UINT32 dummyGroup = 0;
     bool getOriginalList  = ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() );
     whichHisto->getDerivedOperationLabels( tmpV, dummyGroup, getOriginalList );
 
-    string selectedStat;
-    if( getOriginalList )
-    {
-      selectedStat = whichHisto->getDerivedOperation();
-    }
-    // TODO: wait for CFG4D
-    // else
-    // {
-    //   map< string, string > statList( whichHisto->getCFG4DStatisticsAliasList() );
-    //   selectedStat = statList[  whichHisto->getCurrentStat() ];
-    // }
-
+    // Fill data for combobox with positions and labels
     arrayStr.Clear();
     arrayInt.Clear();
-    selected = 0;
     pos      = 0;
     for( vector< string >::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
     {
       arrayStr.Add( wxString::FromUTF8( ( *it ).c_str() ) );
       arrayInt.Add( pos );
-      if( ( *it ) == selectedStat )
-        selected = pos;
       ++pos;
     }
 
-    AppendCFG4DProperty( (wxEnumProperty *)nullptr,
-                         windowProperties,
-                         whichHisto,
-                         whichPropertiesClientData,
-                         linkedPropertiesShown,
-                         derivedHistogramCat,
-                         wxT( "Operation" ),
-                         HISTOGRAM_DERIVED_OP,
-                         CFG4DPropertyCustomOptions(),
-                         arrayStr,
-                         arrayInt,
-                         selected );
+    // Get derived histogram operations 
+    std::vector< std::string > selectedOperations;
+    if( getOriginalList )
+    {
+      selectedOperations = whichHisto->getDerivedOperations();
+    }
+    // TODO: wait for CFG4D
+    // else
+    // {
+    //   map< string, string > statList( whichHisto->getCFG4DStatisticsAliasList() );
+    //   selectedOperation = statList[  whichHisto->getCurrentStat() ];
+    // }
+
+    int numOp = 0;
+    for( auto &op: selectedOperations )
+    {
+      // Append legend
+      wxPGId derivedHistogramCat = ( wxPGId ) nullptr;
+      if( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
+      {
+        derivedHistogramCat = windowProperties->Append( new wxPropertyCategory( wxT( "Derived" ), wxT( "Derived" ) ) );
+        if( derivedHistogramCatCollapsed )
+          derivedHistogramCat->SetFlagsFromString( _( "COLLAPSED" ) );
+      }
+    
+      // Detect pos of selected operation
+      selected = 0;
+      pos      = 0;
+      for( vector< string >::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
+      {
+        if( ( *it ) == op )
+          selected = pos;
+        ++pos;
+      }
+
+      PropertyClientData *tmpData   = new PropertyClientData();
+      tmpData->derivedOperationIndex = numOp;
+      tmpOptions = { NO_BUTTON, tmpData, false, nullptr };
+
+      AppendCFG4DProperty( (wxEnumProperty *)nullptr,
+                          windowProperties,
+                          whichHisto,
+                          whichPropertiesClientData,
+                          linkedPropertiesShown,
+                          derivedHistogramCat,
+                          wxT( "Operation " ) + wxString::Format( "%d", ++numOp ),
+                          HISTOGRAM_DERIVED_OP,
+                          tmpOptions,
+                          arrayStr,
+                          arrayInt,
+                          selected );
+    }
   }
 
   // 3rd window related properties

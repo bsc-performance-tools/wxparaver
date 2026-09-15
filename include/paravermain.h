@@ -227,6 +227,7 @@ struct PropertyClientData
     size_t extraTopComposeLevel;
     TWindowLevel semanticLevel;
     TParamIndex numParameter;
+    PRV_UINT16 derivedOperationIndex = 0;
 };
 
 

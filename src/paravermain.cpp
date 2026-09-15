@@ -1873,10 +1873,12 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     bool getOriginalList = ( !whichHistogram->getCFG4DEnabled() || !whichHistogram->getCFG4DMode() );
     if( getOriginalList )
     {
-      whichHistogram->setDerivedOperation( std::string( property->GetDisplayedString().mb_str() ) );
+      PRV_UINT16 derivedOperationIndex = whichClientData->derivedOperationIndex;
+      whichHistogram->setDerivedOperation( derivedOperationIndex, std::string( property->GetDisplayedString().mb_str() ) );
 
+      // TODO: pending, use abstract operator, change of icon only for first one 
       // Change Derived operation Icon: find icon in list
-      int iconNumber = getIconNumber( whichHistogram );
+      int iconNumber = getIconNumber( whichHistogram, derivedOperationIndex );
 
       // Change Derived operation Icon: set both trees, global and trace tree
       wxTreeCtrl *globalTreePage       = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
@@ -4029,7 +4031,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
           std::map< std::string, std::string > tmpOperations;
           PRV_UINT32 dummyGroup = 0;
           tmpDerivedHistogram->getDerivedOperationLabelsAndSymbols( tmpOperations, dummyGroup, true );
-          tmpDerivedHistogram->setDerivedOperation( "add" );
+          tmpDerivedHistogram->setDerivedOperation( 0, "add" );
 
           std::ostringstream tmpNum;
           tmpNum << ++numNewDerivedHistogram;
