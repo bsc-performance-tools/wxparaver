@@ -584,7 +584,8 @@ class gHistogram: public wxFrame, public gWindow
     void EnableCustomSortOption();
     void DisableCustomSortOption();
 
-    void setDerivedOperation( const std::string& whichOperation );
+    void setDerivedOperation( PRV_UINT16 numOp, const std::string& whichOperation );
+    void setDerivedOperations( const std::vector< std::string >& whichOperations );
     void adaptControlsForDerivedHistogram();
 
 

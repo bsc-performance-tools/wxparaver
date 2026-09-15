@@ -1708,7 +1708,7 @@ gHistogram* gHistogram::clone( Histogram* clonedHistogram, bool showWindow )
     };
     std::transform( parentsByPairs.cbegin(), parentsByPairs.cend(), std::back_inserter( tmpParents ), recursiveClone );
 
-    clonedGHistogram->myHistogram->setDerivedOperation( clonedHistogram->getDerivedOperation() );
+    clonedGHistogram->myHistogram->setDerivedOperations( clonedHistogram->getDerivedOperations() );
     clonedGHistogram->adaptControlsForDerivedHistogram();
 
     LoadedWindows::getInstance()->add( clonedHistogram );
@@ -3966,10 +3966,19 @@ void gHistogram::DisableCustomSortOption()
     choiceSortBy->Delete( customPos );
 }
 
-void gHistogram::setDerivedOperation( const std::string& whichOperation )
+void gHistogram::setDerivedOperation( PRV_UINT16 numOp, const std::string& whichOperation )
 {
   if( myHistogram->isDerivedHistogram() )
-    myHistogram->setDerivedOperation( whichOperation );
+  {
+    std::cout << "setDerivedOperation : " << whichOperation << std::endl;
+    myHistogram->setDerivedOperation( numOp, whichOperation );
+  }
+}
+
+void gHistogram::setDerivedOperations( const std::vector< std::string >& whichOperations )
+{
+  if( myHistogram->isDerivedHistogram() )
+    myHistogram->setDerivedOperations( whichOperations );
 }
 
 /*!
