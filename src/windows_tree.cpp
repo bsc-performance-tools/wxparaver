@@ -886,7 +886,7 @@ void getGroupColor( const int &windowGroup, int &r, int &g, int &b )
 }
 
 template< class TWindow >
-int getIconNumber( TWindow *whichWindow )
+int getIconNumber( TWindow *whichWindow, PRV_UINT16 numIcon )
 {
   if constexpr( std::is_same_v< TWindow, Timeline > )
   {
@@ -898,7 +898,9 @@ int getIconNumber( TWindow *whichWindow )
   else
   {
     if( whichWindow->isDerivedHistogram() )
-      return paraverMain::iconPosByName[ whichWindow->getDerivedOperation() ];
+    {
+      return paraverMain::iconPosByName[ whichWindow->getDerivedOperation( numIcon ) ];
+    }
     else
       return paraverMain::iconPosByName[ "histogram" ];
   }

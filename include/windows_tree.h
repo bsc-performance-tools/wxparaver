@@ -30,6 +30,8 @@
 #include <vector>
 #include <string>
 
+#include "paraverkerneltypes.h"
+
 class gTimeline;
 class gHistogram;
 class paraverMain;
@@ -101,6 +103,6 @@ void iconizeWindows( wxTreeCtrl *tree,
                      bool iconize );
 
 template< class TWindow >
-int getIconNumber( TWindow *whichWindow );
+int getIconNumber( TWindow *whichWindow, PRV_UINT16 numIcon = 0 );
 
 void getGroupColor (const int &windowGroup, int &r, int &g, int &b);
