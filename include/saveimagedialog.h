@@ -276,4 +276,7 @@ class SaveImageDialog : public wxDialog
     bool resize_window        = true;
     bool resize_scale         = true;
     bool resize_scale_control = true;
+
+  private:
+    void EnableLegendControls( bool enable = true );
 };

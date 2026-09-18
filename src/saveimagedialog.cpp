@@ -716,6 +716,9 @@ void SaveImageDialog::onPaintScale( wxPaintEvent& event )
   ////@end wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
   wxPaintDC dcScale( drawScaleSingle );
   drawScaleSingle->PrepareDC( dcScale );
+
+  EnableLegendControls();
+
   // wxPaintDC dcscale( drawScaleSingle );
   wxBitmap* originalBmp = nullptr;
 
@@ -787,6 +790,8 @@ void SaveImageDialog::onPaintScaleControl( wxPaintEvent& event )
   drawScaleControlSingle->PrepareDC( dcScale );
   // wxPaintDC dcscale( drawScaleSingle );
 
+  EnableLegendControls();
+
   wxBitmap* originalBmp = imageGeneration->getScaleImageBitmap();
   if( originalBmp && originalBmp->IsOk() )
   {
@@ -852,6 +857,8 @@ void SaveImageDialog::OnPaintWindowScale( wxPaintEvent& event )
   ////@end wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
   wxPaintDC dcScale( drawWindowAndScale );
   drawWindowAndScale->PrepareDC( dcScale ); // <--- This line is critical!
+
+  EnableLegendControls();
 
   wxBitmap* originalBmp = imageGeneration->getTimelineScaleImage();
   if( originalBmp && originalBmp->IsOk() )
@@ -1186,6 +1193,8 @@ void SaveImageDialog::OnPaintWindowSingle( wxPaintEvent& event )
   wxPaintDC dcScale( drawWindowSingle );
   drawWindowSingle->PrepareDC( dcScale ); // <--- This line is critical!
 
+  EnableLegendControls( false );
+
   wxBitmap* originalBmp = imageGeneration->getWindowsImageBitmap();
   if( originalBmp && originalBmp->IsOk() )
   {
@@ -1459,4 +1468,11 @@ void SaveImageDialog::OnSaveimageCopyClipboardButtonClick( wxCommandEvent& event
     else if( drawScaleControlSingle->IsShown() && myHistogram->getFirstRowColored() )
       imageGeneration->saveImageScale( _( "" ), false, tmpCopyToClipboard );
   }
+}
+
+void SaveImageDialog::EnableLegendControls( bool enable )
+{
+  widgetTopCompose1->Enable( enable );
+  shrinkLabelCheckBox->Enable( enable );
+  buttonSelectLegendValues->Enable( enable );
 }
