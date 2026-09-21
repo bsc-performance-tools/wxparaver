@@ -2574,13 +2574,22 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
 
   if( whichHisto->isDerivedHistogram() )
   {
+    // Append Derived category
+    wxPGId derivedHistogramCat = ( wxPGId ) nullptr;
+    if( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
+    {
+      derivedHistogramCat = windowProperties->Append( new wxPropertyCategory( wxT( "Derived" ), wxT( "Derived" ) ) );
+      if( derivedHistogramCatCollapsed )
+        derivedHistogramCat->SetFlagsFromString( _( "COLLAPSED" ) );
+    }
+
     // Get derived operation labels
     tmpV.clear();
     PRV_UINT32 dummyGroup = 0;
     bool getOriginalList  = ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() );
     whichHisto->getDerivedOperationLabels( tmpV, dummyGroup, getOriginalList );
 
-    // Fill data for combobox with positions and labels
+    // Fill positions and labels of operations for selector
     arrayStr.Clear();
     arrayInt.Clear();
     pos      = 0;
@@ -2605,43 +2614,60 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
     // }
 
     int numOp = 0;
-    for( auto &op: selectedOperations )
+    auto op = selectedOperations.begin();
+
+    for( auto &tmpParentHistogram: whichHisto->getParents() )
     {
-      // Append legend
-      wxPGId derivedHistogramCat = ( wxPGId ) nullptr;
-      if( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
-      {
-        derivedHistogramCat = windowProperties->Append( new wxPropertyCategory( wxT( "Derived" ), wxT( "Derived" ) ) );
-        if( derivedHistogramCatCollapsed )
-          derivedHistogramCat->SetFlagsFromString( _( "COLLAPSED" ) );
-      }
-    
-      // Detect pos of selected operation
-      selected = 0;
-      pos      = 0;
-      for( vector< string >::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
-      {
-        if( ( *it ) == op )
-          selected = pos;
-        ++pos;
-      }
+      // Add histogram
 
-      PropertyClientData *tmpData   = new PropertyClientData();
-      tmpData->derivedOperationIndex = numOp;
-      tmpOptions = { NO_BUTTON, tmpData, false, nullptr };
+      // tmpOptions = { NO_BUTTON, tmpData, false, nullptr };
 
-      AppendCFG4DProperty( (wxEnumProperty *)nullptr,
-                          windowProperties,
-                          whichHisto,
-                          whichPropertiesClientData,
-                          linkedPropertiesShown,
-                          derivedHistogramCat,
-                          wxT( "Operation " ) + wxString::Format( "%d", ++numOp ),
-                          HISTOGRAM_DERIVED_OP,
-                          tmpOptions,
-                          arrayStr,
-                          arrayInt,
-                          selected );
+      AppendCFG4DProperty( ( wxStringProperty * )nullptr,
+                           windowProperties,
+                           whichHisto,
+                           whichPropertiesClientData,
+                           linkedPropertiesShown,
+                           derivedHistogramCat,
+                           wxT( "Histogram " ) + wxString::Format( "%d", ++numOp ),
+                           HISTOGRAM_DERIVED_PARENT,
+                           CFG4DPropertyCustomOptions(),
+                           tmpParentHistogram->getName() );
+
+      windowProperties->GetLastItem()->Enable( false );
+
+      if( op != selectedOperations.end() )
+      {
+        // Add operation
+        
+        // Detect pos of selected operation
+        selected = 0;
+        pos      = 0;
+        for( vector< string >::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
+        {
+          if( ( *it ) == *op )
+            selected = pos;
+          ++pos;
+        }
+
+        PropertyClientData *tmpData   = new PropertyClientData();
+        tmpData->derivedOperationIndex = numOp;
+        tmpOptions = { NO_BUTTON, tmpData, false, nullptr };
+
+        AppendCFG4DProperty( (wxEnumProperty *)nullptr,
+                            windowProperties,
+                            whichHisto,
+                            whichPropertiesClientData,
+                            linkedPropertiesShown,
+                            derivedHistogramCat,
+                            wxT( "Operation" ),
+                            HISTOGRAM_DERIVED_OP,
+                            tmpOptions,
+                            arrayStr,
+                            arrayInt,
+                            selected );
+
+        ++op;
+      }
     }
   }
 
