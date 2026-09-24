@@ -27,41 +27,47 @@
 
 #include <wx/dialog.h>
 #include <wx/treectrl.h>
-#include "loadedwindows.h"
 
-class TimelineTreeSelector : public wxDialog
+#include "loadedwindows.h"
+#include "paravermain.h"
+
+
+class WindowsTreeSelector : public wxDialog
 {
-  DECLARE_DYNAMIC_CLASS( TimelineTreeSelector )
+  DECLARE_DYNAMIC_CLASS( WindowsTreeSelector )
   DECLARE_EVENT_TABLE()
 
   public:
-    TimelineTreeSelector()
+    WindowsTreeSelector()
     {}
 
-    TimelineTreeSelector( wxWindow* parent,
-                          wxWindowID id,
-                          const wxString& title,
-                          const std::vector<TWindowID>& windows,
-                          const Timeline *currentWindow,
-                          const Trace *currentTrace,
-                          bool needNoneElement = false,
-                          const wxPoint& pos = wxDefaultPosition,
-                          const wxSize& size = wxDefaultSize,
-                          long style = wxDEFAULT_DIALOG_STYLE,
-                          const wxString& name = wxT( "dialogBox" ) );
+    WindowsTreeSelector( wxWindow* parent,
+                         wxWindowID id,
+                         const wxString& title,
+                         const std::vector< TWindowID >& windows,
+                         const TWindowType &currentWindow,
+                         const Trace *currentTrace,
+                         bool needNoneElement = false,
+                         const wxPoint& pos = wxDefaultPosition,
+                         const wxSize& size = wxDefaultSize,
+                         long style = wxDEFAULT_DIALOG_STYLE,
+                         const wxString& name = wxT( "dialogBox" ) );
 
-    ~TimelineTreeSelector()
+    ~WindowsTreeSelector()
     {}
     
-    Timeline *getSelection() const;
+    TWindowType getSelection() const;
+    // Timeline *getSelection() const;
+    // Histogram *getSelection() const;
+
 
   private:
     void CreateControls();
     void fillTree( const std::vector<TWindowID>& windows,
-                   const Timeline *currentWindow,
+                   const TWindowType& currentWindow,
                    const Trace *currentTrace,
                    bool needNoneElement );
-    void addTreeItem( Timeline *whichWindow, const Timeline *currentWindow, wxTreeItemId whichParent );
+    void addTreeItem( TWindowType& whichWindow, const TWindowType& currentWindow, wxTreeItemId whichParent );
     void OnTreeItemActivated( wxTreeEvent& event );
     
     wxTreeCtrl *timelineTree;
