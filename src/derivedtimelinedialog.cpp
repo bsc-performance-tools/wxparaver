@@ -39,7 +39,7 @@
 // clang-format on
 
 #include "derivedtimelinedialog.h"
-#include "timelinetreeselector.h"
+#include "windowstreeselector.h"
 
 #include <wx/tokenzr.h>
 
@@ -1000,15 +1000,16 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
 
 void DerivedTimelineDialog::OnTimelinesButton1Click( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( this, wxID_ANY, wxT( "Timeline" ), timelines1, currentWindow1, currentWindow1->getTrace(), false );
+  WindowsTreeSelector timelineSelector( this, wxID_ANY, wxT( "Timeline" ), timelines1, TWindowType( currentWindow1 ), currentWindow1->getTrace(), false );
   timelineSelector.Move( wxGetMousePosition() );
 
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
-    if( currentWindow1 == timelineSelector.getSelection() )
+    Timeline *tmpTimeline = std::get< Timeline * >( timelineSelector.getSelection() );
+    if( currentWindow1 == tmpTimeline )
       return;
-    currentWindow1 = timelineSelector.getSelection();
+    currentWindow1 = tmpTimeline;
     txtTimelines1->SetValue( wxString( currentWindow1->getName().c_str(), wxConvUTF8 ) );
   }
 }
@@ -1020,15 +1021,16 @@ void DerivedTimelineDialog::OnTimelinesButton1Click( wxCommandEvent& event )
 
 void DerivedTimelineDialog::OnTimelinesButton2Click( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( this, wxID_ANY, wxT( "Timeline" ), timelines2, currentWindow2, currentWindow2->getTrace(), false );
+  WindowsTreeSelector timelineSelector( this, wxID_ANY, wxT( "Timeline" ), timelines2, TWindowType( currentWindow2 ), currentWindow2->getTrace(), false );
   timelineSelector.Move( wxGetMousePosition() );
 
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
-    if( currentWindow2 == timelineSelector.getSelection() )
+    Timeline *tmpTimeline = std::get< Timeline * >( timelineSelector.getSelection() );
+    if( currentWindow2 == tmpTimeline )
       return;
-    currentWindow2 = timelineSelector.getSelection();
+    currentWindow2 = tmpTimeline;
     txtTimelines2->SetValue( wxString( currentWindow2->getName().c_str(), wxConvUTF8 ) );
   }
 }

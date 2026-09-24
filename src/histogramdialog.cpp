@@ -41,7 +41,7 @@
 #include "histogramdialog.h"
 #include "labelconstructor.h"
 #include "paraverconfig.h"
-#include "timelinetreeselector.h"
+#include "windowstreeselector.h"
 #include "wxparaverapp.h"
 
 // #include "histogram.h"
@@ -963,7 +963,7 @@ void HistogramDialog::OnIdle( wxIdleEvent& event )
 
 void HistogramDialog::OnHistogramControltimelinebuttonClick( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( this,
+  WindowsTreeSelector timelineSelector( this,
                                          wxID_ANY,
                                          wxT( "Control Timeline" ),
                                          controlTimelines,
@@ -975,9 +975,11 @@ void HistogramDialog::OnHistogramControltimelinebuttonClick( wxCommandEvent& eve
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
-    if( controlTimelineSelected == timelineSelector.getSelection() )
+    Timeline *tmpTimeline = std::get< Timeline * >( timelineSelector.getSelection() );
+    if( controlTimelineSelected == tmpTimeline )
       return;
-    controlTimelineSelected = timelineSelector.getSelection();
+    controlTimelineSelected = tmpTimeline;
+    
     txtControlTimelines->SetValue( wxString( controlTimelineSelected->getName().c_str(), wxConvUTF8 ) );
     updateControlTimelineAutofit();
   }
@@ -990,16 +992,18 @@ void HistogramDialog::OnHistogramControltimelinebuttonClick( wxCommandEvent& eve
 
 void HistogramDialog::OnHistogramDatatimelinebuttonClick( wxCommandEvent& event )
 {
-  TimelineTreeSelector
+  WindowsTreeSelector
     timelineSelector( this, wxID_ANY, wxT( "Data Timeline" ), dataTimelines, dataTimelineSelected, dataTimelineSelected->getTrace(), false );
   timelineSelector.Move( wxGetMousePosition() );
 
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
-    if( dataTimelineSelected == timelineSelector.getSelection() )
+    Timeline *tmpTimeline = std::get< Timeline * >( timelineSelector.getSelection() );
+    if( dataTimelineSelected == tmpTimeline )
       return;
-    dataTimelineSelected = timelineSelector.getSelection();
+    dataTimelineSelected = tmpTimeline;
+
     txtDataTimelines->SetValue( wxString( dataTimelineSelected->getName().c_str(), wxConvUTF8 ) );
   }
 }
@@ -1011,11 +1015,11 @@ void HistogramDialog::OnHistogramDatatimelinebuttonClick( wxCommandEvent& event 
 
 void HistogramDialog::OnHistogram3dtimelinebuttonClick( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( this,
+  WindowsTreeSelector timelineSelector( this,
                                          wxID_ANY,
                                          wxT( "3D Timeline" ),
                                          extraControlTimelines,
-                                         extraControlTimelineSelected,
+                                         TWindowType( extraControlTimelineSelected ),
                                          extraControlTimelineSelected == nullptr ? controlTimelineSelected->getTrace()
                                                                                  : extraControlTimelineSelected->getTrace(),
                                          true );
@@ -1024,9 +1028,11 @@ void HistogramDialog::OnHistogram3dtimelinebuttonClick( wxCommandEvent& event )
   int retCode = timelineSelector.ShowModal();
   if( retCode == wxID_OK )
   {
-    if( extraControlTimelineSelected == timelineSelector.getSelection() )
+    Timeline *tmpTimeline = std::get< Timeline * >( timelineSelector.getSelection() );
+    if( extraControlTimelineSelected == tmpTimeline )
       return;
-    extraControlTimelineSelected = timelineSelector.getSelection();
+    extraControlTimelineSelected = tmpTimeline;
+
     if( extraControlTimelineSelected == nullptr )
       txt3DTimelines->SetValue( wxT( "None" ) );
     else

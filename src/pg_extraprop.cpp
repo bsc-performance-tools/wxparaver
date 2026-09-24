@@ -40,7 +40,7 @@
 #include "pg_extraprop.h"
 #include "rowsselectiondialog.h"
 #include "selectionrowsutils.h"
-#include "timelinetreeselector.h"
+#include "windowstreeselector.h"
 #include "window.h"
 #include "wxparaverapp.h"
 
@@ -977,7 +977,7 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid, wxWindow* WXUNU
 {
   if( propgrid->IsMainButtonEvent( event ) )
   {
-    TimelineTreeSelector
+    WindowsTreeSelector
       timelineSelector( wxparaverApp::mainWindow, ID_TIMELINETREE, GetLabel(), myWindows, selectedWindow, myCurrentTrace, myNeedNoneElement );
 
     wxparaverApp::mainWindow->SetOpenedPropertyDialog( &timelineSelector );
@@ -987,12 +987,13 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid, wxWindow* WXUNU
     int retCode = timelineSelector.ShowModal();
     if( retCode == wxID_OK )
     {
-      if( selectedWindow == timelineSelector.getSelection() )
+      Timeline *tmpTimeline = std::get< Timeline * >( timelineSelector.getSelection() );
+      if( selectedWindow == tmpTimeline )
       {
         wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
         return false;
       }
-      selectedWindow = timelineSelector.getSelection();
+      selectedWindow = tmpTimeline;
       if( selectedWindow != nullptr )
         SetValueInEvent( wxString( selectedWindow->getName().c_str(), wxConvUTF8 ) );
       else
