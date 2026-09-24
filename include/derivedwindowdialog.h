@@ -179,6 +179,12 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_ADD_PARENT_WINDOW
   void OnButtonAddParentClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
+  void OnOkClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for wxID_OK
+  void OnOkUpdate( wxUpdateUIEvent& event );
+
 ////@end DerivedHistogramDialog event handler declarations
 
 ////@begin DerivedHistogramDialog member function declarations
@@ -198,19 +204,23 @@ public:
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
 ////@end DerivedHistogramDialog member function declarations
+  
+  template< typename T >
+  void GetParentWindows( std::vector< T * >& whichParents );
 
   /// Should we show tooltips?
   static bool ShowToolTips();
+
+  void SetPopupOperation( const std::string& whichOperation )
+  {
+    selectedPopupOperation = whichOperation;
+  }
 
 ////@begin DerivedHistogramDialog member variables
   wxTextCtrl* derivedHistogramName;
   wxScrolledWindow* histogramsScrolledWindow;
   wxBitmapButton* buttonAddParentWindow;
 
-  void SetPopupOperation( const std::string& whichOperation )
-  {
-    selectedPopupOperation = whichOperation;
-  }
 
 private:
   wxString derivedWindowName;
@@ -229,15 +239,15 @@ private:
   bool changeParentLine( const wxString& buttonName, const std::string& newOperation );
 
   std::string GetWindowName( const TWindowType& whichParent );
-  wxString BuildName( const TWindowType& whichParent );
+  wxString BuildParentName( const TWindowType& whichParent );
 
   void CreateControlsForParentsList();
   void CreateControlsForParentLine( wxBoxSizer *whichBoxSizer,
                                     const TWindowType& whichParents,
                                     int pos,
                                     const wxBitmap& derivedOperationIcon );
-  void TransferDataFromPanel();
-  void TransferWindowsToData();
+  bool TransferWindowToData();
+  bool TransferDataToWindow();
   void DisconnectWidgets();
   void CleanParentsList();
   void RebuildParentsList();
@@ -262,6 +272,27 @@ protected:
     const static wxString KButton;
     const static wxString KNotCreated;
 };
+
+
+template< typename T >
+void DerivedHistogramDialog::GetParentWindows( std::vector< T* >& whichParents )
+{
+  whichParents.clear();
+
+  for( const auto& currentWindow: parentWindows )
+  {
+    // if( std::holds_alternative< std::monostate >( currentWindow ) || 
+    //     std::holds_alternative< Timeline * >( currentWindow ) )
+    //   continue;
+    // else if( std::holds_alternative< T * >( currentWindow ) )
+    if( std::holds_alternative< T* >( currentWindow ) )
+    {
+      whichParents.emplace_back( std::get< T* >( currentWindow ) );
+    }
+  }
+}
+
+
 
 #endif
   // _DERIVEDHISTOGRAMDIALOG_H_
