@@ -31,6 +31,7 @@
 #include <string>
 
 #include "paraverkerneltypes.h"
+#include "paravermain.h"
 
 class gTimeline;
 class gHistogram;
@@ -104,5 +105,7 @@ void iconizeWindows( wxTreeCtrl *tree,
 
 template< class TWindow >
 int getIconNumber( TWindow *whichWindow, PRV_UINT16 numIcon = 0 );
+
+int getIconNumber( TWindowType& whichWindow, PRV_UINT16 numIcon = 0 );
 
 void getGroupColor (const int &windowGroup, int &r, int &g, int &b);

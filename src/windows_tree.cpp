@@ -30,6 +30,11 @@
 
 #include <wx/display.h>
 
+#include <variant>
+
+class Histogram;
+class Timeline;
+
 using namespace std;
 
 wxTreeCtrl *createTree( wxImageList *imageList )
@@ -220,7 +225,7 @@ void appendHistogram2Tree( gHistogram *ghistogram,
   }
   else if( !isFirstAppendOfDerivedGHistogram && isSingleOrLeaf )
   {
-    auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
+    appendToTrees();
   }
   else if( isFirstAppendOfDerivedGHistogram && isGHistogramParent )
   {
@@ -276,7 +281,7 @@ void appendHistogram2Tree( gHistogram *ghistogram,
   }
   else if( isFirstAppendOfDerivedGHistogram && isSingleOrLeaf )
   {
-    auto [ tmpCurrentWindowId1, tmpCurrentWindowId2 ] = appendToTrees();
+    appendToTrees();
   }
 }
 
@@ -905,5 +910,16 @@ int getIconNumber( TWindow *whichWindow, PRV_UINT16 numIcon )
       return paraverMain::iconPosByName[ "histogram" ];
   }
 
-  return paraverMain::myParaverMain->iconPosByName[ "timeline" ];
+  return paraverMain::myParaverMain->iconPosByName[ "timeline" ]; // by default
 }
+
+int getIconNumber( TWindowType& whichWindow, PRV_UINT16 numIcon )
+{
+  if( auto tmpTimeline = std::get_if< Timeline* >( &whichWindow ) )
+    return getIconNumber( *tmpTimeline, numIcon );
+  else if( auto tmpHistogram = std::get_if< Histogram* >( &whichWindow ) )
+    return getIconNumber( *tmpHistogram, numIcon );
+
+  return paraverMain::myParaverMain->iconPosByName[ "timeline" ]; // by default
+}
+
