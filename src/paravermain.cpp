@@ -3766,11 +3766,79 @@ void paraverMain::ShowDerivedHistogramDialog()
   raiseCurrentWindow = false;
   if( derivedDialog.ShowModal() == wxID_OK )
   {
-    selectedHistograms = derivedDialog.GetParentWindows();
+    auto derivedHistogramName = derivedDialog.GetDerivedWindowName();
+    // selectedHistograms = derivedDialog.GetParentWindows();
+    std::vector< Histogram * > tmpParentHistograms;
+    derivedDialog.GetParentWindows( tmpParentHistograms );
+    beginDragHistogram = tmpParentHistograms.front();
+    auto selectedOperations = derivedDialog.GetOperations();
+
+    // TODO: refactor to encapsulate this pasted code coming from drag and drop
+    Histogram *tmpDerivedHistogram = Histogram::create( localKernel, tmpParentHistograms );
+    std::map< std::string, std::string > tmpOperations;
+    PRV_UINT32 dummyGroup = 0;
+    tmpDerivedHistogram->getDerivedOperationLabelsAndSymbols( tmpOperations, dummyGroup, true );
+    tmpDerivedHistogram->setDerivedOperations( selectedOperations );
+    // std::ostringstream tmpNum;
+    // tmpNum << ++numNewDerivedHistogram;
+    tmpDerivedHistogram->setName( derivedHistogramName.ToStdString() );
+    tmpDerivedHistogram->setCurrentStat( beginDragHistogram->getCurrentStat() );
+    // Time
+    tmpDerivedHistogram->setWindowBeginTime( beginDragHistogram->getBeginTime() );
+    tmpDerivedHistogram->setWindowEndTime( beginDragHistogram->getEndTime() );
+    // Recompute scale
+    tmpDerivedHistogram->setUseFixedDelta( beginDragHistogram->getUseFixedDelta() );
+    tmpDerivedHistogram->setCompute2DScale( false );
+    tmpDerivedHistogram->setCompute2DScaleZero( false );
+    tmpDerivedHistogram->setCompute3DScale( false );
+    // Color mode
+    tmpDerivedHistogram->setColorMode( beginDragHistogram->getColorMode() );
+    // Gradient? : unclear
+    tmpDerivedHistogram->setComputeGradient( beginDragHistogram->getComputeGradient() );
+    // Display properties
+    tmpDerivedHistogram->setZoom( beginDragHistogram->getZoom() );
+    tmpDerivedHistogram->setShowColor( beginDragHistogram->getShowColor() );
+    tmpDerivedHistogram->setHorizontal( beginDragHistogram->getHorizontal() );
+    tmpDerivedHistogram->setHideColumns( beginDragHistogram->getHideColumns() );
+    tmpDerivedHistogram->setFirstRowColored( beginDragHistogram->getFirstRowColored() );
+    tmpDerivedHistogram->setShortLabels( beginDragHistogram->getShortLabels() );
+    tmpDerivedHistogram->setOnlyTotals( beginDragHistogram->getOnlyTotals() );
+    tmpDerivedHistogram->setInclusive( beginDragHistogram->getInclusive() ); // Will be deselected
+    tmpDerivedHistogram->setFixedSemanticSort( beginDragHistogram->getFixedSemanticSort() );
+    tmpDerivedHistogram->setSemanticSortColumns( beginDragHistogram->getSemanticSortColumns() );
+    tmpDerivedHistogram->setSemanticSortCriteria( beginDragHistogram->getSemanticSortCriteria() );
+    tmpDerivedHistogram->setSemanticSortReverse( beginDragHistogram->getSemanticSortReverse() );
+    // Position
+    bool found             = false;
+    gHistogram *tmpParent1 = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), beginDragHistogram, found );
+    wxSize titleBarSize    = tmpParent1->GetSize() - tmpParent1->GetClientSize();
+    if( titleBarSize.GetHeight() == 0 )
+      titleBarSize = paraverMain::defaultTitleBarSize;
+    wxPoint position =
+      wxPoint( tmpParent1->GetPosition().x + titleBarSize.GetHeight(), tmpParent1->GetPosition().y + titleBarSize.GetHeight() );
+    /* TODO: clone is not doing WXGTK distinction
+    #if !__WXGTK__
+            gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
+    #else
+            gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ) );
+    #endif
+    */
+    gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
+    // wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
+    // tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
+    tmpHisto->SetHistogram( tmpDerivedHistogram );
+    tmpHisto->adaptControlsForDerivedHistogram();
+    // tmpHisto->SetReady( false ); //? no usado
+    bool isDerived = true;
+    appendHistogram2Tree( tmpHisto, isDerived );
+    LoadedWindows::getInstance()->add( tmpDerivedHistogram );
+    tmpDerivedHistogram->setRecalc( true );
+    tmpDerivedHistogram->setForceRecalc( true ); // execute!
+    tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
+
+    beginDragHistogram = nullptr;
   }
   raiseCurrentWindow = true;
-  
-  // wxMessageBox( wxT( "Histogram Dialog under construction." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
 }
 
 
