@@ -3737,6 +3737,88 @@ void paraverMain::ShowDerivedTimelineDialog()
   raiseCurrentWindow = true;
 }
 
+void paraverMain::createDerivedHistogram( const wxString& derivedHistogramName,
+                                          const std::vector< Histogram * > parentHistograms,
+                                          const std::vector< std::string > operations )
+{
+  auto srcHistogram = parentHistograms.front();
+
+  Histogram *tmpDerivedHistogram = Histogram::create( localKernel, parentHistograms );
+
+  std::map< std::string, std::string > tmpOperations;
+  PRV_UINT32 dummyGroup = 0;
+  tmpDerivedHistogram->getDerivedOperationLabelsAndSymbols( tmpOperations, dummyGroup, true );
+  tmpDerivedHistogram->setDerivedOperations( operations );
+
+  tmpDerivedHistogram->setName( derivedHistogramName.ToStdString() );
+  tmpDerivedHistogram->setCurrentStat( srcHistogram->getCurrentStat() );
+
+  // Time
+  tmpDerivedHistogram->setWindowBeginTime( srcHistogram->getBeginTime() );
+  tmpDerivedHistogram->setWindowEndTime( srcHistogram->getEndTime() );
+
+  // Recompute scale
+  tmpDerivedHistogram->setUseFixedDelta( srcHistogram->getUseFixedDelta() );
+  tmpDerivedHistogram->setCompute2DScale( false );
+  tmpDerivedHistogram->setCompute2DScaleZero( false );
+  tmpDerivedHistogram->setCompute3DScale( false );
+
+  // Color mode
+  tmpDerivedHistogram->setColorMode( srcHistogram->getColorMode() );
+
+  // Gradient? : unclear
+  tmpDerivedHistogram->setComputeGradient( srcHistogram->getComputeGradient() );
+
+  // Display properties
+  tmpDerivedHistogram->setZoom( srcHistogram->getZoom() );
+  tmpDerivedHistogram->setShowColor( srcHistogram->getShowColor() );
+  tmpDerivedHistogram->setHorizontal( srcHistogram->getHorizontal() );
+  tmpDerivedHistogram->setHideColumns( srcHistogram->getHideColumns() );
+  tmpDerivedHistogram->setFirstRowColored( srcHistogram->getFirstRowColored() );
+  tmpDerivedHistogram->setShortLabels( srcHistogram->getShortLabels() );
+  tmpDerivedHistogram->setOnlyTotals( srcHistogram->getOnlyTotals() );
+  tmpDerivedHistogram->setInclusive( srcHistogram->getInclusive() ); // Will be deselected
+  tmpDerivedHistogram->setFixedSemanticSort( srcHistogram->getFixedSemanticSort() );
+  tmpDerivedHistogram->setSemanticSortColumns( srcHistogram->getSemanticSortColumns() );
+  tmpDerivedHistogram->setSemanticSortCriteria( srcHistogram->getSemanticSortCriteria() );
+  tmpDerivedHistogram->setSemanticSortReverse( srcHistogram->getSemanticSortReverse() );
+
+  // Position
+  bool found             = false;
+  gHistogram *tmpParent1 = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), srcHistogram, found );
+  wxSize titleBarSize    = tmpParent1->GetSize() - tmpParent1->GetClientSize();
+  if( titleBarSize.GetHeight() == 0 )
+    titleBarSize = paraverMain::defaultTitleBarSize;
+  wxPoint position =
+    wxPoint( tmpParent1->GetPosition().x + titleBarSize.GetHeight(), tmpParent1->GetPosition().y + titleBarSize.GetHeight() );
+
+  // Create gHistogram and populate
+  /* TODO: clone is not doing WXGTK distinction
+  #if !__WXGTK__
+          gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
+  #else
+          gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ) );
+  #endif
+  */
+  gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
+  // wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
+  // tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
+  tmpHisto->SetHistogram( tmpDerivedHistogram );
+  tmpHisto->adaptControlsForDerivedHistogram();
+  // tmpHisto->SetReady( false ); //? no usado
+
+  // Insert in windows tree
+  bool isDerived = true;
+  appendHistogram2Tree( tmpHisto, isDerived );
+
+  LoadedWindows::getInstance()->add( tmpDerivedHistogram );
+  
+  tmpDerivedHistogram->setRecalc( true );
+  tmpDerivedHistogram->setForceRecalc( true ); // execute!
+  
+  tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
+}
+
 
 void paraverMain::ShowDerivedHistogramDialog()
 {
@@ -3760,84 +3842,26 @@ void paraverMain::ShowDerivedHistogramDialog()
   if( selectedHistograms.empty() )
     return;
 
+  std::ostringstream tmpNum;
+  tmpNum << ++numNewDerivedHistogram;
+  wxString tmpName = wxString( "New Derived Histogram #" + tmpNum.str() );
+
   std::vector< std::string > operations( selectedHistograms.size() - 1, "add" );
-  DerivedHistogramDialog derivedDialog( this, selectedHistograms, operations );
+
+  DerivedHistogramDialog derivedDialog( this, tmpName, selectedHistograms, operations );
 
   raiseCurrentWindow = false;
+
   if( derivedDialog.ShowModal() == wxID_OK )
   {
     auto derivedHistogramName = derivedDialog.GetDerivedWindowName();
-    // selectedHistograms = derivedDialog.GetParentWindows();
     std::vector< Histogram * > tmpParentHistograms;
     derivedDialog.GetParentWindows( tmpParentHistograms );
-    beginDragHistogram = tmpParentHistograms.front();
     auto selectedOperations = derivedDialog.GetOperations();
 
-    // TODO: refactor to encapsulate this pasted code coming from drag and drop
-    Histogram *tmpDerivedHistogram = Histogram::create( localKernel, tmpParentHistograms );
-    std::map< std::string, std::string > tmpOperations;
-    PRV_UINT32 dummyGroup = 0;
-    tmpDerivedHistogram->getDerivedOperationLabelsAndSymbols( tmpOperations, dummyGroup, true );
-    tmpDerivedHistogram->setDerivedOperations( selectedOperations );
-    // std::ostringstream tmpNum;
-    // tmpNum << ++numNewDerivedHistogram;
-    tmpDerivedHistogram->setName( derivedHistogramName.ToStdString() );
-    tmpDerivedHistogram->setCurrentStat( beginDragHistogram->getCurrentStat() );
-    // Time
-    tmpDerivedHistogram->setWindowBeginTime( beginDragHistogram->getBeginTime() );
-    tmpDerivedHistogram->setWindowEndTime( beginDragHistogram->getEndTime() );
-    // Recompute scale
-    tmpDerivedHistogram->setUseFixedDelta( beginDragHistogram->getUseFixedDelta() );
-    tmpDerivedHistogram->setCompute2DScale( false );
-    tmpDerivedHistogram->setCompute2DScaleZero( false );
-    tmpDerivedHistogram->setCompute3DScale( false );
-    // Color mode
-    tmpDerivedHistogram->setColorMode( beginDragHistogram->getColorMode() );
-    // Gradient? : unclear
-    tmpDerivedHistogram->setComputeGradient( beginDragHistogram->getComputeGradient() );
-    // Display properties
-    tmpDerivedHistogram->setZoom( beginDragHistogram->getZoom() );
-    tmpDerivedHistogram->setShowColor( beginDragHistogram->getShowColor() );
-    tmpDerivedHistogram->setHorizontal( beginDragHistogram->getHorizontal() );
-    tmpDerivedHistogram->setHideColumns( beginDragHistogram->getHideColumns() );
-    tmpDerivedHistogram->setFirstRowColored( beginDragHistogram->getFirstRowColored() );
-    tmpDerivedHistogram->setShortLabels( beginDragHistogram->getShortLabels() );
-    tmpDerivedHistogram->setOnlyTotals( beginDragHistogram->getOnlyTotals() );
-    tmpDerivedHistogram->setInclusive( beginDragHistogram->getInclusive() ); // Will be deselected
-    tmpDerivedHistogram->setFixedSemanticSort( beginDragHistogram->getFixedSemanticSort() );
-    tmpDerivedHistogram->setSemanticSortColumns( beginDragHistogram->getSemanticSortColumns() );
-    tmpDerivedHistogram->setSemanticSortCriteria( beginDragHistogram->getSemanticSortCriteria() );
-    tmpDerivedHistogram->setSemanticSortReverse( beginDragHistogram->getSemanticSortReverse() );
-    // Position
-    bool found             = false;
-    gHistogram *tmpParent1 = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), beginDragHistogram, found );
-    wxSize titleBarSize    = tmpParent1->GetSize() - tmpParent1->GetClientSize();
-    if( titleBarSize.GetHeight() == 0 )
-      titleBarSize = paraverMain::defaultTitleBarSize;
-    wxPoint position =
-      wxPoint( tmpParent1->GetPosition().x + titleBarSize.GetHeight(), tmpParent1->GetPosition().y + titleBarSize.GetHeight() );
-    /* TODO: clone is not doing WXGTK distinction
-    #if !__WXGTK__
-            gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
-    #else
-            gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ) );
-    #endif
-    */
-    gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
-    // wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
-    // tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
-    tmpHisto->SetHistogram( tmpDerivedHistogram );
-    tmpHisto->adaptControlsForDerivedHistogram();
-    // tmpHisto->SetReady( false ); //? no usado
-    bool isDerived = true;
-    appendHistogram2Tree( tmpHisto, isDerived );
-    LoadedWindows::getInstance()->add( tmpDerivedHistogram );
-    tmpDerivedHistogram->setRecalc( true );
-    tmpDerivedHistogram->setForceRecalc( true ); // execute!
-    tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
-
-    beginDragHistogram = nullptr;
+    createDerivedHistogram( derivedDialog.GetDerivedWindowName(), tmpParentHistograms, derivedDialog.GetOperations() );
   }
+
   raiseCurrentWindow = true;
 }
 
@@ -4094,81 +4118,11 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
         }
         else
         {
-          Histogram *tmpDerivedHistogram = Histogram::create( localKernel, { beginDragHistogram, endDragHistogram } );
-
-          std::map< std::string, std::string > tmpOperations;
-          PRV_UINT32 dummyGroup = 0;
-          tmpDerivedHistogram->getDerivedOperationLabelsAndSymbols( tmpOperations, dummyGroup, true );
-          tmpDerivedHistogram->setDerivedOperation( 0, "add" );
-
           std::ostringstream tmpNum;
           tmpNum << ++numNewDerivedHistogram;
-          tmpDerivedHistogram->setName( "New Derived Histogram #" + tmpNum.str() );
+          auto tmpName = "New Derived Histogram #" + tmpNum.str();
 
-          tmpDerivedHistogram->setCurrentStat( beginDragHistogram->getCurrentStat() );
-
-          // Time
-          tmpDerivedHistogram->setWindowBeginTime( beginDragHistogram->getBeginTime() );
-          tmpDerivedHistogram->setWindowEndTime( beginDragHistogram->getEndTime() );
-
-          // Recompute scale
-          tmpDerivedHistogram->setUseFixedDelta( beginDragHistogram->getUseFixedDelta() );
-          tmpDerivedHistogram->setCompute2DScale( false );
-          tmpDerivedHistogram->setCompute2DScaleZero( false );
-          tmpDerivedHistogram->setCompute3DScale( false );
-
-          // Color mode
-          tmpDerivedHistogram->setColorMode( beginDragHistogram->getColorMode() );
-
-          // Gradient? : unclear
-          tmpDerivedHistogram->setComputeGradient( beginDragHistogram->getComputeGradient() );
-
-          // Display properties
-          tmpDerivedHistogram->setZoom( beginDragHistogram->getZoom() );
-          tmpDerivedHistogram->setShowColor( beginDragHistogram->getShowColor() );
-          tmpDerivedHistogram->setHorizontal( beginDragHistogram->getHorizontal() );
-          tmpDerivedHistogram->setHideColumns( beginDragHistogram->getHideColumns() );
-          tmpDerivedHistogram->setFirstRowColored( beginDragHistogram->getFirstRowColored() );
-          tmpDerivedHistogram->setShortLabels( beginDragHistogram->getShortLabels() );
-          tmpDerivedHistogram->setOnlyTotals( beginDragHistogram->getOnlyTotals() );
-          tmpDerivedHistogram->setInclusive( beginDragHistogram->getInclusive() ); // Will be deselected
-          tmpDerivedHistogram->setFixedSemanticSort( beginDragHistogram->getFixedSemanticSort() );
-          tmpDerivedHistogram->setSemanticSortColumns( beginDragHistogram->getSemanticSortColumns() );
-          tmpDerivedHistogram->setSemanticSortCriteria( beginDragHistogram->getSemanticSortCriteria() );
-          tmpDerivedHistogram->setSemanticSortReverse( beginDragHistogram->getSemanticSortReverse() );
-
-          // Position
-          bool found             = false;
-          gHistogram *tmpParent1 = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), beginDragHistogram, found );
-          wxSize titleBarSize    = tmpParent1->GetSize() - tmpParent1->GetClientSize();
-          if( titleBarSize.GetHeight() == 0 )
-            titleBarSize = paraverMain::defaultTitleBarSize;
-          wxPoint position =
-            wxPoint( tmpParent1->GetPosition().x + titleBarSize.GetHeight(), tmpParent1->GetPosition().y + titleBarSize.GetHeight() );
-
-          /* TODO: clone is not doing WXGTK distinction
-          #if !__WXGTK__
-                  gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
-          #else
-                  gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ) );
-          #endif
-          */
-          gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
-
-          // wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
-          // tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
-
-          tmpHisto->SetHistogram( tmpDerivedHistogram );
-          tmpHisto->adaptControlsForDerivedHistogram();
-
-          // tmpHisto->SetReady( false ); //? no usado
-          bool isDerived = true;
-          appendHistogram2Tree( tmpHisto, isDerived );
-          LoadedWindows::getInstance()->add( tmpDerivedHistogram );
-
-          tmpDerivedHistogram->setRecalc( true );
-          tmpDerivedHistogram->setForceRecalc( true ); // execute!
-          tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
+          createDerivedHistogram( tmpName, { beginDragHistogram, endDragHistogram }, { "add" } );
         }
       }
     }

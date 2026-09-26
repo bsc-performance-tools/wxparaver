@@ -779,7 +779,11 @@ private:
 
     template< typename T, typename TAlternative >
     bool enableDerivedButton( T* sourceCurrentWindow, TAlternative* unusedCurrentWindow );
-    
+
+    void createDerivedHistogram( const wxString& derivedHistogramName,
+                                 const std::vector< Histogram * > parentHistograms,
+                                 const std::vector< std::string > operations );
+
     void ShowDerivedTimelineDialog();
     void ShowDerivedHistogramDialog();
 

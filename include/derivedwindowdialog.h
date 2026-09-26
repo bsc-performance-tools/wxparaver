@@ -151,6 +151,7 @@ public:
   /// Constructors
   DerivedHistogramDialog();
   DerivedHistogramDialog( wxWindow* parent,
+                          const wxString& whichName,
                           const std::vector< TWindowType >& whichParents,
                           const std::vector< std::string >& whichOperations,
                           wxWindowID id = SYMBOL_DERIVEDHISTOGRAMDIALOG_IDNAME,

@@ -225,6 +225,7 @@ DerivedHistogramDialog::DerivedHistogramDialog()
 }
 
 DerivedHistogramDialog::DerivedHistogramDialog( wxWindow* parent,
+                                                const wxString& whichName,
                                                 const std::vector< TWindowType >& whichParents,
                                                 const std::vector< std::string >& whichOperations,
                                                 wxWindowID id,
@@ -234,6 +235,8 @@ DerivedHistogramDialog::DerivedHistogramDialog( wxWindow* parent,
                                                 long style )
 {
   Init();
+
+  SetDerivedWindowName( whichName );
   SetParentWindows( whichParents );
   SetOperations( whichOperations );
 
@@ -349,6 +352,9 @@ void DerivedHistogramDialog::CreateControls()
   itemStdDialogButtonSizer1->Realize();
 
 ////@end DerivedHistogramDialog content construction
+
+  if( !derivedWindowName.IsEmpty() )
+    derivedHistogramName->SetValue( derivedWindowName );
 
   CreateControlsForParentsList();
 }
