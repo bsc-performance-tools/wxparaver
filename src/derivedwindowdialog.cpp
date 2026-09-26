@@ -353,6 +353,13 @@ void DerivedHistogramDialog::CreateControls()
 
 ////@end DerivedHistogramDialog content construction
 
+  // Charset filter for derivedHistogramName
+  wxString forbiddenCharsList[] = { _( "|" ), _( "/" ), _( "\\" ) };
+  wxArrayString forbiddenChars( (size_t)3, forbiddenCharsList );
+  wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_CHAR_LIST );
+  excludeVerticalBar.SetExcludes( forbiddenChars );
+  derivedHistogramName->SetValidator( excludeVerticalBar );
+
   if( !derivedWindowName.IsEmpty() )
     derivedHistogramName->SetValue( derivedWindowName );
 
