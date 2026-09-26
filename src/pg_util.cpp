@@ -2615,8 +2615,9 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
 
     int numOp = 0;
     auto op = selectedOperations.begin();
+    auto tmpParents = whichHisto->getParents();
 
-    for( auto &tmpParentHistogram: whichHisto->getParents() )
+    for( auto &tmpParentHistogram: tmpParents )
     {
       // Add histogram
 
@@ -2635,38 +2636,48 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
 
       windowProperties->GetLastItem()->Enable( false );
 
-      if( op != selectedOperations.end() )
+      if( tmpParentHistogram != tmpParents.back() )
       {
         // Add operation
-        
-        // Detect pos of selected operation
-        selected = 0;
-        pos      = 0;
-        for( vector< string >::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
+        if( op != selectedOperations.end() )
         {
-          if( ( *it ) == *op )
-            selected = pos;
-          ++pos;
+          // Operation available
+
+          // Detect pos of selected operation
+          selected = 0;
+          pos      = 0;
+          for( vector< string >::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
+          {
+            if( ( *it ) == *op )
+              selected = pos;
+            ++pos;
+          }
+
+          PropertyClientData *tmpData   = new PropertyClientData();
+          tmpData->derivedOperationIndex = numOp;
+          tmpOptions = { NO_BUTTON, tmpData, false, nullptr };
+
+          AppendCFG4DProperty( (wxEnumProperty *)nullptr,
+                              windowProperties,
+                              whichHisto,
+                              whichPropertiesClientData,
+                              linkedPropertiesShown,
+                              derivedHistogramCat,
+                              wxT( "Operation" ),
+                              HISTOGRAM_DERIVED_OP,
+                              tmpOptions,
+                              arrayStr,
+                              arrayInt,
+                              selected );
+
+          if( op != selectedOperations.end() - 1 )
+          {
+            // Note that if selectedOperations < tmpParents.size() - 1 then we may have a malformed? 
+            // operations vector.
+            // -> Repeat last one ( at least default "add" exists )
+            ++op;
+          }
         }
-
-        PropertyClientData *tmpData   = new PropertyClientData();
-        tmpData->derivedOperationIndex = numOp;
-        tmpOptions = { NO_BUTTON, tmpData, false, nullptr };
-
-        AppendCFG4DProperty( (wxEnumProperty *)nullptr,
-                            windowProperties,
-                            whichHisto,
-                            whichPropertiesClientData,
-                            linkedPropertiesShown,
-                            derivedHistogramCat,
-                            wxT( "Operation" ),
-                            HISTOGRAM_DERIVED_OP,
-                            tmpOptions,
-                            arrayStr,
-                            arrayInt,
-                            selected );
-
-        ++op;
       }
     }
   }
