@@ -104,6 +104,7 @@ ButtonArrayPopup::ButtonArrayPopup( wxWindow *parent, wxBitmapButton *whichCalle
 
 ButtonArrayPopup::~ButtonArrayPopup()
 {
+  ( ( DerivedHistogramDialog * )GetParent() )->SetDestroyButtonArray( true );
 }
 
 void ButtonArrayPopup::Popup(wxWindow* WXUNUSED(focus))
@@ -113,6 +114,7 @@ void ButtonArrayPopup::Popup(wxWindow* WXUNUSED(focus))
 
 void ButtonArrayPopup::OnDismiss()
 {
+  ( ( DerivedHistogramDialog * )GetParent() )->SetDestroyButtonArray( true );
   wxPopupTransientWindow::OnDismiss();
 }
 
@@ -264,7 +266,7 @@ bool DerivedHistogramDialog::Create( wxWindow* parent, wxWindowID id, const wxSt
 DerivedHistogramDialog::~DerivedHistogramDialog()
 {
   // TODO: if buttonarray is shown it doesn't dissapear
-  if ( currentButtonArrayPopup != nullptr )
+  if ( currentButtonArrayPopup != nullptr && !destroyButtonArray )
     currentButtonArrayPopup->OnDismiss();
 
   DisconnectWidgets();
@@ -579,7 +581,7 @@ bool DerivedHistogramDialog::TransferDataToWindow()
     {
       // malformed operations vector! => repeat last operation
       parentLines.emplace_back( pw,
-                                ( count >= ( parentWindows.size() - 1 ) ) ? operations.back() : operations[ ++count ],
+                                ( count >= ( int( parentWindows.size() ) - 1 ) ) ? operations.back() : operations[ ++count ],
                                 std::vector< TButtonName >() );
     }
   }
@@ -765,11 +767,12 @@ void DerivedHistogramDialog::OnButtonAddParentClick( wxCommandEvent& event )
 
 void DerivedHistogramDialog::OnButtonOperationSelectionClick( wxCommandEvent& event )
 {
-  delete currentButtonArrayPopup; // paranoid: shouldn't happen that still exists
+  if( !destroyButtonArray )
+    delete currentButtonArrayPopup; // paranoid: shouldn't happen that still exists
 
   // Save button for further OnPopupOperationModified callback
   operationButtonCaller = static_cast< wxBitmapButton * >( event.GetEventObject() );
-  
+  SetDestroyButtonArray( false );
   currentButtonArrayPopup = new ButtonArrayPopup( this, operationButtonCaller,  operationsImagesList, "add" );
 
   // Get position
@@ -803,7 +806,7 @@ void DerivedHistogramDialog::OnPopupOperationModified( wxCommandEvent& event )
 
 void DerivedHistogramDialog::OnButtonParentSelectionClick( wxCommandEvent& event )
 {
-  wxBitmapButton *tmpSelectionButton = static_cast< wxBitmapButton * >( event.GetEventObject() );
+  // wxBitmapButton *tmpSelectionButton = static_cast< wxBitmapButton * >( event.GetEventObject() );
   // std::cout << "Button selection #" <<  ( (TIntWrapper *)event.GetEventUserData() )->pos << std::endl;
 
   // Find compatible histograms

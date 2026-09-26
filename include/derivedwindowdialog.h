@@ -221,6 +221,10 @@ public:
   wxScrolledWindow* histogramsScrolledWindow;
   wxBitmapButton* buttonAddParentWindow;
 
+  void SetDestroyButtonArray( bool destroy = true )
+  {
+    destroyButtonArray = destroy;
+  }
 
 private:
   wxString derivedWindowName;
@@ -233,6 +237,8 @@ private:
   static ButtonArrayPopup *currentButtonArrayPopup;
   wxBitmapButton *operationButtonCaller;
   std::string selectedPopupOperation {};
+
+  bool destroyButtonArray = false;
     
   std::vector< TLineData > parentLines;
   void deleteParentLine( int whichPos);
