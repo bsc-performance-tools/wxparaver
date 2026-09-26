@@ -2613,7 +2613,8 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
     //   selectedOperation = statList[  whichHisto->getCurrentStat() ];
     // }
 
-    int numOp = 0;
+    int numHistogram = 0;
+    int numOperation = 0;
     auto op = selectedOperations.begin();
     auto tmpParents = whichHisto->getParents();
 
@@ -2629,7 +2630,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                            whichPropertiesClientData,
                            linkedPropertiesShown,
                            derivedHistogramCat,
-                           wxT( "Histogram " ) + wxString::Format( "%d", ++numOp ),
+                           wxT( "Histogram " ) + wxString::Format( "%d", ++numHistogram ),
                            HISTOGRAM_DERIVED_PARENT,
                            CFG4DPropertyCustomOptions(),
                            tmpParentHistogram->getName() );
@@ -2654,7 +2655,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
           }
 
           PropertyClientData *tmpData   = new PropertyClientData();
-          tmpData->derivedOperationIndex = numOp;
+          tmpData->derivedOperationIndex = numOperation;
           tmpOptions = { NO_BUTTON, tmpData, false, nullptr };
 
           AppendCFG4DProperty( (wxEnumProperty *)nullptr,
@@ -2676,6 +2677,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
             // operations vector.
             // -> Repeat last one ( at least default "add" exists )
             ++op;
+            ++numOperation;
           }
         }
       }
