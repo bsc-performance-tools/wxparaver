@@ -270,6 +270,10 @@ private:
   void OnButtonDeleteParentClick( wxCommandEvent& event );
   void OnButtonDeleteParentUpdate( wxUpdateUIEvent& event );
 
+  // 
+  bool isCompatibleWithMain( TWindowType whichWindow );
+
+
 protected:
     const static wxString KOperation;
     const static wxString KSelect; 

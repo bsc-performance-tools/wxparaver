@@ -428,7 +428,7 @@ void DerivedHistogramDialog::CreateControlsForParentLine( wxBoxSizer *whichBoxSi
                                                           int pos,
                                                           const wxBitmap& derivedOperationIcon )
 {
-  bool showOperation = ( pos != 0 );
+  bool isNotFirstLine = ( pos != 0 );
   wxString tmpParentFullName {};
   wxString tmpParentName = std::holds_alternative< std::monostate >( whichParent ) ?
                            KNotCreated :
@@ -447,7 +447,7 @@ void DerivedHistogramDialog::CreateControlsForParentLine( wxBoxSizer *whichBoxSi
   // whichBoxSizer->Add( lineBoxSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT, 5);
 
   // Create operation button
-  if( showOperation )
+  if( isNotFirstLine )
   {
     tmpParentFullName = tmpParentName + KOperation + KButton + wxString::Format( wxT( "%d" ), pos );
 
@@ -462,8 +462,8 @@ void DerivedHistogramDialog::CreateControlsForParentLine( wxBoxSizer *whichBoxSi
                                                               wxBU_AUTODRAW,
                                                               wxDefaultValidator,
                                                               tmpParentFullName );
-  bitmapButtonOperation->Show( showOperation );
-  if( showOperation )
+  bitmapButtonOperation->Show( isNotFirstLine );
+  if( isNotFirstLine )
   {
     TIntWrapper *tmpPos = new TIntWrapper();
     tmpPos->pos = pos;
@@ -482,8 +482,19 @@ void DerivedHistogramDialog::CreateControlsForParentLine( wxBoxSizer *whichBoxSi
   // Create textctrl for parent name
   std::string name = GetWindowName( whichParent );
   wxTextCtrl* textCtrlHistogramName = new wxTextCtrl( panelHistogramLine, wxID_ANY, name, wxDefaultPosition, wxSize(150, -1), 0 );
+  textCtrlHistogramName->SetEditable( false );
   // wxTextCtrl* textCtrlHistogramName = new wxTextCtrl( histogramsScrolledWindow, wxID_ANY, name, wxDefaultPosition, wxSize(150, -1), 0 );
-  lineBoxSizer->Add(textCtrlHistogramName, 6, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxFIXED_MINSIZE, 5);
+  if( isNotFirstLine )
+  {
+    if( !isCompatibleWithMain( parentLines[ pos ].parent ) )
+    {
+      textCtrlHistogramName->SetForegroundColour( *wxRED );
+      panelHistogramLine->SetToolTip( "Histogram not compatible with main (first one)." );
+      bitmapButtonOperation->Enable( false );
+    }
+  }
+
+  lineBoxSizer->Add( textCtrlHistogramName, 6, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxFIXED_MINSIZE, 5 );
 
 
   // Create button for parent selection
@@ -504,6 +515,7 @@ void DerivedHistogramDialog::CreateControlsForParentLine( wxBoxSizer *whichBoxSi
                                            wxCommandEventHandler( DerivedHistogramDialog::OnButtonParentSelectionClick ),
                                            tmpPos2,
                                            this );
+  // bitmapButtonHistogramSelection->SetHint( "Select compatible parent histogram." );
   lineBoxSizer->Add(bitmapButtonHistogramSelection, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
   // Create button for delete
@@ -817,6 +829,23 @@ void DerivedHistogramDialog::OnPopupOperationModified( wxCommandEvent& event )
 }
 
 
+bool DerivedHistogramDialog::isCompatibleWithMain( TWindowType whichWindow )
+{
+  if( std::holds_alternative< Histogram * >( whichWindow ) )
+  {
+    Histogram *mainHistogram = std::get< Histogram * >( parentLines.front().parent );
+    Histogram *currentHistogram = std::get< Histogram * >( whichWindow );
+    std::vector< Histogram * > derivableHistograms;
+    bool searchAllTraces = true;
+    paraverMain::myParaverMain->findCompatibleHistogramsForDerivation( mainHistogram, derivableHistograms, searchAllTraces );
+
+    return ( std::find( derivableHistograms.cbegin(), derivableHistograms.cend(), currentHistogram ) != derivableHistograms.cend() );
+  }
+
+  return false;
+}
+
+
 void DerivedHistogramDialog::OnButtonParentSelectionClick( wxCommandEvent& event )
 {
   // wxBitmapButton *tmpSelectionButton = static_cast< wxBitmapButton * >( event.GetEventObject() );
@@ -837,11 +866,11 @@ void DerivedHistogramDialog::OnButtonParentSelectionClick( wxCommandEvent& event
   std::vector< TWindowID > derivableHistogramsIds;
   for( auto& h: derivableHistograms )
   {
-    derivableHistogramsIds.emplace_back(LoadedWindows::getInstance()->getHistogramID( h ) );
+    derivableHistogramsIds.emplace_back( LoadedWindows::getInstance()->getHistogramID( h ) );
   }
 
   // Create TreeSelector
-  WindowsTreeSelector histogramSelector( this, wxID_ANY, wxT( "Histogram" ), derivableHistogramsIds, TWindowType( mainHistogram ), mainHistogram->getTrace() );
+  WindowsTreeSelector histogramSelector( this, wxID_ANY, wxT( "Compatible histograms" ), derivableHistogramsIds, TWindowType( mainHistogram ), mainHistogram->getTrace() );
   histogramSelector.Move( wxGetMousePosition() );
 
   int retCode = histogramSelector.ShowModal();
@@ -900,7 +929,22 @@ void DerivedHistogramDialog::OnOkClick( wxCommandEvent& event )
 
 void DerivedHistogramDialog::OnOkUpdate( wxUpdateUIEvent& event )
 {
-  bool enable = ( parentLines.size() >= 2 ) && !derivedHistogramName->IsEmpty();
+  auto allHistogramsAreCompatible = [this]()
+                                    {
+                                      for( const TLineData& h: parentLines )
+                                      {
+                                        if( h.parent == parentLines.front().parent )
+                                          continue;
+
+                                        if( !isCompatibleWithMain( h.parent ) )
+                                          return false;
+                                      }
+                                      return true;
+                                    };
+
+  bool enable = ( parentLines.size() >= 2 ) &&
+                !derivedHistogramName->IsEmpty() && 
+                allHistogramsAreCompatible();
   static_cast< wxBitmapButton * >( event.GetEventObject() )->Enable( enable );
 }
 
