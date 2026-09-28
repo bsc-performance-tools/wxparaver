@@ -21,6 +21,7 @@ noinst_HEADERS = \
               derived_controlled_minimum.xpm\
               derived_different.xpm\
               derived_divide.xpm\
+              derived_generic_operation.xpm\
               derived_maximum.xpm\
               derived_minimum.xpm\
               derived_product.xpm\
