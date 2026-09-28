@@ -125,6 +125,7 @@
 #include "derived_controlled_minimum.xpm"
 #include "derived_different.xpm"
 #include "derived_divide.xpm"
+#include "derived_generic_operation.xpm"
 #include "derived_maximum.xpm"
 #include "derived_minimum.xpm"
 #include "derived_product.xpm"
@@ -255,6 +256,7 @@ std::vector< std::pair< std::string, const char ** > > paraverMain::icons = {
   { "maximum", derived_maximum_xpm },
   { "minimum", derived_minimum_xpm },
   { "different", derived_different_xpm },
+  { "generic_operation", derived_generic_operation_xpm },
 
   // Section only for timelines.
   // TODO: Get these derived labels from paraver-kernel - semanticderivedfunctions
@@ -1876,9 +1878,12 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
       PRV_UINT16 derivedOperationIndex = whichClientData->derivedOperationIndex;
       whichHistogram->setDerivedOperation( derivedOperationIndex, std::string( property->GetDisplayedString().mb_str() ) );
 
-      // TODO: pending, use abstract operator, change of icon only for first one 
       // Change Derived operation Icon: find icon in list
-      int iconNumber = getIconNumber( whichHistogram, derivedOperationIndex );
+      int iconNumber;
+      if( whichHistogram->sameDerivedOperationsBetweenChildren() )
+        iconNumber = getIconNumber( whichHistogram, derivedOperationIndex );
+      else
+        iconNumber = paraverMain::iconPosByName[ "generic_operation" ];
 
       // Change Derived operation Icon: set both trees, global and trace tree
       wxTreeCtrl *globalTreePage       = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
