@@ -199,7 +199,6 @@ void WindowsTreeSelector::addTreeItem( TWindowType& whichWindow, const TWindowTy
                           else
                             return window->getName();
                         };
-  // auto visitorGetIcon = []( auto&& window ) { return getIconNumber( window ); };
 
   wxTreeItemId tmpId = timelineTree->AppendItem( whichParent, wxString( std::visit( visitorGetName, whichWindow ).c_str(), wxConvUTF8 ), getIconNumber( whichWindow ), -1,
                                                  new WindowSelectorItemData( wxString( std::visit( visitorGetName, whichWindow ).c_str(), wxConvUTF8 ), whichWindow ) );

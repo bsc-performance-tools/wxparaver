@@ -1879,11 +1879,12 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
       whichHistogram->setDerivedOperation( derivedOperationIndex, std::string( property->GetDisplayedString().mb_str() ) );
 
       // Change Derived operation Icon: find icon in list
-      int iconNumber;
-      if( whichHistogram->sameDerivedOperationsBetweenChildren() )
-        iconNumber = getIconNumber( whichHistogram, derivedOperationIndex );
-      else
-        iconNumber = paraverMain::iconPosByName[ "generic_operation" ];
+      // int iconNumber;
+      // if( whichHistogram->sameDerivedOperationsBetweenChildren() )
+      //   iconNumber = getIconNumber( whichHistogram, derivedOperationIndex );
+      // else
+      //   iconNumber = paraverMain::iconPosByName[ "generic_operation" ];
+      int iconNumber = getIconNumber( whichHistogram, derivedOperationIndex );
 
       // Change Derived operation Icon: set both trees, global and trace tree
       wxTreeCtrl *globalTreePage       = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );

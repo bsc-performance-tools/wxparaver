@@ -904,7 +904,10 @@ int getIconNumber( TWindow *whichWindow, PRV_UINT16 numIcon )
   {
     if( whichWindow->isDerivedHistogram() )
     {
-      return paraverMain::iconPosByName[ whichWindow->getDerivedOperation( numIcon ) ];
+      if( whichWindow->sameDerivedOperationsBetweenChildren() )
+        return paraverMain::iconPosByName[ whichWindow->getDerivedOperation( numIcon ) ];
+      else
+        return paraverMain::iconPosByName[ "generic_operation" ];
     }
     else
       return paraverMain::iconPosByName[ "histogram" ];
