@@ -240,7 +240,7 @@ DerivedHistogramDialog::DerivedHistogramDialog( wxWindow* parent,
   SetParentWindows( whichParents );
   SetOperations( whichOperations );
 
-  TransferDataToWindow();
+  InitParentLines();
 
   Create(parent, id, caption, pos, size, style);
 }
@@ -379,7 +379,7 @@ bool DerivedHistogramDialog::changeParentLine( const wxString& buttonName, const
 
   auto currentLine = parentLines.begin();
   for( currentLine = parentLines.begin(); currentLine != parentLines.end(); ++currentLine )
-  {
+    {
     if( std::find( currentLine->button.cbegin(), currentLine->button.cend(), buttonName ) != currentLine->button.cend() )
       break;
   }
@@ -583,7 +583,7 @@ bool DerivedHistogramDialog::TransferWindowToData()
 
 
 // Initalizes parentLines using parentWindows and operations info
-bool DerivedHistogramDialog::TransferDataToWindow()
+bool DerivedHistogramDialog::InitParentLines()
 {
   parentLines.clear();
 
@@ -792,13 +792,13 @@ void DerivedHistogramDialog::OnButtonAddParentClick( wxCommandEvent& event )
 
 void DerivedHistogramDialog::OnButtonOperationSelectionClick( wxCommandEvent& event )
 {
-  if( !destroyButtonArray )
-    delete currentButtonArrayPopup; // paranoid: shouldn't happen that still exists
+  // if( !destroyButtonArray )
+  //   delete currentButtonArrayPopup; // paranoid: shouldn't happen that still exists
 
   // Save button for further OnPopupOperationModified callback
   operationButtonCaller = static_cast< wxBitmapButton * >( event.GetEventObject() );
   SetDestroyButtonArray( false );
-  currentButtonArrayPopup = new ButtonArrayPopup( this, operationButtonCaller,  operationsImagesList, "add" );
+  currentButtonArrayPopup = new ButtonArrayPopup( this, operationButtonCaller, operationsImagesList, "add" );
 
   // Get position
   wxWindow *btn = ( wxWindow* )event.GetEventObject();

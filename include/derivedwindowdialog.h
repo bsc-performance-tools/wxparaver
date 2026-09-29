@@ -254,7 +254,7 @@ private:
                                     int pos,
                                     const wxBitmap& derivedOperationIcon );
   bool TransferWindowToData();
-  bool TransferDataToWindow();
+  bool InitParentLines();
   void DisconnectWidgets();
   void CleanParentsList();
   void RebuildParentsList();
