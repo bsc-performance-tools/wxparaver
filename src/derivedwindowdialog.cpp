@@ -573,7 +573,9 @@ bool DerivedHistogramDialog::TransferWindowToData()
   for( auto line: parentLines )
   {
     parentWindows.push_back( line.parent );
-    operations.push_back( line.operationName );
+
+    if( parentWindows.size() > 1 )
+      operations.push_back( line.operationName );
   }
 
   derivedWindowName = derivedHistogramName->GetValue().ToStdString();
