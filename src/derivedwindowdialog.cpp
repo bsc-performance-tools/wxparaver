@@ -32,6 +32,7 @@
 #include "wx/wx.h"
 #endif
 
+#include <wx/gdicmn.h>
 #include <wx/numformatter.h>
 
 ////@begin includes
@@ -484,6 +485,19 @@ void DerivedHistogramDialog::CreateControlsForParentLine( wxBoxSizer *whichBoxSi
   wxTextCtrl* textCtrlHistogramName = new wxTextCtrl( panelHistogramLine, wxID_ANY, name, wxDefaultPosition, wxSize(150, -1), 0 );
   textCtrlHistogramName->SetEditable( false );
   // wxTextCtrl* textCtrlHistogramName = new wxTextCtrl( histogramsScrolledWindow, wxID_ANY, name, wxDefaultPosition, wxSize(150, -1), 0 );
+
+  // Inside another derived histogram?
+  if( std::holds_alternative< Histogram * >( parentLines[ pos ].parent ) )
+  {
+    Histogram *tmpHistogram = std::get< Histogram * >( parentLines[ pos ].parent );
+    if( tmpHistogram->haveChildren() )
+    {
+      textCtrlHistogramName->SetForegroundColour( wxTheColourDatabase->Find( wxT( "PURPLE" ) ) );
+      panelHistogramLine->SetToolTip( "Histogram is a parent of a derived histogram. A clone will be done." );
+    }
+  }
+
+  // Compatible?
   if( isNotFirstLine )
   {
     if( !isCompatibleWithMain( parentLines[ pos ].parent ) )
