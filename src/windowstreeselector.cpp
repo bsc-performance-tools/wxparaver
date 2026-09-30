@@ -207,19 +207,27 @@ void WindowsTreeSelector::addTreeItem( TWindowType& whichWindow, const TWindowTy
 
   if( std::holds_alternative< Timeline * >( whichWindow ) ) 
   {
-    Timeline *tmpTimeline = std::get< Timeline * >( whichWindow );
+    Timeline *tmpWindow = std::get< Timeline * >( whichWindow );
 
-    if( tmpTimeline->isDerivedWindow() )
+    if( tmpWindow->isDerivedWindow() )
     {
-      TWindowType parent1 = TWindowType( tmpTimeline->getParent( 0 ) );
+      TWindowType parent1 = TWindowType( tmpWindow->getParent( 0 ) );
       addTreeItem( parent1, currentWindow, tmpId );
-      TWindowType parent2 = TWindowType( tmpTimeline->getParent( 1 ) );
+      TWindowType parent2 = TWindowType( tmpWindow->getParent( 1 ) );
       addTreeItem( parent2, currentWindow, tmpId );
     }
   }
   else if( std::holds_alternative< Histogram * >( whichWindow ) )
   {
-    // TODO: Add parents?
-    //&& whichWindow->isDerivedHistogram() 
+    Histogram *tmpWindow = std::get< Histogram * >( whichWindow );
+
+    if( tmpWindow->isDerivedHistogram() )
+    {
+      for( const auto& h: tmpWindow->getParents() )
+      {
+        TWindowType parent = TWindowType( h );
+        addTreeItem( parent, currentWindow, tmpId );
+      }
+    }
   }
 }
