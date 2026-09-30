@@ -3860,12 +3860,28 @@ void paraverMain::ShowDerivedHistogramDialog()
 
   if( derivedDialog.ShowModal() == wxID_OK )
   {
-    auto derivedHistogramName = derivedDialog.GetDerivedWindowName();
     std::vector< Histogram * > tmpParentHistograms;
     derivedDialog.GetParentWindows( tmpParentHistograms );
-    auto selectedOperations = derivedDialog.GetOperations();
 
-    createDerivedHistogram( derivedDialog.GetDerivedWindowName(), tmpParentHistograms, derivedDialog.GetOperations() );
+    std::vector< Histogram * > derivableParentHistograms;
+    for( const auto& h: tmpParentHistograms )
+    { 
+      if( h->haveChildren() )
+      {
+        bool found = false;
+        gHistogram *tmpCurrent = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), h, found );
+        gHistogram *tmpClone = tmpCurrent->clone();
+        Histogram *tmpClonedHistogram = tmpClone->GetHistogram();
+
+        derivableParentHistograms.push_back( tmpClonedHistogram );
+      }
+      else
+      {
+        derivableParentHistograms.push_back( h );
+      }
+    }
+
+    createDerivedHistogram( derivedDialog.GetDerivedWindowName(), derivableParentHistograms, derivedDialog.GetOperations() );
   }
 
   raiseCurrentWindow = true;
