@@ -4124,9 +4124,43 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
         }
         else
         {
+          bool cloneIfCompatible = false;
+          bool badBeginHistogram = beginDragHistogram->haveChildren();
+          bool badEndHistogram = endDragHistogram->haveChildren();
+          if( badBeginHistogram || badEndHistogram )
+          {
+            wxMessageDialog dialog( this,
+                                    wxT( "Can't use a histogram that is a parent of a derived histogram.\nDo you want to proceed with clones anyway?" ),
+                                    wxT( "Warning" ), 
+                                    wxYES_NO | wxNO_DEFAULT | wxICON_EXCLAMATION );
+            if( dialog.ShowModal() == wxID_YES )
+              cloneIfCompatible = true;
+            else
+              return;
+          }
+
           std::ostringstream tmpNum;
           tmpNum << ++numNewDerivedHistogram;
           auto tmpName = "New Derived Histogram #" + tmpNum.str();
+          
+          if( cloneIfCompatible )
+          {
+            gHistogram *tmpClone = nullptr;
+
+            if( badBeginHistogram )
+            {
+              bool found = false;
+              gHistogram *tmpBegin = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), beginDragHistogram, found );
+              tmpClone = tmpBegin->clone();
+              beginDragHistogram = tmpClone->GetHistogram();
+            }
+
+            if( badEndHistogram )
+            {
+              tmpClone = histogram->clone();
+              endDragHistogram = tmpClone->GetHistogram();
+            }
+          }
 
           createDerivedHistogram( tmpName, { beginDragHistogram, endDragHistogram }, { "add" } );
         }
