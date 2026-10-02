@@ -777,8 +777,8 @@ private:
 
 
 
-    template< typename T, typename TAlternative >
-    bool enableDerivedButton( T* sourceCurrentWindow, TAlternative* unusedCurrentWindow );
+    template< typename T >
+    std::pair< bool, bool >  enableDerivedButton( T *whichWindow );
 
     void createDerivedHistogram( const wxString& derivedHistogramName,
                                  const std::vector< Histogram * > parentHistograms,

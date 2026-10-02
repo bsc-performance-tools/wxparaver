@@ -3570,29 +3570,45 @@ void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent &event )
 }
 
 
-// Initially seems the enabling of derived button follow the same behaviour, no matter for Timeline or Histogram.
-// Actually this code is coupled with pair of variables (currentTimeline, currentHisto) mechanism.
-// - the window of interest is the first one, sourceCurrenWindow, 
-// - unusedCurrentWindow takes then the other variable -> see calls.
-template< typename T, typename TAlternative >
-bool paraverMain::enableDerivedButton( T* sourceCurrentWindow, TAlternative* unusedCurrentWindow )
+template< typename T >
+std::pair< bool, bool > paraverMain::enableDerivedButton( T* whichWindow )
 {
-  bool enable = false;
+  if( loadedTraces.empty() || currentTrace == -1 )
+    return { false, false };
 
-  if( !loadedTraces.empty() && currentTrace > -1 )
+  // Any window of the same type as whichWindow?
+  vector< T * > tmpWindows;
+  LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], tmpWindows );
+
+  if( tmpWindows.size() == 0 )
+    return { false, false };
+
+
+  // Is selection empty?  
+  wxTreeCtrl *tmpTree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
+
+  wxArrayTreeItemIds selectedItems;
+  tmpTree->GetSelections( selectedItems );
+
+  if( selectedItems.GetCount() == 0 )
+    return { false, false };
+
+
+  // How many windows of every type are selected?
+  int numTimelines  = 0;
+  int numHistograms = 0;
+  for( size_t i = 0; i < selectedItems.GetCount(); ++i )
   {
-    vector< T * > tmpWindows;
-    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], tmpWindows );
+    wxTreeItemId selectedItem     = selectedItems[ i ];
+    TreeBrowserItemData *itemData = static_cast< TreeBrowserItemData * >( tmpTree->GetItemData( selectedItem ) );
 
-    wxTreeCtrl *tmpTree = (wxTreeCtrl *)choiceWindowBrowser->GetCurrentPage();
-
-    wxArrayTreeItemIds selectedItems;
-    tmpTree->GetSelections( selectedItems );
-
-    enable = ( tmpWindows.size() > 0 ) && ( sourceCurrentWindow != nullptr ) && ( selectedItems.GetCount() > 0 );
+    if( gHistogram *tmpItem = itemData->getHistogram() )
+      ++numHistograms;
+    else if( gTimeline *tmpItem = itemData->getTimeline() )
+      ++numTimelines;
   }
 
-  return unusedCurrentWindow == nullptr && enable;
+  return { numTimelines > 1, numHistograms > 0 };
 }
 
 
@@ -4045,7 +4061,8 @@ void paraverMain::OnNewDerivedWindowClick( wxCommandEvent &event )
 
 void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent &event )
 {
-  enableDerivedButton( currentTimeline, currentHisto );
+  std::pair< bool, bool > enableDerived = enableDerivedButton( currentTimeline );
+  event.Enable( enableDerived.first );
 }
 
 
@@ -6418,6 +6435,8 @@ void paraverMain::OnNewDerivedHistogramClick( wxCommandEvent& event )
 
 void paraverMain::OnNewDerivedHistogramUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( enableDerivedButton( currentHisto, currentTimeline ) );
+  std::pair< bool, bool > enableDerived = enableDerivedButton( currentHisto );
+
+  event.Enable( enableDerived.second );
 }
 
