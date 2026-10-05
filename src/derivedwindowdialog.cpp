@@ -777,31 +777,44 @@ void DerivedHistogramDialog::OnTextctrlDerivedHistogramNameEnter( wxCommandEvent
 }
 
 
+Histogram *DerivedHistogramDialog::selectHistogram( Histogram *mainHistogram )
+{
+  // Find compatible histograms
+  std::vector< Histogram * > derivableHistograms;
+  bool searchAllTraces = true;
+  paraverMain::myParaverMain->findCompatibleHistogramsForDerivation( mainHistogram,
+                                                                     derivableHistograms,
+                                                                     searchAllTraces );
+
+  // Get IDs
+  std::vector< TWindowID > derivableHistogramsIds;
+  for( auto& h: derivableHistograms )
+    derivableHistogramsIds.emplace_back( LoadedWindows::getInstance()->getHistogramID( h ) );
+
+  // Show WindowTreeSelector
+  WindowsTreeSelector histogramSelector( this, wxID_ANY, wxT( "Compatible histograms" ), derivableHistogramsIds, TWindowType( mainHistogram ), mainHistogram->getTrace() );
+  histogramSelector.Move( wxGetMousePosition() );
+
+  if( histogramSelector.ShowModal() == wxID_OK )
+    return std::get< Histogram * >( histogramSelector.getSelection() );
+
+  return nullptr;
+}
+
+
 void DerivedHistogramDialog::OnButtonAddParentClick( wxCommandEvent& event )
 {
   if( std::holds_alternative< Histogram * >( parentWindows.front() ) )
   {
-    std::vector< Histogram * > derivableHistograms;
-    
-    paraverMain::myParaverMain->findCompatibleHistogramsForDerivation( std::get< Histogram * >( parentWindows.front() ), derivableHistograms );
-    
-    // TODO: add menu selection
-    for( auto& h: derivableHistograms ) // remove this
-    {
-      std::cout << "add parent: "  << h->getName() << std::endl;
-    }  
+    // Histogram *mainHistogram = std::get< Histogram * >( parentWindows.front() );
 
-    Histogram *parentToAdd = nullptr;
-    if( !derivableHistograms.empty() )
-      // TODO: improve selecting first not yet shown, if any
-      parentToAdd = derivableHistograms.front();
+    Histogram *selectedHistogram = selectHistogram( std::get< Histogram * >( parentWindows.front() ) );
+    if( !selectedHistogram )
+      return;
 
-    if( parentToAdd )
-    {
-      // Add selected to parents
-      parentLines.emplace_back( parentToAdd, "add", std::vector< TButtonName >() );
-      RebuildParentsList();
-    }
+    parentLines.emplace_back( selectedHistogram, "add", std::vector< TButtonName >() );
+
+    RebuildParentsList();
   }  
 }  
 
@@ -864,43 +877,14 @@ bool DerivedHistogramDialog::isCompatibleWithMain( TWindowType whichWindow )
 
 void DerivedHistogramDialog::OnButtonParentSelectionClick( wxCommandEvent& event )
 {
-  // wxBitmapButton *tmpSelectionButton = static_cast< wxBitmapButton * >( event.GetEventObject() );
-  // std::cout << "Button selection #" <<  ( (TIntWrapper *)event.GetEventUserData() )->pos << std::endl;
-
-  // Find compatible histograms
-  Histogram *mainHistogram = std::get< Histogram * >( parentLines.front().parent );
-  std::vector< Histogram * > derivableHistograms;
-  bool searchAllTraces = true;
-  paraverMain::myParaverMain->findCompatibleHistogramsForDerivation( mainHistogram, derivableHistograms, searchAllTraces );
-  // Remove currently listed in the parents list?
-  // yes ->  avoid deriving with himself -> forbidden -> clone
-  // no -> forbidden two copies -> clone
-
-  // Remove histograms that are parents of other histograms?
-  // yes -> ok
-  // no -> clone!
-  std::vector< TWindowID > derivableHistogramsIds;
-  for( auto& h: derivableHistograms )
+  if( std::holds_alternative< Histogram * >(  parentLines.front().parent ) )
   {
-    derivableHistogramsIds.emplace_back( LoadedWindows::getInstance()->getHistogramID( h ) );
-  }
-
-  // Create TreeSelector
-  WindowsTreeSelector histogramSelector( this, wxID_ANY, wxT( "Compatible histograms" ), derivableHistogramsIds, TWindowType( mainHistogram ), mainHistogram->getTrace() );
-  histogramSelector.Move( wxGetMousePosition() );
-
-  int retCode = histogramSelector.ShowModal();
-  if( retCode == wxID_OK )
-  {
-    Histogram *tmpHistogram = std::get< Histogram * >( histogramSelector.getSelection() );
-
-    // TODO: checks depending on histograms allowed
-    if( mainHistogram == tmpHistogram )
+    Histogram *selectedHistogram = selectHistogram( std::get< Histogram * >(  parentLines.front().parent ) );
+    if( !selectedHistogram )
       return;
 
-    // Fill related info with selected histogram
     auto pos = ( (TIntWrapper *)event.GetEventUserData() )->pos;
-    parentLines[ pos ].parent = TWindowType( tmpHistogram );
+    parentLines[ pos ].parent = TWindowType( selectedHistogram );
     
     CreateControlsForParentsList();
   }

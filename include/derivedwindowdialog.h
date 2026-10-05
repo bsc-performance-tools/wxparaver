@@ -244,6 +244,7 @@ private:
   std::vector< TLineData > parentLines;
   void deleteParentLine( int whichPos);
   bool changeParentLine( const wxString& buttonName, const std::string& newOperation );
+  Histogram *selectHistogram( Histogram *mainHistogram );
 
   std::string GetWindowName( const TWindowType& whichParent );
   wxString BuildParentName( const TWindowType& whichParent );
