@@ -288,6 +288,7 @@ void DerivedHistogramDialog::Init()
   derivedWindowName = wxT("");
   operations = {};
   parentWindows = {};
+  numInstance = {};
   derivedHistogramName = NULL;
   histogramsScrolledWindow = NULL;
   buttonAddParentWindow = NULL;
@@ -585,7 +586,7 @@ void DerivedHistogramDialog::CreateControlsForParentsList()
       {
         Histogram *currentHistogram = std::get< Histogram * >( currentPos->parent );
         auto numCopiesFound = 0;
-        
+
         for( auto nextPos = currentPos + 1; nextPos < parentLines.end(); ++nextPos )
         {
           Histogram *nextHistogram = std::get< Histogram * >( nextPos->parent );
@@ -616,10 +617,12 @@ bool DerivedHistogramDialog::TransferWindowToData()
 {
   parentWindows.clear();
   operations.clear();
+  numInstance.clear();
 
   for( auto line: parentLines )
   {
     parentWindows.push_back( line.parent );
+    numInstance.push_back( line.numInstance );
 
     if( parentWindows.size() > 1 )
       operations.push_back( line.operationName );
@@ -635,6 +638,7 @@ bool DerivedHistogramDialog::TransferWindowToData()
 bool DerivedHistogramDialog::InitParentLines()
 {
   parentLines.clear();
+  numInstance.clear();
 
   bool uniqueOperation = ( operations.size() == 1 );
   bool enoughNumberOfOperations = ( operations.size() >= ( parentWindows.size() - 1 ) );

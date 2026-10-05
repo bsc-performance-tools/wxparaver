@@ -202,6 +202,9 @@ public:
   std::vector< TWindowType > GetParentWindows() const { return parentWindows ; }
   void SetParentWindows(std::vector< TWindowType > value) { parentWindows = value ; }
 
+  std::vector< unsigned int > GetNumInstance() const { return numInstance ; }
+  void SetNumInstance(std::vector< unsigned int > value) { numInstance = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -219,39 +222,42 @@ public:
   {
     selectedPopupOperation = whichOperation;
   }
-
-////@begin DerivedHistogramDialog member variables
-  wxTextCtrl* derivedHistogramName;
-  wxScrolledWindow* histogramsScrolledWindow;
-  wxBitmapButton* buttonAddParentWindow;
-
+  
   void SetDestroyButtonArray( bool destroy = true )
   {
     destroyButtonArray = destroy;
   }
-
-private:
+  
+  ////@begin DerivedHistogramDialog member variables
+  wxTextCtrl* derivedHistogramName;
+  wxScrolledWindow* histogramsScrolledWindow;
+  wxBitmapButton* buttonAddParentWindow;
+  
+  
+  private:
   wxString derivedWindowName;
   std::vector< std::string > operations;
   std::vector< TWindowType > parentWindows;
-////@end DerivedHistogramDialog member variables
-
+  std::vector< unsigned int > numInstance;
+  ////@end DerivedHistogramDialog member variables
+  
   wxImageList *imagesList;
   wxImageList *operationsImagesList;
   static ButtonArrayPopup *currentButtonArrayPopup;
   wxBitmapButton *operationButtonCaller;
   std::string selectedPopupOperation {};
-
+  
   bool destroyButtonArray = false;
-    
+  
   std::vector< TLineData > parentLines;
   void deleteParentLine( int whichPos);
   bool changeParentLine( const wxString& buttonName, const std::string& newOperation );
   Histogram *selectHistogram( Histogram *mainHistogram );
+  
 
   std::string GetWindowName( const TWindowType& whichParent );
   wxString BuildParentName( const TWindowType& whichParent );
-
+  
   void CreateControlsForParentsList();
   void CreateControlsForParentLine( wxBoxSizer *whichBoxSizer,
                                     const TWindowType& whichParents,

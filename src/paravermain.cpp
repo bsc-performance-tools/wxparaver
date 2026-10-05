@@ -3879,10 +3879,13 @@ void paraverMain::ShowDerivedHistogramDialog()
     std::vector< Histogram * > tmpParentHistograms;
     derivedDialog.GetParentWindows( tmpParentHistograms );
 
+    std::vector< unsigned int > tmpNumInstance = derivedDialog.GetNumInstance();
+    auto numInstanceIt = tmpNumInstance.cbegin();
+
     std::vector< Histogram * > derivableParentHistograms;
     for( const auto& h: tmpParentHistograms )
     { 
-      if( h->haveChildren() )
+      if( h->haveChildren() || *numInstanceIt > 1 )
       {
         bool found = false;
         gHistogram *tmpCurrent = getGHistogramFromWindow( getAllTracesTree(), getAllTracesTree()->GetRootItem(), h, found );
@@ -3895,6 +3898,8 @@ void paraverMain::ShowDerivedHistogramDialog()
       {
         derivableParentHistograms.push_back( h );
       }
+
+      ++numInstanceIt;
     }
 
     createDerivedHistogram( derivedDialog.GetDerivedWindowName(), derivableParentHistograms, derivedDialog.GetOperations() );
