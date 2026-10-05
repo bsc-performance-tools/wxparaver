@@ -127,13 +127,16 @@ struct TLineData
   TWindowType parent = std::monostate{};
   TOperationName operationName = "none";
   std::vector< TButtonName > button {};
+  unsigned int numInstance = 1;
 
   TLineData( TWindowType whichParent,
              TOperationName whichOperationName,
-             std::vector< TButtonName > whichButton )
+             std::vector< TButtonName > whichButton,
+             unsigned int whichNumInstance )
     : parent( whichParent ),
       operationName( whichOperationName ),
-      button( whichButton )
+      button( whichButton ),
+      numInstance( whichNumInstance )
   {} 
 };
 

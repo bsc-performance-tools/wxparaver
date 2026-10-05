@@ -486,16 +486,23 @@ void DerivedHistogramDialog::CreateControlsForParentLine( wxBoxSizer *whichBoxSi
   textCtrlHistogramName->SetEditable( false );
   // wxTextCtrl* textCtrlHistogramName = new wxTextCtrl( histogramsScrolledWindow, wxID_ANY, name, wxDefaultPosition, wxSize(150, -1), 0 );
 
-  // Inside another derived histogram?
   if( std::holds_alternative< Histogram * >( parentLines[ pos ].parent ) )
   {
+    // Inside another derived histogram?
     Histogram *tmpHistogram = std::get< Histogram * >( parentLines[ pos ].parent );
     if( tmpHistogram->haveChildren() )
     {
       textCtrlHistogramName->SetForegroundColour( wxTheColourDatabase->Find( wxT( "PURPLE" ) ) );
       panelHistogramLine->SetToolTip( "Histogram is a parent of a derived histogram. A clone will be done." );
     }
+     
+    if( parentLines[ pos ].numInstance > 1 )
+    {
+      textCtrlHistogramName->SetForegroundColour( wxTheColourDatabase->Find( wxT( "PURPLE" ) ) );
+      panelHistogramLine->SetToolTip( "Histogram selected multiple times. A clone will be done." );
+    }
   }
+
 
   // Compatible?
   if( isNotFirstLine )
@@ -564,6 +571,32 @@ void DerivedHistogramDialog::CreateControlsForParentsList()
 
   wxBoxSizer *boxSizerHistogramsList = new wxBoxSizer( wxVERTICAL );
 
+  // Repeated histograms? Numerate as they appear. Unique ones equal to 1.
+  std::transform( parentLines.begin(), parentLines.end(), parentLines.begin(), []( auto& line )
+                                                                               {
+                                                                                 line.numInstance = 1;
+                                                                                 return line;
+                                                                               } );
+  if( parentLines.size() > 1 )
+  {
+    for( auto currentPos = parentLines.begin(); currentPos < parentLines.end(); ++currentPos )
+    {
+      if( currentPos->numInstance == 1 )
+      {
+        Histogram *currentHistogram = std::get< Histogram * >( currentPos->parent );
+        auto numCopiesFound = 0;
+        
+        for( auto nextPos = currentPos + 1; nextPos < parentLines.end(); ++nextPos )
+        {
+          Histogram *nextHistogram = std::get< Histogram * >( nextPos->parent );
+
+          if( currentHistogram == nextHistogram )
+            nextPos->numInstance += ++numCopiesFound;
+        }
+      }
+    }
+  }
+
   int pos = 0;
   for( auto line: parentLines )
   {
@@ -610,20 +643,22 @@ bool DerivedHistogramDialog::InitParentLines()
   {
     if( uniqueOperation )
     {
-      parentLines.emplace_back( pw, operations.front(), std::vector< TButtonName >() );
+      parentLines.emplace_back( pw, operations.front(), std::vector< TButtonName >(), 1 );
     }
     else if( enoughNumberOfOperations )
     {
       parentLines.emplace_back( pw,
                                 ( count < 0 ) ? "add" : operations[ ++count ],
-                                std::vector< TButtonName >() );
+                                std::vector< TButtonName >(),
+                                1 );
     }
     else
     {
       // malformed operations vector! => repeat last operation
       parentLines.emplace_back( pw,
                                 ( count >= ( int( parentWindows.size() ) - 1 ) ) ? operations.back() : operations[ ++count ],
-                                std::vector< TButtonName >() );
+                                std::vector< TButtonName >(),
+                                1 );
     }
   }
 
@@ -812,7 +847,7 @@ void DerivedHistogramDialog::OnButtonAddParentClick( wxCommandEvent& event )
     if( !selectedHistogram )
       return;
 
-    parentLines.emplace_back( selectedHistogram, "add", std::vector< TButtonName >() );
+    parentLines.emplace_back( selectedHistogram, "add", std::vector< TButtonName >(), 1 );
 
     RebuildParentsList();
   }  
