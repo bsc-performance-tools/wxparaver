@@ -4284,6 +4284,8 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
     }
 
     newWindowImage->generatescaleImageDataWindows( tmpObjects, myWindow );
+
+    newWindowImage->generateScaleWindowsImage( tmpObjects, myWindow );
   }
   else
   {

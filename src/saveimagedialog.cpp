@@ -378,6 +378,24 @@ void SaveImageDialog::CreateControls()
     scaleMaster = imageGeneration->getScaleImage();
 
     drawScaleControlSingle->Hide();
+    if( ( ( gTimeline * )GetParent() )->GetMyWindow()->isFunctionLineColorSet() )
+    {
+      drawScaleSingle->Hide();
+      drawWindowAndScale->Hide();
+      
+      legendCheckbox->SetValue( false );
+      legendCheckbox->Enable( false );
+      legendFileName->Enable( false );
+      
+      legendControlCheckbox->SetValue( false );
+      legendControlCheckbox->Enable( false );
+      legendControlFileName->Enable( false );
+
+      imageAndScaleCheckbox->SetValue( false );
+      imageAndScaleCheckbox->Enable( false );
+      imageScaleFileName->Enable( false );
+    }
+
     imageToSaveSizer->Hide( (wxSizer*)legendControlSizer, true );
   }
   else
@@ -710,16 +728,16 @@ void SaveImageDialog::OnFilenavigatorUpdate( wxUpdateUIEvent& event )
 
 void SaveImageDialog::onPaintScale( wxPaintEvent& event )
 {
-  ////@begin wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
-  // Before editing this code, remove the block markers.
   wxPaintDC dc( wxDynamicCast( event.GetEventObject(), wxWindow ) );
-  ////@end wxEVT_PAINT event handler for ID_SCROLLEDWINDOW_IMAGE in SaveImageDialog.
   wxPaintDC dcScale( drawScaleSingle );
   drawScaleSingle->PrepareDC( dcScale );
+
+  EnableLegendControls();
+
   // wxPaintDC dcscale( drawScaleSingle );
   wxBitmap* originalBmp = nullptr;
 
-  if( myHistogram == nullptr )
+  if( myHistogram == nullptr && !(((gTimeline *)GetParent())->GetMyWindow()->isFunctionLineColorSet()) )
     originalBmp = imageGeneration->getScaleImageBitmap();
   else
     originalBmp = imageGeneration->getScaleDataImageBitmap();
@@ -787,7 +805,12 @@ void SaveImageDialog::onPaintScaleControl( wxPaintEvent& event )
   drawScaleControlSingle->PrepareDC( dcScale );
   // wxPaintDC dcscale( drawScaleSingle );
 
-  wxBitmap* originalBmp = imageGeneration->getScaleImageBitmap();
+  EnableLegendControls();
+
+  wxBitmap* originalBmp = nullptr;  
+  if( myHistogram != nullptr || !(((gTimeline *)GetParent())->GetMyWindow()->isFunctionLineColorSet()) )
+    originalBmp = imageGeneration->getScaleImageBitmap();
+
   if( originalBmp && originalBmp->IsOk() )
   {
     wxImage img = originalBmp->ConvertToImage();
@@ -853,7 +876,12 @@ void SaveImageDialog::OnPaintWindowScale( wxPaintEvent& event )
   wxPaintDC dcScale( drawWindowAndScale );
   drawWindowAndScale->PrepareDC( dcScale ); // <--- This line is critical!
 
-  wxBitmap* originalBmp = imageGeneration->getTimelineScaleImage();
+  EnableLegendControls();
+
+  wxBitmap* originalBmp = nullptr;
+  if( myHistogram != nullptr || !(((gTimeline *)GetParent())->GetMyWindow()->isFunctionLineColorSet()) )
+    originalBmp = imageGeneration->getTimelineScaleImage();
+
   if( originalBmp && originalBmp->IsOk() )
   {
     // Convert to wxImage
@@ -1186,6 +1214,8 @@ void SaveImageDialog::OnPaintWindowSingle( wxPaintEvent& event )
   wxPaintDC dcScale( drawWindowSingle );
   drawWindowSingle->PrepareDC( dcScale ); // <--- This line is critical!
 
+  EnableLegendControls( false );
+
   wxBitmap* originalBmp = imageGeneration->getWindowsImageBitmap();
   if( originalBmp && originalBmp->IsOk() )
   {
@@ -1459,4 +1489,11 @@ void SaveImageDialog::OnSaveimageCopyClipboardButtonClick( wxCommandEvent& event
     else if( drawScaleControlSingle->IsShown() && myHistogram->getFirstRowColored() )
       imageGeneration->saveImageScale( _( "" ), false, tmpCopyToClipboard );
   }
+}
+
+void SaveImageDialog::EnableLegendControls( bool enable )
+{
+  widgetTopCompose1->Enable( enable );
+  shrinkLabelCheckBox->Enable( enable );
+  buttonSelectLegendValues->Enable( enable );
 }

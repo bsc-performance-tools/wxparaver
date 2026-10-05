@@ -1643,6 +1643,7 @@ gHistogram* gHistogram::clone( Histogram* clonedHistogram, bool showWindow )
                                                       endRow,
                                                       true );
 
+  clonedGHistogram->columnSelection = columnSelection;
 
   if( !myHistogram->isDerivedHistogram() )
   {
