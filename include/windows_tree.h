@@ -103,9 +103,6 @@ void iconizeWindows( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      bool iconize );
 
-template< class TWindow >
-int getIconNumber( TWindow *whichWindow, PRV_UINT16 numIcon = 0 );
-
-int getIconNumber( TWindowType& whichWindow, PRV_UINT16 numIcon = 0 );
+int getIconNumber( TWindowType whichWindow, PRV_UINT16 numIcon = 0 );
 
 void getGroupColor (const int &windowGroup, int &r, int &g, int &b);

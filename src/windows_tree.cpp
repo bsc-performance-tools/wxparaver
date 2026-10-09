@@ -866,6 +866,35 @@ void iconizeWindows( wxTreeCtrl *tree, wxTreeItemId &id, bool iconize )
   }
 }
 
+
+int getIconNumber( TWindowType whichWindow, PRV_UINT16 numIcon )
+{
+  if( std::holds_alternative< Timeline* >( whichWindow ) )
+  {
+    Timeline *tmpTimeline = std::get< Timeline * >( whichWindow );
+    if( tmpTimeline->isDerivedWindow() )
+      return paraverMain::iconPosByName[ tmpTimeline->getLevelFunction( DERIVED ) ];
+    else
+      return paraverMain::iconPosByName[ "timeline" ];
+  }
+  else if( std::holds_alternative< Histogram* >( whichWindow ) )
+  {
+    Histogram *tmpHistogram = std::get< Histogram * >( whichWindow );
+    if( tmpHistogram->isDerivedHistogram() )
+    {
+      if( tmpHistogram->sameDerivedOperationsBetweenChildren() )
+        return paraverMain::iconPosByName[ tmpHistogram->getDerivedOperation( numIcon ) ];
+      else
+        return paraverMain::iconPosByName[ "generic_operation" ];
+    }
+    else
+      return paraverMain::iconPosByName[ "histogram" ];
+  }
+
+  return paraverMain::myParaverMain->iconPosByName[ "timeline" ]; // by default
+}
+
+
 void getGroupColor( const int &windowGroup, int &r, int &g, int &b )
 {
   int intensity = 100 + 15 * windowGroup;
@@ -889,40 +918,3 @@ void getGroupColor( const int &windowGroup, int &r, int &g, int &b )
       break;
   }
 }
-
-template< class TWindow >
-int getIconNumber( TWindow *whichWindow, PRV_UINT16 numIcon )
-{
-  if constexpr( std::is_same_v< TWindow, Timeline > )
-  {
-    if( whichWindow->isDerivedWindow() )
-      return paraverMain::iconPosByName[ whichWindow->getLevelFunction( DERIVED ) ];
-    else
-      return paraverMain::iconPosByName[ "timeline" ];
-  }
-  else
-  {
-    if( whichWindow->isDerivedHistogram() )
-    {
-      if( whichWindow->sameDerivedOperationsBetweenChildren() )
-        return paraverMain::iconPosByName[ whichWindow->getDerivedOperation( numIcon ) ];
-      else
-        return paraverMain::iconPosByName[ "generic_operation" ];
-    }
-    else
-      return paraverMain::iconPosByName[ "histogram" ];
-  }
-
-  return paraverMain::myParaverMain->iconPosByName[ "timeline" ]; // by default
-}
-
-int getIconNumber( TWindowType& whichWindow, PRV_UINT16 numIcon )
-{
-  if( auto tmpTimeline = std::get_if< Timeline* >( &whichWindow ) )
-    return getIconNumber( *tmpTimeline, numIcon );
-  else if( auto tmpHistogram = std::get_if< Histogram* >( &whichWindow ) )
-    return getIconNumber( *tmpHistogram, numIcon );
-
-  return paraverMain::myParaverMain->iconPosByName[ "timeline" ]; // by default
-}
-
