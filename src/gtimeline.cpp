@@ -2383,6 +2383,9 @@ void gTimeline::OnPopUpPasteDefaultSpecial( wxCommandEvent& event )
   if( pasteActions->isAllowed( this, STR_OBJECTS ) )
     pasteActions->paste( this, "Objects" );
 
+  if( pasteActions->isAllowed( this, STR_OBJECT_AXIS ) )
+    pasteActions->paste( this, STR_OBJECT_AXIS );
+
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }

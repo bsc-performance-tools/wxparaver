@@ -176,7 +176,7 @@ void gPopUpMenu::initializePopUpMenu()
 /****BUILD FUNCTIONS FOR DIFFERENT ITEMS OF THE MAIN MENU*****/
 /*************************************************************/
 
-void gPopUpMenu ::buildPopUpMenuZoom()
+void gPopUpMenu::buildPopUpMenuZoom()
 {
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE )
   {
@@ -186,7 +186,7 @@ void gPopUpMenu ::buildPopUpMenuZoom()
     buildListOfItems( zoomItems );
   }
 }
-void gPopUpMenu ::buildListOfItems( std::vector< BuildMenuItem > &itemList )
+void gPopUpMenu::buildListOfItems( std::vector< BuildMenuItem > &itemList )
 {
   for( const auto &item : itemList )
   {
@@ -200,7 +200,7 @@ void gPopUpMenu ::buildListOfItems( std::vector< BuildMenuItem > &itemList )
   }
 }
 
-void gPopUpMenu ::buildPopUpMenuView()
+void gPopUpMenu::buildPopUpMenuView()
 {
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE )
   {
@@ -239,7 +239,7 @@ void gPopUpMenu ::buildPopUpMenuView()
   }
 }
 
-void gPopUpMenu ::buildPopUpMenuPaste()
+void gPopUpMenu::buildPopUpMenuPaste()
 {
   std::vector< BuildMenuItem > pasteItemsBasicCommon = {
     { popUpMenuPaste,
@@ -305,7 +305,7 @@ void gPopUpMenu ::buildPopUpMenuPaste()
   this->AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 }
 
-void gPopUpMenu ::buildPopUpMenuColor()
+void gPopUpMenu::buildPopUpMenuColor()
 {
   std::vector< BuildMenuItem > popUpColorTimelineItems = {
     { popUpMenuColor,
@@ -423,7 +423,7 @@ void gPopUpMenu ::buildPopUpMenuColor()
   buildListOfItems( popUpColorCommonItems );
 }
 
-void gPopUpMenu ::buildPopUpMenuDimensionsConfiguration()
+void gPopUpMenu::buildPopUpMenuDimensionsConfiguration()
 {
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_HISTOGRAM_MULTIPLE )
   {
@@ -472,7 +472,7 @@ void gPopUpMenu ::buildPopUpMenuDimensionsConfiguration()
   }
 }
 
-void gPopUpMenu ::buildPopUpMenuShowWindows()
+void gPopUpMenu::buildPopUpMenuShowWindows()
 {
   std::vector< BuildMenuItem > showWindowsOptions = {
     { popUpMenuShowWindows, _( STR_SHOW_SELECTED_WINDOWS ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpShowSelectedWindows, ID_SHOW_SELECTED_WINDOWS },
@@ -617,7 +617,7 @@ void gPopUpMenu::buildPopUpMenuFitObjects()
   this->AppendSeparator();
 }
 
-void gPopUpMenu ::buildPopUpMenuDrawMode()
+void gPopUpMenu::buildPopUpMenuDrawMode()
 {
   if( typeDataPopup != PopUpMenuType::POPUP_MENU_TYPE_MIXED )
   {
@@ -960,7 +960,7 @@ void gPopUpMenu::buildPopUpMenuPixelSize()
   AppendSubMenu( popUpMenuPixelSize, _( "Pixel Size" ) );
 }
 
-void gPopUpMenu ::buildPopUpMenuGradientFunction()
+void gPopUpMenu::buildPopUpMenuGradientFunction()
 {
   if( typeDataPopup != PopUpMenuType::POPUP_MENU_TYPE_MIXED )
   {
@@ -1063,7 +1063,7 @@ void gPopUpMenu ::buildPopUpMenuGradientFunction()
   }
 }
 
-void gPopUpMenu ::buildPopUpMenuObjectAxis()
+void gPopUpMenu::buildPopUpMenuObjectAxis()
 {
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE )
   {
@@ -1159,7 +1159,7 @@ void gPopUpMenu ::buildPopUpMenuObjectAxis()
   }
 }
 
-void gPopUpMenu ::buildPopUpMenuSave()
+void gPopUpMenu::buildPopUpMenuSave()
 {
   std::vector< BuildMenuItem > saveConfigurationItems = {
     { popUpMenuSaveConfiguration, _( "Selected Windows..." ), wxITEM_NORMAL, &gPopUpMenu::OnPopUpSaveCFG, ID_MENU_SAVE_TIMELINE_AS_CFG },
@@ -1203,11 +1203,11 @@ void gPopUpMenu ::buildPopUpMenuSave()
   AppendSubMenu( popUpMenuSave, _( "Save" ) );
 }
 
-void gPopUpMenu ::buildPopUpMenuRun()
+void gPopUpMenu::buildPopUpMenuRun()
 {
 }
 
-void gPopUpMenu ::buildPopUpMenuLabels()
+void gPopUpMenu::buildPopUpMenuLabels()
 {
   if( typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_SINGLE || typeDataPopup == PopUpMenuType::POPUP_MENU_TYPE_TIMELINE_MULTIPLE )
   {
@@ -1262,7 +1262,7 @@ void gPopUpMenu ::buildPopUpMenuLabels()
   }
 }
 
-void gPopUpMenu ::buildPopUpMenuSync()
+void gPopUpMenu::buildPopUpMenuSync()
 {
   std::vector< TGroupId > tmpGroups;
   SyncWindows::getInstance()->getGroups( tmpGroups );
@@ -1904,6 +1904,13 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString &choice
     ++i;
   }
 
+  if( pasteActions->isAllowed( whichTimeline, STR_OBJECT_AXIS ) )
+  {
+    choices.Add( _( STR_OBJECT_AXIS ) );
+    sel.Add( i );
+    ++i;
+  }
+
   if( pasteActions->isAllowed( whichTimeline, STR_DURATION ) )
     choices.Add( _( STR_DURATION ) );
 
@@ -1922,7 +1929,7 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString &choice
   return tmpDialog;
 }
 
-bool gPopUpMenu ::isSelectObjectsAvailable()
+bool gPopUpMenu::isSelectObjectsAvailable()
 {
   bool sameTraceParameters = true;
   bool sameTraceLevelMode  = true;
@@ -1968,7 +1975,7 @@ bool gPopUpMenu ::isSelectObjectsAvailable()
   return ( sameTraceParameters && sameTraceLevelMode );
 }
 
-bool gPopUpMenu ::isShowTraceWindowsAvailable()
+bool gPopUpMenu::isShowTraceWindowsAvailable()
 {
   bool sameTrace = true;
 
@@ -2001,7 +2008,7 @@ bool gPopUpMenu ::isShowTraceWindowsAvailable()
   return sameTrace;
 }
 
-void gPopUpMenu ::createRowSelectionDialog()
+void gPopUpMenu::createRowSelectionDialog()
 {
   bool isProcessModel = false;
   Trace *trace        = nullptr;
@@ -2141,10 +2148,10 @@ bool gPopUpMenu::ZoomAwareTransferData( RowsSelectionDialog *myDialog )
   }
   return applyZoom;
 }
-void gPopUpMenu ::transferDataSelectionToObjects( RowsSelectionDialog *myDialog,
-                                                  bool isProcessModel,
-                                                  SelectionManagement< TObjectOrder, TTraceLevel > *intersectionSelectedRows,
-                                                  bool applyZoom )
+void gPopUpMenu::transferDataSelectionToObjects( RowsSelectionDialog *myDialog,
+                                                 bool isProcessModel,
+                                                 SelectionManagement< TObjectOrder, TTraceLevel > *intersectionSelectedRows,
+                                                 bool applyZoom )
 {
   TTraceLevel beginLevel;
   TTraceLevel endLevel;
@@ -2202,7 +2209,7 @@ void gPopUpMenu ::transferDataSelectionToObjects( RowsSelectionDialog *myDialog,
   }
 }
 
-RowsSelectionDialog *gPopUpMenu ::createRowSelectionDialog( gTimeline *whichTimeline )
+RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gTimeline *whichTimeline )
 {
   bool isProcessModel =
     ( ( whichTimeline->GetMyWindow()->getLevel() >= TTraceLevel::WORKLOAD ) && ( whichTimeline->GetMyWindow()->getLevel() <= TTraceLevel::THREAD ) );
