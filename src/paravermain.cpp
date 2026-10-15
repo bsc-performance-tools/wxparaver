@@ -3911,6 +3911,7 @@ void paraverMain::ShowDerivedHistogramDialog()
 
 void paraverMain::findCompatibleHistogramsForDerivation( Histogram *baseHistogram,
                                                          std::vector< Histogram * >& derivableHistograms,
+                                                         std::map< Histogram *, std::string >& allCompatibilityMessages,
                                                          bool searchAllTraces )
 {
   derivableHistograms.clear();
@@ -3922,10 +3923,16 @@ void paraverMain::findCompatibleHistogramsForDerivation( Histogram *baseHistogra
   else
     LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], histograms );
 
+  // TODO copy messages
   std::copy_if( histograms.begin(), histograms.end(), std::back_inserter( derivableHistograms ),
-                [ &baseHistogram ]( auto h )
+                [ &baseHistogram, &allCompatibilityMessages ]( auto h )
                 { 
-                  return HistogramProxy::compatibleForDerivation( baseHistogram, h );
+                  std::string compatibleMessage;
+                  bool isCompatible = HistogramProxy::compatibleForDerivation( baseHistogram, h, compatibleMessage );
+                  if( !isCompatible )
+                    allCompatibilityMessages[ h ] = compatibleMessage;
+
+                  return isCompatible;
                 } );
 }
 
@@ -4155,10 +4162,11 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent &event )
       if( beginDragHistogram != nullptr )
       {
         Histogram *endDragHistogram = histogram->GetHistogram();
-
-        if( !HistogramProxy::compatibleForDerivation( beginDragHistogram, endDragHistogram ) )
+        std::string compatibilityMessage;
+        if( !HistogramProxy::compatibleForDerivation( beginDragHistogram, endDragHistogram, compatibilityMessage ) )
         {
-          wxMessageBox( wxT( "Incompatible histograms used to derive." ), wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
+          auto msg = wxString( compatibilityMessage );
+          wxMessageBox( compatibilityMessage, wxT( "Warning" ), wxOK | wxICON_EXCLAMATION, this );
         }
         else
         {

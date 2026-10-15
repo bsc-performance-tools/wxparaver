@@ -281,7 +281,7 @@ public:
   void OnButtonDeleteParentUpdate( wxUpdateUIEvent& event );
 
   // 
-  bool isCompatibleWithMain( TWindowType whichWindow );
+  bool isCompatibleWithMain( TWindowType whichWindow, std::string& compatibilityMessage );
 
 
 protected:

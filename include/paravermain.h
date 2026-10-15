@@ -691,6 +691,7 @@ class paraverMain : public wxFrame
     
     void findCompatibleHistogramsForDerivation( Histogram *baseHistogram,
                                                 std::vector< Histogram * >& derivableHistograms,
+                                                std::map< Histogram *, std::string >& allCompatibilityMessages,
                                                 bool searchAllTraces = false );
                                                 
     // clang-format off

@@ -508,10 +508,11 @@ void DerivedHistogramDialog::CreateControlsForParentLine( wxBoxSizer *whichBoxSi
   // Compatible?
   if( isNotFirstLine )
   {
-    if( !isCompatibleWithMain( parentLines[ pos ].parent ) )
+    std::string compatibilityMessage;
+    if( !isCompatibleWithMain( parentLines[ pos ].parent, compatibilityMessage ) )
     {
       textCtrlHistogramName->SetForegroundColour( *wxRED );
-      panelHistogramLine->SetToolTip( "Histogram not compatible with main (first one)." );
+      panelHistogramLine->SetToolTip( "Histogram not compatible with main (first one):\n\t" + compatibilityMessage );
       bitmapButtonOperation->Enable( false );
     }
   }
@@ -821,8 +822,10 @@ Histogram *DerivedHistogramDialog::selectHistogram( Histogram *mainHistogram )
   // Find compatible histograms
   std::vector< Histogram * > derivableHistograms;
   bool searchAllTraces = true;
+  std::map< Histogram *, std::string > dummyMessages;
   paraverMain::myParaverMain->findCompatibleHistogramsForDerivation( mainHistogram,
                                                                      derivableHistograms,
+                                                                     dummyMessages,
                                                                      searchAllTraces );
 
   // Get IDs
@@ -897,7 +900,7 @@ void DerivedHistogramDialog::OnPopupOperationModified( wxCommandEvent& event )
 }
 
 
-bool DerivedHistogramDialog::isCompatibleWithMain( TWindowType whichWindow )
+bool DerivedHistogramDialog::isCompatibleWithMain( TWindowType whichWindow, std::string& compatibilityMessage )
 {
   if( std::holds_alternative< Histogram * >( whichWindow ) )
   {
@@ -905,9 +908,14 @@ bool DerivedHistogramDialog::isCompatibleWithMain( TWindowType whichWindow )
     Histogram *currentHistogram = std::get< Histogram * >( whichWindow );
     std::vector< Histogram * > derivableHistograms;
     bool searchAllTraces = true;
-    paraverMain::myParaverMain->findCompatibleHistogramsForDerivation( mainHistogram, derivableHistograms, searchAllTraces );
+    std::map< Histogram *, std::string > allCompatibilityMessages;
+    paraverMain::myParaverMain->findCompatibleHistogramsForDerivation( mainHistogram, derivableHistograms, allCompatibilityMessages, searchAllTraces );
 
-    return ( std::find( derivableHistograms.cbegin(), derivableHistograms.cend(), currentHistogram ) != derivableHistograms.cend() );
+    bool isCompatible = std::find( derivableHistograms.cbegin(), derivableHistograms.cend(), currentHistogram ) != derivableHistograms.cend();
+    if( !isCompatible )
+      compatibilityMessage = allCompatibilityMessages[ currentHistogram ];
+
+    return isCompatible;
   }
 
   return false;
@@ -975,7 +983,8 @@ void DerivedHistogramDialog::OnOkUpdate( wxUpdateUIEvent& event )
                                         if( h.parent == parentLines.front().parent )
                                           continue;
 
-                                        if( !isCompatibleWithMain( h.parent ) )
+                                        std::string compatibilityMessage;
+                                        if( !isCompatibleWithMain( h.parent, compatibilityMessage ) )
                                           return false;
                                       }
                                       return true;
