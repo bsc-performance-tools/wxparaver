@@ -1615,7 +1615,8 @@ string getPropertyName( Timeline *whichWindow,
                         Histogram *whichHistogram,
                         TSingleTimelineProperties singleIndex,
                         TDerivedTimelineProperties derivedIndex,
-                        THistogramProperties histogramIndex )
+                        THistogramProperties histogramIndex,
+                        TDerivedHistogramProperties derivedHistogramIndex )
 {
   if( whichWindow != nullptr )
   {
@@ -1624,8 +1625,13 @@ string getPropertyName( Timeline *whichWindow,
     else if( singleIndex != SINGLE_NULL )
       return SingleTimelinePropertyLabels[ singleIndex ];
   }
-  else if( whichHistogram != nullptr && histogramIndex != HISTOGRAM_NULL )
-    return HistogramPropertyLabels[ histogramIndex ];
+  else if( whichHistogram != nullptr )
+  { 
+    if( whichHistogram->isDerivedHistogram() && derivedHistogramIndex != DERIVED_HISTOGRAM_NULL )
+      return DerivedHistogramPropertyLabels[ derivedHistogramIndex ];
+    else if( !whichHistogram->isDerivedHistogram() && histogramIndex != HISTOGRAM_NULL ) 
+      return HistogramPropertyLabels[ histogramIndex ];
+  }
 
   return "";
 }
@@ -1637,7 +1643,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
                                     Timeline *whichTimeline,
                                     Histogram *whichHistogram )
 {
-  if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NAME, DERIVED_NAME, HISTOGRAM_NAME ) )
+  if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NAME, DERIVED_NAME, HISTOGRAM_NAME, DERIVED_HISTOGRAM_NAME ) )
   {
     wxString tmpName = property->GetValue().GetString();
     if( whichTimeline != nullptr )
@@ -1651,7 +1657,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
       whichHistogram->setChanged( true );
     }
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_BEGINTIME, DERIVED_BEGINTIME, HISTOGRAM_BEGINTIME ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_BEGINTIME, DERIVED_BEGINTIME, HISTOGRAM_BEGINTIME, DERIVED_HISTOGRAM_BEGINTIME ) )
   {
     TTime tmpValue;
     if( whichTimeline != nullptr )
@@ -1689,7 +1695,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
       whichHistogram->setRecalc( true );
     }
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_ENDTIME, DERIVED_ENDTIME, HISTOGRAM_ENDTIME ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_ENDTIME, DERIVED_ENDTIME, HISTOGRAM_ENDTIME, DERIVED_HISTOGRAM_ENDTIME ) )
   {
     TTime tmpValue;
     if( whichTimeline != nullptr )
@@ -1727,25 +1733,25 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
       whichHistogram->setRecalc( true );
     }
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_SEMANTICMINIMUM, DERIVED_SEMANTICMINIMUM, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_SEMANTICMINIMUM, DERIVED_SEMANTICMINIMUM, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     double tmpValue = property->GetValue().GetDouble();
     whichTimeline->setMinimumY( tmpValue );
     whichTimeline->setRedraw( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_SEMANTICMAXIMUM, DERIVED_SEMANTICMAXIMUM, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_SEMANTICMAXIMUM, DERIVED_SEMANTICMAXIMUM, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     double tmpValue = property->GetValue().GetDouble();
     whichTimeline->setMaximumY( tmpValue );
     whichTimeline->setRedraw( true );
   }
   // Control Timeline related properties
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLWINDOW ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLWINDOW, DERIVED_HISTOGRAM_NULL ) )
   {
     whichHistogram->setControlWindow( ( (prvTimelineTreeProperty *)property )->getSelectedWindow() );
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLMINIMUM ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLMINIMUM, DERIVED_HISTOGRAM_NULL ) )
   {
     whichHistogram->setControlMin( property->GetValue().GetDouble() );
 
@@ -1757,7 +1763,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     whichHistogram->setCompute2DScale( false );
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLMAXIMUM ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLMAXIMUM, DERIVED_HISTOGRAM_NULL ) )
   {
     whichHistogram->setControlMax( property->GetValue().GetDouble() );
 
@@ -1769,7 +1775,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     whichHistogram->setCompute2DScale( false );
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLDELTA ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLDELTA, DERIVED_HISTOGRAM_NULL ) )
   {
     if( property->GetValue().GetDouble() == 0 )
     {
@@ -1787,7 +1793,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     whichHistogram->setUseFixedDelta( true );
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_NUMCOLUMNS ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_NUMCOLUMNS, DERIVED_HISTOGRAM_NULL ) )
   {
     unsigned long newNumColumns;
     wxString numColumnsStr = property->GetValueAsString();
@@ -1820,25 +1826,25 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     whichHistogram->setRecalc( true );
   }
   // Data Timeline related properties
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_DATAWINDOW ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_DATAWINDOW, DERIVED_HISTOGRAM_NULL ) )
   {
     whichHistogram->setDataWindow( ( (prvTimelineTreeProperty *)property )->getSelectedWindow() );
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_MINIMUMGRADIENT ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_MINIMUMGRADIENT, DERIVED_HISTOGRAM_MINIMUMGRADIENT ) )
   {
     whichHistogram->setMinGradient( property->GetValue().GetDouble() );
     whichHistogram->setComputeGradient( false );
     whichHistogram->setRedraw( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_MAXIMUMGRADIENT ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_MAXIMUMGRADIENT, DERIVED_HISTOGRAM_MAXIMUMGRADIENT ) )
   {
     whichHistogram->setMaxGradient( property->GetValue().GetDouble() );
     whichHistogram->setComputeGradient( false );
     whichHistogram->setRedraw( true );
   }
   // Histogram related properties
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_TYPE ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_TYPE, DERIVED_HISTOGRAM_TYPE ) )
   {
     if( property->GetValue().GetLong() == 0 )
       whichHistogram->setCurrentStat( whichHistogram->getFirstCommStatistic() );
@@ -1847,7 +1853,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     whichHistogram->setRedraw( true );
     whichHistogram->setChanged( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_STATISTIC ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_STATISTIC, DERIVED_HISTOGRAM_STATISTIC ) )
   {
     bool getOriginalList = ( !whichHistogram->getCFG4DEnabled() || !whichHistogram->getCFG4DMode() );
     if( getOriginalList )
@@ -1870,53 +1876,26 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     whichHistogram->setRedraw( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_DERIVED_OP ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_OP ) )
   {
-    bool getOriginalList = ( !whichHistogram->getCFG4DEnabled() || !whichHistogram->getCFG4DMode() );
-    if( getOriginalList )
-    {
-      PRV_UINT16 derivedOperationIndex = whichClientData->derivedOperationIndex;
-      whichHistogram->setDerivedOperation( derivedOperationIndex, std::string( property->GetDisplayedString().mb_str() ) );
+    PRV_UINT16 derivedOperationIndex = whichClientData->derivedOperationIndex;
+    whichHistogram->setDerivedOperation( derivedOperationIndex, std::string( property->GetDisplayedString().mb_str() ) );
 
-      // Change Derived operation Icon: find icon in list
-      // int iconNumber;
-      // if( whichHistogram->sameDerivedOperationsBetweenChildren() )
-      //   iconNumber = getIconNumber( whichHistogram, derivedOperationIndex );
-      // else
-      //   iconNumber = paraverMain::iconPosByName[ "generic_operation" ];
-      int iconNumber = getIconNumber( whichHistogram, derivedOperationIndex );
+    // Change Derived operation Icon: find icon in list
+    int iconNumber = getIconNumber( whichHistogram, derivedOperationIndex );
 
-      // Change Derived operation Icon: set both trees, global and trace tree
-      wxTreeCtrl *globalTreePage       = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
-      wxTreeCtrl *currentTraceTreePage = (wxTreeCtrl *)choiceWindowBrowser->GetPage( currentTrace + 1 );
-      bool found;
-      wxTreeItemId idInGlobalTree = getItemIdFromHistogram( globalTreePage, globalTreePage->GetRootItem(), whichHistogram, found );
-      globalTreePage->SetItemImage( idInGlobalTree, iconNumber );
-      wxTreeItemId idInCurrentTraceTree = getItemIdFromHistogram( currentTraceTreePage, currentTraceTreePage->GetRootItem(), whichHistogram, found );
-      currentTraceTreePage->SetItemImage( idInCurrentTraceTree, iconNumber );
-
-      // spreadSetRedraw( whichHistogram );
-      // spreadSetChanged( whichHistogram );
-    }
-    // TODO: cfg4d pending
-    // else
-    // {
-    //   map< string, string > statList( whichHistogram->getCFG4DStatisticsAliasList() );
-    //   string selected( std::string( property->GetDisplayedString().mb_str() ) );
-    //   for ( map< string, string >::iterator it = statList.begin(); it != statList.end(); ++it )
-    //   {
-    //     if ( it->second == selected )
-    //     {
-    //       selected = it->first;
-    //     }
-    //   }
-    //   whichHistogram->setCurrentStat( selected );
-    //   whichHistogram->setDerivedOperation( selected );
-    // }
+    // Change Derived operation Icon: set both trees, global and trace tree
+    wxTreeCtrl *globalTreePage       = (wxTreeCtrl *)choiceWindowBrowser->GetPage( 0 );
+    wxTreeCtrl *currentTraceTreePage = (wxTreeCtrl *)choiceWindowBrowser->GetPage( currentTrace + 1 );
+    bool found;
+    wxTreeItemId idInGlobalTree = getItemIdFromHistogram( globalTreePage, globalTreePage->GetRootItem(), whichHistogram, found );
+    globalTreePage->SetItemImage( idInGlobalTree, iconNumber );
+    wxTreeItemId idInCurrentTraceTree = getItemIdFromHistogram( currentTraceTreePage, currentTraceTreePage->GetRootItem(), whichHistogram, found );
+    currentTraceTreePage->SetItemImage( idInCurrentTraceTree, iconNumber );
 
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3D3RDWINDOW ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3D3RDWINDOW, DERIVED_HISTOGRAM_NULL ) )
   {
     if( ( (prvTimelineTreeProperty *)property )->getSelectedWindow() == nullptr )
       whichHistogram->clearExtraControlWindow();
@@ -1924,19 +1903,19 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
       whichHistogram->setExtraControlWindow( ( (prvTimelineTreeProperty *)property )->getSelectedWindow() );
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DMINIMUM ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DMINIMUM, DERIVED_HISTOGRAM_NULL ) )
   {
     whichHistogram->setExtraControlMin( property->GetValue().GetDouble() );
     whichHistogram->setCompute3DScale( false );
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DMAXIMUM ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DMAXIMUM, DERIVED_HISTOGRAM_NULL ) )
   {
     whichHistogram->setExtraControlMax( property->GetValue().GetDouble() );
     whichHistogram->setCompute3DScale( false );
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DDELTA ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DDELTA, DERIVED_HISTOGRAM_NULL ) )
   {
     if( property->GetValue().GetDouble() == 0 )
     {
@@ -1948,7 +1927,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     whichHistogram->setCompute3DScale( false );
     whichHistogram->setRecalc( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DPLANE ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DPLANE, DERIVED_HISTOGRAM_NULL ) )
   {
     // Disable fixed sort, because different planes couldn't have same columns
     if( whichHistogram->getFixedSemanticSort() )
@@ -1962,45 +1941,45 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
   }
 
   // Timeline related properties
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_LEVEL, DERIVED_LEVEL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_LEVEL, DERIVED_LEVEL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevel( static_cast< TTraceLevel >( property->GetValue().GetLong() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TIMEUNIT, DERIVED_TIMEUNIT, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TIMEUNIT, DERIVED_TIMEUNIT, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setTimeUnit( (TTimeUnit)property->GetValue().GetLong() );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMLOGICAL, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMLOGICAL, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setLogical( property->GetValue().GetBool() );
     whichTimeline->setRedraw( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMPHYSICAL, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMPHYSICAL, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setPhysical( property->GetValue().GetBool() );
     whichTimeline->setRedraw( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMINTRA, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMINTRA, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setIntraCommsFilter( property->GetValue().GetBool() );
     whichTimeline->setRedraw( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMINTER, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMINTER, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setInterCommsFilter( property->GetValue().GetBool() );
     whichTimeline->setRedraw( true );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMFUNCTION, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setCommFromFunction( std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMVALUES, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     prvRowsSelectionProperty *myProperty = (prvRowsSelectionProperty *)event.GetProperty();
 
@@ -2015,7 +1994,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     spreadSetRedraw( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMTOOP, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMTOOP, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     long op        = property->GetValue().GetLong();
     Filter *filter = whichTimeline->getFilter();
@@ -2026,13 +2005,13 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     spreadSetRedraw( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTOFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTOFUNCTION, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setCommToFunction( std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTOVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTOVALUES, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     prvRowsSelectionProperty *myProperty = (prvRowsSelectionProperty *)event.GetProperty();
 
@@ -2047,13 +2026,13 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     spreadSetRedraw( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTAGFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTAGFUNCTION, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setCommTagFunction( std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTAGVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTAGVALUES, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     Filter *filter = whichTimeline->getFilter();
     filter->clearCommTags();
@@ -2067,7 +2046,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     spreadSetRedraw( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTAGSIZEOP, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTAGSIZEOP, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     long op        = property->GetValue().GetLong();
     Filter *filter = whichTimeline->getFilter();
@@ -2078,13 +2057,13 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     spreadSetRedraw( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMSIZEFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMSIZEFUNCTION, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setCommSizeFunction( std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMSIZEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMSIZEVALUES, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     Filter *filter = whichTimeline->getFilter();
     filter->clearCommSizes();
@@ -2098,13 +2077,13 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     spreadSetRedraw( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMBANDWIDTHFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMBANDWIDTHFUNCTION, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setBandWidthFunction( std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMBANDWIDTHVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMBANDWIDTHVALUES, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     Filter *filter = whichTimeline->getFilter();
     filter->clearBandWidth();
@@ -2118,13 +2097,13 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     spreadSetRedraw( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTTYPEFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTTYPEFUNCTION, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setEventTypeFunction( std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTTYPEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTTYPEVALUES, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     Filter *filter = whichTimeline->getFilter();
     filter->clearEventTypes();
@@ -2135,7 +2114,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTTYPEVALUESOP, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTTYPEVALUESOP, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     long op        = property->GetValue().GetLong();
     Filter *filter = whichTimeline->getFilter();
@@ -2146,13 +2125,13 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
 
     spreadSetRedraw( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEFUNCTION, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->getFilter()->setEventValueFunction( std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEVALUES, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     Filter *filter = whichTimeline->getFilter();
     filter->clearEventValues();
@@ -2168,7 +2147,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EXTRATOPCOMPOSE1, DERIVED_EXTRATOPCOMPOSE1, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EXTRATOPCOMPOSE1, DERIVED_EXTRATOPCOMPOSE1, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     size_t position = whichClientData->extraTopComposeLevel;
 
@@ -2180,31 +2159,31 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TOPCOMPOSE1, DERIVED_TOPCOMPOSE1, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TOPCOMPOSE1, DERIVED_TOPCOMPOSE1, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( TOPCOMPOSE1, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TOPCOMPOSE2, DERIVED_TOPCOMPOSE2, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TOPCOMPOSE2, DERIVED_TOPCOMPOSE2, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( TOPCOMPOSE2, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_SHIFT1, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_SHIFT1, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setShift( 0, property->GetValue().GetInteger() );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR1, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR1, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setFactor( 0, property->GetValue().GetDouble() );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_DERIVED, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_DERIVED, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( DERIVED, std::string( property->GetDisplayedString().mb_str() ) );
 
@@ -2223,103 +2202,103 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR2, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR2, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setFactor( 1, property->GetValue().GetDouble() );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_SHIFT2, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_SHIFT2, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setShift( 1, property->GetValue().GetInteger() );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSEWORKLOAD, DERIVED_COMPOSEWORKLOAD, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSEWORKLOAD, DERIVED_COMPOSEWORKLOAD, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( COMPOSEWORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_WORKLOAD, DERIVED_WORKLOAD, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_WORKLOAD, DERIVED_WORKLOAD, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( WORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSEAPPL, DERIVED_COMPOSEAPPL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSEAPPL, DERIVED_COMPOSEAPPL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( COMPOSEAPPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_APPLICATION, DERIVED_APPLICATION, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_APPLICATION, DERIVED_APPLICATION, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( APPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSETASK, DERIVED_COMPOSETASK, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSETASK, DERIVED_COMPOSETASK, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( COMPOSETASK, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TASK, DERIVED_TASK, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TASK, DERIVED_TASK, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( TASK, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSESYSTEM, DERIVED_COMPOSESYSTEM, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSESYSTEM, DERIVED_COMPOSESYSTEM, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( COMPOSESYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_SYSTEM, DERIVED_SYSTEM, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_SYSTEM, DERIVED_SYSTEM, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( SYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSENODE, DERIVED_COMPOSENODE, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSENODE, DERIVED_COMPOSENODE, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( COMPOSENODE, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NODE, DERIVED_NODE, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NODE, DERIVED_NODE, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( NODE, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSECPU, DERIVED_COMPOSECPU, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSECPU, DERIVED_COMPOSECPU, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( COMPOSECPU, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_CPU, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_CPU, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( CPU, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSETHREAD, DERIVED_COMPOSETHREAD, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSETHREAD, DERIVED_COMPOSETHREAD, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( COMPOSETHREAD, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_THREAD, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_THREAD, DERIVED_NULL, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     whichTimeline->setLevelFunction( THREAD, std::string( property->GetDisplayedString().mb_str() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_FUNCTIONPARAMETERS, DERIVED_FUNCTIONPARAMETERS, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_FUNCTIONPARAMETERS, DERIVED_FUNCTIONPARAMETERS, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     TParamIndex paramIdx       = whichClientData->numParameter;
     TWindowLevel functionLevel = whichClientData->semanticLevel;
@@ -2338,7 +2317,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent &event,
     spreadSetRedraw( whichTimeline );
   }
   else if( propName ==
-           getPropertyName( whichTimeline, whichHistogram, SINGLE_EXTRAFUNCTIONPARAMETERS, DERIVED_EXTRAFUNCTIONPARAMETERS, HISTOGRAM_NULL ) )
+           getPropertyName( whichTimeline, whichHistogram, SINGLE_EXTRAFUNCTIONPARAMETERS, DERIVED_EXTRAFUNCTIONPARAMETERS, HISTOGRAM_NULL, DERIVED_HISTOGRAM_NULL ) )
   {
     TParamIndex paramIdx        = whichClientData->numParameter;
     TWindowLevel functionLevel  = whichClientData->semanticLevel;

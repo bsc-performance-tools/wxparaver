@@ -415,7 +415,21 @@ inline std::string getWidgetNameFromPropertyIndex< Timeline, TSingleTimelineProp
 template<>
 inline std::string getWidgetNameFromPropertyIndex< Histogram, THistogramProperties >( Histogram *window, THistogramProperties propertyIndex )
 {
-  return HistogramPropertyLabels[ propertyIndex ];
+  if( !window->isDerivedHistogram() && propertyIndex < TOTAL_HISTOGRAM_PROPERTIES )
+    return HistogramPropertyLabels[ propertyIndex ];
+  else if( window->isDerivedHistogram() && (TDerivedHistogramProperties)propertyIndex < TOTAL_DERIVED_HISTOGRAM_PROPERTIES )
+    return DerivedHistogramPropertyLabels[ (TDerivedHistogramProperties)propertyIndex ];
+  
+  return "";
+}
+
+template<>
+inline std::string getWidgetNameFromPropertyIndex< Histogram, TDerivedHistogramProperties >( Histogram *window, TDerivedHistogramProperties propertyIndex )
+{
+  if( window->isDerivedHistogram() && propertyIndex < TOTAL_DERIVED_HISTOGRAM_PROPERTIES )
+    return DerivedHistogramPropertyLabels[ propertyIndex ];
+    
+  return "";
 }
 
 
@@ -2327,7 +2341,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                        linkedPropertiesShown,
                        dummyPGId,
                        wxT( "Name" ),
-                       HISTOGRAM_NAME,
+                       whichHisto->isDerivedHistogram() ? (THistogramProperties)DERIVED_HISTOGRAM_NAME : HISTOGRAM_NAME,
                        CFG4DPropertyCustomOptions(),
                        whichHisto->getName() );
 
@@ -2338,7 +2352,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                        linkedPropertiesShown,
                        dummyPGId,
                        wxT( "Begin time" ),
-                       HISTOGRAM_BEGINTIME,
+                       whichHisto->isDerivedHistogram() ? (THistogramProperties)DERIVED_HISTOGRAM_BEGINTIME : HISTOGRAM_BEGINTIME,
                        CFG4DPropertyCustomOptions(),
                        LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getBeginTime() ),
                                                     whichHisto->getControlWindow()->getTimeUnit(),
@@ -2351,7 +2365,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                        linkedPropertiesShown,
                        dummyPGId,
                        wxT( "End time" ),
-                       HISTOGRAM_ENDTIME,
+                       whichHisto->isDerivedHistogram() ? (THistogramProperties)DERIVED_HISTOGRAM_ENDTIME : HISTOGRAM_ENDTIME,
                        CFG4DPropertyCustomOptions(),
                        LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getEndTime() ),
                                                     whichHisto->getControlWindow()->getTimeUnit(),
@@ -2471,7 +2485,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                        linkedPropertiesShown,
                        statCat,
                        wxT( "Type" ),
-                       HISTOGRAM_TYPE,
+                       whichHisto->isDerivedHistogram() ? (THistogramProperties)DERIVED_HISTOGRAM_TYPE : HISTOGRAM_TYPE,
                        CFG4DPropertyCustomOptions(),
                        arrayStr,
                        arrayInt,
@@ -2516,7 +2530,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                        linkedPropertiesShown,
                        statCat,
                        wxT( "Statistic" ),
-                       HISTOGRAM_STATISTIC,
+                       whichHisto->isDerivedHistogram() ? (THistogramProperties)DERIVED_HISTOGRAM_STATISTIC : HISTOGRAM_STATISTIC,
                        CFG4DPropertyCustomOptions(),
                        arrayStr,
                        arrayInt,
@@ -2529,7 +2543,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                        linkedPropertiesShown,
                        statCat,
                        wxT( "Minimum Gradient" ),
-                       HISTOGRAM_MINIMUMGRADIENT,
+                       whichHisto->isDerivedHistogram() ? (THistogramProperties)DERIVED_HISTOGRAM_MINIMUMGRADIENT : HISTOGRAM_MINIMUMGRADIENT,
                        CFG4DPropertyCustomOptions(),
                        whichHisto->getMinGradient() );
 
@@ -2540,7 +2554,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                        linkedPropertiesShown,
                        statCat,
                        wxT( "Maximum Gradient" ),
-                       HISTOGRAM_MAXIMUMGRADIENT,
+                       whichHisto->isDerivedHistogram() ? (THistogramProperties)DERIVED_HISTOGRAM_MAXIMUMGRADIENT : HISTOGRAM_MAXIMUMGRADIENT,
                        CFG4DPropertyCustomOptions(),
                        whichHisto->getMaxGradient() );
 
@@ -2601,18 +2615,8 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
     }
 
     // Get derived histogram operations 
-    std::vector< std::string > selectedOperations;
-    if( getOriginalList )
-    {
-      selectedOperations = whichHisto->getDerivedOperations();
-    }
-    // TODO: wait for CFG4D
-    // else
-    // {
-    //   map< string, string > statList( whichHisto->getCFG4DStatisticsAliasList() );
-    //   selectedOperation = statList[  whichHisto->getCurrentStat() ];
-    // }
-
+    std::vector< std::string > selectedOperations( whichHisto->getDerivedOperations() );
+    
     int numHistogram = 0;
     int numOperation = 0;
     auto op = selectedOperations.begin();
@@ -2621,9 +2625,6 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
     for( auto &tmpParentHistogram: tmpParents )
     {
       // Add histogram
-
-      // tmpOptions = { NO_BUTTON, tmpData, false, nullptr };
-
       AppendCFG4DProperty( ( wxStringProperty * )nullptr,
                            windowProperties,
                            whichHisto,
@@ -2631,7 +2632,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                            linkedPropertiesShown,
                            derivedHistogramCat,
                            wxT( "Histogram " ) + wxString::Format( "%d", ++numHistogram ),
-                           HISTOGRAM_DERIVED_PARENT,
+                           DERIVED_HISTOGRAM_PARENT,
                            CFG4DPropertyCustomOptions(),
                            tmpParentHistogram->getName() );
 
@@ -2644,13 +2645,17 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
         {
           // Operation available
 
-          // Detect pos of selected operation
+          // Find selected index to operation
           selected = 0;
           pos      = 0;
           for( vector< string >::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
           {
-            if( ( *it ) == *op )
+            if( *it == *op )
+            {
               selected = pos;
+              break;
+            }
+
             ++pos;
           }
 
@@ -2665,13 +2670,13 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                               linkedPropertiesShown,
                               derivedHistogramCat,
                               wxT( "Operation" ),
-                              HISTOGRAM_DERIVED_OP,
+                              DERIVED_HISTOGRAM_OP,
                               tmpOptions,
                               arrayStr,
                               arrayInt,
                               selected );
 
-          if( op != selectedOperations.end() - 1 )
+          if( op != --selectedOperations.end() )
           {
             // Note that if selectedOperations < tmpParents.size() - 1 then we may have a malformed? 
             // operations vector.
