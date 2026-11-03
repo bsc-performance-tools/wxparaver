@@ -417,8 +417,8 @@ inline std::string getWidgetNameFromPropertyIndex< Histogram, THistogramProperti
 {
   if( !window->isDerivedHistogram() && propertyIndex < TOTAL_HISTOGRAM_PROPERTIES )
     return HistogramPropertyLabels[ propertyIndex ];
-  else if( window->isDerivedHistogram() && (TDerivedHistogramProperties)propertyIndex < TOTAL_DERIVED_HISTOGRAM_PROPERTIES )
-    return DerivedHistogramPropertyLabels[ (TDerivedHistogramProperties)propertyIndex ];
+  else if( window->isDerivedHistogram() && (TDerivedHistogramProperties)propertyIndex < window->getNumCFG4DDerivedHistogramPropertyLabels() )
+    return window->getCFG4DDerivedHistogramPropertyLabel( propertyIndex );
   
   return "";
 }
@@ -426,8 +426,8 @@ inline std::string getWidgetNameFromPropertyIndex< Histogram, THistogramProperti
 template<>
 inline std::string getWidgetNameFromPropertyIndex< Histogram, TDerivedHistogramProperties >( Histogram *window, TDerivedHistogramProperties propertyIndex )
 {
-  if( window->isDerivedHistogram() && propertyIndex < TOTAL_DERIVED_HISTOGRAM_PROPERTIES )
-    return DerivedHistogramPropertyLabels[ propertyIndex ];
+  if( window->isDerivedHistogram() && propertyIndex < window->getNumCFG4DDerivedHistogramPropertyLabels() )
+    return window->getCFG4DDerivedHistogramPropertyLabel( propertyIndex );
     
   return "";
 }
@@ -2622,30 +2622,32 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
     auto op = selectedOperations.begin();
     auto tmpParents = whichHisto->getParents();
 
+    // expandedLabelsShift (and its preincrement after every property is added) is coupled with 
+    // HistogramProxy::DerivedHistogramPropertyLabelsExpandedList initialization.
+    int expandedLabelsShift = -1;
     for( auto &tmpParentHistogram: tmpParents )
     {
       // Add histogram
-      AppendCFG4DProperty( ( wxStringProperty * )nullptr,
-                           windowProperties,
-                           whichHisto,
-                           whichPropertiesClientData,
-                           linkedPropertiesShown,
-                           derivedHistogramCat,
-                           wxT( "Histogram " ) + wxString::Format( "%d", ++numHistogram ),
-                           DERIVED_HISTOGRAM_PARENT,
-                           CFG4DPropertyCustomOptions(),
-                           tmpParentHistogram->getName() );
-
-      windowProperties->GetLastItem()->Enable( false );
+      wxPGId retId = AppendCFG4DProperty( ( wxStringProperty * )nullptr,
+                                          windowProperties,
+                                          whichHisto,
+                                          whichPropertiesClientData,
+                                          linkedPropertiesShown,
+                                          derivedHistogramCat,
+                                          wxT( "Histogram " ) + wxString::Format( "%d", ++numHistogram ),
+                                          TDerivedHistogramProperties( (int)DERIVED_HISTOGRAM_PARENT + ++expandedLabelsShift ),
+                                          CFG4DPropertyCustomOptions(),
+                                          tmpParentHistogram->getName() );
+      // But disable it
+      if( retId != ( wxPGId ) nullptr )
+        windowProperties->GetLastItem()->Enable( false );
 
       if( tmpParentHistogram != tmpParents.back() )
       {
         // Add operation
         if( op != selectedOperations.end() )
         {
-          // Operation available
-
-          // Find selected index to operation
+          // Operation available: find selected index to operation
           selected = 0;
           pos      = 0;
           for( vector< string >::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
@@ -2669,20 +2671,19 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                               whichPropertiesClientData,
                               linkedPropertiesShown,
                               derivedHistogramCat,
-                              wxT( "Operation" ),
-                              DERIVED_HISTOGRAM_OP,
+                              wxT( "Operation " ) + wxString::Format( "%d", ++numOperation ),
+                              // DERIVED_HISTOGRAM_OP,
+                              TDerivedHistogramProperties( (int)DERIVED_HISTOGRAM_PARENT + ++expandedLabelsShift ),
                               tmpOptions,
                               arrayStr,
                               arrayInt,
                               selected );
-
           if( op != --selectedOperations.end() )
           {
             // Note that if selectedOperations < tmpParents.size() - 1 then we may have a malformed? 
             // operations vector.
             // -> Repeat last one ( at least default "add" exists )
             ++op;
-            ++numOperation;
           }
         }
       }
