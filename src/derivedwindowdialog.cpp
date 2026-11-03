@@ -74,33 +74,30 @@ ButtonArrayPopup::ButtonArrayPopup( wxWindow *parent, wxBitmapButton *whichCalle
 
   m_panel = new wxScrolledWindow( this, wxID_ANY );
 
-    m_button1 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 0 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "add" )  );
-    m_button2 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 2 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "substract" ) );
-    m_button3 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 1 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "product" ) );
-    m_button4 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 3 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "divide" ) );
-    m_button5 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 4 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "maximum" )  );
-    m_button6 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 5 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "minimum" ) );
-    m_button7 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 6 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "different" ) );
-
-    wxBoxSizer *lineSizer1 = new wxBoxSizer( wxHORIZONTAL );
-    lineSizer1->Add( m_button1, 0, wxALL, 3 );
-    lineSizer1->Add( m_button2, 0, wxALL, 3 );
-    lineSizer1->Add( m_button3, 0, wxALL, 3 );
-    lineSizer1->Add( m_button4, 0, wxALL, 3 );
-    
-    wxBoxSizer *lineSizer2 = new wxBoxSizer( wxHORIZONTAL );
-    lineSizer2->Add( m_button5, 0, wxALL, 3 );
-    lineSizer2->Add( m_button6, 0, wxALL, 3 );
-    lineSizer2->Add( m_button7, 0, wxALL, 3 );
-    
-    wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
-    topSizer->Add( lineSizer1, 0, wxALL, 3 );
-    topSizer->Add( lineSizer2, 0, wxALL, 3 );
-
-    m_panel->SetSizer( topSizer );
-    topSizer->Fit( m_panel );
-
-    SetClientSize( m_panel->GetSize() );
+  m_button1 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 0 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "add" )  );
+  m_button2 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 2 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "substract" ) );
+  m_button3 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 1 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "product" ) );
+  m_button4 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 3 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "divide" ) );
+  m_button5 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 4 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "maximum" )  );
+  m_button6 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 5 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "minimum" ) );
+  m_button7 = new wxBitmapButton( m_panel, ID_BITMAPBUTTON_OPERATION, icons->GetBitmap( 6 ), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW | wxWANTS_CHARS, wxDefaultValidator, wxT( "different" ) );
+  wxBoxSizer *lineSizer1 = new wxBoxSizer( wxHORIZONTAL );
+  lineSizer1->Add( m_button1, 0, wxALL, 3 );
+  lineSizer1->Add( m_button2, 0, wxALL, 3 );
+  lineSizer1->Add( m_button3, 0, wxALL, 3 );
+  lineSizer1->Add( m_button4, 0, wxALL, 3 );
+  
+  wxBoxSizer *lineSizer2 = new wxBoxSizer( wxHORIZONTAL );
+  lineSizer2->Add( m_button5, 0, wxALL, 3 );
+  lineSizer2->Add( m_button6, 0, wxALL, 3 );
+  lineSizer2->Add( m_button7, 0, wxALL, 3 );
+  
+  wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
+  topSizer->Add( lineSizer1, 0, wxALL, 3 );
+  topSizer->Add( lineSizer2, 0, wxALL, 3 );
+  m_panel->SetSizer( topSizer );
+  topSizer->Fit( m_panel );
+  SetClientSize( m_panel->GetSize() );
 }
 
 ButtonArrayPopup::~ButtonArrayPopup()
@@ -244,6 +241,7 @@ DerivedHistogramDialog::DerivedHistogramDialog( wxWindow* parent,
   InitParentLines();
 
   Create(parent, id, caption, pos, size, style);
+  SetMinSize( wxSize( 400, 300 ) );
 }
 
 /*!
