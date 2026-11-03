@@ -3794,30 +3794,23 @@ void paraverMain::createDerivedHistogram( const wxString& derivedHistogramName,
     wxPoint( tmpParent1->GetPosition().x + titleBarSize.GetHeight(), tmpParent1->GetPosition().y + titleBarSize.GetHeight() );
 
   // Create gHistogram and populate
-  /* TODO: clone is not doing WXGTK distinction
-  #if !__WXGTK__
-          gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
-  #else
-          gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ) );
-  #endif
-  */
   gHistogram *tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( tmpDerivedHistogram->getName().c_str() ), position );
-  // wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
-  // tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
   tmpHisto->SetHistogram( tmpDerivedHistogram );
+
+  // Size
+  wxSize tmpSize = wxSize( srcHistogram->getWidth(), srcHistogram->getHeight() );
+  tmpHisto->SetClientSize( tmpSize );
+
   tmpHisto->adaptControlsForDerivedHistogram();
-  // tmpHisto->SetReady( false ); //? no usado
 
   // Insert in windows tree
   bool isDerived = true;
   appendHistogram2Tree( tmpHisto, isDerived );
 
   LoadedWindows::getInstance()->add( tmpDerivedHistogram );
-  
+
   tmpDerivedHistogram->setRecalc( true );
   tmpDerivedHistogram->setForceRecalc( true ); // execute!
-  
-  tmpHisto->SetClientSize( wxSize( tmpDerivedHistogram->getWidth(), tmpDerivedHistogram->getHeight() ) );
 }
 
 
