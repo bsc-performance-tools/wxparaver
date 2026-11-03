@@ -1628,7 +1628,7 @@ string getPropertyName( Timeline *whichWindow,
   else if( whichHistogram != nullptr )
   { 
     if( whichHistogram->isDerivedHistogram() && derivedHistogramIndex != DERIVED_HISTOGRAM_NULL )
-      return DerivedHistogramPropertyLabels[ derivedHistogramIndex ];
+      return whichHistogram->getCFG4DDerivedHistogramPropertyLabel( derivedHistogramIndex );
     else if( !whichHistogram->isDerivedHistogram() && histogramIndex != HISTOGRAM_NULL ) 
       return HistogramPropertyLabels[ histogramIndex ];
   }
