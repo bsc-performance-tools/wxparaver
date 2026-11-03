@@ -916,11 +916,7 @@ void gTimeline::redraw()
       TObjectOrder lastObj  = firstObj;
       if( !myWindow->isFusedLinesColorSet() )
       {
-        while( ( lastObj + 1 ) <= maxObj && objectPosList[ lastObj + 1 ] == objectPosList[ firstObj ] )
-        {
-          ++obj;
-          lastObj = *obj;
-        }
+        std::tie( firstObj, lastObj ) = myWindow->getRangeOfObjectsWithSamePosition( selectedSet, obj, objectPosList );
       }
 
       if( myWindow->isPunctualColorSet() )
