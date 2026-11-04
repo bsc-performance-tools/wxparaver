@@ -83,18 +83,8 @@ public:
 
 private:
     wxString operationName;
-    wxBitmapButton *callerButton;
-  
-    wxScrolledWindow *m_panel;
-
-    // TODO: something smarter
-    wxButton *m_button1;
-    wxButton *m_button2;
-    wxButton *m_button3;
-    wxButton *m_button4;
-    wxButton *m_button5;
-    wxButton *m_button6;
-    wxButton *m_button7;
+    wxBitmapButton *callerButton;  
+    wxScrolledWindow *mainPanel;
 
 private:
     void OnMouse( wxMouseEvent &event );
