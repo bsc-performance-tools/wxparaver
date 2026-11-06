@@ -41,7 +41,5 @@ class SessionSaver
   private:
     static std::string v2Label;
 
-    static void SaveSession_v2( wxString onFile, const std::vector<Trace *>& traces );
-    static void LoadSession_v2( std::ifstream& whichFile, wxString filename );
-
+    static std::string getTraceNameWithoutNumber( const std::string& traceFileName );
 };
