@@ -48,78 +48,76 @@ using namespace std;
 
 string SessionSaver::v2Label( "#Paraver session file v2" );
 
+
+std::string SessionSaver::getTraceNameWithoutNumber( const std::string& traceFileName )
+{
+  auto numericRightTrim = []( const std::string& fileName, const std::string& numericTagDetector ) -> std::string
+  {
+    auto suffixStartPos = fileName.rfind( numericTagDetector );
+    if( suffixStartPos != fileName.npos )
+      return fileName.substr( 0, suffixStartPos + numericTagDetector.size() - 2  ); // " #" -> 2
+
+    return "";
+  };
+
+
+  for( auto tag: { ".prv #", ".prv.gz #" } )
+  {
+    std::string newTraceFileName( numericRightTrim( traceFileName, tag ) );
+    if( !newTraceFileName.empty() )
+      return newTraceFileName;
+  }
+
+
+  return traceFileName;
+}
+
+
 void SessionSaver::SaveSession( wxString onFile, const vector< Trace * > &traces )
 {
   if( traces.size() > 0 )
-    SessionSaver::SaveSession_v2( onFile, traces );
-  /* version 1 DEPRECATED
+  {
     ofstream file( onFile.mb_str() );
+    wxFileName dirName( onFile );
+    dirName.ClearExt();
+    dirName = wxFileName( dirName.GetFullPath() + wxString( wxT( "_session" ) ) );
+    wxFileName::Mkdir( dirName.GetFullPath(), 0777, wxPATH_MKDIR_FULL );
 
-    for( vector<Trace *>::const_iterator it = traces.begin(); it != traces.end(); ++it )
+    file << SessionSaver::v2Label << endl;
+
+    for( vector< Trace * >::const_iterator it = traces.begin(); it != traces.end(); ++it )
     {
-      file << (*it)->getFileName() << endl;
-      wxFileName path( onFile.c_str() );
-      wxFileName traceFileName( wxString::FromUTF8( (*it)->getFileName().c_str() ) );
-      wxFileName cfgFileName( path.GetPathWithSep() + traceFileName.GetFullName() + wxT( ".cfg" ) );
+      wxFileName traceFileName( wxString::FromUTF8( ( *it )->getFileNameNumbered().c_str() ) );
+      traceFileName.MakeRelativeTo( wxFileName::GetHomeDir() );
+      file << std::string( traceFileName.GetFullPath().mb_str() ) << endl;
+      wxFileName cfgFileName( dirName.GetFullPath() + wxFileName::GetPathSeparator() + traceFileName.GetFullName() + wxT( ".cfg" ) );
 
-      vector<Timeline *> vTimelines, tmpVTimelines;
-      vector<Histogram *> vHistograms;
+      vector< Timeline * > vTimelines, tmpVTimelines;
+      vector< Histogram * > vHistograms;
       LoadedWindows::getInstance()->getAll( *it, tmpVTimelines );
       LoadedWindows::getInstance()->getAll( *it, vHistograms );
 
-      for( vector<Timeline *>::iterator it = tmpVTimelines.begin(); it != tmpVTimelines.end(); ++it )
+      // Delete timelines belonging to derived windows
+      for( vector< Timeline * >::iterator itWin = tmpVTimelines.begin(); itWin != tmpVTimelines.end(); ++itWin )
       {
-        if( !(*it)->getUsedByHistogram() && (*it)->getChild() == nullptr )
-          vTimelines.push_back( *it );
+        if( !( *itWin )->getUsedByHistogram() && ( *itWin )->getChild() == nullptr )
+          vTimelines.push_back( *itWin );
       }
-      CFGLoader::saveCFG( string( cfgFileName.GetFullPath().mb_str() ), SaveOptions(), vTimelines, vHistograms );
+
+      // TODO: search for each linked properties manager in the timelines and histograms vectors
+      CFGS4DLinkedPropertiesManager dummyManager;
+      vector< CFGS4DLinkedPropertiesManager > dummyList;
+      dummyList.push_back( dummyManager );
+      std::ofstream cfgFile( string( cfgFileName.GetFullPath().mb_str() ).c_str() );
+      if( cfgFile.good() )
+        CFGLoader::saveCFG( cfgFile, SaveOptions(), vTimelines, vHistograms, dummyList );
+      cfgFile.close();
     }
 
     file.close();
-  */
-}
-
-void SessionSaver::SaveSession_v2( wxString onFile, const vector< Trace * > &traces )
-{
-  ofstream file( onFile.mb_str() );
-  wxFileName dirName( onFile );
-  dirName.ClearExt();
-  dirName = wxFileName( dirName.GetFullPath() + wxString( wxT( "_session" ) ) );
-  wxFileName::Mkdir( dirName.GetFullPath(), 0777, wxPATH_MKDIR_FULL );
-
-  file << SessionSaver::v2Label << endl;
-
-  for( vector< Trace * >::const_iterator it = traces.begin(); it != traces.end(); ++it )
-  {
-    wxFileName traceFileName( wxString::FromUTF8( ( *it )->getFileName().c_str() ) );
-    traceFileName.MakeRelativeTo( wxFileName::GetHomeDir() );
-    file << std::string( traceFileName.GetFullPath().mb_str() ) << endl;
-    wxFileName cfgFileName( dirName.GetFullPath() + wxFileName::GetPathSeparator() + traceFileName.GetFullName() + wxT( ".cfg" ) );
-
-    vector< Timeline * > vTimelines, tmpVTimelines;
-    vector< Histogram * > vHistograms;
-    LoadedWindows::getInstance()->getAll( *it, tmpVTimelines );
-    LoadedWindows::getInstance()->getAll( *it, vHistograms );
-
-    // Delete timelines belonging to derived windows
-    for( vector< Timeline * >::iterator itWin = tmpVTimelines.begin(); itWin != tmpVTimelines.end(); ++itWin )
-    {
-      if( !( *itWin )->getUsedByHistogram() && ( *itWin )->getChild() == nullptr )
-        vTimelines.push_back( *itWin );
-    }
-
-    // TODO: search for each linked properties manager in the timelines and histograms vectors
-    CFGS4DLinkedPropertiesManager dummyManager;
-    vector< CFGS4DLinkedPropertiesManager > dummyList;
-    dummyList.push_back( dummyManager );
-    std::ofstream cfgFile( string( cfgFileName.GetFullPath().mb_str() ).c_str() );
-    if( cfgFile.good() )
-      CFGLoader::saveCFG( cfgFile, SaveOptions(), vTimelines, vHistograms, dummyList );
-    cfgFile.close();
   }
-
-  file.close();
 }
+
 
 void SessionSaver::LoadSession( wxString whichFile )
 {
@@ -129,25 +127,31 @@ void SessionSaver::LoadSession( wxString whichFile )
   getline( file, traceFile );
   if( traceFile == SessionSaver::v2Label )
   {
-    SessionSaver::LoadSession_v2( file, whichFile );
-    return;
-  }
+    wxFileName dirName( whichFile );
+    dirName.ClearExt();
+    dirName = wxFileName( dirName.GetFullPath() + wxString( wxT( "_session" ) ) );
+    string traceFile;
 
-  file.seekg( 0 );
-  while( !file.eof() )
-  {
-    getline( file, traceFile );
-    if( traceFile != "" && traceFile[ 0 ] != '#' )
+    while( !file.eof() )
     {
-      std::optional< Trace * > tmpTrace = wxparaverApp::mainWindow->DoLoadTrace( traceFile );
-
-      if( tmpTrace )
+      getline( file, traceFile );
+      if( traceFile != "" && traceFile[ 0 ] != '#' )
       {
-        wxFileName path( whichFile.c_str() );
-        wxFileName traceFileName( wxString::FromUTF8( traceFile.c_str() ) );
-        wxFileName cfgFileName( path.GetPathWithSep() + traceFileName.GetFullName() + wxT( ".cfg" ) );
+        // Load trace: strip instance number if found.
+        std::string traceFileWithoutNumber = getTraceNameWithoutNumber( traceFile );
+        wxFileName traceFileName( wxString::FromUTF8( traceFileWithoutNumber.c_str() ) );
+        traceFileName.MakeAbsolute( wxFileName::GetHomeDir() );
+        std::optional< Trace * > tmpTrace = wxparaverApp::mainWindow->DoLoadTrace( std::string( traceFileName.GetFullPath().mb_str() ) );
 
-        wxparaverApp::mainWindow->DoLoadCFG( string( cfgFileName.GetFullPath().mb_str() ), tmpTrace );
+        if( tmpTrace )
+        {
+          // Load cfg: here instance number, if present, is needed.
+          wxFileName traceFileNameInFile( wxString::FromUTF8( traceFile.c_str() ) );
+          traceFileNameInFile.MakeAbsolute( wxFileName::GetHomeDir() );
+          wxFileName cfgFileName( dirName.GetFullPath() + wxFileName::GetPathSeparator() + traceFileNameInFile.GetFullName() + wxT( ".cfg" ) );
+
+          wxparaverApp::mainWindow->DoLoadCFG( string( cfgFileName.GetFullPath().mb_str() ), tmpTrace );
+        }
       }
     }
   }
@@ -155,30 +159,3 @@ void SessionSaver::LoadSession( wxString whichFile )
   file.close();
 }
 
-void SessionSaver::LoadSession_v2( ifstream &whichFile, wxString filename )
-{
-  wxFileName dirName( filename );
-  dirName.ClearExt();
-  dirName = wxFileName( dirName.GetFullPath() + wxString( wxT( "_session" ) ) );
-  string traceFile;
-
-  while( !whichFile.eof() )
-  {
-    getline( whichFile, traceFile );
-    if( traceFile != "" && traceFile[ 0 ] != '#' )
-    {
-      wxFileName traceFileName( wxString::FromUTF8( traceFile.c_str() ) );
-      traceFileName.MakeAbsolute( wxFileName::GetHomeDir() );
-      std::optional< Trace * > tmpTrace = wxparaverApp::mainWindow->DoLoadTrace( std::string( traceFileName.GetFullPath().mb_str() ) );
-
-      if( tmpTrace )
-      {
-        wxFileName cfgFileName( dirName.GetFullPath() + wxFileName::GetPathSeparator() + traceFileName.GetFullName() + wxT( ".cfg" ) );
-
-        wxparaverApp::mainWindow->DoLoadCFG( string( cfgFileName.GetFullPath().mb_str() ), tmpTrace );
-      }
-    }
-  }
-
-  whichFile.close();
-}
