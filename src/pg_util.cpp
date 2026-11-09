@@ -2662,9 +2662,11 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
           }
 
           PropertyClientData *tmpData   = new PropertyClientData();
-          tmpData->derivedOperationIndex = numOperation;
+          tmpData->indexToDerivedOperationFunction = numOperation;
+          //tmpData->numberOfOperationInDerivedHistogram = ++expandedLabelsShift;
           tmpOptions = { NO_BUTTON, tmpData, false, nullptr };
 
+          ++expandedLabelsShift;
           AppendCFG4DProperty( (wxEnumProperty *)nullptr,
                               windowProperties,
                               whichHisto,
@@ -2672,8 +2674,8 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
                               linkedPropertiesShown,
                               derivedHistogramCat,
                               wxT( "Operation " ) + wxString::Format( "%d", ++numOperation ),
-                              // DERIVED_HISTOGRAM_OP,
-                              TDerivedHistogramProperties( (int)DERIVED_HISTOGRAM_PARENT + ++expandedLabelsShift ),
+                              DERIVED_HISTOGRAM_OP,
+                              // TDerivedHistogramProperties( (int)DERIVED_HISTOGRAM_PARENT + ++expandedLabelsShift ),
                               tmpOptions,
                               arrayStr,
                               arrayInt,
