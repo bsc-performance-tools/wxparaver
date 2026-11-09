@@ -2625,6 +2625,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
     // expandedLabelsShift (and its preincrement after every property is added) is coupled with 
     // HistogramProxy::DerivedHistogramPropertyLabelsExpandedList initialization.
     int expandedLabelsShift = -1;
+    int currentNumParent = 0;
     for( auto &tmpParentHistogram: tmpParents )
     {
       // Add histogram
@@ -2642,7 +2643,7 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
       if( retId != ( wxPGId ) nullptr )
         windowProperties->GetLastItem()->Enable( false );
 
-      if( tmpParentHistogram != tmpParents.back() )
+      if( currentNumParent < tmpParents.size() - 1 )
       {
         // Add operation
         if( op != selectedOperations.end() )
@@ -2689,6 +2690,8 @@ void updateHistogramProperties( wxPropertyGrid *windowProperties,
           }
         }
       }
+
+      ++currentNumParent;
     }
   }
 
