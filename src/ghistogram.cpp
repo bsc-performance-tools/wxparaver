@@ -3475,7 +3475,7 @@ void gHistogram::saveImageDialog()
 
   wxFont semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
 
-  WindowImageGenerator* newWindowImage;
+  std::unique_ptr< WindowImageGenerator > newWindowImage;
 
 
   // bool found;
@@ -3496,11 +3496,11 @@ void gHistogram::saveImageDialog()
     wxColour foregroundColour = *wxWHITE;
     wxColour backgroundColour = *wxBLACK;
 
-    newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+    newWindowImage = std::make_unique< WindowImageGenerator >( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
     imageGenerated = newWindowImage->generateWindowsImage( myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
     if( imageGenerated )
     {
-      newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+      newWindowImage->generateHistogramDataLegend( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
       newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
     }
   }
@@ -3509,7 +3509,7 @@ void gHistogram::saveImageDialog()
     wxColour foregroundColour = *wxBLACK;
     wxColour backgroundColour = *wxWHITE;
 
-    newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+    newWindowImage = std::make_unique< WindowImageGenerator >( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
 
     imageGenerated = newWindowImage->generateWindowsImageGrid( gridHisto, myHistogram->getName(), myHistogram->getTrace()->getTraceNameNumbered() );
 
@@ -3517,7 +3517,7 @@ void gHistogram::saveImageDialog()
     // {
     if( imageGenerated )
     {
-      newWindowImage->generatescaleImageDataWindows( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
+      newWindowImage->generateHistogramDataLegend( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
       newWindowImage->generateScaleWindowsImage( semanticValuesToColorData, myHistogram->getDataWindow(), myHistogram );
     }
     // }
@@ -3525,7 +3525,7 @@ void gHistogram::saveImageDialog()
 
   if( myHistogram->getFirstRowColored() && imageGenerated )
   {
-    newWindowImage->generatescaleImageDataWindows( semanticValuesToColorControl, myHistogram->getControlWindow(), true );
+    newWindowImage->generateHistogramControlLegend( semanticValuesToColorControl, myHistogram->getControlWindow() );
   }
 
   if( !imageGenerated )
@@ -3539,7 +3539,7 @@ void gHistogram::saveImageDialog()
     return;
   }
 
-  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, GetHistogram() );
+  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage.get(), GetHistogram() );
 
   // TODO
   // saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
