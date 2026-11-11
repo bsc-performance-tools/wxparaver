@@ -378,15 +378,15 @@ void SaveImageDialog::CreateControls()
   if( myHistogram == nullptr )
   {
     drawScaleControlSingle->Hide();
-    if( ( ( gTimeline * )GetParent() )->GetMyWindow()->isFunctionLineColorSet() )
+    if( ( (gTimeline*)GetParent() )->GetMyWindow()->isFunctionLineColorSet() )
     {
       drawScaleSingle->Hide();
       drawWindowAndScale->Hide();
-      
+
       legendCheckbox->SetValue( false );
       legendCheckbox->Enable( false );
       legendFileName->Enable( false );
-      
+
       legendControlCheckbox->SetValue( false );
       legendControlCheckbox->Enable( false );
       legendControlFileName->Enable( false );
@@ -573,9 +573,21 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
         return;
     }
   }
-  if( legendControlCheckbox->IsChecked() )
+
+  if( legendControlCheckbox->IsShown() && legendControlCheckbox->IsChecked() )
   {
     wxString tmpLegendFile = GetLegendControlFilePath();
+    if( wxFileExists( tmpLegendFile ) )
+    {
+      wxMessageDialog tmpDialog( this, tmpLegendFile + " exists.\n\nDo yo want to overwrite it?", "File exists", wxYES_NO | wxICON_QUESTION );
+      if( tmpDialog.ShowModal() == wxID_NO )
+        return;
+    }
+  }
+
+  if( imageAndScaleCheckbox->IsChecked() )
+  {
+    wxString tmpLegendFile = GetImageScaleFilePath();
     if( wxFileExists( tmpLegendFile ) )
     {
       wxMessageDialog tmpDialog( this, tmpLegendFile + " exists.\n\nDo yo want to overwrite it?", "File exists", wxYES_NO | wxICON_QUESTION );
@@ -736,7 +748,7 @@ void SaveImageDialog::onPaintScale( wxPaintEvent& event )
   // wxPaintDC dcscale( drawScaleSingle );
   wxBitmap* originalBmp = nullptr;
 
-  if( myHistogram != nullptr || !(((gTimeline *)GetParent())->GetMyWindow()->isFunctionLineColorSet()) )
+  if( myHistogram != nullptr || !( ( (gTimeline*)GetParent() )->GetMyWindow()->isFunctionLineColorSet() ) )
     originalBmp = imageGeneration->getDataLegendBitmap();
 
   if( originalBmp && originalBmp->IsOk() )
@@ -804,8 +816,8 @@ void SaveImageDialog::onPaintScaleControl( wxPaintEvent& event )
 
   EnableLegendControls();
 
-  wxBitmap* originalBmp = nullptr;  
-  if( myHistogram != nullptr || !(((gTimeline *)GetParent())->GetMyWindow()->isFunctionLineColorSet()) )
+  wxBitmap* originalBmp = nullptr;
+  if( myHistogram != nullptr || !( ( (gTimeline*)GetParent() )->GetMyWindow()->isFunctionLineColorSet() ) )
     originalBmp = imageGeneration->getControlLegendBitmap();
 
   if( originalBmp && originalBmp->IsOk() )
@@ -876,7 +888,7 @@ void SaveImageDialog::OnPaintWindowScale( wxPaintEvent& event )
   EnableLegendControls();
 
   wxBitmap* originalBmp = nullptr;
-  if( myHistogram != nullptr || !(((gTimeline *)GetParent())->GetMyWindow()->isFunctionLineColorSet()) )
+  if( myHistogram != nullptr || !( ( (gTimeline*)GetParent() )->GetMyWindow()->isFunctionLineColorSet() ) )
     originalBmp = imageGeneration->getTimelineScaleImage();
 
   if( originalBmp && originalBmp->IsOk() )
@@ -984,145 +996,6 @@ void SaveImageDialog::calculateScaledSize( int originalWidth,
     }
   }
 }
-
-
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
- */
-
-// void SaveImageDialog::OnCheckboxScaledsizeClick( wxCommandEvent& event )
-// {
-//   wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX_SCALEDSIZE ), wxCheckBox );
-//   if( checkbox )
-//   {
-//     bool isChecked = checkbox->IsChecked();
-//     if( isChecked )
-//     {
-//       wxSize clientSize = drawWindowSingle->GetClientSize();
-//       drawWindowSingle->SetVirtualSize( clientSize ); // virtual size = client size → no scroll
-//       drawWindowSingle->SetScrollRate( 0, 0 );        // disable scroll increments
-//       drawWindowSingle->ShowScrollbars( wxSHOW_SB_NEVER, wxSHOW_SB_NEVER );
-//       resize_window = true;
-//       // Checkbox is checked
-//     }
-//     else
-//     {
-//       int originalWidth  = imageGeneration->getWindowsImageBitmap()->GetWidth();
-//       int originalHeight = imageGeneration->getWindowsImageBitmap()->GetHeight();
-
-//       drawWindowSingle->SetVirtualSize( originalWidth, originalHeight );
-//       drawWindowSingle->SetScrollRate( 10, 10 );
-//       drawWindowSingle->ShowScrollbars( wxSHOW_SB_DEFAULT, wxSHOW_SB_DEFAULT );
-//       resize_window = false;
-//       // Checkbox is unchecked
-//     }
-//   }
-
-//   ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
-//   // Before editing this code, remove the block markers.
-//   event.Skip();
-//   ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
-// }
-
-
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
- */
-
-// void SaveImageDialog::OnCheckboxLegendClick( wxCommandEvent& event )
-// {
-//   wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX_LEGEND ), wxCheckBox );
-//   if( checkbox )
-//   {
-//     bool isChecked = checkbox->IsChecked();
-//     if( isChecked )
-//     {
-//       wxSize clientSize = drawScaleSingle->GetClientSize();
-//       drawScaleSingle->SetVirtualSize( clientSize ); // virtual size = client size → no scroll
-//       drawScaleSingle->SetScrollRate( 0, 0 );        // disable scroll increments
-//       drawScaleSingle->ShowScrollbars( wxSHOW_SB_NEVER, wxSHOW_SB_NEVER );
-//       resize_scale = true;
-//       // Checkbox is checked
-//     }
-//     else
-//     {
-//       int originalWidth;
-//       int originalHeight;
-
-//       if( isHistogram )
-//       {
-//         originalWidth  = imageGeneration->getScaleDataImageBitmap()->GetWidth();
-//         originalHeight = imageGeneration->getScaleDataImageBitmap()->GetHeight();
-//       }
-//       else
-//       {
-//         originalWidth  = imageGeneration->getScaleImageBitmap()->GetWidth();
-//         originalHeight = imageGeneration->getScaleImageBitmap()->GetHeight();
-//       }
-
-
-//       drawScaleSingle->SetVirtualSize( originalWidth, originalHeight );
-//       drawScaleSingle->SetScrollRate( 10, 10 );
-//       drawScaleSingle->ShowScrollbars( wxSHOW_SB_DEFAULT, wxSHOW_SB_DEFAULT );
-//       resize_scale = false;
-//       // Checkbox is unchecked
-//     }
-//   }
-//   ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
-//   // Before editing this code, remove the block markers.
-//   event.Skip();
-//   ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
-// }
-
-
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND_CONTROL
- */
-
-// void SaveImageDialog::OnCheckboxLegendControlClick( wxCommandEvent& event )
-// {
-//   wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX_LEGEND_CONTROL ), wxCheckBox );
-//   if( checkbox )
-//   {
-//     bool isChecked = checkbox->IsChecked();
-//     if( isChecked )
-//     {
-//       wxSize clientSize = drawScaleControlSingle->GetClientSize();
-//       drawScaleControlSingle->SetVirtualSize( clientSize ); // virtual size = client size → no scroll
-//       drawScaleControlSingle->SetScrollRate( 0, 0 );        // disable scroll increments
-//       drawScaleControlSingle->ShowScrollbars( wxSHOW_SB_NEVER, wxSHOW_SB_NEVER );
-//       resize_scale_control = true;
-//       // Checkbox is checked
-//     }
-//     else
-//     {
-//       int originalWidth;
-//       int originalHeight;
-
-//       if( isHistogram )
-//       {
-//         originalWidth  = imageGeneration->getScaleImageBitmap()->GetWidth();
-//         originalHeight = imageGeneration->getScaleImageBitmap()->GetHeight();
-//       }
-//       else
-//       {
-//         originalWidth  = imageGeneration->getScaleImageBitmap()->GetWidth();
-//         originalHeight = imageGeneration->getScaleImageBitmap()->GetHeight();
-//       }
-
-
-//       drawScaleControlSingle->SetVirtualSize( originalWidth, originalHeight );
-//       drawScaleControlSingle->SetScrollRate( 10, 10 );
-//       drawScaleControlSingle->ShowScrollbars( wxSHOW_SB_DEFAULT, wxSHOW_SB_DEFAULT );
-//       resize_scale_control = false;
-//       // Checkbox is unchecked
-//     }
-//   }
-//   ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND_CONTROL in SaveImageDialog.
-//   // Before editing this code, remove the block markers.
-//   event.Skip();
-//   ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND_CONTROL in SaveImageDialog.
-// }
 
 
 /*!
