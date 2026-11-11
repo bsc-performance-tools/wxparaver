@@ -314,13 +314,15 @@ class WindowImageGenerator
      *        histogram, the colours and the legend type.
      * @param whichHistogram Histogram that provides the colours and the legend
      *        type; nullptr for the legend of a timeline.
-     * @param whichBackgroundMode Background of the legend.
+     * @param whichBackground Background color of the legend.
+     * @param whichForeground Foreground color of the legend.
      * @return The new legend, or nullptr if there is no timeline to take the labels from.
      */
     std::unique_ptr< ScaleImageGenerator > createLegend( const std::map< TSemanticValue, rgb >& semanticValuesToColor,
                                                          Timeline* whichTimeline,
                                                          Histogram* whichHistogram,
-                                                         TBackgroundMode whichBackgroundMode ) const;
+                                                         wxColour whichBackground,
+                                                         wxColour whichForeground ) const;
 
     /**
      * @brief Renders the attached legend and composes it with the window image.

@@ -55,15 +55,6 @@
 #include <wx/string.h>
 
 
-/** @brief Background used to draw a legend. */
-enum class TBackgroundMode
-{
-  BACKGROUND_SOLID_DARK,
-  BACKGROUND_SOLID_LIGHT,
-  BACKGROUND_TRANSPARENT,
-  BACKGROUND_GRADIENT
-};
-
 /** @brief Kind of legend, derived from the colour mode of the window it describes. */
 enum class TScaleImageType
 {
@@ -133,7 +124,8 @@ class ScaleImageGenerator
      * @param whichTextFont Font of the labels.
      * @param whichScaleType Kind of legend to draw.
      * @param whichOrientation Initial layout direction.
-     * @param whichBackgroundMode Background of the legend.
+     * @param whichBackground Background color of the legend.
+     * @param whichForeground Foreground color of the legend.
      */
     ScaleImageGenerator( Histogram* whichHistogram,
                          Timeline* whichDataWindow,
@@ -141,7 +133,8 @@ class ScaleImageGenerator
                          const wxFont& whichTextFont,
                          TScaleImageType whichScaleType,
                          TScaleImageOrientation whichOrientation,
-                         TBackgroundMode whichBackgroundMode );
+                         wxColour whichBackground,
+                         wxColour whichForeground );
 
     /**
      * @brief Creates the legend of a timeline.
@@ -152,14 +145,16 @@ class ScaleImageGenerator
      * @param whichTextFont Font of the labels.
      * @param whichScaleType Kind of legend to draw.
      * @param whichOrientation Initial layout direction.
-     * @param whichBackgroundMode Background of the legend.
+     * @param whichBackground Background color of the legend.
+     * @param whichForeground Foreground color of the legend.
      */
     ScaleImageGenerator( Timeline* whichTimeline,
                          const std::map< TSemanticValue, rgb >& whichSemanticValueColors,
                          const wxFont& whichTextFont,
                          TScaleImageType whichScaleType,
                          TScaleImageOrientation whichOrientation,
-                         TBackgroundMode whichBackgroundMode );
+                         wxColour whichBackground,
+                         wxColour whichForeground );
 
     /**
      * @brief Renders the legend bitmap from the current configuration.
@@ -277,7 +272,8 @@ class ScaleImageGenerator
         int labelPrecision = 0; // Decimals of numeric labels
 
         wxFont textFont;
-        TBackgroundMode backgroundMode = TBackgroundMode::BACKGROUND_SOLID_LIGHT;
+        wxColour backgroundColor;
+        wxColour foregroundColor;
     };
 
     /** @brief Pair of device contexts (visible legend and its mask) drawn in lockstep. */
@@ -291,7 +287,8 @@ class ScaleImageGenerator
      * @param whichTextFont Font of the labels.
      * @param whichScaleType Kind of legend to draw.
      * @param whichOrientation Initial layout direction.
-     * @param whichBackgroundMode Background of the legend.
+     * @param whichBackground Background color of the legend.
+     * @param whichForeground Foreground color of the legend.
      */
     ScaleImageGenerator( WindowGenericItem whichSourceWindow,
                          const Timeline* whichLabelWindow,
@@ -299,7 +296,8 @@ class ScaleImageGenerator
                          const wxFont& whichTextFont,
                          TScaleImageType whichScaleType,
                          TScaleImageOrientation whichOrientation,
-                         TBackgroundMode whichBackgroundMode );
+                         wxColour whichBackground,
+                         wxColour whichForeground );
 
     /**
      * @brief Resets the layout metrics and reads the value range from the source window.
@@ -399,12 +397,6 @@ class ScaleImageGenerator
      * @return Its short label, or an empty string if the value has no label.
      */
     wxString getShortLabel( TSemanticValue whichValue ) const;
-
-    /**
-     * @brief Makes the legend background transparent when that mode is selected.
-     * @note Only has effect with TBackgroundMode::BACKGROUND_TRANSPARENT, and never on macOS.
-     */
-    void applyTransparencyMask();
 
   private:
     WindowGenericItem sourceWindow;        // Provides value range and colours. Not owned.

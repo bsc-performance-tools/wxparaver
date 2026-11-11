@@ -58,66 +58,66 @@
 
 namespace
 {
-  // This limit happens to be related with contiguous block of memory for the bitmap buffer.
-  // If exceeded, aborts after CAIRO assert
-  constexpr std::uint64_t MAX_CAIRO_SIZE = 4294967296ULL;
-  constexpr int IMG_DEPTH                = 4 * 8; // ( RGB + alpha ) * 8 bits/color
+// This limit happens to be related with contiguous block of memory for the bitmap buffer.
+// If exceeded, aborts after CAIRO assert
+constexpr std::uint64_t MAX_CAIRO_SIZE = 4294967296ULL;
+constexpr int IMG_DEPTH                = 4 * 8; // ( RGB + alpha ) * 8 bits/color
 
-  // Space left around the text of the title strip.
-  constexpr int TITLE_MARGIN = 5;
+// Space left around the text of the title strip.
+constexpr int TITLE_MARGIN = 5;
 
 
-  /**
-   * @brief Checks whether an image would exceed the size the graphics backend can handle.
-   * @param width Width of the image in pixels.
-   * @param height Height of the image in pixels.
-   * @return true if the image is too big to be created.
-   */
-  bool exceedsMaxImageSize( int width, int height )
+/**
+ * @brief Checks whether an image would exceed the size the graphics backend can handle.
+ * @param width Width of the image in pixels.
+ * @param height Height of the image in pixels.
+ * @return true if the image is too big to be created.
+ */
+bool exceedsMaxImageSize( int width, int height )
+{
+  return static_cast< std::uint64_t >( width ) * static_cast< std::uint64_t >( height ) * IMG_DEPTH > MAX_CAIRO_SIZE;
+}
+
+
+/**
+ * @brief Deduces the kind of legend that describes a timeline.
+ * @param whichTimeline Timeline to describe.
+ * @return The legend type for its colour mode; code colour for the modes without a specific legend.
+ */
+TScaleImageType getScaleType( const Timeline* whichTimeline )
+{
+  if( whichTimeline->isGradientColorSet() )
+    return TScaleImageType::TScaleImageGradientColor;
+  if( whichTimeline->isNotNullGradientColorSet() )
+    return TScaleImageType::TScaleImageGradientColorNotNull;
+  if( whichTimeline->isAlternativeGradientColorSet() )
+    return TScaleImageType::TScaleImageAlternativeGradientColor;
+  if( whichTimeline->isFusedLinesColorSet() )
+    return TScaleImageType::TScaleImageGradientFusedLines;
+
+  return TScaleImageType::TScaleImageCodeColor;
+}
+
+
+/**
+ * @brief Deduces the kind of legend that describes the cells of a histogram.
+ * @param whichHistogram Histogram to describe.
+ * @return The legend type for its colour mode; code colour for the modes without a specific legend.
+ */
+TScaleImageType getScaleType( const Histogram* whichHistogram )
+{
+  switch( whichHistogram->getColorMode() )
   {
-    return static_cast< std::uint64_t >( width ) * static_cast< std::uint64_t >( height ) * IMG_DEPTH > MAX_CAIRO_SIZE;
-  }
-
-
-  /**
-   * @brief Deduces the kind of legend that describes a timeline.
-   * @param whichTimeline Timeline to describe.
-   * @return The legend type for its colour mode; code colour for the modes without a specific legend.
-   */
-  TScaleImageType getScaleType( const Timeline* whichTimeline )
-  {
-    if( whichTimeline->isGradientColorSet() )
+    case TColorFunction::GRADIENT:
       return TScaleImageType::TScaleImageGradientColor;
-    if( whichTimeline->isNotNullGradientColorSet() )
+    case TColorFunction::NOT_NULL_GRADIENT:
       return TScaleImageType::TScaleImageGradientColorNotNull;
-    if( whichTimeline->isAlternativeGradientColorSet() )
+    case TColorFunction::ALTERNATIVE_GRADIENT:
       return TScaleImageType::TScaleImageAlternativeGradientColor;
-    if( whichTimeline->isFusedLinesColorSet() )
-      return TScaleImageType::TScaleImageGradientFusedLines;
-
-    return TScaleImageType::TScaleImageCodeColor;
+    default:
+      return TScaleImageType::TScaleImageCodeColor;
   }
-
-
-  /**
-   * @brief Deduces the kind of legend that describes the cells of a histogram.
-   * @param whichHistogram Histogram to describe.
-   * @return The legend type for its colour mode; code colour for the modes without a specific legend.
-   */
-  TScaleImageType getScaleType( const Histogram* whichHistogram )
-  {
-    switch( whichHistogram->getColorMode() )
-    {
-      case TColorFunction::GRADIENT:
-        return TScaleImageType::TScaleImageGradientColor;
-      case TColorFunction::NOT_NULL_GRADIENT:
-        return TScaleImageType::TScaleImageGradientColorNotNull;
-      case TColorFunction::ALTERNATIVE_GRADIENT:
-        return TScaleImageType::TScaleImageAlternativeGradientColor;
-      default:
-        return TScaleImageType::TScaleImageCodeColor;
-    }
-  }
+}
 } // namespace
 
 
@@ -133,7 +133,8 @@ WindowImageGenerator::WindowImageGenerator( const std::vector< wxBitmap* >& whic
   , imageBackground( whichBackground )
   , imageForeground( whichForeground )
   , imageTextFont( whichTextFont )
-{}
+{
+}
 
 
 WindowImageGenerator::~WindowImageGenerator() = default;
@@ -358,7 +359,7 @@ bool WindowImageGenerator::generateWindowsImageGrid( wxGrid* gridImage, const st
 
 void WindowImageGenerator::generateTimelineLegend( const std::map< TSemanticValue, rgb >& semanticValuesToColor, Timeline* whichTimeline )
 {
-  dataLegend = createLegend( semanticValuesToColor, whichTimeline, nullptr, TBackgroundMode::BACKGROUND_SOLID_DARK );
+  dataLegend = createLegend( semanticValuesToColor, whichTimeline, nullptr, imageBackground, imageForeground );
 
   if( dataLegend != nullptr )
     dataLegend->generateImage();
@@ -374,7 +375,7 @@ void WindowImageGenerator::generateHistogramDataLegend( const std::map< TSemanti
   if( whichHistogram == nullptr )
     return;
 
-  dataLegend = createLegend( semanticValuesToColor, whichDataWindow, whichHistogram, TBackgroundMode::BACKGROUND_SOLID_LIGHT );
+  dataLegend = createLegend( semanticValuesToColor, whichDataWindow, whichHistogram, *wxWHITE, *wxBLACK );
 
   if( dataLegend != nullptr )
     dataLegend->generateImage();
@@ -384,7 +385,7 @@ void WindowImageGenerator::generateHistogramDataLegend( const std::map< TSemanti
 void WindowImageGenerator::generateHistogramControlLegend( const std::map< TSemanticValue, rgb >& semanticValuesToColor,
                                                            Timeline* whichControlWindow )
 {
-  controlLegend = createLegend( semanticValuesToColor, whichControlWindow, nullptr, TBackgroundMode::BACKGROUND_SOLID_LIGHT );
+  controlLegend = createLegend( semanticValuesToColor, whichControlWindow, nullptr, *wxWHITE, *wxBLACK );
 
   if( controlLegend != nullptr )
     controlLegend->generateImage();
@@ -395,10 +396,11 @@ void WindowImageGenerator::generateScaleWindowsImage( const std::map< TSemanticV
                                                       Timeline* myWindow,
                                                       Histogram* myHistogram )
 {
-  const TBackgroundMode backgroundMode =
-    myHistogram == nullptr ? TBackgroundMode::BACKGROUND_SOLID_DARK : TBackgroundMode::BACKGROUND_SOLID_LIGHT;
+  if( myHistogram != nullptr )
+    attachedLegend = createLegend( semanticValuesToColor, myWindow, myHistogram, *wxWHITE, *wxBLACK );
+  else
+    attachedLegend = createLegend( semanticValuesToColor, myWindow, myHistogram, imageBackground, imageForeground );
 
-  attachedLegend = createLegend( semanticValuesToColor, myWindow, myHistogram, backgroundMode );
 
   // The first composition keeps a horizontal legend aligned to the left side of
   // the window; the ones triggered by the legend options center it.
@@ -480,7 +482,8 @@ wxBitmap WindowImageGenerator::renderTitle( const std::string& windowsName, cons
 std::unique_ptr< ScaleImageGenerator > WindowImageGenerator::createLegend( const std::map< TSemanticValue, rgb >& semanticValuesToColor,
                                                                            Timeline* whichTimeline,
                                                                            Histogram* whichHistogram,
-                                                                           TBackgroundMode whichBackgroundMode ) const
+                                                                           wxColour whichBackground,
+                                                                           wxColour whichForeground ) const
 {
   if( whichTimeline == nullptr )
     return nullptr;
@@ -492,14 +495,16 @@ std::unique_ptr< ScaleImageGenerator > WindowImageGenerator::createLegend( const
                                                     imageTextFont,
                                                     getScaleType( whichHistogram ),
                                                     orientation,
-                                                    whichBackgroundMode );
+                                                    whichBackground,
+                                                    whichForeground );
 
   return std::make_unique< ScaleImageGenerator >( whichTimeline,
                                                   semanticValuesToColor,
                                                   imageTextFont,
                                                   getScaleType( whichTimeline ),
                                                   orientation,
-                                                  whichBackgroundMode );
+                                                  whichBackground,
+                                                  whichForeground );
 }
 
 

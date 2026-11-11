@@ -60,46 +60,46 @@
 
 namespace
 {
-  // Length of the tick mark that joins a gradient square with its label,
-  // and gap between an outlier square and its mark.
-  constexpr int LABEL_TICK_LENGTH = 4;
+// Length of the tick mark that joins a gradient square with its label,
+// and gap between an outlier square and its mark.
+constexpr int LABEL_TICK_LENGTH = 4;
 
-  // Squares of a gradient legend that is not fitted to a target length.
-  constexpr int DEFAULT_GRADIENT_SQUARES = 21;
+// Squares of a gradient legend that is not fitted to a target length.
+constexpr int DEFAULT_GRADIENT_SQUARES = 21;
 
-  // Decimals of the numeric labels.
-  constexpr int SEMANTIC_LABEL_PRECISION = 2;
+// Decimals of the numeric labels.
+constexpr int SEMANTIC_LABEL_PRECISION = 2;
 
-  constexpr int LEGEND_MARGIN        = 5;
-  constexpr int DEFAULT_SQUARE_WIDTH = 10;
+constexpr int LEGEND_MARGIN        = 5;
+constexpr int DEFAULT_SQUARE_WIDTH = 10;
 
-  // Minimum free space between the middle and the last label of a horizontal gradient.
-  constexpr int MINIMUM_LABELS_GAP = 5;
+// Minimum free space between the middle and the last label of a horizontal gradient.
+constexpr int MINIMUM_LABELS_GAP = 5;
 
-  // Size of the scratch bitmap used to measure text before the legend bitmap exists.
-  constexpr int TEXT_MEASURE_BITMAP_WIDTH  = 1920;
-  constexpr int TEXT_MEASURE_BITMAP_HEIGHT = 64;
+// Size of the scratch bitmap used to measure text before the legend bitmap exists.
+constexpr int TEXT_MEASURE_BITMAP_WIDTH  = 1920;
+constexpr int TEXT_MEASURE_BITMAP_HEIGHT = 64;
 
 
-  /**
-   * @brief Builds the file name suffix that identifies a kind of legend.
-   * @param whichScaleType Legend type.
-   * @return The suffix, without separators.
-   */
-  wxString buildLegendSuffix( TScaleImageType whichScaleType )
+/**
+ * @brief Builds the file name suffix that identifies a kind of legend.
+ * @param whichScaleType Legend type.
+ * @return The suffix, without separators.
+ */
+wxString buildLegendSuffix( TScaleImageType whichScaleType )
+{
+  switch( whichScaleType )
   {
-    switch( whichScaleType )
-    {
-      case TScaleImageType::TScaleImageGradientColor:
-        return _( "gradient_legend" );
-      case TScaleImageType::TScaleImageGradientColorNotNull:
-        return _( "nn_gradient_legend" );
-      case TScaleImageType::TScaleImageAlternativeGradientColor:
-        return _( "alt_gradient_legend" );
-      default:
-        return _( "code_legend" );
-    }
+    case TScaleImageType::TScaleImageGradientColor:
+      return _( "gradient_legend" );
+    case TScaleImageType::TScaleImageGradientColorNotNull:
+      return _( "nn_gradient_legend" );
+    case TScaleImageType::TScaleImageAlternativeGradientColor:
+      return _( "alt_gradient_legend" );
+    default:
+      return _( "code_legend" );
   }
+}
 } // namespace
 
 
@@ -210,15 +210,18 @@ ScaleImageGenerator::ScaleImageGenerator( Histogram* whichHistogram,
                                           const wxFont& whichTextFont,
                                           TScaleImageType whichScaleType,
                                           TScaleImageOrientation whichOrientation,
-                                          TBackgroundMode whichBackgroundMode )
+                                          wxColour whichBackground,
+                                          wxColour whichForeground )
   : ScaleImageGenerator( WindowGenericItem( whichHistogram ),
                          whichDataWindow,
                          whichSemanticValueColors,
                          whichTextFont,
                          whichScaleType,
                          whichOrientation,
-                         whichBackgroundMode )
-{}
+                         whichBackground,
+                         whichForeground )
+{
+}
 
 
 ScaleImageGenerator::ScaleImageGenerator( Timeline* whichTimeline,
@@ -226,15 +229,18 @@ ScaleImageGenerator::ScaleImageGenerator( Timeline* whichTimeline,
                                           const wxFont& whichTextFont,
                                           TScaleImageType whichScaleType,
                                           TScaleImageOrientation whichOrientation,
-                                          TBackgroundMode whichBackgroundMode )
+                                          wxColour whichBackground,
+                                          wxColour whichForeground )
   : ScaleImageGenerator( WindowGenericItem( whichTimeline ),
                          whichTimeline,
                          whichSemanticValueColors,
                          whichTextFont,
                          whichScaleType,
                          whichOrientation,
-                         whichBackgroundMode )
-{}
+                         whichBackground,
+                         whichForeground )
+{
+}
 
 
 ScaleImageGenerator::ScaleImageGenerator( WindowGenericItem whichSourceWindow,
@@ -243,7 +249,8 @@ ScaleImageGenerator::ScaleImageGenerator( WindowGenericItem whichSourceWindow,
                                           const wxFont& whichTextFont,
                                           TScaleImageType whichScaleType,
                                           TScaleImageOrientation whichOrientation,
-                                          TBackgroundMode whichBackgroundMode )
+                                          wxColour whichBackground,
+                                          wxColour whichForeground )
   : sourceWindow( whichSourceWindow )
   , labelWindow( whichLabelWindow )
   , semanticValuesColors( whichSemanticValueColors )
@@ -252,9 +259,10 @@ ScaleImageGenerator::ScaleImageGenerator( WindowGenericItem whichSourceWindow,
   , gradientSquareCount( DEFAULT_GRADIENT_SQUARES )
   , legendSuffix( buildLegendSuffix( whichScaleType ) )
 {
-  layout.textFont       = whichTextFont;
-  layout.backgroundMode = whichBackgroundMode;
-  layout.labelPrecision = SEMANTIC_LABEL_PRECISION;
+  layout.textFont        = whichTextFont;
+  layout.backgroundColor = whichBackground;
+  layout.foregroundColor = whichForeground;
+  layout.labelPrecision  = SEMANTIC_LABEL_PRECISION;
 
   // The layout decides whether labels are symbolic, so it goes before the labels.
   initializeLayout();
@@ -365,8 +373,6 @@ bool ScaleImageGenerator::saveImage( const wxString& whichFilePath, TImageFormat
   if( !legendBitmap.IsOk() )
     return false;
 
-  applyTransparencyMask();
-
   return legendBitmap.ConvertToImage().SaveFile( whichFilePath, imageFormatTypeToBitmapType( whichImageFormat ) );
 }
 
@@ -375,8 +381,6 @@ bool ScaleImageGenerator::copyImageToClipboard()
 {
   if( !legendBitmap.IsOk() )
     return false;
-
-  applyTransparencyMask();
 
   return copyBitmapToClipboard( legendBitmap );
 }
@@ -474,17 +478,16 @@ void ScaleImageGenerator::computeGradientColors()
     if( sampleValue > rangeMaximum )
       sampleValue = rangeMaximum;
 
-    semanticValuesColors[ sampleValue ] = std::visit( overloads{ [ sampleValue ]( Histogram* histogram )
-                                                                 {
-                                                                   return histogram->calcGradientColor( sampleValue );
-                                                                 },
-                                                                 [ sampleValue, rangeMinimum, rangeMaximum ]( Timeline* timeline )
-                                                                 {
-                                                                   return timeline->getSemanticColor().calcColor( sampleValue,
-                                                                                                                  rangeMinimum,
-                                                                                                                  rangeMaximum );
-                                                                 } },
-                                                      sourceWindow );
+    semanticValuesColors[ sampleValue ] =
+      std::visit( overloads{ [ sampleValue ]( Histogram* histogram )
+                             {
+                               return histogram->calcGradientColor( sampleValue );
+                             },
+                             [ sampleValue, rangeMinimum, rangeMaximum ]( Timeline* timeline )
+                             {
+                               return timeline->getSemanticColor().calcColor( sampleValue, rangeMinimum, rangeMaximum );
+                             } },
+                  sourceWindow );
   }
 }
 
@@ -593,18 +596,10 @@ void ScaleImageGenerator::prepareCanvas( TCanvas& canvas ) const
 {
   canvas.content.SetFont( layout.textFont );
 
-  if( layout.backgroundMode == TBackgroundMode::BACKGROUND_SOLID_DARK )
-  {
-    canvas.content.SetBackground( wxBrush( *wxBLACK ) );
-    canvas.content.SetTextBackground( *wxWHITE );
-    canvas.content.SetTextForeground( *wxWHITE );
-    canvas.content.SetPen( wxPen( *wxWHITE ) );
-  }
-  else
-  {
-    canvas.content.SetBackground( *wxWHITE_BRUSH );
-    canvas.content.SetTextForeground( *wxBLACK );
-  }
+  canvas.content.SetBackground( wxBrush( layout.backgroundColor ) );
+  canvas.content.SetTextBackground( layout.foregroundColor );
+  canvas.content.SetTextForeground( layout.foregroundColor );
+  canvas.content.SetPen( wxPen( layout.foregroundColor ) );
 
   canvas.content.Clear();
 
@@ -843,16 +838,4 @@ wxString ScaleImageGenerator::getShortLabel( TSemanticValue whichValue ) const
   const auto valueLabel = semanticValuesLabelsShort.find( whichValue );
 
   return valueLabel != semanticValuesLabelsShort.end() ? valueLabel->second : wxString();
-}
-
-
-void ScaleImageGenerator::applyTransparencyMask()
-{
-#ifndef __WXMAC__
-  if( layout.backgroundMode == TBackgroundMode::BACKGROUND_TRANSPARENT && legendMaskBitmap.IsOk() )
-  {
-    // The bitmap takes ownership of the mask.
-    legendBitmap.SetMask( new wxMask( legendMaskBitmap, *wxWHITE ) );
-  }
-#endif
 }
