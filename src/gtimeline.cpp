@@ -4260,8 +4260,8 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
 #else
   layers.push_back( &drawImage );
 #endif
-  WindowImageGenerator* newWindowImage = new WindowImageGenerator( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
-  bool imageGenerated                  = newWindowImage->generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
+  auto newWindowImage = std::make_unique< WindowImageGenerator >( layers, backgroundColour, foregroundColour, semanticFont, filterIndex, false );
+  bool imageGenerated = newWindowImage->generateWindowsImage( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() );
   if( !imageGenerated )
   {
     wxMessageBox( _( "Unable to save Timeline image.\n\nTry to reduce size." ), _( "Save Image" ), wxOK | wxICON_WARNING, this );
@@ -4282,18 +4282,18 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
       tmpObjects[ (TSemanticValue)( *it ) ] = tmprgb;
     }
 
-    newWindowImage->generatescaleImageDataWindows( tmpObjects, myWindow );
+    newWindowImage->generateTimelineLegend( tmpObjects, myWindow );
 
     newWindowImage->generateScaleWindowsImage( tmpObjects, myWindow );
   }
   else
   {
-    newWindowImage->generatescaleImageDataWindows( semanticValuesToColor, myWindow );
+    newWindowImage->generateTimelineLegend( semanticValuesToColor, myWindow );
 
     newWindowImage->generateScaleWindowsImage( semanticValuesToColor, myWindow );
   }
 
-  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage, nullptr, newWindowImage->getLegendSuffix() );
+  SaveImageDialog saveDialog( this, defaultDir, imageName, newWindowImage.get(), nullptr, newWindowImage->getLegendSuffix() );
 
   if( saveDialog.ShowModal() != wxID_OK )
   {
@@ -4321,8 +4321,6 @@ void gTimeline::openSaveImageDialog( wxString whichFileName )
     imageName = saveDialog.GetLegendFilePath(); // .GetPath();
     newWindowImage->saveImageScale( imageName, false );
   }
-  if( newWindowImage == nullptr )
-    delete newWindowImage;
 }
 
 
@@ -4380,7 +4378,7 @@ std::optional< bool > gTimeline::saveImageTimeline( wxString whichFileName, bool
 void gTimeline::saveImageLegend( wxString whichFileName )
 {
   wxString imagePath;
-  TImageFormat filterIndex;
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
 
   setEnableDestroyButton( false );
 
@@ -4390,7 +4388,6 @@ void gTimeline::saveImageLegend( wxString whichFileName )
   }
   else
   {
-    filterIndex        = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
     wxString imageName = buildFormattedFileName();
     wxString tmpSuffix = _( "." ) + wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     wxString defaultDir;
@@ -4425,11 +4422,11 @@ void gTimeline::saveImageLegend( wxString whichFileName )
       tmpObjects[ (TSemanticValue)( *it ) ] = tmprgb;
     }
 
-    newWindowImage.generatescaleImageDataWindows( tmpObjects, myWindow );
+    newWindowImage.generateTimelineLegend( tmpObjects, myWindow );
   }
   else
   {
-    newWindowImage.generatescaleImageDataWindows( semanticValuesToColor, myWindow );
+    newWindowImage.generateTimelineLegend( semanticValuesToColor, myWindow );
   }
 
   newWindowImage.saveImageScale( imagePath, true );

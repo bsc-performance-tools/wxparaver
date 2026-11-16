@@ -28,6 +28,7 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.cpp \
                     runscript.cpp \
                     saveconfigurationdialog.cpp \
                     saveimagedialog.cpp \
+                    scaleimagegenerator.cpp \
                     sequencedriver.cpp \
                     sessionsaver.cpp \
                     sessionselectiondialog.cpp \

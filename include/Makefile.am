@@ -26,6 +26,7 @@ noinst_HEADERS =    advancedsaveconfiguration.h \
                     runscript.h \
                     saveconfigurationdialog.h \
                     saveimagedialog.h \
+                    scaleimagegenerator.h \
                     sequencedriver.h \
                     sessionsaver.h \
                     sessionselectiondialog.h \

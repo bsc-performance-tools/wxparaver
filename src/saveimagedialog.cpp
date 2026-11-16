@@ -38,6 +38,7 @@
 ////@end includes
 // clang-format on
 
+#include "gtimeline.h"
 #include "labelconstructor.h"
 #include "saveimagedialog.h"
 #include "wxparaverapp.h"
@@ -372,21 +373,20 @@ void SaveImageDialog::CreateControls()
   sizerMain->Hide( sizerPath, true );
 #endif
 
-  ScaleImageGenerator* scaleMaster = nullptr;
+  // The data legend drives the legend related widgets, for timelines and histograms alike
+  const ScaleImageGenerator* scaleMaster = imageGeneration->getDataLegend();
   if( myHistogram == nullptr )
   {
-    scaleMaster = imageGeneration->getScaleImage();
-
     drawScaleControlSingle->Hide();
-    if( ( ( gTimeline * )GetParent() )->GetMyWindow()->isFunctionLineColorSet() )
+    if( ( (gTimeline*)GetParent() )->GetMyWindow()->isFunctionLineColorSet() )
     {
       drawScaleSingle->Hide();
       drawWindowAndScale->Hide();
-      
+
       legendCheckbox->SetValue( false );
       legendCheckbox->Enable( false );
       legendFileName->Enable( false );
-      
+
       legendControlCheckbox->SetValue( false );
       legendControlCheckbox->Enable( false );
       legendControlFileName->Enable( false );
@@ -401,16 +401,15 @@ void SaveImageDialog::CreateControls()
   else
   {
     imageCheckbox->SetLabel( _( "Histogram" ) );
-    scaleMaster = imageGeneration->getScaleDataImage();
 
-    if( imageGeneration->getScaleDataImageBitmap() == nullptr && imageGeneration->getScaleImageBitmap() == nullptr )
+    if( imageGeneration->getDataLegendBitmap() == nullptr && imageGeneration->getControlLegendBitmap() == nullptr )
     {
       imageCheckbox->Hide();
 
       imageToSaveSizer->Hide( (wxSizer*)legendControlSizer, true );
       imageToSaveSizer->Hide( (wxSizer*)legendSizer, true );
     }
-    if( imageGeneration->getScaleImageBitmap() == nullptr )
+    if( imageGeneration->getControlLegendBitmap() == nullptr )
     {
       drawScaleControlSingle->Hide();
       imageToSaveSizer->Hide( (wxSizer*)legendControlSizer, true );
@@ -574,9 +573,21 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
         return;
     }
   }
-  if( legendControlCheckbox->IsChecked() )
+
+  if( legendControlCheckbox->IsShown() && legendControlCheckbox->IsChecked() )
   {
     wxString tmpLegendFile = GetLegendControlFilePath();
+    if( wxFileExists( tmpLegendFile ) )
+    {
+      wxMessageDialog tmpDialog( this, tmpLegendFile + " exists.\n\nDo yo want to overwrite it?", "File exists", wxYES_NO | wxICON_QUESTION );
+      if( tmpDialog.ShowModal() == wxID_NO )
+        return;
+    }
+  }
+
+  if( imageAndScaleCheckbox->IsChecked() )
+  {
+    wxString tmpLegendFile = GetImageScaleFilePath();
     if( wxFileExists( tmpLegendFile ) )
     {
       wxMessageDialog tmpDialog( this, tmpLegendFile + " exists.\n\nDo yo want to overwrite it?", "File exists", wxYES_NO | wxICON_QUESTION );
@@ -737,10 +748,8 @@ void SaveImageDialog::onPaintScale( wxPaintEvent& event )
   // wxPaintDC dcscale( drawScaleSingle );
   wxBitmap* originalBmp = nullptr;
 
-  if( myHistogram == nullptr && !(((gTimeline *)GetParent())->GetMyWindow()->isFunctionLineColorSet()) )
-    originalBmp = imageGeneration->getScaleImageBitmap();
-  else
-    originalBmp = imageGeneration->getScaleDataImageBitmap();
+  if( myHistogram != nullptr || !( ( (gTimeline*)GetParent() )->GetMyWindow()->isFunctionLineColorSet() ) )
+    originalBmp = imageGeneration->getDataLegendBitmap();
 
   if( originalBmp && originalBmp->IsOk() )
   {
@@ -807,9 +816,9 @@ void SaveImageDialog::onPaintScaleControl( wxPaintEvent& event )
 
   EnableLegendControls();
 
-  wxBitmap* originalBmp = nullptr;  
-  if( myHistogram != nullptr || !(((gTimeline *)GetParent())->GetMyWindow()->isFunctionLineColorSet()) )
-    originalBmp = imageGeneration->getScaleImageBitmap();
+  wxBitmap* originalBmp = nullptr;
+  if( myHistogram != nullptr || !( ( (gTimeline*)GetParent() )->GetMyWindow()->isFunctionLineColorSet() ) )
+    originalBmp = imageGeneration->getControlLegendBitmap();
 
   if( originalBmp && originalBmp->IsOk() )
   {
@@ -879,7 +888,7 @@ void SaveImageDialog::OnPaintWindowScale( wxPaintEvent& event )
   EnableLegendControls();
 
   wxBitmap* originalBmp = nullptr;
-  if( myHistogram != nullptr || !(((gTimeline *)GetParent())->GetMyWindow()->isFunctionLineColorSet()) )
+  if( myHistogram != nullptr || !( ( (gTimeline*)GetParent() )->GetMyWindow()->isFunctionLineColorSet() ) )
     originalBmp = imageGeneration->getTimelineScaleImage();
 
   if( originalBmp && originalBmp->IsOk() )
@@ -987,145 +996,6 @@ void SaveImageDialog::calculateScaledSize( int originalWidth,
     }
   }
 }
-
-
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
- */
-
-// void SaveImageDialog::OnCheckboxScaledsizeClick( wxCommandEvent& event )
-// {
-//   wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX_SCALEDSIZE ), wxCheckBox );
-//   if( checkbox )
-//   {
-//     bool isChecked = checkbox->IsChecked();
-//     if( isChecked )
-//     {
-//       wxSize clientSize = drawWindowSingle->GetClientSize();
-//       drawWindowSingle->SetVirtualSize( clientSize ); // virtual size = client size → no scroll
-//       drawWindowSingle->SetScrollRate( 0, 0 );        // disable scroll increments
-//       drawWindowSingle->ShowScrollbars( wxSHOW_SB_NEVER, wxSHOW_SB_NEVER );
-//       resize_window = true;
-//       // Checkbox is checked
-//     }
-//     else
-//     {
-//       int originalWidth  = imageGeneration->getWindowsImageBitmap()->GetWidth();
-//       int originalHeight = imageGeneration->getWindowsImageBitmap()->GetHeight();
-
-//       drawWindowSingle->SetVirtualSize( originalWidth, originalHeight );
-//       drawWindowSingle->SetScrollRate( 10, 10 );
-//       drawWindowSingle->ShowScrollbars( wxSHOW_SB_DEFAULT, wxSHOW_SB_DEFAULT );
-//       resize_window = false;
-//       // Checkbox is unchecked
-//     }
-//   }
-
-//   ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
-//   // Before editing this code, remove the block markers.
-//   event.Skip();
-//   ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
-// }
-
-
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
- */
-
-// void SaveImageDialog::OnCheckboxLegendClick( wxCommandEvent& event )
-// {
-//   wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX_LEGEND ), wxCheckBox );
-//   if( checkbox )
-//   {
-//     bool isChecked = checkbox->IsChecked();
-//     if( isChecked )
-//     {
-//       wxSize clientSize = drawScaleSingle->GetClientSize();
-//       drawScaleSingle->SetVirtualSize( clientSize ); // virtual size = client size → no scroll
-//       drawScaleSingle->SetScrollRate( 0, 0 );        // disable scroll increments
-//       drawScaleSingle->ShowScrollbars( wxSHOW_SB_NEVER, wxSHOW_SB_NEVER );
-//       resize_scale = true;
-//       // Checkbox is checked
-//     }
-//     else
-//     {
-//       int originalWidth;
-//       int originalHeight;
-
-//       if( isHistogram )
-//       {
-//         originalWidth  = imageGeneration->getScaleDataImageBitmap()->GetWidth();
-//         originalHeight = imageGeneration->getScaleDataImageBitmap()->GetHeight();
-//       }
-//       else
-//       {
-//         originalWidth  = imageGeneration->getScaleImageBitmap()->GetWidth();
-//         originalHeight = imageGeneration->getScaleImageBitmap()->GetHeight();
-//       }
-
-
-//       drawScaleSingle->SetVirtualSize( originalWidth, originalHeight );
-//       drawScaleSingle->SetScrollRate( 10, 10 );
-//       drawScaleSingle->ShowScrollbars( wxSHOW_SB_DEFAULT, wxSHOW_SB_DEFAULT );
-//       resize_scale = false;
-//       // Checkbox is unchecked
-//     }
-//   }
-//   ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
-//   // Before editing this code, remove the block markers.
-//   event.Skip();
-//   ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX in SaveImageDialog.
-// }
-
-
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND_CONTROL
- */
-
-// void SaveImageDialog::OnCheckboxLegendControlClick( wxCommandEvent& event )
-// {
-//   wxCheckBox* checkbox = wxDynamicCast( FindWindow( ID_CHECKBOX_LEGEND_CONTROL ), wxCheckBox );
-//   if( checkbox )
-//   {
-//     bool isChecked = checkbox->IsChecked();
-//     if( isChecked )
-//     {
-//       wxSize clientSize = drawScaleControlSingle->GetClientSize();
-//       drawScaleControlSingle->SetVirtualSize( clientSize ); // virtual size = client size → no scroll
-//       drawScaleControlSingle->SetScrollRate( 0, 0 );        // disable scroll increments
-//       drawScaleControlSingle->ShowScrollbars( wxSHOW_SB_NEVER, wxSHOW_SB_NEVER );
-//       resize_scale_control = true;
-//       // Checkbox is checked
-//     }
-//     else
-//     {
-//       int originalWidth;
-//       int originalHeight;
-
-//       if( isHistogram )
-//       {
-//         originalWidth  = imageGeneration->getScaleImageBitmap()->GetWidth();
-//         originalHeight = imageGeneration->getScaleImageBitmap()->GetHeight();
-//       }
-//       else
-//       {
-//         originalWidth  = imageGeneration->getScaleImageBitmap()->GetWidth();
-//         originalHeight = imageGeneration->getScaleImageBitmap()->GetHeight();
-//       }
-
-
-//       drawScaleControlSingle->SetVirtualSize( originalWidth, originalHeight );
-//       drawScaleControlSingle->SetScrollRate( 10, 10 );
-//       drawScaleControlSingle->ShowScrollbars( wxSHOW_SB_DEFAULT, wxSHOW_SB_DEFAULT );
-//       resize_scale_control = false;
-//       // Checkbox is unchecked
-//     }
-//   }
-//   ////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND_CONTROL in SaveImageDialog.
-//   // Before editing this code, remove the block markers.
-//   event.Skip();
-//   ////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_LEGEND_CONTROL in SaveImageDialog.
-// }
 
 
 /*!
@@ -1303,8 +1173,6 @@ void SaveImageDialog::OnCheckboxShrinkLabelClick( wxCommandEvent& event )
   drawScaleControlSingle->Refresh();
   drawScaleControlSingle->Update();
 
-  imageGeneration->generateScaleWindowsImage();
-
   drawWindowAndScale->Refresh();
   drawWindowAndScale->Update();
 
@@ -1340,25 +1208,24 @@ void SaveImageDialog::adjustPanelSize( bool resizePanel )
   wxBitmap* windowImage = imageGeneration->getWindowsImageBitmap();
   adjustPanel( drawWindowSingle, windowImage, !resizePanel, resize_window );
 
-  wxBitmap* scaleImage = imageGeneration->getScaleImageBitmap();
+  wxBitmap* dataLegendImage = imageGeneration->getDataLegendBitmap();
 
   if( myHistogram != nullptr )
   {
-    wxBitmap* scaleControlImage = imageGeneration->getScaleDataImageBitmap();
+    wxBitmap* controlLegendImage = imageGeneration->getControlLegendBitmap();
 
-    if( scaleControlImage != nullptr )
+    if( dataLegendImage != nullptr )
     {
-      adjustPanel( drawScaleSingle, scaleControlImage, !resizePanel, resize_scale );
+      adjustPanel( drawScaleSingle, dataLegendImage, !resizePanel, resize_scale );
     }
-    if( scaleImage != nullptr )
+    if( controlLegendImage != nullptr )
     {
-      adjustPanel( drawScaleControlSingle, scaleImage, !resizePanel, resize_scale_control );
+      adjustPanel( drawScaleControlSingle, controlLegendImage, !resizePanel, resize_scale_control );
     }
   }
   else
   {
-    wxBitmap* scaleImage = imageGeneration->getScaleImageBitmap();
-    adjustPanel( drawScaleSingle, scaleImage, !resizePanel, resize_scale );
+    adjustPanel( drawScaleSingle, dataLegendImage, !resizePanel, resize_scale );
   }
 
 
@@ -1377,16 +1244,12 @@ void SaveImageDialog::OnShowLegend( wxCommandEvent& event )
   wxArrayString choices;
   wxArrayInt preSelections;
 
-  std::map< TSemanticValue, wxString > semanticValues;
+  // Values are selected on the data legend, for timelines and histograms alike
+  const ScaleImageGenerator* dataLegend = imageGeneration->getDataLegend();
+  if( dataLegend == nullptr )
+    return;
 
-  if( myHistogram != nullptr )
-  {
-    semanticValues = imageGeneration->getScaleDataImage()->getSemanticValues();
-  }
-  else
-  {
-    semanticValues = imageGeneration->getScaleImage()->getSemanticValues();
-  }
+  std::map< TSemanticValue, wxString > semanticValues = dataLegend->getSemanticValues();
 
 
   // SyncWindows::getInstance()->getGroupAvailableProperties( groupId, properties );
@@ -1407,7 +1270,7 @@ void SaveImageDialog::OnShowLegend( wxCommandEvent& event )
 
   wxMultiChoiceDialog* dialog = new wxMultiChoiceDialog( nullptr, "Select the element of the legend you want:", "Legend Group Selector", choices );
 
-  std::vector< int > stdSelections = imageGeneration->getScaleImage()->getSelectedSemanticValues();
+  std::vector< int > stdSelections = dataLegend->getSelectedSemanticValues();
 
   wxArrayInt wxSelections;
   wxSelections.reserve( stdSelections.size() );
@@ -1426,31 +1289,11 @@ void SaveImageDialog::OnShowLegend( wxCommandEvent& event )
       selectedIndices.push_back( selections[ i ] );
 
 
-    if( myHistogram == nullptr )
-    {
-      imageGeneration->getScaleImage()->setSelectedSemanticValues( selectedIndices );
+    // Rebuilds the data legend and the window + legend image
+    imageGeneration->setSelectedSemanticValues( selectedIndices );
 
-      imageGeneration->getScaleImage()->initializeConfiguration();
-      imageGeneration->getScaleImage()->processImage();
-
-      drawScaleSingle->Refresh();
-      drawScaleSingle->Update();
-    }
-    else
-    {
-      imageGeneration->getScaleDataImage()->setSelectedSemanticValues( selectedIndices );
-
-      imageGeneration->getScaleDataImage()->initializeConfiguration();
-      imageGeneration->getScaleDataImage()->processImage();
-
-      drawScaleControlSingle->Refresh();
-      drawScaleControlSingle->Update();
-    }
-
-
-    imageGeneration->getScaleWindowsImage()->setSelectedSemanticValues( selectedIndices );
-
-    imageGeneration->generateScaleWindowsImage();
+    drawScaleSingle->Refresh();
+    drawScaleSingle->Update();
 
     drawWindowAndScale->Refresh();
     drawWindowAndScale->Update();
@@ -1476,18 +1319,12 @@ void SaveImageDialog::OnSaveimageCopyClipboardButtonClick( wxCommandEvent& event
     imageGeneration->saveImageWindows( _( "" ), tmpCopyToClipboard );
   else if( drawWindowAndScale->IsShown() )
     imageGeneration->saveImageWindowScale( _( "" ), tmpCopyToClipboard );
-  else if( myHistogram == nullptr && drawScaleSingle->IsShown() )
-  {
-    // Only for timelines
+  else if( drawScaleSingle->IsShown() )
     imageGeneration->saveImageScale( _( "" ), false, tmpCopyToClipboard );
-  }
-  else
+  else if( drawScaleControlSingle->IsShown() )
   {
-    // Only for histograms
-    if( drawScaleSingle->IsShown() )
-      imageGeneration->saveImageControlScale( _( "" ), false, tmpCopyToClipboard );
-    else if( drawScaleControlSingle->IsShown() && myHistogram->getFirstRowColored() )
-      imageGeneration->saveImageScale( _( "" ), false, tmpCopyToClipboard );
+    // Only histograms that color their first row have a control legend; otherwise nothing is copied
+    imageGeneration->saveImageControlScale( _( "" ), false, tmpCopyToClipboard );
   }
 }
 
