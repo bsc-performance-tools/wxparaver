@@ -29,7 +29,7 @@ if [ -f "include/paravermain.h" ]; then
   cp include/paravermain.h include/paravermain.h.oldvers
   export TAG_CONF=VERSION
   awk -F ' ' \
-     '$0  ~ /define '${TAG_CONF}'/ { print $1 " '${TAG_CONF}' \"'${VERSION}'\"" ; } ;  \
+     '$0  ~ /define '${TAG_CONF}'/ { print "#  define '${TAG_CONF}' \"'${VERSION}'\"" ; } ;  \
       $0 !~ /define '${TAG_CONF}'/ { print $0; }'  include/paravermain.h > include/paravermain.h.newchgvers
   mv include/paravermain.h.newchgvers include/paravermain.h
   echo; echo "[UPDATE-VERSION] Changes in include/paravermain.h:"
