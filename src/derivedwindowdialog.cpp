@@ -63,9 +63,13 @@ wxBEGIN_EVENT_TABLE(ButtonArrayPopup,wxPopupTransientWindow)
     EVT_BUTTON( ID_BITMAPBUTTON_OPERATION, ButtonArrayPopup::OnButton )
 wxEND_EVENT_TABLE()
 
-
+#ifdef _WIN32
 ButtonArrayPopup::ButtonArrayPopup( wxWindow *parent, wxBitmapButton *whichCallerButton, wxImageList *icons, const wxString& whichSelectedButton )
                      :wxPopupTransientWindow( parent, wxBORDER_NONE | wxWANTS_CHARS | wxPU_CONTAINS_CONTROLS )
+#else
+ButtonArrayPopup::ButtonArrayPopup( wxWindow *parent, wxBitmapButton *whichCallerButton, wxImageList *icons, const wxString& whichSelectedButton )
+                     :wxPopupTransientWindow( parent, wxBORDER_NONE | wxWANTS_CHARS )
+#endif
 {
   operationName = whichSelectedButton;
   callerButton = whichCallerButton;
