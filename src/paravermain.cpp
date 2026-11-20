@@ -247,7 +247,7 @@ std::vector< std::pair< std::string, const char ** > > paraverMain::icons = {
   { "histogram", table_xpm },
   { "timeline", timeline_xpm },
 
-  // Section common to timelines and histograms.
+  // Section common to timelines and histograms, also derived histograms.
   // TODO: Get these derived labels from paraver-kernel - semanticderivedfunctions
   { "add", derived_add_xpm },
   { "product", derived_product_xpm },

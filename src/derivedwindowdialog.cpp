@@ -60,7 +60,7 @@ wxBEGIN_EVENT_TABLE(ButtonArrayPopup,wxPopupTransientWindow)
     EVT_KILL_FOCUS( ButtonArrayPopup::OnKillFocus )
     EVT_KILL_FOCUS( ButtonArrayPopup::OnKillFocus )
     // EVT_KEY_DOWN( ButtonArrayPopup::OnKeyDown )
-    EVT_BUTTON( ID_BITMAPBUTTON_OPERATION, ButtonArrayPopup::OnButton )
+    // EVT_COMMAND_RANGE( wxEVT_BUTTON, ID_BITMAPBUTTON_FIRST_OPERATION, ID_BITMAPBUTTON_LAST_OPERATION, ButtonArrayPopup::OnButton )
 wxEND_EVENT_TABLE()
 
 #ifdef _WIN32
@@ -73,24 +73,30 @@ ButtonArrayPopup::ButtonArrayPopup( wxWindow *parent, wxBitmapButton *whichCalle
 {
   operationName = whichSelectedButton;
   callerButton = whichCallerButton;
+  PRV_UINT16 numOperation = 0;
 
   mainPanel = new wxScrolledWindow( this, wxID_ANY );
 
-  auto buildRowSizer = [this, &icons]( const std::vector< std::string >& operations )
+  auto buildRowSizer = [this, &icons, &numOperation]( const std::vector< std::string >& operations )
   {
     // Returns a sizer with one button for every operation passed.
     wxBoxSizer *rowSizer = new wxBoxSizer( wxHORIZONTAL );
-    for( auto op: operations )
+    for( const auto& op: operations )
     {
       auto pos = paraverMain::iconPosByName[ op ] - paraverMain::iconPosByName[ "add" ];
+      auto currentButtonID = ID_BITMAPBUTTON_FIRST_OPERATION + ++numOperation;
+
       wxButton *currentButton = new wxBitmapButton( mainPanel,
-                                                    ID_BITMAPBUTTON_OPERATION,
+                                                    currentButtonID,
                                                     icons->GetBitmap( pos ),
                                                     wxDefaultPosition,
                                                     wxDefaultSize,
                                                     wxBU_AUTODRAW | wxWANTS_CHARS,
                                                     wxDefaultValidator,
                                                     wxString( op ) );
+
+      Bind( wxEVT_BUTTON, &ButtonArrayPopup::OnButton, this, currentButtonID );
+
       rowSizer->Add( currentButton, 0, wxALL, 3 );
     }
 
@@ -99,12 +105,11 @@ ButtonArrayPopup::ButtonArrayPopup( wxWindow *parent, wxBitmapButton *whichCalle
 
 
   std::vector< std::vector< std::string > > rowOperations = {
-                                                              { "add", "substract", "product", "divide" },
-                                                              { "maximum", "minimum", "different" }
-                                                            };
+      { "add", "substract", "product", "divide" },
+      { "maximum", "minimum", "different" } };
   
   wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
-  for( auto row: rowOperations )
+  for( const auto& row: rowOperations )
     topSizer->Add( buildRowSizer( row ), 0, wxALL, 3 );
 
   mainPanel->SetSizer( topSizer );

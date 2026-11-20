@@ -61,7 +61,11 @@
 #define SYMBOL_DERIVEDHISTOGRAMDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
 
-#define ID_BITMAPBUTTON_OPERATION 22000
+// wxWidgets doesn't allow dynamic equivalent of EVT_COMMAND_RANGE.
+// Instead method Bind is used in ButtonArrayPopup constructor.
+//#define NUM_OPERATIONS 7
+#define ID_BITMAPBUTTON_FIRST_OPERATION 22000
+//#define ID_BITMAPBUTTON_LAST_OPERATION  ID_BITMAPBUTTON_FIRST_OPERATION + NUM_OPERATIONS
 
 
 class ButtonArrayPopup: public wxPopupTransientWindow
