@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Paraver
+GenericName=Paraver
+Comment=Examine Extrae trace files
+Exec=wxparaver
+Icon=paraver
+Terminal=false
+Type=Application
+Categories=Development;Utility;Science;Profiling;ParallelComputing;
