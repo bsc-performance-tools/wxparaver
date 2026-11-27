@@ -24,6 +24,7 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.cpp \
                     pg_util.cpp \
                     popupmenu.cpp \
                     preferencesdialog.cpp \
+                    progresslistdialog.cpp \
                     rowsselectiondialog.cpp \
                     runscript.cpp \
                     saveconfigurationdialog.cpp \

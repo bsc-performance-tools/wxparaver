@@ -65,6 +65,7 @@
 #include "paravermain.h"
 #include "popupmenu.h"
 #include "progresscontroller.h"
+#include "progresslistdialog.h"
 #include "saveimagedialog.h"
 #include "sequencedriver.h"
 
@@ -164,7 +165,6 @@ EVT_TIMER( ID_TIMER_POSITION, gTimeline::OnTimerPosition )
 END_EVENT_TABLE()
 
 wxProgressDialog* gTimeline::dialogProgress = nullptr;
-int gTimeline::numberOfProgressDialogUsers  = 0;
 
 /*!
  * gTimeline constructors
@@ -672,6 +672,31 @@ void gTimeline::drawStackedImages( wxDC& dc )
 }
 #endif
 
+// Shown timelines with progress bar that are waiting to be drawn.
+static std::vector< ProgressListDialog::PendingView > pendingTimelineRedraws()
+{
+  std::vector< ProgressListDialog::PendingView > pending;
+  std::vector< Timeline* > allTimelines;
+  LoadedWindows::getInstance()->getAll( allTimelines );
+
+  for( auto whichTimeline : allTimelines )
+  {
+    if( !whichTimeline->getShowWindow() || !whichTimeline->getShowProgressBar() )
+      continue;
+
+    // Never drawn yet (OnIdle will draw it), forced or waiting for an automatic redraw.
+    if( !whichTimeline->getReady() || whichTimeline->getForceRedraw() ||
+        ( wxparaverApp::mainWindow->getAutoRedraw() && whichTimeline->getRedraw() ) )
+    {
+      std::string title = whichTimeline->getName() + " @ " + whichTimeline->getTrace()->getTraceNameNumbered();
+      pending.push_back( { whichTimeline, wxString::FromUTF8( title.c_str() ) } );
+    }
+  }
+
+  return pending;
+}
+
+
 void gTimeline::redraw()
 {
 #ifdef __WXGTK__
@@ -711,31 +736,17 @@ void gTimeline::redraw()
   SetTitle( _( "(Working...) " ) + winTitle );
 
   ProgressController* progress = nullptr;
+  std::unique_ptr< ProgressController > progressOwner;
+  std::unique_ptr< ProgressListScope > progressScope;
   if( myWindow->getShowProgressBar() )
   {
     progress = ProgressController::create( myWindow->getKernel() );
+    progressOwner.reset( progress );
 
     // Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
     // Waiting for wxwidgets 3 code adaptation to prove that its solved.
 #ifndef _WIN32
-    if( gTimeline::dialogProgress == nullptr )
-    {
-      gTimeline::dialogProgress =
-        new wxProgressDialog( wxT( "Drawing window..." ),
-                              wxT( "" ),
-                              MAX_PROGRESS_BAR_VALUE,
-                              this,
-                              wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
-    }
-
-    progress->setHandler( gTimeline::dialogProgress, progressFunction );
-
-    ++gTimeline::numberOfProgressDialogUsers;
-
-    // Disabled because some window managers can't show the progress dialog later
-    // gTimeline::dialogProgress->Show( false );
-    gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
-    gTimeline::dialogProgress->Fit();
+    progressScope.reset( new ProgressListScope( wxparaverApp::mainWindow, myWindow, winTitle, progress, pendingTimelineRedraws ) );
 #endif // _WIN32
   }
   // Get selected rows
@@ -958,19 +969,7 @@ void gTimeline::redraw()
     }
   }
 
-  if( ( myWindow->getShowProgressBar() ) && ( gTimeline::dialogProgress != nullptr ) )
-  {
-    --gTimeline::numberOfProgressDialogUsers;
-    if( gTimeline::numberOfProgressDialogUsers == 0 )
-    {
-      gTimeline::dialogProgress->Show( false );
-      delete gTimeline::dialogProgress;
-      gTimeline::dialogProgress = nullptr;
-
-      if( progress != nullptr )
-        delete progress;
-    }
-  }
+  progressScope.reset();
 
 
   bufferDraw.SelectObject( wxNullBitmap );
@@ -3146,7 +3145,7 @@ void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
  */
 void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
-  if( gTimeline::dialogProgress != nullptr )
+  if( gTimeline::dialogProgress != nullptr || ProgressListDialog::isSomeViewRunning() )
     return;
 
   if( wheelZoomFactor != 1.0 )

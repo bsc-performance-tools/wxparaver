@@ -1082,7 +1082,6 @@ class gTimeline : public wxFrame, public gWindow
     }
     // ------->
     static wxProgressDialog* dialogProgress;
-    static int numberOfProgressDialogUsers;
 
 
     // clang-format off

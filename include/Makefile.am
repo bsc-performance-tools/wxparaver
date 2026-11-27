@@ -22,6 +22,7 @@ noinst_HEADERS =    advancedsaveconfiguration.h \
                     pg_util.h \
                     popupmenu.h \
                     preferencesdialog.h \
+                    progresslistdialog.h \
                     rowsselectiondialog.h \
                     runscript.h \
                     saveconfigurationdialog.h \
